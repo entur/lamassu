@@ -1,0 +1,25 @@
+env: staging
+
+resources:
+  cpuLimit: 500m
+  memLimit: 2000Mi
+  cpuRequest: 200m
+  memRequest: 1500Mi
+  xss: 1024m
+  xmx: 1000m
+
+sql:
+  instance: entur-ror-test:europe-west1:uttu-db=tcp:5432
+
+configMap:
+  organisationRegistryUrl: https://api.staging.entur.io/organisations/v1/register/organisations/
+  keycloakUrl: https://kc-stage.devstage.entur.io/auth
+  pubsubProjectId: entur-ror-test
+  blobstoreProjectId: entur-ror-test
+  blobstoreContainerName: ror-marduk-exchange-test
+  logLevel: INFO
+  flywayTable: flyway_schema_history
+
+ingress:
+  enabled: true
+  stagingIp: 130.211.80.129

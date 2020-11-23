@@ -1,0 +1,40 @@
+env: dev
+
+replicas: 1
+
+rollingUpdate:
+  maxSurge: 1
+  maxUnavailable: 1
+
+resources:
+  cpuLimit: 500m
+  memLimit: 1000Mi
+  cpuRequest: 200m
+  memRequest: 750Mi
+  xss: 1024m
+  xmx: 700m
+
+secretMount:
+  name: lamassu-key
+  mountPath: /etc/lamassu/credentials.json
+  subPath: credentials.json
+  secretName: ror-lamassu-sa-key
+  readOnly: true
+
+configMapMount:
+  name: lamassu-config
+
+image:
+  identifier: ${artifact.metadata.image}
+  imagePullPolicy: Always
+
+service:
+  http:
+    externalPort: 80
+    internalPort: 8080
+
+ingress:
+  enabled: true
+  devIp: 35.195.223.29
+  stagingIp: 35.195.146.93
+  productionIp: 35.187.15.14

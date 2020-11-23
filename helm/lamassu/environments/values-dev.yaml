@@ -1,0 +1,17 @@
+env: dev
+
+sql:
+  instance: entur-ror-dev:europe-west1:uttu-db=tcp:5432
+
+configMap:
+  organisationRegistryUrl: https://api.dev.entur.io/organisations/v1/register/organisations/
+  keycloakUrl: https://kc-dev.devstage.entur.io/auth
+  pubsubProjectId: entur-ror-dev
+  blobstoreProjectId: entur-ror-dev
+  blobstoreContainerName: ror-marduk-exchange-dev
+  logLevel: DEBUG
+  flywayTable: schema_version
+
+ingress:
+  enabled: true
+  devIp: 35.205.170.68
