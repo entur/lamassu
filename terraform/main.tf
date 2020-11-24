@@ -4,6 +4,7 @@ terraform {
 
 provider "google" {
   version = "~> 2.19"
+  region  = var.gcp_region
 }
 
 provider "kubernetes" {

@@ -2,6 +2,11 @@ variable "gcp_project" {
   description = "The GCP project id"
 }
 
+variable "gcp_region" {
+  description = "The GCP region"
+  default     = "europe-west1"
+}
+
 variable "kube_namespace" {
   description = "The Kubernetes namespace"
 }
