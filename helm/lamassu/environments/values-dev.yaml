@@ -5,4 +5,5 @@ configMap:
 
 ingress:
   enabled: true
-  devIp: 35.205.170.68
+  loadBalancerIP: 35.205.170.68
+  domainName: .dev.entur.io
