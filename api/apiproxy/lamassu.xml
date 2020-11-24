@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<APIProxy revision="1" name="bikeservice">
+    <ConfigurationVersion majorVersion="4" minorVersion="0"/>
+    <DisplayName>lamassu</DisplayName>
+    <Description>lamassu</Description>
+    <Policies>
+        <Policy>add-cors</Policy>
+        <Policy>flowCallout.getEnvironmentConfiguration</Policy>
+        <Policy>flowCalloutreplaceTargetUrl</Policy>
+        <Policy>spikeArrest</Policy>
+    </Policies>
+    <ProxyEndpoints>
+        <ProxyEndpoint>v2</ProxyEndpoint>
+    </ProxyEndpoints>
+    <Resources/>
+    <Spec></Spec>
+    <TargetServers/>
+    <TargetEndpoints>
+        <TargetEndpoint>v2</TargetEndpoint>
+    </TargetEndpoints>
+</APIProxy>
