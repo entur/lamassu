@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<APIProxy revision="1" name="bikeservice">
+<APIProxy revision="1" name="lamassu">
     <ConfigurationVersion majorVersion="4" minorVersion="0"/>
     <DisplayName>lamassu</DisplayName>
     <Description>lamassu</Description>
