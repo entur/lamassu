@@ -17,4 +17,5 @@ data:
     management.endpoints.web.exposure.include=info,health,prometheus
 
     # Logging
-    logging.level.no.entur.uttu={{ .Values.configMap.logLevel }}
+    logging.level.no.entur.lamassu={{ .Values.configMap.logLevel }}
+    
