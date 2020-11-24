@@ -10,17 +10,8 @@ resources:
   xss: 1024m
   xmx: 1000m
 
-sql:
-  instance: entur-ror-prod:europe-west1:uttu-db=tcp:5432
-
 configMap:
-  organisationRegistryUrl: https://api.entur.io/organisations/v1/register/organisations/
-  keycloakUrl: https://auth.entur.org/auth/
-  pubsubProjectId: entur-ror-prod
-  blobstoreProjectId: entur-ror-prod
-  blobstoreContainerName: ror-marduk-exchange-production
   logLevel: INFO
-  flywayTable: flyway_schema_history
 
 ingress:
   enabled: true

@@ -1,7 +1,7 @@
 apiVersion: v1
 appVersion: "0.0.1"
 description: Micromobility aggregation service
-name: uttu
+name: lamassu
 version: 0.1.0
 keywords:
   - uttu
