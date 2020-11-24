@@ -35,6 +35,9 @@ spec:
                 -Dfile.encoding=UTF-8 -Drutebanken.kubernetes.enabled=true -Drutebanken.kubernetes.namespace={{ .Release.Namespace }}
             - name: TZ
               value: Europe/Oslo
+          envFrom:
+            - configMapRef:
+                name: lamassu-redis-configmap
           resources:
             limits:
               cpu: {{ .Values.resources.cpuLimit }}

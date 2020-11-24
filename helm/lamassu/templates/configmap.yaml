@@ -15,7 +15,12 @@ data:
     management.endpoint.health.group.readiness.include=readinessState
     management.endpoint.prometheus.enabled=true
     management.endpoints.web.exposure.include=info,health,prometheus
+    management.health.redis.enabled=true
 
     # Logging
     logging.level.no.entur.lamassu={{ .Values.configMap.logLevel }}
-    
+
+    # Redis
+    spring.redis.host=${REDIS_HOST}
+    spring.redis.port=6379
+

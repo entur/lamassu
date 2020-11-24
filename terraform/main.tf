@@ -29,3 +29,13 @@ resource "kubernetes_secret" "service_account_credentials" {
     "credentials.json" = base64decode(google_service_account_key.service_account_key.private_key)
   }
 }
+
+module "redis" {
+  source = "github.com/entur/terraform//modules/redis"
+  gcp_project = var.redis_project
+  labels = var.labels
+  kubernetes_namespace = var.kube_namespace
+  zone = var.redis_zone
+  reserved_ip_range = var.redis_reserved_ip_range
+  prevent_destroy = var.redis_prevent_destroy
+}
