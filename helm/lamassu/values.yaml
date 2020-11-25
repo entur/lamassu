@@ -38,3 +38,7 @@ ingress:
   devIp: 35.195.223.29
   stagingIp: 35.195.146.93
   productionIp: 35.187.15.14
+
+lamassu:
+  feedProviders:
+    - url: https://api.staging.entur.io/mobility/v1/gbfs-boltoslo/gbfs/free_bike_status
