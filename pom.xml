@@ -3,10 +3,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.4.0</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <groupId>org.rutebanken.superpom</groupId>
+        <artifactId>superpom</artifactId>
+        <version>1.0.17</version>
     </parent>
     <groupId>org.entur</groupId>
     <artifactId>lamassu</artifactId>
@@ -62,7 +61,7 @@
         </dependency>
         <dependency>
             <groupId>org.redisson</groupId>
-            <artifactId>redisson-spring-data-24</artifactId>
+            <artifactId>redisson-spring-data-23</artifactId>
             <version>${redisson.version}</version>
         </dependency>
         <dependency>
