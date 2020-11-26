@@ -20,6 +20,10 @@ data:
     # Logging
     logging.level.no.entur.lamassu={{ .Values.configMap.logLevel }}
 
+    # Scheduling
+    org.quartz.jobStore.class=org.quartz.simpl.RAMJobStore
+    spring.quartz.job-store-type=memory
+
     # Redis
     spring.redis.host=${REDIS_HOST}
     spring.redis.port=6379

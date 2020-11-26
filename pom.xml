@@ -17,6 +17,7 @@
         <java.version>11</java.version>
         <redisson.version>3.14.0</redisson.version>
         <embedded-redis.version>0.7.3</embedded-redis.version>
+        <quartz.version>2.3.0</quartz.version>
     </properties>
 
     <dependencies>
@@ -28,7 +29,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
@@ -44,6 +44,15 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>${quartz.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

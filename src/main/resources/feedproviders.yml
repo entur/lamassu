@@ -1,3 +1,5 @@
 lamassu:
   providers:
-    - url: https://api.staging.entur.io/mobility/v1/gbfs-boltoslo/gbfs/free_bike_status
+    - codespace: YBO
+      city: Oslo
+      url: https://api.staging.entur.io/mobility/v1/gbfs-boltoslo/gbfs
