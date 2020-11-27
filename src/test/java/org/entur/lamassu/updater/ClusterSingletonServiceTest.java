@@ -12,7 +12,6 @@ import static org.mockito.Mockito.*;
 
 public class ClusterSingletonServiceTest {
 
-    RedissonClient mockedRedisson = mock(RedissonClient.class);
     RLock mockedLock = mock(RLock.class);
     FeedUpdateScheduler mockedFeedUpdateScheduler = mock(FeedUpdateScheduler.class);
 
@@ -38,9 +37,8 @@ public class ClusterSingletonServiceTest {
 
     @Test(expected = InterruptedException.class)
     public void testBecomeLeaderThrowsInterruptStopsSchedulingAndRethrows() throws InterruptedException {
-        when(mockedRedisson.getLock("leader")).thenReturn(mockedLock);
         when(mockedLock.tryLock(anyLong(), anyLong(), any(TimeUnit.class))).thenThrow(InterruptedException.class);
-        var service = new ClusterSingletonService(mockedRedisson, mockedFeedUpdateScheduler);
+        var service = new ClusterSingletonService(mockedLock, mockedFeedUpdateScheduler);
         service.heartbeat();
         verify(mockedFeedUpdateScheduler).stop();
     }
@@ -54,9 +52,8 @@ public class ClusterSingletonServiceTest {
     }
 
     private ClusterSingletonService baseCase() throws InterruptedException {
-        when(mockedRedisson.getLock("leader")).thenReturn(mockedLock);
         when(mockedLock.tryLock(anyLong(), anyLong(), any(TimeUnit.class))).thenReturn(true);
-        var service = new ClusterSingletonService(mockedRedisson, mockedFeedUpdateScheduler);
+        var service = new ClusterSingletonService(mockedLock, mockedFeedUpdateScheduler);
         service.heartbeat();
         verify(mockedFeedUpdateScheduler).start();
         return service;

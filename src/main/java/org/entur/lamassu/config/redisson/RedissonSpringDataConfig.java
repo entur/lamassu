@@ -1,5 +1,6 @@
-package org.entur.lamassu.config;
+package org.entur.lamassu.config.redisson;
 
+import org.entur.lamassu.config.redisson.RedissonConfig;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.spring.data.connection.RedissonConnectionFactory;

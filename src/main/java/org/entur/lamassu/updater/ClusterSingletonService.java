@@ -1,7 +1,6 @@
 package org.entur.lamassu.updater;
 
 import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +11,13 @@ import java.util.concurrent.TimeUnit;
 
 @Component
 public class ClusterSingletonService {
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private RLock lock;
-    private FeedUpdateScheduler feedUpdateScheduler;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final RLock feedUpdateSchedulerLock;
+    private final FeedUpdateScheduler feedUpdateScheduler;
     private boolean isLeader = false;
 
-    public ClusterSingletonService(RedissonClient redisson, @Autowired FeedUpdateScheduler feedUpdateScheduler) {
-        this.lock = redisson.getLock("leader");
+    public ClusterSingletonService(RLock feedUpdateSchedulerLock, @Autowired FeedUpdateScheduler feedUpdateScheduler) {
+        this.feedUpdateSchedulerLock = feedUpdateSchedulerLock;
         this.feedUpdateScheduler = feedUpdateScheduler;
     }
 
@@ -55,12 +54,12 @@ public class ClusterSingletonService {
     }
 
     private boolean isLeader() {
-        return lock.isHeldByCurrentThread() || isLeader;
+        return feedUpdateSchedulerLock.isHeldByCurrentThread() || isLeader;
     }
 
     private boolean tryToBecomeLeader() throws InterruptedException {
         try {
-            return lock.tryLock(1, 60, TimeUnit.SECONDS);
+            return feedUpdateSchedulerLock.tryLock(1, 60, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             isLeader = false;
             feedUpdateScheduler.stop();
