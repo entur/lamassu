@@ -30,16 +30,15 @@ public class UpdateFeedProvidersService {
 
     private void fetchDiscoveryFeeds() {
         logger.info("Fetching discovery feeds");
-        feedProviderConfig.getProviders().parallelStream().forEach((FeedProvider feedprovider) -> {
-            webClient.get()
+        feedProviderConfig.getProviders().parallelStream().forEach((FeedProvider feedprovider) ->
+                webClient.get()
                     .uri(feedprovider.getUrl())
                     .exchange()
                     .flatMap(res -> res.bodyToMono(GBFS.class))
                     .doOnError(Throwable::printStackTrace)
                     .subscribe(feed -> {
-                        logger.info("Fetched discovery feed " + feedprovider.getUrl());
+                        logger.info("Fetched discovery feed {}", feedprovider.getUrl());
                         feedCache.update(GBFSFeedName.GBFS, feedprovider.getCodespace(), feedprovider.getCity(), feed);
-                    });
-        });
+                    }));
     }
 }
