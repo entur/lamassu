@@ -1,6 +1,6 @@
 package org.entur.lamassu.updater;
 
-import org.entur.lamassu.cache.jcache.GBFSFeedCacheJCache;
+import org.entur.lamassu.cache.GBFSFeedCache;
 import org.entur.lamassu.config.FeedProviderConfig;
 import org.entur.lamassu.model.FeedProvider;
 import org.entur.lamassu.model.gbfs.v2_1.GBFS;
@@ -22,7 +22,8 @@ public class UpdateFeedProvidersService {
     private FeedProviderConfig feedProviderConfig;
 
     @Autowired
-    private GBFSFeedCacheJCache feedCache;
+    private GBFSFeedCache feedCache;
+
 
     public void update() {
         fetchDiscoveryFeeds();
