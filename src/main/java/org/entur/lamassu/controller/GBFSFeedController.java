@@ -1,7 +1,6 @@
 package org.entur.lamassu.controller;
 
 import org.entur.lamassu.cache.GBFSFeedCache;
-import org.entur.lamassu.cache.jcache.GBFSFeedCacheJCache;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSFeedName;
 import org.springframework.beans.factory.annotation.Autowired;
