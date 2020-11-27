@@ -14,13 +14,12 @@ import java.util.concurrent.TimeUnit;
 public class ClusterSingletonService {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private RLock lock;
+    private FeedUpdateScheduler feedUpdateScheduler;
     private boolean isLeader = false;
 
-    @Autowired
-    FeedUpdateScheduler feedUpdateScheduler;
-
-    public ClusterSingletonService(RedissonClient redisson) {
+    public ClusterSingletonService(RedissonClient redisson, @Autowired FeedUpdateScheduler feedUpdateScheduler) {
         this.lock = redisson.getLock("leader");
+        this.feedUpdateScheduler = feedUpdateScheduler;
     }
 
     /**
@@ -36,31 +35,21 @@ public class ClusterSingletonService {
     public void heartbeat() {
         if (isLeader()) {
             logger.info("I am already the leader. Will try to renew.");
-            try {
-                boolean res = tryToBecomeLeader();
-                if (res) {
-                    logger.info("Leadership renewed.");
-                } else {
-                    logger.info("Lost leadership");
-                    isLeader = false;
-                    feedUpdateScheduler.stop();
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            if (tryToBecomeLeader()) {
+                logger.info("Leadership renewed.");
+            } else {
+                logger.info("Lost leadership");
+                isLeader = false;
+                feedUpdateScheduler.stop();
             }
         } else {
             logger.info("Trying to become leader.");
-            try {
-                boolean res = tryToBecomeLeader();
-                if (res) {
-                    logger.info("I became the leader");
-                    isLeader = true;
-                    feedUpdateScheduler.start();
-                } else {
-                    logger.info("Sorry, someone else is the leader, try again soon");
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            if (tryToBecomeLeader()) {
+                logger.info("I became the leader");
+                isLeader = true;
+                feedUpdateScheduler.start();
+            } else {
+                logger.info("Sorry, someone else is the leader, try again soon");
             }
         }
     }
@@ -69,7 +58,11 @@ public class ClusterSingletonService {
         return lock.isHeldByCurrentThread() || isLeader;
     }
 
-    private boolean tryToBecomeLeader() throws InterruptedException {
-        return lock.tryLock(1, 60, TimeUnit.SECONDS);
+    private boolean tryToBecomeLeader() {
+        try {
+            return lock.tryLock(1, 60, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            return false;
+        }
     }
 }
