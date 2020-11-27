@@ -15,16 +15,13 @@ import javax.annotation.PostConstruct;
 public class SchedulerConfig {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    private ApplicationContext applicationContext;
-
     @PostConstruct
     public void init() {
         logger.debug("QuartzConfig initialized.");
     }
 
     @Bean
-    public SchedulerFactoryBean feedUpdateQuartzScheduler() {
+    public SchedulerFactoryBean feedUpdateQuartzScheduler(@Autowired ApplicationContext applicationContext) {
         SchedulerFactoryBean quartzScheduler = new SchedulerFactoryBean();
 
         quartzScheduler.setOverwriteExistingJobs(true);
