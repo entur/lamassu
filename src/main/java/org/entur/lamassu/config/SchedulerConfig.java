@@ -4,14 +4,18 @@ import org.entur.lamassu.util.AutowiringSpringBeanJobFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
 import javax.annotation.PostConstruct;
 
 @Configuration
+@ConditionalOnProperty(value = "scheduling.enabled", havingValue = "true", matchIfMissing = true)
+@EnableScheduling
 public class SchedulerConfig {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 

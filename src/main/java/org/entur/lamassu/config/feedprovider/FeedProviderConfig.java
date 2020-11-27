@@ -1,4 +1,4 @@
-package org.entur.lamassu.config;
+package org.entur.lamassu.config.feedprovider;
 
 import org.entur.lamassu.model.FeedProvider;
 

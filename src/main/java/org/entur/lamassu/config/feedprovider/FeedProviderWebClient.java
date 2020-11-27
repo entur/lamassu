@@ -1,4 +1,4 @@
-package org.entur.lamassu.config;
+package org.entur.lamassu.config.feedprovider;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

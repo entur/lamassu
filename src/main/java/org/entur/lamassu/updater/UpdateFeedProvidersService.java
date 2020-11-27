@@ -1,7 +1,7 @@
 package org.entur.lamassu.updater;
 
 import org.entur.lamassu.cache.GBFSFeedCache;
-import org.entur.lamassu.config.FeedProviderConfig;
+import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.model.FeedProvider;
 import org.entur.lamassu.model.gbfs.v2_1.GBFS;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSFeedName;
