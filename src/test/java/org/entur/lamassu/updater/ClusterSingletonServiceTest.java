@@ -36,17 +36,17 @@ public class ClusterSingletonServiceTest {
         verify(mockedFeedUpdateScheduler).stop();
     }
 
-    @Test
-    public void testBecomeLeaderThrowsInterruptNoop() throws InterruptedException {
+    @Test(expected = InterruptedException.class)
+    public void testBecomeLeaderThrowsInterruptStopsSchedulingAndRethrows() throws InterruptedException {
         when(mockedRedisson.getLock("leader")).thenReturn(mockedLock);
         when(mockedLock.tryLock(anyLong(), anyLong(), any(TimeUnit.class))).thenThrow(InterruptedException.class);
         var service = new ClusterSingletonService(mockedRedisson, mockedFeedUpdateScheduler);
         service.heartbeat();
-        verifyNoInteractions(mockedFeedUpdateScheduler);
+        verify(mockedFeedUpdateScheduler).stop();
     }
 
-    @Test
-    public void testRenewLeadershipThrowsInterruptStopsScheduling() throws InterruptedException {
+    @Test(expected = InterruptedException.class)
+    public void testRenewLeadershipThrowsInterruptStopsSchedulingAndRethrows() throws InterruptedException {
         var service = baseCase();
         when(mockedLock.tryLock(anyLong(), anyLong(), any(TimeUnit.class))).thenThrow(InterruptedException.class);
         service.heartbeat();

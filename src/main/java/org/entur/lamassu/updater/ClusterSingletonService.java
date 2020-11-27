@@ -32,7 +32,7 @@ public class ClusterSingletonService {
      * Leadership lease time is 60 seconds.
      */
     @Scheduled(fixedRate = 30000)
-    public void heartbeat() {
+    public void heartbeat() throws InterruptedException {
         if (isLeader()) {
             logger.info("I am already the leader. Will try to renew.");
             if (tryToBecomeLeader()) {
@@ -58,11 +58,13 @@ public class ClusterSingletonService {
         return lock.isHeldByCurrentThread() || isLeader;
     }
 
-    private boolean tryToBecomeLeader() {
+    private boolean tryToBecomeLeader() throws InterruptedException {
         try {
             return lock.tryLock(1, 60, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            return false;
+            isLeader = false;
+            feedUpdateScheduler.stop();
+            throw e;
         }
     }
 }
