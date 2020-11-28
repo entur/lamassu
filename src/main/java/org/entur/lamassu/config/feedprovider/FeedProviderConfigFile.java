@@ -2,7 +2,6 @@ package org.entur.lamassu.config.feedprovider;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.model.FeedProvider;
 import org.entur.lamassu.util.YamlPropertySourceFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;

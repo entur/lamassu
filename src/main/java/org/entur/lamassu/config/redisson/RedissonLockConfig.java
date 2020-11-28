@@ -5,8 +5,6 @@ import org.redisson.api.RedissonClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.concurrent.locks.Lock;
-
 import static org.entur.lamassu.config.redisson.RedissonConstants.FEED_UPDATE_SCHEDULER_LOCK;
 
 @Configuration
