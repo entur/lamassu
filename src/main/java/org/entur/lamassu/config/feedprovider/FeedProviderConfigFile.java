@@ -1,7 +1,5 @@
 package org.entur.lamassu.config.feedprovider;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.entur.lamassu.model.FeedProvider;
 import org.entur.lamassu.util.YamlPropertySourceFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -14,7 +12,14 @@ import java.util.List;
 @ConfigurationProperties(prefix = "lamassu")
 @PropertySource(value = "${org.entur.lamassu.feedproviders}", factory = YamlPropertySourceFactory.class)
 public class FeedProviderConfigFile implements FeedProviderConfig {
-
-    @Getter @Setter
     private List<FeedProvider> providers;
+
+    @Override
+    public List<FeedProvider> getProviders() {
+        return providers;
+    }
+
+    public void setProviders(List<FeedProvider> providers) {
+        this.providers = providers;
+    }
 }
