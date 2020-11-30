@@ -1,6 +1,11 @@
 package org.entur.lamassu.updater;
 
+import org.entur.lamassu.model.FeedProvider;
+import org.entur.lamassu.model.gbfs.v2_1.GBFS;
+import org.entur.lamassu.model.gbfs.v2_1.GBFSFeedName;
+import org.quartz.Job;
 import org.quartz.JobBuilder;
+import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -25,10 +30,11 @@ public class FeedUpdateScheduler {
 
     public void start() {
         try {
-            JobDetail jobDetail = buildJobDetail();
-            Trigger trigger = buildJobTrigger(jobDetail);
+            JobDetail jobDetail = buildJobDetail(FetchDiscoveryFeedsJob.class, "fetchDiscoveryFeeds", new JobDataMap());
+            SimpleScheduleBuilder scheduleBuilder = SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(feedUpdateInterval).repeatForever().withMisfireHandlingInstructionFireNow();
+            Trigger trigger = buildJobTrigger(jobDetail, scheduleBuilder);
             feedUpdateQuartzScheduler.scheduleJob(jobDetail, trigger);
-            logger.info("Scheduled feed updater.");
+            logger.info("Scheduled discovery feed fetch job.");
         } catch (SchedulerException e) {
             e.printStackTrace();
         }
@@ -43,17 +49,47 @@ public class FeedUpdateScheduler {
         }
     }
 
-    private JobDetail buildJobDetail() {
-        return JobBuilder.newJob(FeedUpdateJob.class)
-                .withIdentity("updateFeedProviders")
+    public void scheduleFetchDiscoveryFeed(FeedProvider feedProvider) {
+        try {
+            JobDataMap jobDataMap = new JobDataMap();
+            jobDataMap.put("feedProvider", feedProvider);
+            JobDetail jobDetail = buildJobDetail(FetchDiscoveryFeedJob.class, "fetchDiscoveryFeed_" + feedProvider.toString(), jobDataMap);
+            Trigger trigger = buildJobTrigger(jobDetail, null);
+            feedUpdateQuartzScheduler.scheduleJob(jobDetail, trigger);
+            logger.info("Scheduled feed update job.");
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void scheduleFeedUpdate(FeedProvider feedProvider, GBFS discoveryFeed, GBFSFeedName feedName, String language) {
+        try {
+            JobDataMap jobDataMap = new JobDataMap();
+            jobDataMap.put("feedProvider", feedProvider);
+            jobDataMap.put("discoveryFeed", discoveryFeed);
+            jobDataMap.put("feedName", feedName);
+            jobDataMap.put("language", language);
+            JobDetail jobDetail = buildJobDetail(FeedUpdateJob.class, "feedUpdate_" + feedProvider.toString() + "_" + feedName.toValue(), jobDataMap);
+            Trigger trigger = buildJobTrigger(jobDetail, null);
+            feedUpdateQuartzScheduler.scheduleJob(jobDetail, trigger);
+            logger.info("Scheduled feed update job.");
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private JobDetail buildJobDetail(Class<? extends Job> jobType, String description, JobDataMap jobData) {
+        return JobBuilder.newJob(jobType)
+                .withIdentity(description)
+                .setJobData(jobData)
                 .build();
     }
 
-    private Trigger buildJobTrigger(JobDetail jobDetail) {
+    private Trigger buildJobTrigger(JobDetail jobDetail, SimpleScheduleBuilder scheduleBuilder) {
         return TriggerBuilder.newTrigger()
                 .forJob(jobDetail)
                 .startNow()
-                .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(feedUpdateInterval).repeatForever().withMisfireHandlingInstructionFireNow())
+                .withSchedule(scheduleBuilder)
                 .build();
     }
 

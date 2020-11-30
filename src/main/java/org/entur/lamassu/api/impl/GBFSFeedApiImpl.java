@@ -2,10 +2,14 @@ package org.entur.lamassu.api.impl;
 
 import org.entur.lamassu.api.GBFSFeedApi;
 import org.entur.lamassu.model.FeedProvider;
+import org.entur.lamassu.model.gbfs.v2_1.FreeBikeStatus;
 import org.entur.lamassu.model.gbfs.v2_1.GBFS;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
-import org.entur.lamassu.model.gbfs.v2_1.GBFSFeed;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSFeedName;
+import org.entur.lamassu.model.gbfs.v2_1.SystemInformation;
+import org.entur.lamassu.model.gbfs.v2_1.SystemPricingPlans;
+import org.entur.lamassu.model.gbfs.v2_1.SystemRegions;
+import org.entur.lamassu.model.gbfs.v2_1.VehicleTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -31,7 +35,7 @@ public class GBFSFeedApiImpl implements GBFSFeedApi {
         return discoveryFeed.getData().get(language).getFeeds().stream()
                 .filter(feed -> feedName.equals(feed.getName()))
                 .findFirst()
-                .map(GBFSFeed::getUrl)
+                .map(GBFS.GBFSFeed::getUrl)
                 .map(url -> get(url, getType(feedName)))
                 .orElse(null);
     }
@@ -47,6 +51,16 @@ public class GBFSFeedApiImpl implements GBFSFeedApi {
         switch (feedName) {
             case GBFS:
                 return GBFS.class;
+            case SYSTEM_INFORMATION:
+                return SystemInformation.class;
+            case SYSTEM_REGIONS:
+                return SystemRegions.class;
+            case VEHICLE_TYPES:
+                return VehicleTypes.class;
+            case FREE_BIKE_STATUS:
+                return FreeBikeStatus.class;
+            case SYSTEM_PRICING_PLANS:
+                return SystemPricingPlans.class;
             default:
                 throw new HttpServerErrorException(HttpStatus.NOT_IMPLEMENTED);
         }

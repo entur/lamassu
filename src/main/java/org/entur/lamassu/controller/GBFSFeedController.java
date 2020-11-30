@@ -14,8 +14,9 @@ public class GBFSFeedController {
     @Autowired
     GBFSFeedCache feedCache;
 
-    @GetMapping("/gbfs/{codespace}/{city}")
-    public GBFSBase getGbfsFeedForProvider(@PathVariable String codespace, @PathVariable String city) {
-        return feedCache.find(GBFSFeedName.GBFS, codespace, city);
+    @GetMapping("/gbfs/{codespace}/{city}/{feed}")
+    public GBFSBase getGbfsFeedForProvider(@PathVariable String codespace, @PathVariable String city, @PathVariable String feed) {
+        GBFSFeedName feedName = GBFSFeedName.valueOf(feed.toUpperCase());
+        return feedCache.find(feedName, codespace, city);
     }
 }
