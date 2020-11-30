@@ -8,13 +8,13 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UpdateFeedProvidersJob extends QuartzJobBean {
+public class FeedUpdateJob extends QuartzJobBean {
 
     @Autowired
-    private UpdateFeedProvidersService updateFeedProvidersService;
+    private FeedUpdateService feedUpdateService;
 
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        updateFeedProvidersService.update();
+        feedUpdateService.update();
     }
 }

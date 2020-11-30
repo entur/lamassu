@@ -44,7 +44,7 @@ public class FeedUpdateScheduler {
     }
 
     private JobDetail buildJobDetail() {
-        return JobBuilder.newJob(UpdateFeedProvidersJob.class)
+        return JobBuilder.newJob(FeedUpdateJob.class)
                 .withIdentity("updateFeedProviders")
                 .build();
     }
