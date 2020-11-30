@@ -18,7 +18,6 @@ public class FeedUpdateJob extends QuartzJobBean {
         FeedProvider feedProvider = (FeedProvider) data.get("feedProvider");
         GBFS discoveryFeed = (GBFS) data.get("discoveryFeed");
         GBFSFeedName feedName = (GBFSFeedName) data.get("feedName");
-        String language = data.getString("language");
-        feedUpdateService.fetchFeed(feedProvider, discoveryFeed, feedName, language);
+        feedUpdateService.fetchFeed(feedProvider, discoveryFeed, feedName);
     }
 }

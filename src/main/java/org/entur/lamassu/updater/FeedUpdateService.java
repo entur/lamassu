@@ -39,17 +39,17 @@ public class FeedUpdateService {
             logger.info("Fetched discovery feed {}", feedProvider.getUrl());
 
             // invoke mapper here before updating cache
-            feedCache.update(GBFSFeedName.GBFS, feedProvider.getCodespace(), feedProvider.getCity(), discovery);
-            discovery.getData().get("en").getFeeds().forEach(feedSource -> {
-                feedUpdateScheduler.scheduleFeedUpdate(feedProvider, discovery, feedSource.getName(), "en");
+            feedCache.update(GBFSFeedName.GBFS, feedProvider, discovery);
+            discovery.getData().get(feedProvider.getLanguage()).getFeeds().forEach(feedSource -> {
+                feedUpdateScheduler.scheduleFeedUpdate(feedProvider, discovery, feedSource.getName());
             });
         });
     }
 
-    public void fetchFeed(FeedProvider feedProvider, GBFS discoveryFeed, GBFSFeedName feedName, String language) {
-        api.getFeed(discoveryFeed, feedName, language).subscribe(feed -> {
+    public void fetchFeed(FeedProvider feedProvider, GBFS discoveryFeed, GBFSFeedName feedName) {
+        api.getFeed(discoveryFeed, feedName, feedProvider.getLanguage()).subscribe(feed -> {
             // invoke mapper here if applicable
-            feedCache.update(feedName, feedProvider.getCodespace(), feedProvider.getCity(), feed);
+            feedCache.update(feedName, feedProvider, feed);
         });
     }
 }

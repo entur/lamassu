@@ -3,3 +3,4 @@ lamassu:
     - codespace: YBO
       city: Oslo
       url: https://api.staging.entur.io/mobility/v1/gbfs-boltoslo/gbfs
+      language: en

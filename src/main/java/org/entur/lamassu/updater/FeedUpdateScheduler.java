@@ -62,13 +62,12 @@ public class FeedUpdateScheduler {
         }
     }
 
-    public void scheduleFeedUpdate(FeedProvider feedProvider, GBFS discoveryFeed, GBFSFeedName feedName, String language) {
+    public void scheduleFeedUpdate(FeedProvider feedProvider, GBFS discoveryFeed, GBFSFeedName feedName) {
         try {
             JobDataMap jobDataMap = new JobDataMap();
             jobDataMap.put("feedProvider", feedProvider);
             jobDataMap.put("discoveryFeed", discoveryFeed);
             jobDataMap.put("feedName", feedName);
-            jobDataMap.put("language", language);
             JobDetail jobDetail = buildJobDetail(FeedUpdateJob.class, "feedUpdate_" + feedProvider.toString() + "_" + feedName.toValue(), jobDataMap);
             Trigger trigger = buildJobTrigger(jobDetail, null);
             feedUpdateQuartzScheduler.scheduleJob(jobDetail, trigger);
