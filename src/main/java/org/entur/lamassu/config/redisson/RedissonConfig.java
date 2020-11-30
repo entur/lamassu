@@ -23,7 +23,7 @@ public class RedissonConfig {
     }
 
     @Bean
-    public Config getConfig() {
+    public Config redissonConfig() {
         return config;
     }
 }

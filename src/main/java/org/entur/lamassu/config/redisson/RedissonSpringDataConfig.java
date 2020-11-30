@@ -2,6 +2,7 @@ package org.entur.lamassu.config.redisson;
 
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
+import org.redisson.config.Config;
 import org.redisson.spring.data.connection.RedissonConnectionFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,8 +16,8 @@ public class RedissonSpringDataConfig {
     }
 
     @Bean(destroyMethod = "shutdown")
-    public RedissonClient redisson(RedissonConfig redissonConfig) {
-        return Redisson.create(redissonConfig.getConfig());
+    public RedissonClient redissonClient(Config redissonConfig) {
+        return Redisson.create(redissonConfig);
     }
 }
 
