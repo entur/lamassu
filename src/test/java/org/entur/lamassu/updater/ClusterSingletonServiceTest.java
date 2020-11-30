@@ -2,7 +2,6 @@ package org.entur.lamassu.updater;
 
 import org.junit.Test;
 import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
 
 import java.util.concurrent.TimeUnit;
 
