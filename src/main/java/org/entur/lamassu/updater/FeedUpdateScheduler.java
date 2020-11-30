@@ -7,6 +7,7 @@ import org.quartz.Job;
 import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
+import org.quartz.ScheduleBuilder;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SimpleScheduleBuilder;
@@ -20,7 +21,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class FeedUpdateScheduler {
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private Scheduler feedUpdateQuartzScheduler;
@@ -29,15 +30,7 @@ public class FeedUpdateScheduler {
     private int feedUpdateInterval;
 
     public void start() {
-        try {
-            JobDetail jobDetail = buildJobDetail(FetchDiscoveryFeedsJob.class, "fetchDiscoveryFeeds", new JobDataMap());
-            SimpleScheduleBuilder scheduleBuilder = SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(feedUpdateInterval).repeatForever().withMisfireHandlingInstructionFireNow();
-            Trigger trigger = buildJobTrigger(jobDetail, scheduleBuilder);
-            feedUpdateQuartzScheduler.scheduleJob(jobDetail, trigger);
-            logger.info("Scheduled discovery feed fetch job.");
-        } catch (SchedulerException e) {
-            e.printStackTrace();
-        }
+        scheduleFetchDiscoveryFeeds();
     }
 
     public void stop() {
@@ -45,7 +38,18 @@ public class FeedUpdateScheduler {
             feedUpdateQuartzScheduler.clear();
             logger.info("Cleared feed update scheduler");
         } catch (SchedulerException e) {
-            e.printStackTrace();
+            logger.warn("Failed to clear feed update scheduler", e);
+        }
+    }
+
+    public void scheduleFetchDiscoveryFeeds() {
+        try {
+            JobDetail jobDetail = buildJobDetail(FetchDiscoveryFeedsJob.class, "fetchDiscoveryFeeds", new JobDataMap());
+            Trigger trigger = buildJobTrigger(jobDetail, getFeedUpdateScheduleBuilder());
+            feedUpdateQuartzScheduler.scheduleJob(jobDetail, trigger);
+            logger.info("Scheduled fetch discovery feeds");
+        } catch (SchedulerException e) {
+            logger.warn("Failed to schedule fetch discovery feeds", e);
         }
     }
 
@@ -54,11 +58,11 @@ public class FeedUpdateScheduler {
             JobDataMap jobDataMap = new JobDataMap();
             jobDataMap.put("feedProvider", feedProvider);
             JobDetail jobDetail = buildJobDetail(FetchDiscoveryFeedJob.class, "fetchDiscoveryFeed_" + feedProvider.toString(), jobDataMap);
-            Trigger trigger = buildJobTrigger(jobDetail, null);
+            Trigger trigger = buildJobTrigger(jobDetail);
             feedUpdateQuartzScheduler.scheduleJob(jobDetail, trigger);
-            logger.info("Scheduled feed update job.");
+            logger.info("Scheduled fetch discovery feed");
         } catch (SchedulerException e) {
-            e.printStackTrace();
+            logger.warn("Failed to schedule fetch discovery feed", e);
         }
     }
 
@@ -69,11 +73,11 @@ public class FeedUpdateScheduler {
             jobDataMap.put("discoveryFeed", discoveryFeed);
             jobDataMap.put("feedName", feedName);
             JobDetail jobDetail = buildJobDetail(FeedUpdateJob.class, "feedUpdate_" + feedProvider.toString() + "_" + feedName.toValue(), jobDataMap);
-            Trigger trigger = buildJobTrigger(jobDetail, null);
+            Trigger trigger = buildJobTrigger(jobDetail);
             feedUpdateQuartzScheduler.scheduleJob(jobDetail, trigger);
-            logger.info("Scheduled feed update job.");
+            logger.info("Scheduled feed update");
         } catch (SchedulerException e) {
-            e.printStackTrace();
+            logger.warn("Failed to schedule feed update", e);
         }
     }
 
@@ -84,12 +88,23 @@ public class FeedUpdateScheduler {
                 .build();
     }
 
+    private Trigger buildJobTrigger(JobDetail jobDetail) {
+        return buildJobTrigger(jobDetail, null);
+    }
+
     private Trigger buildJobTrigger(JobDetail jobDetail, SimpleScheduleBuilder scheduleBuilder) {
         return TriggerBuilder.newTrigger()
                 .forJob(jobDetail)
                 .startNow()
                 .withSchedule(scheduleBuilder)
                 .build();
+    }
+
+    private SimpleScheduleBuilder getFeedUpdateScheduleBuilder() {
+        return SimpleScheduleBuilder.simpleSchedule()
+                .withIntervalInSeconds(feedUpdateInterval)
+                .repeatForever()
+                .withMisfireHandlingInstructionFireNow();
     }
 
 }

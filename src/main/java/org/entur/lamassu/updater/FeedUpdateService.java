@@ -38,7 +38,8 @@ public class FeedUpdateService {
         api.getDiscoveryFeed(feedProvider).subscribe(discovery -> {
             logger.info("Fetched discovery feed {}", feedProvider.getUrl());
 
-            // invoke mapper here before updating cache
+            // TODO: invoke mapper here before updating cache, to fix URLs in proxied discovery feed
+
             feedCache.update(GBFSFeedName.GBFS, feedProvider, discovery);
             discovery.getData().get(feedProvider.getLanguage()).getFeeds().forEach(feedSource -> {
                 feedUpdateScheduler.scheduleFeedUpdate(feedProvider, discovery, feedSource.getName());
@@ -48,7 +49,13 @@ public class FeedUpdateService {
 
     public void fetchFeed(FeedProvider feedProvider, GBFS discoveryFeed, GBFSFeedName feedName) {
         api.getFeed(discoveryFeed, feedName, feedProvider.getLanguage()).subscribe(feed -> {
-            // invoke mapper here if applicable
+            logger.info("Fetched feed {} for provider codespace: {}, city: {}, vehicleType: {}",
+                    feedName.toValue(),
+                    feedProvider.getCodespace(),
+                    feedProvider.getCity(),
+                    feedProvider.getVehicleType()
+            );
+
             feedCache.update(feedName, feedProvider, feed);
         });
     }
