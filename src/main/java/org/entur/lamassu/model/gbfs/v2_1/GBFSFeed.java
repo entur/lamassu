@@ -5,4 +5,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class GBFSFeed {
     @JsonProperty("name") GBFSFeedName name;
     @JsonProperty("url") String url;
+
+    public GBFSFeedName getName() {
+        return name;
+    }
+
+    public String getUrl() {
+        return url;
+    }
 }
