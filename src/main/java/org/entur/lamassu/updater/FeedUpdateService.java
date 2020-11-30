@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Mono;
 
 @Component
 public class FeedUpdateService {
@@ -41,9 +40,9 @@ public class FeedUpdateService {
             // TODO: invoke mapper here before updating cache, to fix URLs in proxied discovery feed
 
             feedCache.update(GBFSFeedName.GBFS, feedProvider, discovery);
-            discovery.getData().get(feedProvider.getLanguage()).getFeeds().forEach(feedSource -> {
-                feedUpdateScheduler.scheduleFeedUpdate(feedProvider, discovery, feedSource.getName());
-            });
+            discovery.getData().get(feedProvider.getLanguage()).getFeeds().forEach(feedSource ->
+                    feedUpdateScheduler.scheduleFeedUpdate(feedProvider, discovery, feedSource.getName())
+            );
         });
     }
 

@@ -1,6 +1,5 @@
 package org.entur.lamassu.model.gbfs.v2_1;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public abstract class GBFSBase {

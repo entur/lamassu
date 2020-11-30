@@ -32,16 +32,17 @@ public class GBFSFeedCacheJCache implements GBFSFeedCache {
     }
 
     private String getKey(GBFSFeedName feedName, String codespace, String city, String vehicleType) {
-        String key = String.format("%s_%s", feedName.toValue(), codespace);
-
+        String key = mergeStrings(feedName.toValue(), codespace);
         if (city != null) {
-            key = String.format("%s_%s", key, city);
+            key = mergeStrings(key, city);
         }
-
         if (vehicleType != null) {
-            key = String.format("%s_%s", key, vehicleType);
+            key = mergeStrings(key, vehicleType);
         }
-
         return key.toLowerCase();
+    }
+
+    private String mergeStrings(String first, String second) {
+        return String.format("%s_%s", first, second);
     }
 }
