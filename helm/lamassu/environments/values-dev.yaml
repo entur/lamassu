@@ -2,6 +2,7 @@ env: dev
 
 configMap:
   logLevel: DEBUG
+  baseUrl: https://api.dev.entur.io/mobility/v2
 
 ingress:
   enabled: true

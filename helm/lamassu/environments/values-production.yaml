@@ -12,6 +12,7 @@ resources:
 
 configMap:
   logLevel: INFO
+  baseUrl: https://api.entur.io/mobility/v2
 
 ingress:
   enabled: true

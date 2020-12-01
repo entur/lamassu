@@ -3,6 +3,7 @@ package org.entur.lamassu.updater;
 import org.entur.lamassu.api.GBFSFeedApi;
 import org.entur.lamassu.cache.GBFSFeedCache;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
+import org.entur.lamassu.mapper.DiscoveryFeedMapper;
 import org.entur.lamassu.model.FeedProvider;
 import org.entur.lamassu.model.gbfs.v2_1.GBFS;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSFeedName;
@@ -27,6 +28,9 @@ public class FeedUpdateService {
     @Autowired
     private FeedUpdateScheduler feedUpdateScheduler;
 
+    @Autowired
+    private DiscoveryFeedMapper discoveryFeedMapper;
+
     public void fetchDiscoveryFeeds() {
         logger.info("Fetching discovery feeds");
         feedProviderConfig.getProviders().parallelStream().forEach((FeedProvider feedProvider) ->
@@ -36,10 +40,8 @@ public class FeedUpdateService {
     public void fetchDiscoveryFeed(FeedProvider feedProvider) {
         api.getDiscoveryFeed(feedProvider).subscribe(discovery -> {
             logger.info("Fetched discovery feed {}", feedProvider.getUrl());
-
-            // TODO: invoke mapper here before updating cache, to fix URLs in proxied discovery feed
-
-            feedCache.update(GBFSFeedName.GBFS, feedProvider, discovery);
+            var mappedFeed = discoveryFeedMapper.mapDiscoveryFeed(discovery, feedProvider);
+            feedCache.update(GBFSFeedName.GBFS, feedProvider, mappedFeed);
             discovery.getData().get(feedProvider.getLanguage()).getFeeds().forEach(feedSource ->
                     feedUpdateScheduler.scheduleFeedUpdate(feedProvider, discovery, feedSource.getName())
             );
@@ -54,7 +56,6 @@ public class FeedUpdateService {
                     feedProvider.getCity(),
                     feedProvider.getVehicleType()
             );
-
             feedCache.update(feedName, feedProvider, feed);
         });
     }
