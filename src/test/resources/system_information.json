@@ -1,0 +1,12 @@
+{
+  "last_updated": 1606830357,
+  "ttl": 300,
+  "version": "2.1",
+  "data": {
+    "system_id": "TST:System:Test",
+    "language": "en",
+    "name": "Test",
+    "url": "https://www.test.com/",
+    "timezone": "Europe/Oslo"
+  }
+}

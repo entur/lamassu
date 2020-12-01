@@ -1,0 +1,15 @@
+{
+  "last_updated": 1606830898,
+  "ttl": 300,
+  "version": "2.1",
+  "data": {
+    "vehicle_types": [
+      {
+        "vehicle_type_id": "YBO:VehicleType:Scooter",
+        "form_factor": "scooter",
+        "propulsion_type": "electric",
+        "max_range_meters": 0.0
+      }
+    ]
+  }
+}

@@ -1,9 +1,12 @@
 package org.entur.lamassu;
 
+import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
+import okhttp3.mockwebserver.RecordedRequest;
 import org.entur.lamassu.config.TestRedisConfiguration;
 import org.entur.lamassu.updater.ClusterSingletonService;
+import org.jetbrains.annotations.NotNull;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -44,14 +47,39 @@ public class ApplicationTest {
 
     @BeforeClass
     public static void setUp() throws IOException, URISyntaxException, InterruptedException {
-        var file = getFileFromResource("gbfs.json");
-        var mockedResponse = Files.readString(Path.of(file.getPath()));
+        final Dispatcher dispatcher = new Dispatcher() {
+            @NotNull
+            @Override
+            public MockResponse dispatch(@NotNull RecordedRequest recordedRequest) {
+                switch (recordedRequest.getPath()) {
+                    case "/gbfs":
+                        return getMockResponse("gbfs.json");
+                    case "/vehicle_types":
+                        return getMockResponse("vehicle_types.json");
+                    case "/system_information":
+                        return getMockResponse("system_information.json");
+                    case "/free_bike_status":
+                        return getMockResponse("free_bike_status.json");
+                    case "/system_regions":
+                        return getMockResponse("system_regions.json");
+                    case "/system_pricing_plans":
+                        return getMockResponse("system_pricing_plans.json");
+                }
+
+                return new MockResponse().setResponseCode(404);
+            }
+        };
+
         mockWebServer.start(8888);
-        mockWebServer.enqueue(
-                new MockResponse()
-                        .setBody(mockedResponse)
-                        .addHeader("Content-Type", "application/json")
-        );
+        mockWebServer.setDispatcher(dispatcher);
+    }
+
+    @NotNull
+    private static MockResponse getMockResponse(String file) {
+        return new MockResponse()
+                .setResponseCode(200)
+                .setHeader("Content-Type", "application/json")
+                .setBody(getFileFromResource(file));
     }
 
     @AfterClass
@@ -70,15 +98,46 @@ public class ApplicationTest {
                 .contentType("application/json"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.last_updated").value(1606727710));
+
+        mockMvc.perform(get("/gbfs/tst/atlantis/rover/system_information")
+                .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.system_id").value("TST:System:Test"));
+
+        mockMvc.perform(get("/gbfs/tst/atlantis/rover/vehicle_types")
+                .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.vehicle_types[0].vehicle_type_id").value("YBO:VehicleType:Scooter"));
+
+        mockMvc.perform(get("/gbfs/tst/atlantis/rover/free_bike_status")
+                .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.bikes[0].bike_id").value("TST:Scooter:1234"));
+
+        mockMvc.perform(get("/gbfs/tst/atlantis/rover/system_regions")
+                .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.regions[0].region_id").value("TST:Region:Sahara"));
+
+        mockMvc.perform(get("/gbfs/tst/atlantis/rover/system_pricing_plans")
+                .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.plans[0].plan_id").value("TST:PricingPlan:Basic"));
     }
 
-    private static File getFileFromResource(String fileName) throws URISyntaxException {
-        ClassLoader classLoader = ApplicationTest.class.getClassLoader();
-        URL resource = classLoader.getResource(fileName);
-        if (resource == null) {
-            throw new IllegalArgumentException("file not found! " + fileName);
-        } else {
-            return new File(resource.toURI());
+    private static String getFileFromResource(String fileName) {
+        try {
+            ClassLoader classLoader = ApplicationTest.class.getClassLoader();
+            URL resource = classLoader.getResource(fileName);
+            if (resource == null) {
+                throw new IllegalArgumentException("file not found! " + fileName);
+            } else {
+                var file = new File(resource.toURI());
+                return Files.readString(Path.of(file.getPath()));
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
+
     }
 }
