@@ -30,8 +30,6 @@ data:
 
     org.entur.lamassu.feedproviders=file:/etc/application-config/feedproviders.yml
     org.entur.lamassu.baseUrl={{ .Values.configMap.baseUrl }}
-
-    server.error.include-stacktrace=never
   feedproviders.yml: |-
     {{- with .Values.lamassu.feedProviders }}
     lamassu:
