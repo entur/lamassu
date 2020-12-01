@@ -17,7 +17,7 @@ import javax.annotation.PostConstruct;
 @ConditionalOnProperty(value = "scheduling.enabled", havingValue = "true", matchIfMissing = true)
 @EnableScheduling
 public class SchedulerConfig {
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @PostConstruct
     public void init() {
