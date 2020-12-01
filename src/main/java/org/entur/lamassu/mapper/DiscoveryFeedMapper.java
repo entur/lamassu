@@ -43,13 +43,18 @@ public class DiscoveryFeedMapper {
         String codespace = feedProvider.getCodespace();
         String city = feedProvider.getCity();
         String vehicleType = feedProvider.getVehicleType();
-        var feedUrl = String.format("%s/gbfs/%s", baseUrl, codespace);
+        var feedUrl = addToPath(baseUrl, "gbfs");
+        feedUrl = addToPath(feedUrl, codespace);
         if (city != null) {
-            feedUrl = String.format("%s/%s", feedUrl, city);
+            feedUrl = addToPath(feedUrl, city);
         }
         if (vehicleType != null) {
-            feedUrl = String.format("%s/%s", feedUrl, vehicleType);
+            feedUrl = addToPath(feedUrl, vehicleType);
         }
-        return String.format("%s/%s", feedUrl, feedName.toValue()).toLowerCase();
+        return addToPath(feedUrl, feedName.toValue()).toLowerCase();
+    }
+
+    private String addToPath(String base, String toAdd) {
+        return String.format("%s/%s", base, toAdd);
     }
 }
