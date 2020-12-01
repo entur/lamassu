@@ -1,0 +1,31 @@
+{
+  "last_updated": 1606727710,
+  "ttl": 300,
+  "version": "2.1",
+  "data": {
+    "en": {
+      "feeds": [
+        {
+          "name": "system_information",
+          "url": "http://localhost:8888/system_information"
+        },
+        {
+          "name": "vehicle_types",
+          "url": "http://localhost:8888/vehicle_types"
+        },
+        {
+          "name": "free_bike_status",
+          "url": "http://localhost:8888/free_bike_status"
+        },
+        {
+          "name": "system_regions",
+          "url": "http://localhost:8888/system_regions"
+        },
+        {
+          "name": "system_pricing_plans",
+          "url": "http://localhost:8888/system_pricing_plans"
+        }
+      ]
+    }
+  }
+}

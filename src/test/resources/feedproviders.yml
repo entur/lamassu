@@ -1,4 +1,7 @@
 lamassu:
   providers:
-    - url: https://test.com/gbfs
+    - url: http://localhost:8888/gbfs
+      codespace: TST
+      city: Atlantis
+      vehicleType: Rover
       language: en
