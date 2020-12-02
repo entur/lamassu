@@ -5,10 +5,15 @@
   "data": {
     "vehicle_types": [
       {
-        "vehicle_type_id": "YBO:VehicleType:Scooter",
+        "vehicle_type_id": "TST:VehicleType:Scooter",
         "form_factor": "scooter",
         "propulsion_type": "electric",
         "max_range_meters": 0.0
+      },
+      {
+        "vehicle_type_id": "TST:VehicleType:CityBike",
+        "form_factor": "bicycle",
+        "propulsion_type": "human"
       }
     ]
   }

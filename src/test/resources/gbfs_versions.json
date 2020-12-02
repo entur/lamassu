@@ -1,0 +1,13 @@
+{
+  "last_updated": 1434054678,
+  "ttl": 0,
+  "version": "2.1",
+  "data": {
+    "versions": [
+      {
+        "version":"2.1",
+        "url":"http://localhost:8888/gbfs"
+      }
+    ]
+  }
+}

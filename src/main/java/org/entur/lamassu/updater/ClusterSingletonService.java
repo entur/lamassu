@@ -53,7 +53,7 @@ public class ClusterSingletonService {
         }
     }
 
-    private boolean isLeader() {
+    public boolean isLeader() {
         return feedUpdateSchedulerLock.isHeldByCurrentThread() || isLeader;
     }
 

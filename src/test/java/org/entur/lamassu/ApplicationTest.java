@@ -8,7 +8,9 @@ import org.entur.lamassu.config.TestRedisConfiguration;
 import org.entur.lamassu.updater.ClusterSingletonService;
 import org.jetbrains.annotations.NotNull;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,8 +56,14 @@ public class ApplicationTest {
                 switch (recordedRequest.getPath()) {
                     case "/gbfs":
                         return getMockResponse("gbfs.json");
+                    case "/gbfs_versions":
+                        return getMockResponse("gbfs_versions.json");
                     case "/vehicle_types":
                         return getMockResponse("vehicle_types.json");
+                    case "/station_information":
+                        return getMockResponse("station_information.json");
+                    case "/station_status":
+                        return getMockResponse("station_status.json");
                     case "/system_information":
                         return getMockResponse("system_information.json");
                     case "/free_bike_status":
@@ -64,6 +72,14 @@ public class ApplicationTest {
                         return getMockResponse("system_regions.json");
                     case "/system_pricing_plans":
                         return getMockResponse("system_pricing_plans.json");
+                    case "/system_hours":
+                        return getMockResponse("system_hours.json");
+                    case "/system_calendar":
+                        return getMockResponse("system_calendar.json");
+                    case "/system_alerts":
+                        return getMockResponse("system_alerts.json");
+                    case "/geofencing_zones":
+                        return getMockResponse("geofencing_zones.json");
                 }
 
                 return new MockResponse().setResponseCode(404);
@@ -72,6 +88,7 @@ public class ApplicationTest {
 
         mockWebServer.start(8888);
         mockWebServer.setDispatcher(dispatcher);
+
     }
 
     @NotNull
@@ -87,42 +104,117 @@ public class ApplicationTest {
         mockWebServer.shutdown();
     }
 
+    @Before
+    public void heartbeat() throws InterruptedException {
+        if (!clusterSingletonService.isLeader()) {
+            clusterSingletonService.heartbeat();
+            // How can we wait until we know cache has been populated?
+            waiter.await(1000, TimeUnit.MILLISECONDS);
+        }
+    }
+
     @Test
-    public void test() throws Exception {
-        clusterSingletonService.heartbeat();
-
-        // How can we wait until we know cache has been populated?
-        waiter.await(1000, TimeUnit.MILLISECONDS);
-
+    public void testGBFS() throws Exception {
         mockMvc.perform(get("/gbfs/tst/atlantis/rover/gbfs")
                 .contentType("application/json"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.last_updated").value(1606727710));
+    }
 
+    @Test
+    public void testGBFSVersions() throws Exception {
+        mockMvc.perform(get("/gbfs/tst/atlantis/rover/gbfs_versions")
+                .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.versions[0].version").value("2.1"));
+    }
+
+    @Test
+    public void testSystemInformation() throws Exception {
         mockMvc.perform(get("/gbfs/tst/atlantis/rover/system_information")
                 .contentType("application/json"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.system_id").value("TST:System:Test"));
+    }
 
+    @Test
+    public void testVehicleTypes() throws Exception {
         mockMvc.perform(get("/gbfs/tst/atlantis/rover/vehicle_types")
                 .contentType("application/json"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.vehicle_types[0].vehicle_type_id").value("YBO:VehicleType:Scooter"));
+                .andExpect(jsonPath("$.data.vehicle_types[0].vehicle_type_id").value("TST:VehicleType:Scooter"));
+    }
 
+    @Test
+    public void testFreeBikeStatus() throws Exception {
         mockMvc.perform(get("/gbfs/tst/atlantis/rover/free_bike_status")
                 .contentType("application/json"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.bikes[0].bike_id").value("TST:Scooter:1234"));
+    }
 
+    @Test
+    public void testSystemRegions() throws Exception {
         mockMvc.perform(get("/gbfs/tst/atlantis/rover/system_regions")
                 .contentType("application/json"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.regions[0].region_id").value("TST:Region:Sahara"));
+    }
 
+    @Test
+    public void testSystemPricingPlans() throws Exception {
         mockMvc.perform(get("/gbfs/tst/atlantis/rover/system_pricing_plans")
                 .contentType("application/json"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.plans[0].plan_id").value("TST:PricingPlan:Basic"));
+    }
+
+    @Test
+    public void testStationInformation() throws Exception {
+        mockMvc.perform(get("/gbfs/tst/atlantis/rover/station_information")
+                .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.stations[0].station_id").value("TST:Station:1"));
+    }
+
+    @Test
+    public void testStationStatus() throws Exception {
+        mockMvc.perform(get("/gbfs/tst/atlantis/rover/station_status")
+                .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.stations[1].station_id").value("TST:Station:2"));
+    }
+
+    @Test
+    public void testSystemHours() throws Exception {
+        mockMvc.perform(get("/gbfs/tst/atlantis/rover/system_hours")
+                .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.rental_hours[0].user_types[0]").value("member"));
+    }
+
+    @Test
+    public void testSystemCalendar() throws Exception {
+        mockMvc.perform(get("/gbfs/tst/atlantis/rover/system_calendar")
+                .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.calendars[0].start_month").value(1));
+    }
+
+    @Test
+    public void testSystemAlerts() throws Exception {
+        mockMvc.perform(get("/gbfs/tst/atlantis/rover/system_alerts")
+                .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.alerts[0].alert_id").value("TST:Alert:1"));
+    }
+
+    @Test @Ignore
+    public void testGeofencingZones() throws Exception {
+        mockMvc.perform(get("/gbfs/tst/atlantis/rover/geofencing_zones")
+                .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.geofencing_zones[0].features[0].properties.name").value("Nes"));
     }
 
     private static String getFileFromResource(String fileName) {

@@ -6,12 +6,24 @@
     "en": {
       "feeds": [
         {
+          "name": "gbfs_versions",
+          "url": "http://localhost:8888/gbfs_versions"
+        },
+        {
           "name": "system_information",
           "url": "http://localhost:8888/system_information"
         },
         {
           "name": "vehicle_types",
           "url": "http://localhost:8888/vehicle_types"
+        },
+        {
+          "name": "station_information",
+          "url": "http://localhost:8888/station_information"
+        },
+        {
+          "name": "station_status",
+          "url": "http://localhost:8888/station_status"
         },
         {
           "name": "free_bike_status",
@@ -24,6 +36,22 @@
         {
           "name": "system_pricing_plans",
           "url": "http://localhost:8888/system_pricing_plans"
+        },
+        {
+          "name": "system_hours",
+          "url": "http://localhost:8888/system_hours"
+        },
+        {
+          "name": "system_calendar",
+          "url": "http://localhost:8888/system_calendar"
+        },
+        {
+          "name": "system_alerts",
+          "url": "http://localhost:8888/system_alerts"
+        },
+        {
+          "name": "geofencing_zones",
+          "url": "http://localhost:8888/geofencing_zones"
         }
       ]
     }

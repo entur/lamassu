@@ -7,6 +7,7 @@ import org.entur.lamassu.mapper.DiscoveryFeedMapper;
 import org.entur.lamassu.model.FeedProvider;
 import org.entur.lamassu.model.gbfs.v2_1.GBFS;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSFeedName;
+import org.entur.lamassu.model.gbfs.v2_1.GeofencingZones;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
