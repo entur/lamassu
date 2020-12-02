@@ -1,6 +1,7 @@
 package org.entur.lamassu.model.gbfs.v2_1;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 import java.util.List;
 
@@ -20,17 +21,31 @@ public class SystemHours extends GBFSBase {
     }
 
     public enum UserType {
-        member,
-        nonmember
+        MEMBER("member"),
+        NONMEMBER("nonmember");
+
+        @JsonValue
+        private final String value;
+
+        UserType(String value) {
+            this.value = value;
+        }
     }
 
     public enum WeekDay {
-        mon,
-        tue,
-        wed,
-        thu,
-        fri,
-        sat,
-        sun
+        MON("mon"),
+        TUE("tue"),
+        WED("wed"),
+        THU("thu"),
+        FRI("fri"),
+        SAT("sat"),
+        SUN("sun");
+
+        @JsonValue
+        private final String value;
+
+        WeekDay(String value) {
+            this.value = value;
+        }
     }
 }

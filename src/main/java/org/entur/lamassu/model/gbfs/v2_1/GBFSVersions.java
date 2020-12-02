@@ -9,10 +9,10 @@ public class GBFSVersions extends GBFSBase {
 
     public static class Data {
         @JsonProperty("versions")
-        List<Version> versions;
+        List<VersionDetail> versions;
     }
 
-    public static class Version {
+    public static class VersionDetail {
         @JsonProperty("version") String version;
         @JsonProperty("url") String url;
     }

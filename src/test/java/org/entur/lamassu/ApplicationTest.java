@@ -209,7 +209,7 @@ public class ApplicationTest {
                 .andExpect(jsonPath("$.data.alerts[0].alert_id").value("TST:Alert:1"));
     }
 
-    @Test @Ignore
+    @Test @Ignore("Ignored because depending on missing type id handling in geojson-jackson serializers. (TODO)")
     public void testGeofencingZones() throws Exception {
         mockMvc.perform(get("/gbfs/tst/atlantis/rover/geofencing_zones")
                 .contentType("application/json"))
