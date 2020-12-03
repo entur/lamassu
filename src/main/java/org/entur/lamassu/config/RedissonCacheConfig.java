@@ -15,6 +15,8 @@ import org.springframework.context.annotation.Configuration;
 import javax.cache.Cache;
 import javax.cache.Caching;
 import javax.cache.configuration.MutableConfiguration;
+import javax.cache.expiry.CreatedExpiryPolicy;
+import javax.cache.expiry.Duration;
 
 @Configuration
 public class RedissonCacheConfig {
@@ -26,6 +28,7 @@ public class RedissonCacheConfig {
     public RedissonCacheConfig(RedisProperties redisProperties) {
         config = new Config();
         config.setCodec(JsonJacksonCodec.INSTANCE);
+
         String address = String.format(
                 "redis://%s:%s",
                 redisProperties.getHost(),
@@ -58,6 +61,7 @@ public class RedissonCacheConfig {
     @Bean
     public Cache<String, GBFSBase> feedCache(Config redissonConfig) {
         var feedCacheConfig = new MutableConfiguration<String, GBFSBase>();
+        feedCacheConfig.setExpiryPolicyFactory(CreatedExpiryPolicy.factoryOf(Duration.ONE_DAY));
         var redissonFeedCacheConfig = RedissonConfiguration.fromConfig(redissonConfig, feedCacheConfig);
         var manager = Caching.getCachingProvider().getCacheManager();
         return manager.createCache(GBFS_FEED_CACHE_KEY, redissonFeedCacheConfig);
