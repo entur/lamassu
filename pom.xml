@@ -18,7 +18,6 @@
         <redisson.version>3.14.0</redisson.version>
         <embedded-redis.version>0.7.3</embedded-redis.version>
         <quartz.version>2.3.0</quartz.version>
-        <geojson-jackson.version>1.14</geojson-jackson.version>
         <okhttp.version>4.0.1</okhttp.version>
     </properties>
 
@@ -74,11 +73,6 @@
             <groupId>org.redisson</groupId>
             <artifactId>redisson-spring-boot-starter</artifactId>
             <version>${redisson.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>de.grundid.opendatalab</groupId>
-            <artifactId>geojson-jackson</artifactId>
-            <version>${geojson-jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -1,7 +1,6 @@
 package org.entur.lamassu.model.gbfs.v2_1;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.geojson.MultiPolygon;
 
 import java.util.List;
 
@@ -34,9 +33,6 @@ public class GeofencingZones extends GBFSBase {
         @JsonProperty("geometry") MultiPolygon geometry;
         @JsonProperty("properties") Properties properties;
 
-        public MultiPolygon getGeometry() {
-            return geometry;
-        }
     }
 
     public static class Properties {

@@ -10,7 +10,6 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +20,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -48,7 +46,7 @@ public class ApplicationTest {
     private static final MockWebServer mockWebServer = new MockWebServer();
 
     @BeforeClass
-    public static void setUp() throws IOException, URISyntaxException, InterruptedException {
+    public static void setUp() throws IOException {
         final Dispatcher dispatcher = new Dispatcher() {
             @NotNull
             @Override
@@ -209,12 +207,12 @@ public class ApplicationTest {
                 .andExpect(jsonPath("$.data.alerts[0].alert_id").value("TST:Alert:1"));
     }
 
-    @Test @Ignore("Ignored because depending on missing type id handling in geojson-jackson serializers. (TODO)")
+    @Test
     public void testGeofencingZones() throws Exception {
         mockMvc.perform(get("/gbfs/tst/atlantis/rover/geofencing_zones")
                 .contentType("application/json"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.geofencing_zones[0].features[0].properties.name").value("Nes"));
+                .andExpect(jsonPath("$.data.geofencing_zones.features[0].properties.name").value("Nes"));
     }
 
     private static String getFileFromResource(String fileName) {
