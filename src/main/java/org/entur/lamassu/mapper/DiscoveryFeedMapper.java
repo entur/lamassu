@@ -39,6 +39,16 @@ public class DiscoveryFeedMapper {
         return mapped;
     }
 
+    public FeedProvider mapFeedProvider(FeedProvider feedProvider) {
+        FeedProvider mapped = new FeedProvider();
+        mapped.setCodespace(feedProvider.getCodespace());
+        mapped.setCity(feedProvider.getCity());
+        mapped.setVehicleType(feedProvider.getVehicleType());
+        mapped.setLanguage(feedProvider.getLanguage());
+        mapped.setUrl(mapFeedUrl(GBFSFeedName.GBFS, feedProvider));
+        return mapped;
+    }
+
     private String mapFeedUrl(GBFSFeedName feedName, FeedProvider feedProvider) {
         String codespace = feedProvider.getCodespace();
         String city = feedProvider.getCity();

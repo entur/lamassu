@@ -112,6 +112,14 @@ public class ApplicationTest {
     }
 
     @Test
+    public void testFeedProviderDiscovery() throws Exception {
+        mockMvc.perform(get("/gbfs")
+                .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.providers[0].codespace").value("TST"));
+    }
+
+    @Test
     public void testGBFS() throws Exception {
         mockMvc.perform(get("/gbfs/tst/atlantis/rover/gbfs")
                 .contentType("application/json"))
