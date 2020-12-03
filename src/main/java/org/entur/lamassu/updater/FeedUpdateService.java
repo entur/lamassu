@@ -32,14 +32,14 @@ public class FeedUpdateService {
     private DiscoveryFeedMapper discoveryFeedMapper;
 
     public void fetchDiscoveryFeeds() {
-        logger.info("Fetching discovery feeds");
+        logger.debug("Fetching discovery feeds");
         feedProviderConfig.getProviders().parallelStream().forEach((FeedProvider feedProvider) ->
                 feedUpdateScheduler.scheduleFetchDiscoveryFeed(feedProvider));
     }
 
     public void fetchDiscoveryFeed(FeedProvider feedProvider) {
         api.getDiscoveryFeed(feedProvider).subscribe(discovery -> {
-            logger.info("Fetched discovery feed {}", feedProvider.getUrl());
+            logger.debug("Fetched discovery feed {}", feedProvider.getUrl());
             var mappedFeed = discoveryFeedMapper.mapDiscoveryFeed(discovery, feedProvider);
             feedCache.update(GBFSFeedName.GBFS, feedProvider, mappedFeed);
             discovery.getData().get(feedProvider.getLanguage()).getFeeds().forEach(feedSource ->
@@ -50,7 +50,7 @@ public class FeedUpdateService {
 
     public void fetchFeed(FeedProvider feedProvider, GBFS discoveryFeed, GBFSFeedName feedName) {
         api.getFeed(discoveryFeed, feedName, feedProvider.getLanguage()).subscribe(feed -> {
-            logger.info("Fetched feed {} for provider codespace: {}, city: {}, vehicleType: {}",
+            logger.debug("Fetched feed {} for provider codespace: {}, city: {}, vehicleType: {}",
                     feedName.toValue(),
                     feedProvider.getCodespace(),
                     feedProvider.getCity(),

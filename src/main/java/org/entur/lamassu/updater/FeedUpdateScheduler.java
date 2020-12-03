@@ -1,5 +1,7 @@
 package org.entur.lamassu.updater;
 
+import org.entur.lamassu.listener.FeedCacheListener;
+import org.entur.lamassu.listener.VehicleCacheListener;
 import org.entur.lamassu.model.FeedProvider;
 import org.entur.lamassu.model.gbfs.v2_1.GBFS;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSFeedName;
@@ -25,20 +27,38 @@ public class FeedUpdateScheduler {
     @Autowired
     private Scheduler feedUpdateQuartzScheduler;
 
-    @Value("${org.entur.lamassu.feedupdateinterval:60}")
+    @Autowired
+    private FeedCacheListener feedCacheListener;
+
+    @Autowired
+    private VehicleCacheListener vehicleCacheListener;
+
+    @Value("${org.entur.lamassu.feedupdateinterval:30}")
     private int feedUpdateInterval;
 
     public void start() {
+        startListeners();
         scheduleFetchDiscoveryFeeds();
+    }
+
+    private void startListeners() {
+        feedCacheListener.startListening();
+        vehicleCacheListener.startListening();
     }
 
     public void stop() {
         try {
             feedUpdateQuartzScheduler.clear();
+            stopListeners();
             logger.info("Cleared feed update scheduler");
         } catch (SchedulerException e) {
             logger.warn("Failed to clear feed update scheduler", e);
         }
+    }
+
+    private void stopListeners() {
+        feedCacheListener.stopListening();
+        vehicleCacheListener.stopListening();
     }
 
     public void scheduleFetchDiscoveryFeeds() {
@@ -46,7 +66,7 @@ public class FeedUpdateScheduler {
             JobDetail jobDetail = buildJobDetail(FetchDiscoveryFeedsJob.class, "fetchDiscoveryFeeds", new JobDataMap());
             Trigger trigger = buildJobTrigger(jobDetail, getFeedUpdateScheduleBuilder());
             feedUpdateQuartzScheduler.scheduleJob(jobDetail, trigger);
-            logger.info("Scheduled fetch discovery feeds");
+            logger.debug("Scheduled fetch discovery feeds");
         } catch (SchedulerException e) {
             logger.warn("Failed to schedule fetch discovery feeds", e);
         }
@@ -59,7 +79,7 @@ public class FeedUpdateScheduler {
             JobDetail jobDetail = buildJobDetail(FetchDiscoveryFeedJob.class, "fetchDiscoveryFeed_" + feedProvider.toString(), jobDataMap);
             Trigger trigger = buildJobTrigger(jobDetail);
             feedUpdateQuartzScheduler.scheduleJob(jobDetail, trigger);
-            logger.info("Scheduled fetch discovery feed");
+            logger.debug("Scheduled fetch discovery feed");
         } catch (SchedulerException e) {
             logger.warn("Failed to schedule fetch discovery feed", e);
         }
@@ -74,7 +94,7 @@ public class FeedUpdateScheduler {
             JobDetail jobDetail = buildJobDetail(FeedUpdateJob.class, "feedUpdate_" + feedProvider.toString() + "_" + feedName.toValue(), jobDataMap);
             Trigger trigger = buildJobTrigger(jobDetail);
             feedUpdateQuartzScheduler.scheduleJob(jobDetail, trigger);
-            logger.info("Scheduled feed update");
+            logger.debug("Scheduled feed update");
         } catch (SchedulerException e) {
             logger.warn("Failed to schedule feed update", e);
         }

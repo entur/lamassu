@@ -22,7 +22,7 @@ public class ClusterSingletonService {
     }
 
     /**
-     * Check leadership status every 30 seconds
+     * Check leadership status every 15 seconds
      *
      * If we are currently the leader, renew leadership lease and if that fails, stop scheduling updates
      *
@@ -30,25 +30,25 @@ public class ClusterSingletonService {
      *
      * Leadership lease time is 60 seconds.
      */
-    @Scheduled(fixedRate = 30000)
+    @Scheduled(fixedRate = 15000)
     public void heartbeat() throws InterruptedException {
         if (isLeader()) {
             logger.info("I am already the leader. Will try to renew.");
             if (tryToBecomeLeader()) {
-                logger.info("Leadership renewed.");
+                logger.debug("Leadership renewed.");
             } else {
                 logger.info("Lost leadership");
                 isLeader = false;
                 feedUpdateScheduler.stop();
             }
         } else {
-            logger.info("Trying to become leader.");
+            logger.debug("Trying to become leader.");
             if (tryToBecomeLeader()) {
                 logger.info("I became the leader");
                 isLeader = true;
                 feedUpdateScheduler.start();
             } else {
-                logger.info("Sorry, someone else is the leader, try again soon");
+                logger.debug("Sorry, someone else is the leader, try again soon");
             }
         }
     }
