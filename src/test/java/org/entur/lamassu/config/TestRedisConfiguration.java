@@ -10,15 +10,19 @@ import javax.annotation.PreDestroy;
 @TestConfiguration
 public class TestRedisConfiguration {
 
+    private final RedisProperties redisProperties;
     private RedisServer redisServer;
 
     public TestRedisConfiguration(RedisProperties redisProperties) {
-        this.redisServer = new RedisServer(redisProperties.getPort());
+        this.redisProperties = redisProperties;
     }
 
     @PostConstruct
     public void postConstruct() {
-        redisServer.start();
+        if (redisServer == null || !redisServer.isActive()) {
+            redisServer = new RedisServer(redisProperties.getPort());
+            redisServer.start();
+        }
     }
 
     @PreDestroy
