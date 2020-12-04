@@ -17,8 +17,6 @@ import org.springframework.context.annotation.Configuration;
 import javax.cache.Cache;
 import javax.cache.Caching;
 import javax.cache.configuration.MutableConfiguration;
-import javax.cache.expiry.CreatedExpiryPolicy;
-import javax.cache.expiry.Duration;
 
 @Configuration
 public class RedissonCacheConfig {
