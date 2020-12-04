@@ -33,7 +33,7 @@ public class ClusterSingletonService {
     @Scheduled(fixedRate = 15000)
     public void heartbeat() throws InterruptedException {
         if (isLeader()) {
-            logger.info("I am already the leader. Will try to renew.");
+            logger.debug("I am already the leader. Will try to renew.");
             if (tryToBecomeLeader()) {
                 logger.debug("Leadership renewed.");
             } else {
