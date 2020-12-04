@@ -17,7 +17,7 @@
         <java.version>11</java.version>
         <redisson.version>3.14.0</redisson.version>
         <embedded-redis.version>0.7.3</embedded-redis.version>
-        <quartz.version>2.3.0</quartz.version>
+        <quartz.version>2.3.2</quartz.version>
         <okhttp.version>4.9.0</okhttp.version>
     </properties>
 
