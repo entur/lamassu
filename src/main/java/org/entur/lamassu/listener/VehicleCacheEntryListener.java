@@ -20,9 +20,9 @@ public class VehicleCacheEntryListener implements
         CacheEntryRemovedListener<String, FreeBikeStatus.Bike>,
         Serializable, CacheEntryListener<String, FreeBikeStatus.Bike> {
 
-    private transient final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final transient Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private transient final RGeo<String> spatialIndex;
+    private final transient RGeo<String> spatialIndex;
 
     public VehicleCacheEntryListener(RGeo<String> spatialIndex) {
         this.spatialIndex = spatialIndex;

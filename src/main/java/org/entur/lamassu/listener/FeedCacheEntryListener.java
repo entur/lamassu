@@ -17,9 +17,9 @@ public class FeedCacheEntryListener implements
         CacheEntryUpdatedListener<String, GBFSBase>,
         Serializable, CacheEntryListener<String, GBFSBase> {
 
-    private transient final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final transient Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private transient final VehicleCache vehicleCache;
+    private final transient VehicleCache vehicleCache;
 
     public FeedCacheEntryListener(VehicleCache vehicleCache) {
         this.vehicleCache = vehicleCache;
