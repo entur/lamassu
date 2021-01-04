@@ -42,9 +42,15 @@ public class FeedUpdateService {
             logger.debug("Fetched discovery feed {}", feedProvider.getUrl());
             var mappedFeed = discoveryFeedMapper.mapDiscoveryFeed(discovery, feedProvider);
             feedCache.update(GBFSFeedName.GBFS, feedProvider, mappedFeed);
-            discovery.getData().get(feedProvider.getLanguage()).getFeeds().forEach(feedSource ->
-                    feedUpdateScheduler.scheduleFeedUpdate(feedProvider, discovery, feedSource.getName())
-            );
+            discovery.getData().get(feedProvider.getLanguage()).getFeeds().forEach(feedSource -> {
+                logger.debug("Scheduling update for feed {} provider codespace: {}, city: {}, vehicleType: {}",
+                        feedSource.getUrl(),
+                        feedProvider.getCodespace(),
+                        feedProvider.getCity(),
+                        feedProvider.getVehicleType()
+                );
+                feedUpdateScheduler.scheduleFeedUpdate(feedProvider, discovery, feedSource.getName());
+            });
         });
     }
 

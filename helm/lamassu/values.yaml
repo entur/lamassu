@@ -45,3 +45,27 @@ lamassu:
       city: Oslo
       url: https://api.staging.entur.io/mobility/v1/gbfs-boltoslo/gbfs
       language: en
+    - codespace: YOS
+      city: Oslo
+      url: https://api.dev.entur.io/mobility/v1/bikes/v2_1_proxy/oslobysykkel/gbfs.json
+      language: nb
+    - codespace: YBE
+      city: Bergen
+      url: https://api.dev.entur.io/mobility/v1/bikes/v2_1_proxy/bergenbysykkel/gbfs.json
+      language: nb
+    - codespace: YTR
+      city: Trondheim
+      url: https://api.dev.entur.io/mobility/v1/bikes/v2_1_proxy/trondheimbysykkel/gbfs.json
+      language: nb
+    - codespace: YKO
+      city: Stavanger
+      url: https://api.dev.entur.io/mobility/v1/bikes/v2_1_proxy/kolumbusbysykkel/gbfs.json
+      language: nb
+    - codespace: YLI
+      city: Lillestrøm
+      url: https://api.dev.entur.io/mobility/v1/bikes/v2_1_proxy/lillestrombysykkel/gbfs.json
+      language: nb
+    - codespace: YDR
+      city: Drammen
+      url: https://api.dev.entur.io/mobility/v1/bikes/v2_1_proxy/drammenbysykkel/gbfs.json
+      language: nb

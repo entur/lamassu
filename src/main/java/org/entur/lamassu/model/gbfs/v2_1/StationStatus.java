@@ -1,5 +1,6 @@
 package org.entur.lamassu.model.gbfs.v2_1;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
@@ -12,6 +13,7 @@ public class StationStatus extends GBFSBase {
         List<Station> stations;
     }
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Station {
         @JsonProperty("station_id") String stationId;
         @JsonProperty("num_bikes_available") Integer numBikesAvailable;
