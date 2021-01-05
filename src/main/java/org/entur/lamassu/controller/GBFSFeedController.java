@@ -1,6 +1,8 @@
 package org.entur.lamassu.controller;
 
 import org.entur.lamassu.cache.GBFSFeedCache;
+import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
+import org.entur.lamassu.model.FeedProvider;
 import org.entur.lamassu.model.FeedProviderDiscovery;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSFeedName;
@@ -21,26 +23,20 @@ public class GBFSFeedController {
     @Autowired
     GBFSFeedCache feedCache;
 
+    @Autowired
+    FeedProviderConfig feedProviderConfig;
+
     @GetMapping("/gbfs")
     public FeedProviderDiscovery getFeedProviderDiscovery() {
         return providerDiscoveryService.getFeedProviderDiscovery();
     }
 
-    @GetMapping("/gbfs/{codespace}/{feed}")
-    public GBFSBase getGbfsFeedForProvider(@PathVariable String codespace,  @PathVariable String feed) {
-        return getGbfsFeedForProvider(codespace, null, null, feed);
-    }
-
-    @GetMapping("/gbfs/{codespace}/{city}/{feed}")
-    public GBFSBase getGbfsFeedForProvider(@PathVariable String codespace, @PathVariable String city, @PathVariable String feed) {
-        return getGbfsFeedForProvider(codespace, city, null, feed);
-    }
-
-    @GetMapping("/gbfs/{codespace}/{city}/{vehicleType}/{feed}")
-    public GBFSBase getGbfsFeedForProvider(@PathVariable String codespace, @PathVariable String city, @PathVariable String vehicleType, @PathVariable String feed) {
+    @GetMapping("/gbfs/{provider}/{feed}")
+    public GBFSBase getGbfsFeedForProvider(@PathVariable String provider, @PathVariable String feed) {
         try {
             GBFSFeedName feedName = GBFSFeedName.valueOf(feed.toUpperCase());
-            return feedCache.find(feedName, codespace, city, vehicleType);
+            FeedProvider feedProvider = feedProviderConfig.getProviders().stream().filter(fp -> fp.getName().toLowerCase().equals(provider)).findFirst().get();
+            return feedCache.find(feedName, feedProvider);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }

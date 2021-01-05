@@ -116,12 +116,12 @@ public class ApplicationTest {
         mockMvc.perform(get("/gbfs")
                 .contentType("application/json"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.providers[0].codespace").value("TST"));
+                .andExpect(jsonPath("$.data.providers[0].name").value("atlantis"));
     }
 
     @Test
     public void testGBFS() throws Exception {
-        mockMvc.perform(get("/gbfs/tst/atlantis/rover/gbfs")
+        mockMvc.perform(get("/gbfs/atlantis/gbfs")
                 .contentType("application/json"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.last_updated").value(1606727710));
@@ -129,7 +129,7 @@ public class ApplicationTest {
 
     @Test
     public void testGBFSVersions() throws Exception {
-        mockMvc.perform(get("/gbfs/tst/atlantis/rover/gbfs_versions")
+        mockMvc.perform(get("/gbfs/atlantis/gbfs_versions")
                 .contentType("application/json"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.versions[0].version").value("2.1"));
@@ -137,7 +137,7 @@ public class ApplicationTest {
 
     @Test
     public void testSystemInformation() throws Exception {
-        mockMvc.perform(get("/gbfs/tst/atlantis/rover/system_information")
+        mockMvc.perform(get("/gbfs/atlantis/system_information")
                 .contentType("application/json"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.system_id").value("TST:System:Test"));
@@ -145,7 +145,7 @@ public class ApplicationTest {
 
     @Test
     public void testVehicleTypes() throws Exception {
-        mockMvc.perform(get("/gbfs/tst/atlantis/rover/vehicle_types")
+        mockMvc.perform(get("/gbfs/atlantis/vehicle_types")
                 .contentType("application/json"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.vehicle_types[0].vehicle_type_id").value("TST:VehicleType:Scooter"));
@@ -153,7 +153,7 @@ public class ApplicationTest {
 
     @Test
     public void testFreeBikeStatus() throws Exception {
-        mockMvc.perform(get("/gbfs/tst/atlantis/rover/free_bike_status")
+        mockMvc.perform(get("/gbfs/atlantis/free_bike_status")
                 .contentType("application/json"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.bikes[0].bike_id").value("TST:Scooter:1234"));
@@ -161,7 +161,7 @@ public class ApplicationTest {
 
     @Test
     public void testSystemRegions() throws Exception {
-        mockMvc.perform(get("/gbfs/tst/atlantis/rover/system_regions")
+        mockMvc.perform(get("/gbfs/atlantis/system_regions")
                 .contentType("application/json"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.regions[0].region_id").value("TST:Region:Sahara"));
@@ -169,7 +169,7 @@ public class ApplicationTest {
 
     @Test
     public void testSystemPricingPlans() throws Exception {
-        mockMvc.perform(get("/gbfs/tst/atlantis/rover/system_pricing_plans")
+        mockMvc.perform(get("/gbfs/atlantis/system_pricing_plans")
                 .contentType("application/json"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.plans[0].plan_id").value("TST:PricingPlan:Basic"));
@@ -177,7 +177,7 @@ public class ApplicationTest {
 
     @Test
     public void testStationInformation() throws Exception {
-        mockMvc.perform(get("/gbfs/tst/atlantis/rover/station_information")
+        mockMvc.perform(get("/gbfs/atlantis/station_information")
                 .contentType("application/json"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.stations[0].station_id").value("TST:Station:1"));
@@ -185,7 +185,7 @@ public class ApplicationTest {
 
     @Test
     public void testStationStatus() throws Exception {
-        mockMvc.perform(get("/gbfs/tst/atlantis/rover/station_status")
+        mockMvc.perform(get("/gbfs/atlantis/station_status")
                 .contentType("application/json"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.stations[1].station_id").value("TST:Station:2"));
@@ -193,7 +193,7 @@ public class ApplicationTest {
 
     @Test
     public void testSystemHours() throws Exception {
-        mockMvc.perform(get("/gbfs/tst/atlantis/rover/system_hours")
+        mockMvc.perform(get("/gbfs/atlantis/system_hours")
                 .contentType("application/json"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.rental_hours[0].user_types[0]").value("member"));
@@ -201,7 +201,7 @@ public class ApplicationTest {
 
     @Test
     public void testSystemCalendar() throws Exception {
-        mockMvc.perform(get("/gbfs/tst/atlantis/rover/system_calendar")
+        mockMvc.perform(get("/gbfs/atlantis/system_calendar")
                 .contentType("application/json"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.calendars[0].start_month").value(1));
@@ -209,7 +209,7 @@ public class ApplicationTest {
 
     @Test
     public void testSystemAlerts() throws Exception {
-        mockMvc.perform(get("/gbfs/tst/atlantis/rover/system_alerts")
+        mockMvc.perform(get("/gbfs/atlantis/system_alerts")
                 .contentType("application/json"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.alerts[0].alert_id").value("TST:Alert:1"));
@@ -217,7 +217,7 @@ public class ApplicationTest {
 
     @Test
     public void testGeofencingZones() throws Exception {
-        mockMvc.perform(get("/gbfs/tst/atlantis/rover/geofencing_zones")
+        mockMvc.perform(get("/gbfs/atlantis/geofencing_zones")
                 .contentType("application/json"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.geofencing_zones.features[0].properties.name").value("Nes"));

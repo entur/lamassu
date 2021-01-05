@@ -16,30 +16,21 @@ public class GBFSFeedCacheJCache implements GBFSFeedCache {
     private Cache<String, GBFSBase> cache;
 
     @Override
-    public GBFSBase find(GBFSFeedName feedName, String codespace, String city, String vehicleType) {
-        return cache.get(getKey(feedName, codespace, city, vehicleType));
+    public GBFSBase find(GBFSFeedName feedName, FeedProvider feedProvider) {
+        return cache.get(getKey(feedName, feedProvider.getName()));
     }
 
     @Override
     public void update(GBFSFeedName feedName, FeedProvider feedProvider, GBFSBase feed) {
         String key = getKey(
                 feedName,
-                feedProvider.getCodespace(),
-                feedProvider.getCity(),
-                feedProvider.getVehicleType()
+                feedProvider.getName()
         );
         cache.put(key, feed);
     }
 
-    private String getKey(GBFSFeedName feedName, String codespace, String city, String vehicleType) {
-        String key = mergeStrings(feedName.toValue(), codespace);
-        if (city != null) {
-            key = mergeStrings(key, city);
-        }
-        if (vehicleType != null) {
-            key = mergeStrings(key, vehicleType);
-        }
-        return key.toLowerCase();
+    private String getKey(GBFSFeedName feedName, String providerName) {
+        return mergeStrings(feedName.toValue(), providerName);
     }
 
     private String mergeStrings(String first, String second) {

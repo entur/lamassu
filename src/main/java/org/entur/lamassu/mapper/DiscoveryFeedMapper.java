@@ -1,6 +1,7 @@
 package org.entur.lamassu.mapper;
 
 import org.entur.lamassu.model.FeedProvider;
+import org.entur.lamassu.model.FeedProviderDiscovery;
 import org.entur.lamassu.model.gbfs.v2_1.GBFS;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSFeedName;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,28 +40,17 @@ public class DiscoveryFeedMapper {
         return mapped;
     }
 
-    public FeedProvider mapFeedProvider(FeedProvider feedProvider) {
-        FeedProvider mapped = new FeedProvider();
-        mapped.setCodespace(feedProvider.getCodespace());
-        mapped.setCity(feedProvider.getCity());
-        mapped.setVehicleType(feedProvider.getVehicleType());
-        mapped.setLanguage(feedProvider.getLanguage());
+    public FeedProviderDiscovery.Provider mapFeedProvider(FeedProvider feedProvider) {
+        FeedProviderDiscovery.Provider mapped = new FeedProviderDiscovery.Provider();
+        mapped.setName(feedProvider.getName());
         mapped.setUrl(mapFeedUrl(GBFSFeedName.GBFS, feedProvider));
         return mapped;
     }
 
     private String mapFeedUrl(GBFSFeedName feedName, FeedProvider feedProvider) {
-        String codespace = feedProvider.getCodespace();
-        String city = feedProvider.getCity();
-        String vehicleType = feedProvider.getVehicleType();
+        var providerName= feedProvider.getName();
         var feedUrl = addToPath(baseUrl, "gbfs");
-        feedUrl = addToPath(feedUrl, codespace);
-        if (city != null) {
-            feedUrl = addToPath(feedUrl, city);
-        }
-        if (vehicleType != null) {
-            feedUrl = addToPath(feedUrl, vehicleType);
-        }
+        feedUrl = addToPath(feedUrl, providerName);
         return addToPath(feedUrl, feedName.toValue()).toLowerCase();
     }
 
