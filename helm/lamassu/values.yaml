@@ -43,7 +43,7 @@ lamassu:
   feedProviders:
     - codespace: YBO
       city: Oslo
-      url: https://api.staging.entur.io/mobility/v1/gbfs-boltoslo/gbfs
+      url: https://api.staging.entur.io/mobility/v1/gbfs-v2_1/boltoslo/gbfs
       language: en
     - codespace: YOS
       city: Oslo
