@@ -71,6 +71,11 @@ lamassu:
       city: Fredrikstad
       url: https://api.staging.entur.io/mobility/v1/gbfs-v2_1/boltfredrikstad/gbfs
       language: en
+    - codespace: YBO
+      name: boltbergen
+      city: Bergen
+      url: https://api.staging.entur.io/mobility/v1/gbfs-v2_1/boltbergen/gbfs
+      language: en
     - codespace: YOS
       name: oslobysykkel
       city: Oslo
