@@ -46,5 +46,22 @@ public class FreeBikeStatus extends GBFSBase {
         public Double getLon() {
             return lon;
         }
+
+        @Override
+        public String toString() {
+            return "Bike{" +
+                    "bikeId='" + bikeId + '\'' +
+                    ", lastReported=" + lastReported +
+                    ", lat=" + lat +
+                    ", lon=" + lon +
+                    ", isReserved=" + isReserved +
+                    ", isDisabled=" + isDisabled +
+                    ", vehicleTypeId='" + vehicleTypeId + '\'' +
+                    ", rentalUris=" + rentalUris +
+                    ", currentRangeMeters=" + currentRangeMeters +
+                    ", stationId='" + stationId + '\'' +
+                    ", pricingPlanId='" + pricingPlanId + '\'' +
+                    '}';
+        }
     }
 }

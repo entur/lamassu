@@ -2,6 +2,7 @@ package org.entur.lamassu.listener;
 
 import org.entur.lamassu.model.gbfs.v2_1.FreeBikeStatus;
 import org.redisson.api.RGeo;
+import org.redisson.client.RedisException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,8 +53,12 @@ public class VehicleCacheEntryListener implements
         if (iterable != null) {
             for (var entry : iterable) {
                 var vehicle= entry.getValue();
-                spatialIndex.add(vehicle.getLon(), vehicle.getLat(), vehicle.getBikeId());
-                logger.debug("Added/updated vehicle to spatial index: {}", vehicle.getBikeId());
+                try {
+                    spatialIndex.add(vehicle.getLon(), vehicle.getLat(), vehicle.getBikeId());
+                    logger.debug("Added/updated vehicle to spatial index: {}", vehicle.getBikeId());
+                } catch (RedisException e) {
+                    logger.warn("Caugh exception when trying to add vehicle to spatial index: {} vehicle={}", e.getMessage(), vehicle.toString());
+                }
             }
         }
     }
