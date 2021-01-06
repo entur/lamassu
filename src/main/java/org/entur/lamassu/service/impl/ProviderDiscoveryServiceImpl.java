@@ -18,15 +18,12 @@ public class ProviderDiscoveryServiceImpl implements ProviderDiscoveryService {
             @Autowired FeedProviderConfig feedProviderConfig,
             @Autowired DiscoveryFeedMapper discoveryFeedMapper
             ) {
-        var feedDiscoveryData = new FeedProviderDiscovery.Data();
-        feedDiscoveryData.setFeedProviders(
-                feedProviderConfig.getProviders().stream()
-                    .map(discoveryFeedMapper::mapFeedProvider).collect(Collectors.toList())
-        );
+
         feedProviderDiscovery = new FeedProviderDiscovery();
-        feedProviderDiscovery.setLastUpdated(Instant.now().getEpochSecond());
-        feedProviderDiscovery.setTtl(3600);
-        feedProviderDiscovery.setData(feedDiscoveryData);
+        feedProviderDiscovery.setFeedProviders(
+                feedProviderConfig.getProviders().stream()
+                        .map(discoveryFeedMapper::mapFeedProvider).collect(Collectors.toList())
+        );
     }
 
     @Override

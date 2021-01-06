@@ -116,7 +116,7 @@ public class ApplicationTest {
         mockMvc.perform(get("/gbfs")
                 .contentType("application/json"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.providers[0].name").value("atlantis"));
+                .andExpect(jsonPath("$.operators[0].name").value("atlantis"));
     }
 
     @Test
