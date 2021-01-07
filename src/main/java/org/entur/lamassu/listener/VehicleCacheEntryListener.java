@@ -61,7 +61,7 @@ public class VehicleCacheEntryListener implements
                         logger.debug("Updated vehicle in spatial index: {}", vehicle.getBikeId());
                     }
                 } catch (RedisException e) {
-                    logger.warn("Caught exception when trying to add vehicle to spatial index: {} vehicle={}", e.getMessage(), vehicle.toString());
+                    logger.warn("Caught exception when trying to add vehicle to spatial index for vehicle={}", vehicle.toString(), e);
                 }
             }
         }
