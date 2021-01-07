@@ -54,10 +54,14 @@ public class VehicleCacheEntryListener implements
             for (var entry : iterable) {
                 var vehicle= entry.getValue();
                 try {
-                    spatialIndex.add(vehicle.getLon(), vehicle.getLat(), vehicle.getBikeId());
-                    logger.debug("Added/updated vehicle to spatial index: {}", vehicle.getBikeId());
+                    long added = spatialIndex.add(vehicle.getLon(), vehicle.getLat(), vehicle.getBikeId());
+                    if (added > 0) {
+                        logger.debug("Added vehicle to spatial index: {}", vehicle.getBikeId());
+                    } else {
+                        logger.debug("Updated vehicle in spatial index: {}", vehicle.getBikeId());
+                    }
                 } catch (RedisException e) {
-                    logger.warn("Caugh exception when trying to add vehicle to spatial index: {} vehicle={}", e.getMessage(), vehicle.toString());
+                    logger.warn("Caught exception when trying to add vehicle to spatial index: {} vehicle={}", e.getMessage(), vehicle.toString());
                 }
             }
         }
