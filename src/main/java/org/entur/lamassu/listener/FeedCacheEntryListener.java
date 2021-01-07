@@ -40,8 +40,12 @@ public class FeedCacheEntryListener implements
             for (var entry : iterable) {
                 if (entry.getValue() instanceof FreeBikeStatus) {
                     var freeBikeStatus = (FreeBikeStatus) entry.getValue();
-                    vehicleCache.updateAll(freeBikeStatus.getData().getBikes());
-                    logger.debug("Added vehicles to vehicle cache from feed {}", entry.getKey());
+                    try {
+                        vehicleCache.updateAll(freeBikeStatus.getData().getBikes());
+                        logger.debug("Added vehicles to vehicle cache from feed {}", entry.getKey());
+                    } catch (NullPointerException e) {
+                        logger.warn("Caught NullPointerException when updating vehicle cache from freeBikeStats: {}", freeBikeStatus, e);
+                    }
                 }
             }
         }

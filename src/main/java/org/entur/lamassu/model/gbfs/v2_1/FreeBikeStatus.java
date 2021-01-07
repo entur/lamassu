@@ -12,12 +12,29 @@ public class FreeBikeStatus extends GBFSBase {
         return data;
     }
 
+    @Override
+    public String toString() {
+        return "FreeBikeStatus{" +
+                "data=" + data +
+                ", lastUpdated=" + lastUpdated +
+                ", ttl=" + ttl +
+                ", version='" + version + '\'' +
+                '}';
+    }
+
     public static class Data {
         @JsonProperty("bikes")
         List<Bike> bikes;
 
         public List<Bike> getBikes() {
             return bikes;
+        }
+
+        @Override
+        public String toString() {
+            return "Data{" +
+                    "bikes=" + bikes +
+                    '}';
         }
     }
 
