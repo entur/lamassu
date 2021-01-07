@@ -4,6 +4,8 @@ import org.entur.lamassu.model.FeedProvider;
 import org.entur.lamassu.model.FeedProviderDiscovery;
 import org.entur.lamassu.model.gbfs.v2_1.GBFS;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSFeedName;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +18,8 @@ public class DiscoveryFeedMapper {
     @Value("${org.entur.lamassu.baseUrl}")
     private String baseUrl;
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     public GBFS mapDiscoveryFeed(GBFS source, FeedProvider feedProvider) {
         GBFS mapped = new GBFS();
         GBFS.Data mappedData = new GBFS.Data();
@@ -23,9 +27,18 @@ public class DiscoveryFeedMapper {
         mapped.setLastUpdated(source.getLastUpdated());
         mapped.setTtl(source.getTtl());
         mapped.setVersion(source.getVersion());
+
+        String languageKey;
+        if (source.getData().containsKey(feedProvider.getLanguage())) {
+            languageKey = feedProvider.getLanguage();
+        } else {
+            languageKey = source.getData().keySet().iterator().next();
+            logger.warn("Language key not found in discovery feed for provider {} - using {} instead", feedProvider.toString(), languageKey);
+        }
+
         mappedData.setFeeds(
                 source.getData()
-                    .get(feedProvider.getLanguage())
+                    .get(languageKey)
                     .getFeeds()
                     .stream()
                     .map(feed -> {
