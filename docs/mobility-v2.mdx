@@ -1,0 +1,217 @@
+---
+name: v2
+menu: Mobility
+---
+
+# GBFS
+
+Currently we offer data from a number of citybike and scooter operators in several Norwegian cities..
+All of our data is served in [version 2.1 of the General Bikeshare Feed Specification (GBFS)](https://github.com/NABSA/gbfs/blob/v2.1-RC2/gbfs.md) format which is a standardized data feed for micro-mobility systems.
+
+The bikes are also available through the [Journey Planner API](/pages-journeyplanner-journeyplanner). See the [example query](https://api.entur.io/journey-planner/v2/ide/?query=%7B%0A%20%20bikeRentalStations%20%7B%0A%20%20%20%20name%0A%20%20%20%20bikesAvailable%0A%20%20%20%20spacesAvailable%0A%20%20%7D%0A%7D) in the GraphiQL editor.
+
+## List the GBFS endpoint for all operators
+
+All currently implemented operators and their respective gbfs endpoints will be listed under the root endpoint.
+
+### HTTP Request
+
+`GET https://api.entur.io/mobility/v2/gbfs`
+
+### Example response
+
+```
+{
+    "operators": [
+        {
+            "name": "oslobysykkel",
+            "url": "https://api.entur.io/mobility/v1/bikes/oslobysykkel/gbfs.json"
+        },
+        {
+            "name": "bergenbysykkel",
+            "url": "https://api.entur.io/mobility/v1/bikes/bergenbysykkel/gbfs.json"
+        },
+        {
+            "name": "trondheimbysykkel",
+            "url": "https://api.entur.io/mobility/v1/bikes/trondheimbysykkel/gbfs.json"
+        },
+        {
+            "name": "kolumbusbysykkel",
+            "url": "https://api.entur.io/mobility/v1/bikes/kolumbusbysykkel/gbfs.json"
+        },
+        {
+            "name": "lillestrombysykkel",
+            "url": "https://api.entur.io/mobility/v1/bikes/lillestrombysykkel/gbfs.json"
+        },
+        {
+            "name": "drammenbysykkel",
+            "url": "https://api.entur.io/mobility/v1/bikes/drammenbysykkel/gbfs.json"
+        }
+    ]
+}
+
+```
+
+## GBFS information for an operator
+
+Get the different GBFS endpoints for a specific operator.
+
+### HTTP Request
+
+`GET https://api.entur.io/mobility/v1/bikes/{operator}/gbfs.json`
+
+Where `{operator}` is one of the above mentioned operators, for instance `oslobysykkel`.
+
+### Example response
+
+```
+{
+    "data": {
+        "nb": {
+            "feeds": [
+                {
+                    "name": "system_information",
+                    "url": "https://api.entur.io/mobility/v1/bikes/oslobysykkel/system_information.json"
+                },
+                    {
+                    "name": "station_information",
+                    "url": "https://api.entur.io/mobility/v1/bikes/oslobysykkel/station_information.json"
+                },
+                {
+                    "name": "station_status",
+                    "url": "https://api.entur.io/mobility/v1/bikes/oslobysykkel/station_status.json"
+                }]
+            }
+        },
+    "last_updated": 1589365951,
+    "ttl": 15
+}
+```
+
+## System information
+
+Get the information about the system for an operator.
+
+### HTTP Request
+
+`GET https://api.entur.io/mobility/v1/bikes/{operator}/system_information.json`
+
+### Example response
+
+```
+{
+    "data": {
+        "system_id": "oslobysykkel",
+        "language": "nb",
+        "name": "Oslo Bysykkel",
+        "operator": "UIP Oslo Bysykkel AS",
+        "timezone": "Europe/Oslo",
+        "phone_number": "+4791589700",
+        "email": "post@oslobysykkel.no"
+        },
+    "last_updated": 1589366110,
+    "ttl": 10
+}
+```
+
+## Station information
+
+List a specific operator's stations' capacities and locations.
+
+### HTTP Request
+
+`GET https://api.entur.io/mobility/v1/bikes/{operator}/station_information.json`
+
+### Example response
+
+```
+{
+    "data": {
+        "stations": [
+            {
+                "station_id": "YOS:VehicleSharingParkingArea:1755",
+                "name": "Aker Brygge",
+                "address": "Aker Brygge",
+                "lat": 59.91118372188379,
+                "lon": 10.730034556850455,
+                "capacity": 33
+            },
+            {
+                "station_id": "YOS:VehicleSharingParkingArea:1101",
+                "name": "Stortingstunellen",
+                "address": "Rådhusgata 34",
+                "lat": 59.91065301806209,
+                "lon": 10.737365277561025,
+                "capacity": 24
+            },
+            {
+                "station_id": "YOS:VehicleSharingParkingArea:1023",
+                "name": "Professor Aschehougs plass",
+                "address": "Professor Aschehougs plass",
+                "lat": 59.9147672,
+                "lon": 10.740971,
+                "capacity": 12
+            },
+            ...,
+            {
+                "station_id": "YOS:VehicleSharingParkingArea:440",
+                "name": "Lakkegata",
+                "address": "Lakkegata",
+                "lat": 59.9172088,
+                "lon": 10.7622135,
+                "capacity": 18
+            }
+        ]
+        },
+    "last_updated": 1589366110,
+    "ttl": 10
+}
+```
+
+## Station status
+
+For a specific operator, get a list of all available bikes and docks at each station and station availability.
+
+### HTTP Request
+
+`GET https://api.entur.io/mobility/v1/bikes/{operator}/station_status.json`
+
+### Example response
+
+```
+{
+    "data": {
+        "stations": [
+            {
+                "station_id": "YOS:VehicleSharingParkingArea:1755",
+                "is_installed": 1,
+                "is_renting": 1,
+                "is_returning": 1,
+                "last_reported": 1589366618,
+                "num_bikes_available": 6,
+                "num_docks_available": 27
+            },
+            {
+                "station_id": "YOS:VehicleSharingParkingArea:1101",
+                "is_installed": 1,
+                "is_renting": 1,
+                "is_returning": 1,
+                "last_reported": 1589366618,
+                "num_bikes_available": 12,
+                "num_docks_available": 12
+            },
+            ...,
+            {
+                "station_id": "YOS:VehicleSharingParkingArea:1023",
+                "is_installed": 1,
+                "is_renting": 1,
+                "is_returning": 1,
+                "last_reported": 1589366618,
+                "num_bikes_available": 9,
+                "num_docks_available": 3
+            }]
+        },
+    "last_updated": 1589366110,
+    "ttl": 10
+}
+```
