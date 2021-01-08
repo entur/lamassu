@@ -22,21 +22,20 @@
         </then>
         <else>
             <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
-                <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+                <encoder class="org.entur.lamassu.logger.CustomEncoder">
                     <providers>
                         <pattern>
                             <pattern>
                                 {
-                                "serviceContext": {
-                                "service": "lamassu"
-                                },
-                                "message": "%message\n%ex{full}",
-                                "severity": "%level",
-                                "reportLocation": {
-                                "filePath": "%logger",
-                                "lineNumber": "%line",
-                                "functionName": "%method"
-                                }
+                                    "serviceContext": {
+                                        "service": "lamassu"
+                                    },
+                                    "message": "%message\n%ex{full}",
+                                    "reportLocation": {
+                                        "filePath": "%logger",
+                                        "lineNumber": "%line",
+                                        "functionName": "%method"
+                                    }
                                 }
                             </pattern>
                         </pattern>
