@@ -9,10 +9,10 @@ import net.logstash.logback.composite.loggingevent.LogLevelJsonProvider;
 import java.io.IOException;
 
 public class CustomLogLevelJsonProvider extends LogLevelJsonProvider {
-    final static String DEBUG = "DEBUG";
-    final static String ERROR = "ERROR";
-    final static String INFO = "INFO";
-    final static String WARNING = "WARNING";
+    static final String DEBUG = "DEBUG";
+    static final String ERROR = "ERROR";
+    static final String INFO = "INFO";
+    static final String WARNING = "WARNING";
 
     @Override
     public void writeTo(JsonGenerator generator, ILoggingEvent event)
