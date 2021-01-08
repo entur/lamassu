@@ -8,20 +8,15 @@ Mobility aggregation service based on the [General Bikeshare Feed Specification 
 
 List all GBFS feeds available via this API
 
-#### `/gbfs/{codespace}/{city?}/{vehicleType?}/{feed}`
+#### `/gbfs/{identifier}/{feed}`
 
-GBFS feeds for a specific feed provider, minimally defined via codespace, and optionally with
-city and vehicle type.
+GBFS feeds for a specific feed provider with a unique identifier.
 
 E.g.
 
-    /gbfs/ybo/oslo/scooter/free_bike_status
+    /gbfs/boltoslo/free_bike_status
 
 will return the free_bike_status feed for Bolt's scooter service in Oslo.
-
-#### `/vehicles/nearby?lon={longitude}&lat={latitude}&range={range}&count={count}`
-
-List vehicles nearby, from any feed provider, given a position (longitude, latitude), within a given range in meters and a maximum count.
 
 ### Development
 
