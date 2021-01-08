@@ -35,7 +35,7 @@ public class GBFSFeedController {
     public GBFSBase getGbfsFeedForProvider(@PathVariable String provider, @PathVariable String feed) {
         try {
             GBFSFeedName feedName = GBFSFeedName.valueOf(feed.toUpperCase());
-            FeedProvider feedProvider = feedProviderConfig.getProviders().stream().filter(fp -> fp.getName().toLowerCase().equals(provider)).findFirst().get();
+            FeedProvider feedProvider = feedProviderConfig.getProviders().stream().filter(fp -> fp.getName().equalsIgnoreCase(provider)).findFirst().get();
             return feedCache.find(feedName, feedProvider);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);

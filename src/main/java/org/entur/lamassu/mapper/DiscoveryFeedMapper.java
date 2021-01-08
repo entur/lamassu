@@ -33,7 +33,7 @@ public class DiscoveryFeedMapper {
             languageKey = feedProvider.getLanguage();
         } else {
             languageKey = source.getData().keySet().iterator().next();
-            logger.warn("Language key not found in discovery feed for provider {} - using {} instead", feedProvider.toString(), languageKey);
+            logger.warn("Language key not found in discovery feed for provider {} - using {} instead", feedProvider, languageKey);
         }
 
         mappedData.setFeeds(
