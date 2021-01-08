@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Optional;
+
 @RestController
 public class GBFSFeedController {
 
@@ -35,8 +37,13 @@ public class GBFSFeedController {
     public GBFSBase getGbfsFeedForProvider(@PathVariable String provider, @PathVariable String feed) {
         try {
             GBFSFeedName feedName = GBFSFeedName.valueOf(feed.toUpperCase());
-            FeedProvider feedProvider = feedProviderConfig.getProviders().stream().filter(fp -> fp.getName().equalsIgnoreCase(provider)).findFirst().get();
-            return feedCache.find(feedName, feedProvider);
+            Optional<FeedProvider> feedProvider = feedProviderConfig.getProviders().stream().filter(fp -> fp.getName().equalsIgnoreCase(provider)).findFirst();
+            if (feedProvider.isPresent()) {
+                return feedCache.find(feedName, feedProvider.get());
+            } else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            }
+
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
