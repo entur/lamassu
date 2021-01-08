@@ -1,0 +1,107 @@
+type Query {
+    system(id: ID!): System
+
+    station(id: ID!): Station
+
+    vehicle(id: ID!): Vehicle
+
+    stations(
+        provider: String
+        codespace: String
+        city: String
+        nearby: NearbyInput
+        bbox: BoundingBoxInput
+    ): [Station]
+
+    vehicles(
+        provider: String
+        codespace: String
+        city: String
+        formFactors: [FormFactor]
+        propulsionTypes: [PropulsionType]
+        nearby: NearbyInput
+        bbox: BoundingBoxInput
+    ): [Vehicle]
+}
+
+input NearbyInput {
+    lat: Float!
+    lon: Float!
+    range: Int!
+    max: Int!
+}
+
+input BoundingBoxInput {
+    north: Float!
+    south: Float!
+    east: Float!
+    west: Float!
+}
+
+type Station {
+    id: ID!
+    information: StationInformation
+    status: StationStatus
+}
+
+type StationInformation {}
+
+type StationStatus {}
+
+type Vehicle {
+    id: ID!
+    lat: Float!
+    lon: Float!
+    isReserved: Boolean
+    isDisabled: Boolean
+    currentRangeMeters: Float
+    vehicleType: VehicleType
+    pricingPlan: PricingPlan
+    station: Station
+    system: System
+}
+
+type VehicleType {
+    id: ID!
+    formFactor: FormFactor!
+    propulsionType: PropulsionType!
+    maxRangeMeters: Float
+    name: String
+}
+
+enum FormFactor {
+    bicyle
+    car
+    moped
+    scooter
+    other
+}
+
+enum PropulsionType {
+    human
+    electric_assist
+    electric
+    combustion
+}
+
+type PricingPlan {
+    id: ID!
+    url: String
+    name: String
+    currency: String
+    price: Float
+    isTaxable: Boolean
+    description: String
+    perKmPricing: [PricingSegment]
+    perMinPricing: [PricingSegment]
+    surgePricing: Boolean
+}
+
+type PricingSegment {
+    start: Int
+    rate: Float
+    interval: Int
+    end: Int
+}
+
+type System {}
