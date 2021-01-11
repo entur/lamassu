@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  docs: entur/docs@volatile
+  entur-docs: entur/docs@volatile
 
 parameters:
   run_update_docs:
