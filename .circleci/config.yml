@@ -149,7 +149,7 @@ workflows:
     jobs:
       - checkout-docs-from-commit:
           context: org-carbon
-      - entur-docs/publish-docs:
+      - entur/docs/publish-docs:
           context: global
           project-name: mobility
           docs-path: docs
