@@ -36,17 +36,11 @@ public class GBFSFeedController {
     public GBFSBase getGbfsFeedForProvider(@PathVariable String provider, @PathVariable String feed) {
         try {
             GBFSFeedName feedName = GBFSFeedName.valueOf(feed.toUpperCase());
-            var response = feedProviderConfig.getProviders().stream()
+            return feedProviderConfig.getProviders().stream()
                     .filter(fp -> fp.getName().equalsIgnoreCase(provider))
                     .findFirst()
                     .map(feedProvider -> feedCache.find(feedName, feedProvider))
                     .orElseThrow();
-
-            if (response == null) {
-                throw new NoSuchElementException();
-            }
-
-            return response;
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         } catch (NoSuchElementException e) {
