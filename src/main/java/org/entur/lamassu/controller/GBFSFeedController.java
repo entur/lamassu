@@ -2,7 +2,6 @@ package org.entur.lamassu.controller;
 
 import org.entur.lamassu.cache.GBFSFeedCache;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
-import org.entur.lamassu.model.FeedProvider;
 import org.entur.lamassu.model.FeedProviderDiscovery;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSFeedName;
@@ -14,7 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
 @RestController
 public class GBFSFeedController {
@@ -37,14 +36,20 @@ public class GBFSFeedController {
     public GBFSBase getGbfsFeedForProvider(@PathVariable String provider, @PathVariable String feed) {
         try {
             GBFSFeedName feedName = GBFSFeedName.valueOf(feed.toUpperCase());
-            Optional<FeedProvider> feedProvider = feedProviderConfig.getProviders().stream().filter(fp -> fp.getName().equalsIgnoreCase(provider)).findFirst();
-            if (feedProvider.isPresent()) {
-                return feedCache.find(feedName, feedProvider.get());
-            } else {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            var response = feedProviderConfig.getProviders().stream()
+                    .filter(fp -> fp.getName().equalsIgnoreCase(provider))
+                    .findFirst()
+                    .map(feedProvider -> feedCache.find(feedName, feedProvider))
+                    .orElseThrow();
+
+            if (response == null) {
+                throw new NoSuchElementException();
             }
 
+            return response;
         } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        } catch (NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }

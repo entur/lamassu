@@ -224,6 +224,27 @@ public class ApplicationTest {
     }
 
     @Test
+    public void testUnknownProviderResponds404() throws Exception {
+        mockMvc.perform(get("/gbfs/foobar/gbfs")
+                .contentType("application/json"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void missingOptionalFeedResponds404() throws Exception {
+        mockMvc.perform(get("/gbfs/atlantis/foobar")
+                .contentType("application/json"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testUnsupportedFeedResponds400() throws Exception {
+        mockMvc.perform(get("/gbfs/atlantis/foobar")
+                .contentType("application/json"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void testNearbySearch() throws Exception {
         mockMvc.perform(get("/vehicles/nearby?lon=10.7604&lat=59.9146&range=500&count=1")
                 .contentType("application/json"))
