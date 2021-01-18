@@ -15,6 +15,7 @@ import org.redisson.spring.data.connection.RedissonConnectionFactory;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 import javax.cache.Cache;
 import javax.cache.Caching;
@@ -53,6 +54,7 @@ public class RedissonCacheConfig {
     }
 
     @Bean(destroyMethod = "shutdown")
+    @Profile("!test")
     public RedissonClient redissonClient(Config redissonConfig) {
         return Redisson.create(redissonConfig);
     }
