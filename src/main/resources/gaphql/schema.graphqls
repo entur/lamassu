@@ -1,24 +1,24 @@
 type Query {
-    stations(
-        lat: Float!
-        lon: Float!
-        range: Int
-        max: Int
-        operators: [String]
-        codespaces: [String]
-    ): [Station]
+#    stations(
+#        lat: Float!
+#        lon: Float!
+#        range: Int
+#        max: Int
+#        operators: [String]
+#        codespaces: [String]
+#    ): [Station]
 
     vehicles(
         lat: Float!
         lon: Float!
         range: Int
-        max: Int
-        operators: [String]
-        codespaces: [String]
-        formFactors: [FormFactor]
-        propulsionTypes: [PropulsionType]
-        includeReserved: Boolean
-        includeDisabled: Boolean
+        count: Int
+#        operators: [String]
+#        codespaces: [String]
+#        formFactors: [FormFactor]
+#        propulsionTypes: [PropulsionType]
+#        includeReserved: Boolean
+#        includeDisabled: Boolean
     ): [Vehicle]
 }
 
@@ -53,7 +53,7 @@ type Vehicle {
     currentRangeMeters: Float
     vehicleType: VehicleType
     pricingPlan: PricingPlan
-    system: System
+    #system: System
 }
 
 type VehicleType {
@@ -65,18 +65,18 @@ type VehicleType {
 }
 
 enum FormFactor {
-    bicyle
-    car
-    moped
-    scooter
-    other
+    BICYCLE
+    CAR
+    MOPED
+    SCOOTER
+    OTHER
 }
 
 enum PropulsionType {
-    human
-    electric_assist
-    electric
-    combustion
+    HUMAN
+    ELECTRIC_ASSIST
+    ELECTRIC
+    COMBUSTION
 }
 
 type PricingPlan {

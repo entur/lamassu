@@ -1,7 +1,9 @@
 package org.entur.lamassu.config.cache;
 
-import org.entur.lamassu.model.gbfs.v2_1.FreeBikeStatus;
+import org.entur.lamassu.model.PricingPlan;
+import org.entur.lamassu.model.VehicleType;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
+import org.entur.lamassu.model.Vehicle;
 import org.redisson.Redisson;
 import org.redisson.api.RGeo;
 import org.redisson.api.RLock;
@@ -16,13 +18,18 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.cache.Cache;
 import javax.cache.Caching;
+import javax.cache.configuration.Factory;
 import javax.cache.configuration.MutableConfiguration;
+import javax.cache.expiry.Duration;
+import javax.cache.expiry.ExpiryPolicy;
 
 @Configuration
 public class RedissonCacheConfig {
     public static final String GBFS_FEED_CACHE_KEY = "gbfsCache";
     public static final String VEHICLE_CACHE_KEY = "vehicleCache";
-    public static final String SPATIAL_INDEX_KEY = "spatialIndex";
+    public static final String VEHICLE_TYPE_CACHE_KEY = "vehicleTypeCache";
+    public static final String PRICING_PLAN_CACHE_KEY = "pricingPlanCache";
+    public static final String VEHICLE_SPATIAL_INDEX_KEY = "vehicleSpatialIndex";
     public static final String FEED_UPDATE_SCHEDULER_LOCK = "leader";
 
     private final Config config;
@@ -62,24 +69,42 @@ public class RedissonCacheConfig {
 
     @Bean
     public Cache<String, GBFSBase> feedCache(Config redissonConfig) {
-        var feedCacheConfig = new MutableConfiguration<String, GBFSBase>();
-        feedCacheConfig.setExpiryPolicyFactory(new FeedCacheExpiryPolicyFactory());
-        var redissonFeedCacheConfig = RedissonConfiguration.fromConfig(redissonConfig, feedCacheConfig);
+        var cacheConfig = new MutableConfiguration<String, GBFSBase>();
+        cacheConfig.setExpiryPolicyFactory((Factory<ExpiryPolicy>) () -> new CustomExpiryPolicy(Duration.ONE_DAY, null, Duration.ONE_DAY));;
+        var redissonCacheConfig = RedissonConfiguration.fromConfig(redissonConfig, cacheConfig);
         var manager = Caching.getCachingProvider().getCacheManager();
-        return manager.createCache(GBFS_FEED_CACHE_KEY, redissonFeedCacheConfig);
+        return manager.createCache(GBFS_FEED_CACHE_KEY, redissonCacheConfig);
     }
 
     @Bean
-    public Cache<String, FreeBikeStatus.Bike> vehicleCache(Config redissonConfig) {
-        var vehicleCacheConfig = new MutableConfiguration<String, FreeBikeStatus.Bike>();
-        vehicleCacheConfig.setExpiryPolicyFactory(new VehicleCacheExpiryPolicyFactory());
-        var redissonFeedCacheConfig = RedissonConfiguration.fromConfig(redissonConfig, vehicleCacheConfig);
+    public Cache<String, Vehicle> vehicleCache(Config redissonConfig) {
+        var cacheConfig = new MutableConfiguration<String, Vehicle>();
+        cacheConfig.setExpiryPolicyFactory((Factory<ExpiryPolicy>) () -> new CustomExpiryPolicy(Duration.ONE_MINUTE, null, Duration.ONE_MINUTE));
+        var redissonCacheConfig = RedissonConfiguration.fromConfig(redissonConfig, cacheConfig);
         var manager = Caching.getCachingProvider().getCacheManager();
-        return manager.createCache(VEHICLE_CACHE_KEY, redissonFeedCacheConfig);
+        return manager.createCache(VEHICLE_CACHE_KEY, redissonCacheConfig);
+    }
+
+    @Bean
+    public Cache<String, VehicleType> vehicleTypeCache(Config redissonConfig) {
+        var cacheConfig = new MutableConfiguration<String, VehicleType>();
+        cacheConfig.setExpiryPolicyFactory((Factory<ExpiryPolicy>) () -> new CustomExpiryPolicy(Duration.ONE_MINUTE, null, Duration.ONE_MINUTE));
+        var redissonCacheConfig = RedissonConfiguration.fromConfig(redissonConfig, cacheConfig);
+        var manager = Caching.getCachingProvider().getCacheManager();
+        return manager.createCache(VEHICLE_TYPE_CACHE_KEY, redissonCacheConfig);
+    }
+
+    @Bean
+    public Cache<String, PricingPlan> pricingPlanCache(Config redissonConfig) {
+        var cacheConfig = new MutableConfiguration<String, PricingPlan>();
+        cacheConfig.setExpiryPolicyFactory((Factory<ExpiryPolicy>) () -> new CustomExpiryPolicy(Duration.ONE_MINUTE, null, Duration.ONE_MINUTE));
+        var redissonCacheConfig = RedissonConfiguration.fromConfig(redissonConfig, cacheConfig);
+        var manager = Caching.getCachingProvider().getCacheManager();
+        return manager.createCache(PRICING_PLAN_CACHE_KEY, redissonCacheConfig);
     }
 
     @Bean
     public RGeo<String> spatialIndex(RedissonClient redissonClient) {
-        return redissonClient.getGeo(SPATIAL_INDEX_KEY);
+        return redissonClient.getGeo(VEHICLE_SPATIAL_INDEX_KEY);
     }
 }

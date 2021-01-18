@@ -1,11 +1,8 @@
 package org.entur.lamassu.cache;
 
-import org.entur.lamassu.model.gbfs.v2_1.FreeBikeStatus;
+import org.entur.lamassu.model.Vehicle;
 
-import java.util.List;
-import java.util.Set;
-
-public interface VehicleCache {
-    List<FreeBikeStatus.Bike> getAll(Set<String> keys);
-    void updateAll(List<FreeBikeStatus.Bike> vehicles);
+public interface VehicleCache extends EntityCache<Vehicle> {
+    void startListening();
+    void stopListening();
 }

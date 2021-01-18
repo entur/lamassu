@@ -1,0 +1,97 @@
+package org.entur.lamassu.model;
+
+import java.util.List;
+
+public class PricingPlan implements Entity {
+    private String id;
+    private String name;
+    private String url;
+    private String currency;
+    private Float price;
+    private Boolean isTaxable;
+    private String description;
+    private List<PricingSegment> perKmPricing;
+    private List<PricingSegment> perMinPricing;
+    private Boolean surgePricing;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public Float getPrice() {
+        return price;
+    }
+
+    public void setPrice(Float price) {
+        this.price = price;
+    }
+
+    public Boolean getTaxable() {
+        return isTaxable;
+    }
+
+    public void setTaxable(Boolean taxable) {
+        isTaxable = taxable;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public List<PricingSegment> getPerKmPricing() {
+        return perKmPricing;
+    }
+
+    public void setPerKmPricing(List<PricingSegment> perKmPricing) {
+        this.perKmPricing = perKmPricing;
+    }
+
+    public List<PricingSegment> getPerMinPricing() {
+        return perMinPricing;
+    }
+
+    public void setPerMinPricing(List<PricingSegment> perMinPricing) {
+        this.perMinPricing = perMinPricing;
+    }
+
+    public Boolean getSurgePricing() {
+        return surgePricing;
+    }
+
+    public void setSurgePricing(Boolean surgePricing) {
+        this.surgePricing = surgePricing;
+    }
+}
+

@@ -28,6 +28,9 @@ data:
     spring.redis.host=${REDIS_HOST}
     spring.redis.port=6379
 
+    # graphql starter
+    graphiql.enabled=false
+
     org.entur.lamassu.feedproviders=file:/etc/application-config/feedproviders.yml
     org.entur.lamassu.baseUrl={{ .Values.configMap.baseUrl }}
   feedproviders.yml: |-

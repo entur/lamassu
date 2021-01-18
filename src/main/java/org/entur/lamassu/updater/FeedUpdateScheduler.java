@@ -1,7 +1,7 @@
 package org.entur.lamassu.updater;
 
-import org.entur.lamassu.listener.FeedCacheListener;
-import org.entur.lamassu.listener.VehicleCacheListener;
+import org.entur.lamassu.cache.GBFSFeedCache;
+import org.entur.lamassu.cache.VehicleCache;
 import org.entur.lamassu.model.FeedProvider;
 import org.entur.lamassu.model.gbfs.v2_1.GBFS;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSFeedName;
@@ -28,10 +28,10 @@ public class FeedUpdateScheduler {
     private Scheduler feedUpdateQuartzScheduler;
 
     @Autowired
-    private FeedCacheListener feedCacheListener;
+    private GBFSFeedCache feedCache;
 
     @Autowired
-    private VehicleCacheListener vehicleCacheListener;
+    private VehicleCache vehicleCache;
 
     @Value("${org.entur.lamassu.feedupdateinterval:30}")
     private int feedUpdateInterval;
@@ -42,8 +42,8 @@ public class FeedUpdateScheduler {
     }
 
     private void startListeners() {
-        feedCacheListener.startListening();
-        vehicleCacheListener.startListening();
+        feedCache.startListening();
+        vehicleCache.startListening();
     }
 
     public void stop() {
@@ -57,8 +57,8 @@ public class FeedUpdateScheduler {
     }
 
     private void stopListeners() {
-        feedCacheListener.stopListening();
-        vehicleCacheListener.stopListening();
+        feedCache.stopListening();
+        vehicleCache.stopListening();
     }
 
     public void scheduleFetchDiscoveryFeeds() {
