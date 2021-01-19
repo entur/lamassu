@@ -22,7 +22,7 @@
         </then>
         <else>
             <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
-                <encoder class="org.entur.lamassu.logger.CustomEncoder">
+                <encoder class="org.entur.logger.logstash.LogstashEncoder">
                     <providers>
                         <pattern>
                             <pattern>

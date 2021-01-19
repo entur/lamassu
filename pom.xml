@@ -15,6 +15,7 @@
 
     <properties>
         <java.version>11</java.version>
+        <entur.helpers.version>1.0.36</entur.helpers.version>
         <redisson.version>3.14.1</redisson.version>
         <embedded-redis.version>0.8.1</embedded-redis.version>
         <quartz.version>2.3.2</quartz.version>
@@ -22,6 +23,11 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.entur.helpers</groupId>
+            <artifactId>logging</artifactId>
+            <version>${entur.helpers.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
