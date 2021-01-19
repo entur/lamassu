@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.rutebanken.superpom</groupId>
         <artifactId>superpom</artifactId>
-        <version>1.0.17</version>
+        <version>1.0.18</version>
     </parent>
     <groupId>org.entur</groupId>
     <artifactId>lamassu</artifactId>
@@ -15,14 +15,20 @@
 
     <properties>
         <java.version>11</java.version>
-        <redisson.version>3.14.0</redisson.version>
         <graphql-starter.version>8.1.0</graphql-starter.version>
+        <entur.helpers.version>1.0.36</entur.helpers.version>
+        <redisson.version>3.14.1</redisson.version>
         <embedded-redis.version>0.8.1</embedded-redis.version>
         <quartz.version>2.3.2</quartz.version>
         <okhttp.version>4.9.0</okhttp.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.entur.helpers</groupId>
+            <artifactId>logging</artifactId>
+            <version>${entur.helpers.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
