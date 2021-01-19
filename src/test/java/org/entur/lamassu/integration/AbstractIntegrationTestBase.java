@@ -4,15 +4,19 @@ import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
+import org.entur.lamassu.TestLamassuApplication;
 import org.entur.lamassu.config.TestRedisConfiguration;
 import org.entur.lamassu.updater.ClusterSingletonService;
 import org.jetbrains.annotations.NotNull;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,6 +28,12 @@ import java.util.concurrent.TimeUnit;
 
 @ActiveProfiles("test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@RunWith(SpringRunner.class)
+@SpringBootTest(
+        classes = TestLamassuApplication.class,
+        properties = "scheduling.enabled=false",
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
+)
 public abstract class AbstractIntegrationTestBase {
     @Autowired
     private ClusterSingletonService clusterSingletonService;

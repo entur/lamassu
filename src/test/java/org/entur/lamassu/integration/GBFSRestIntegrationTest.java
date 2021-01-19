@@ -1,31 +1,15 @@
 package org.entur.lamassu.integration;
 
-import org.entur.lamassu.TestLamassuApplication;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(
-        classes = TestLamassuApplication.class,
-        properties = "scheduling.enabled=false",
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
-)
 @AutoConfigureMockMvc
-/*@TestPropertySource(
-        properties = {
-                "spring.autoconfigure.exclude=graphql.kickstart.spring.web.boot.GraphQLWebAutoConfiguration,graphql.kickstart.spring.web.boot.GraphQLWebsocketAutoConfiguration"
-        }
-)*/
 public class GBFSRestIntegrationTest extends AbstractIntegrationTestBase {
 
     @Autowired
