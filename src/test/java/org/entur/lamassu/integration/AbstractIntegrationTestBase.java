@@ -11,6 +11,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.io.File;
@@ -22,16 +23,20 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 @ActiveProfiles("test")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public abstract class AbstractIntegrationTestBase {
     @Autowired
     private ClusterSingletonService clusterSingletonService;
 
     private final CountDownLatch waiter = new CountDownLatch(1);
 
-    private static final MockWebServer mockWebServer = new MockWebServer();
+    private static MockWebServer mockWebServer;
 
     @BeforeClass
     public static void setUp() throws IOException {
+
+        mockWebServer = new MockWebServer();
+
         final Dispatcher dispatcher = new Dispatcher() {
             @NotNull
             @Override
@@ -85,6 +90,7 @@ public abstract class AbstractIntegrationTestBase {
     @AfterClass
     public static void tearDown() throws IOException {
         mockWebServer.shutdown();
+        mockWebServer = null;
     }
 
     @Before

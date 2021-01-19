@@ -21,11 +21,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
 @AutoConfigureMockMvc
-@TestPropertySource(
+/*@TestPropertySource(
         properties = {
                 "spring.autoconfigure.exclude=graphql.kickstart.spring.web.boot.GraphQLWebAutoConfiguration,graphql.kickstart.spring.web.boot.GraphQLWebsocketAutoConfiguration"
         }
-)
+)*/
 public class GBFSRestIntegrationTest extends AbstractIntegrationTestBase {
 
     @Autowired
