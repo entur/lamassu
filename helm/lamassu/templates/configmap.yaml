@@ -30,6 +30,7 @@ data:
 
     # graphql starter
     graphiql.enabled=true
+    graphql.servlet.actuator-metrics=true
 
     org.entur.lamassu.feedproviders=file:/etc/application-config/feedproviders.yml
     org.entur.lamassu.baseUrl={{ .Values.configMap.baseUrl }}
