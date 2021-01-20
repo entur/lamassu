@@ -9,6 +9,4 @@ import javax.cache.configuration.CacheEntryListenerConfiguration;
 public interface GBFSFeedCache {
     GBFSBase find(GBFSFeedName feedName, FeedProvider feedProvider);
     void update(GBFSFeedName feedName, FeedProvider feedProvider, GBFSBase feed);
-    void startListening();
-    void stopListening();
 }

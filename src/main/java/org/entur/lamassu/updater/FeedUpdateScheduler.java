@@ -2,9 +2,13 @@ package org.entur.lamassu.updater;
 
 import org.entur.lamassu.cache.GBFSFeedCache;
 import org.entur.lamassu.cache.VehicleCache;
+import org.entur.lamassu.listener.FeedCacheListener;
 import org.entur.lamassu.model.FeedProvider;
+import org.entur.lamassu.model.gbfs.v2_1.FreeBikeStatus;
 import org.entur.lamassu.model.gbfs.v2_1.GBFS;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSFeedName;
+import org.entur.lamassu.model.gbfs.v2_1.SystemPricingPlans;
+import org.entur.lamassu.model.gbfs.v2_1.VehicleTypes;
 import org.quartz.Job;
 import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
@@ -33,6 +37,15 @@ public class FeedUpdateScheduler {
     @Autowired
     private VehicleCache vehicleCache;
 
+    @Autowired
+    private FeedCacheListener<FreeBikeStatus> freeBikeStatusFeedCacheListener;
+
+    @Autowired
+    private FeedCacheListener<VehicleTypes> vehicleTypesFeedCacheListener;
+
+    @Autowired
+    private FeedCacheListener<SystemPricingPlans> systemPricingPlansFeedCacheListener;
+
     @Value("${org.entur.lamassu.feedupdateinterval:30}")
     private int feedUpdateInterval;
 
@@ -42,7 +55,9 @@ public class FeedUpdateScheduler {
     }
 
     private void startListeners() {
-        feedCache.startListening();
+        freeBikeStatusFeedCacheListener.startListening();
+        vehicleTypesFeedCacheListener.startListening();
+        systemPricingPlansFeedCacheListener.startListening();
         vehicleCache.startListening();
     }
 
@@ -57,7 +72,9 @@ public class FeedUpdateScheduler {
     }
 
     private void stopListeners() {
-        feedCache.stopListening();
+        freeBikeStatusFeedCacheListener.stopListening();
+        vehicleTypesFeedCacheListener.stopListening();
+        systemPricingPlansFeedCacheListener.stopListening();
         vehicleCache.stopListening();
     }
 
