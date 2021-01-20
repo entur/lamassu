@@ -10,7 +10,6 @@ import javax.cache.event.CacheEntryListenerException;
 public class VehicleTypesEventFilter implements CacheEntryEventFilter<String, GBFSBase> {
     @Override
     public boolean evaluate(CacheEntryEvent<? extends String, ? extends GBFSBase> cacheEntryEvent) throws CacheEntryListenerException {
-        var feed = (GBFSBase) cacheEntryEvent.getValue();
-        return feed instanceof VehicleTypes;
+        return cacheEntryEvent.getValue() instanceof VehicleTypes;
     }
 }

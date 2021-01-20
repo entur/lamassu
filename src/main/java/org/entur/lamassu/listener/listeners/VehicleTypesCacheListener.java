@@ -12,29 +12,16 @@ import javax.cache.configuration.FactoryBuilder;
 import javax.cache.configuration.MutableCacheEntryListenerConfiguration;
 
 @Component
-public class VehicleTypesCacheListener implements FeedCacheListener<VehicleTypes> {
+public class VehicleTypesCacheListener extends AbstractCacheListener<VehicleTypes> implements FeedCacheListener<VehicleTypes> {
 
-    private final Cache<String, GBFSBase> cache;
-    private final FeedCacheEntryListenerDelegate<VehicleTypes> delegate;
     private MutableCacheEntryListenerConfiguration<String, GBFSBase> listenerConfiguration;
 
     @Autowired
     public VehicleTypesCacheListener(Cache<String, GBFSBase> cache, FeedCacheEntryListenerDelegate<VehicleTypes> delegate) {
-        this.cache = cache;
-        this.delegate = delegate;
+        super(cache, delegate);
     }
 
-    @Override
-    public void startListening() {
-        cache.registerCacheEntryListener(getListenerConfiguration());
-    }
-
-    @Override
-    public void stopListening() {
-        cache.deregisterCacheEntryListener(getListenerConfiguration());
-    }
-
-    private MutableCacheEntryListenerConfiguration<String, GBFSBase> getListenerConfiguration() {
+    protected MutableCacheEntryListenerConfiguration<String, GBFSBase> getListenerConfiguration(FeedCacheEntryListenerDelegate<? extends GBFSBase> delegate) {
         if (listenerConfiguration == null) {
             listenerConfiguration = new MutableCacheEntryListenerConfiguration<>(
                     FactoryBuilder.factoryOf(

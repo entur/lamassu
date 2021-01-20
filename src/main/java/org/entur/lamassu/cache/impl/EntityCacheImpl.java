@@ -18,7 +18,7 @@ abstract class EntityCacheImpl<T extends Entity> implements EntityCache<T> {
 
     @Override
     public List<T> getAll(Set<String> keys) {
-        return new ArrayList<T>(cache.getAll(keys).values());
+        return new ArrayList<>(cache.getAll(keys).values());
     }
 
     @Override

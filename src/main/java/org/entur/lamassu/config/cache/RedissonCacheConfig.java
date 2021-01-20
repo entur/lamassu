@@ -72,7 +72,7 @@ public class RedissonCacheConfig {
     @Bean
     public Cache<String, GBFSBase> feedCache(Config redissonConfig) {
         var cacheConfig = new MutableConfiguration<String, GBFSBase>();
-        cacheConfig.setExpiryPolicyFactory((Factory<ExpiryPolicy>) () -> new CustomExpiryPolicy(Duration.ONE_DAY, null, Duration.ONE_DAY));;
+        cacheConfig.setExpiryPolicyFactory((Factory<ExpiryPolicy>) () -> new CustomExpiryPolicy(Duration.ONE_DAY, null, Duration.ONE_DAY));
         var redissonCacheConfig = RedissonConfiguration.fromConfig(redissonConfig, cacheConfig);
         var manager = Caching.getCachingProvider().getCacheManager();
         return manager.createCache(GBFS_FEED_CACHE_KEY, redissonCacheConfig);

@@ -17,7 +17,7 @@ public class FeedCacheEntryListener implements
         CacheEntryRemovedListener<String, GBFSBase>,
         Serializable, CacheEntryListener<String, GBFSBase> {
 
-    private final FeedCacheEntryListenerDelegate<? extends GBFSBase> delegate;
+    private final transient FeedCacheEntryListenerDelegate<? extends GBFSBase> delegate;
 
     public FeedCacheEntryListener(FeedCacheEntryListenerDelegate<? extends GBFSBase> delegate) {
         this.delegate = delegate;
