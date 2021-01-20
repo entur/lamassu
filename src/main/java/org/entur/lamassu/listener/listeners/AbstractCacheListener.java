@@ -26,5 +26,5 @@ public abstract class AbstractCacheListener<T extends GBFSBase> implements FeedC
         cache.deregisterCacheEntryListener(getListenerConfiguration(delegate));
     }
 
-    abstract protected MutableCacheEntryListenerConfiguration<String, GBFSBase> getListenerConfiguration(FeedCacheEntryListenerDelegate<? extends GBFSBase> delegate);
+    protected abstract MutableCacheEntryListenerConfiguration<String, GBFSBase> getListenerConfiguration(FeedCacheEntryListenerDelegate<? extends GBFSBase> delegate);
 }
