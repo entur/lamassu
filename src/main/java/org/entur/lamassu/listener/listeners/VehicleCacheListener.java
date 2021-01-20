@@ -2,8 +2,7 @@ package org.entur.lamassu.listener.listeners;
 
 import org.entur.lamassu.listener.CacheEntryListenerDelegate;
 import org.entur.lamassu.listener.CacheListener;
-import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
-import org.entur.lamassu.model.gbfs.v2_1.VehicleTypes;
+import org.entur.lamassu.model.Vehicle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -12,25 +11,22 @@ import javax.cache.configuration.FactoryBuilder;
 import javax.cache.configuration.MutableCacheEntryListenerConfiguration;
 
 @Component
-public class VehicleTypesCacheListener extends AbstractCacheListener<GBFSBase, VehicleTypes> implements CacheListener<VehicleTypes> {
-
-    private MutableCacheEntryListenerConfiguration<String, GBFSBase> listenerConfiguration;
+public class VehicleCacheListener extends AbstractCacheListener<Vehicle, Vehicle> implements CacheListener<Vehicle> {
+    private MutableCacheEntryListenerConfiguration<String, Vehicle> listenerConfiguration;
 
     @Autowired
-    public VehicleTypesCacheListener(Cache<String, GBFSBase> cache, CacheEntryListenerDelegate<GBFSBase, VehicleTypes> delegate) {
+    protected VehicleCacheListener(Cache<String, Vehicle> cache, CacheEntryListenerDelegate<Vehicle, Vehicle> delegate) {
         super(cache, delegate);
     }
 
     @Override
-    protected MutableCacheEntryListenerConfiguration<String, GBFSBase> getListenerConfiguration(CacheEntryListenerDelegate<GBFSBase, VehicleTypes> delegate) {
+    protected MutableCacheEntryListenerConfiguration<String, Vehicle> getListenerConfiguration(CacheEntryListenerDelegate<Vehicle, Vehicle> delegate) {
         if (listenerConfiguration == null) {
             listenerConfiguration = new MutableCacheEntryListenerConfiguration<>(
                     FactoryBuilder.factoryOf(
                             new CacheEntryListener<>(delegate)
                     ),
-                    FactoryBuilder.factoryOf(
-                            VehicleTypesEventFilter.class
-                    ),
+                    null,
                     false,
                     false
             );

@@ -1,7 +1,7 @@
 package org.entur.lamassu.listener.delegates;
 
 import org.entur.lamassu.cache.VehicleTypeCache;
-import org.entur.lamassu.listener.FeedCacheEntryListenerDelegate;
+import org.entur.lamassu.listener.CacheEntryListenerDelegate;
 import org.entur.lamassu.mapper.VehicleTypeMapper;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
 import org.entur.lamassu.model.gbfs.v2_1.VehicleTypes;
@@ -14,7 +14,7 @@ import javax.cache.event.CacheEntryEvent;
 import java.util.stream.Collectors;
 
 @Component
-public class VehicleTypesListenerDelegate implements FeedCacheEntryListenerDelegate<VehicleTypes> {
+public class VehicleTypesListenerDelegate implements CacheEntryListenerDelegate<GBFSBase, VehicleTypes> {
 
     private final VehicleTypeMapper vehicleTypeMapper;
     private final VehicleTypeCache vehicleTypeCache;
@@ -28,17 +28,22 @@ public class VehicleTypesListenerDelegate implements FeedCacheEntryListenerDeleg
     }
 
     @Override
-    public void onCreated(CacheEntryEvent<? extends String, ? extends GBFSBase> event) {
+    public void onCreated(CacheEntryEvent<? extends String, GBFSBase> event) {
         addOrUpdateVehicleType(event);
     }
 
     @Override
-    public void onUpdated(CacheEntryEvent<? extends String, ? extends GBFSBase> event) {
+    public void onUpdated(CacheEntryEvent<? extends String, GBFSBase> event) {
         addOrUpdateVehicleType(event);
     }
 
     @Override
-    public void onRemoved(CacheEntryEvent<? extends String, ? extends GBFSBase> event) {
+    public void onRemoved(CacheEntryEvent<? extends String, GBFSBase> event) {
+        // TODO implement
+    }
+
+    @Override
+    public void onExpired(CacheEntryEvent<? extends String, GBFSBase> event) {
         // TODO implement
     }
 

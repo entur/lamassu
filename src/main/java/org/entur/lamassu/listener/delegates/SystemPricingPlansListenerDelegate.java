@@ -1,7 +1,7 @@
 package org.entur.lamassu.listener.delegates;
 
 import org.entur.lamassu.cache.PricingPlanCache;
-import org.entur.lamassu.listener.FeedCacheEntryListenerDelegate;
+import org.entur.lamassu.listener.CacheEntryListenerDelegate;
 import org.entur.lamassu.mapper.PricingPlanMapper;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
 import org.entur.lamassu.model.gbfs.v2_1.SystemPricingPlans;
@@ -14,7 +14,7 @@ import javax.cache.event.CacheEntryEvent;
 import java.util.stream.Collectors;
 
 @Component
-public class SystemPricingPlansListenerDelegate implements FeedCacheEntryListenerDelegate<SystemPricingPlans> {
+public class SystemPricingPlansListenerDelegate implements CacheEntryListenerDelegate<GBFSBase, SystemPricingPlans> {
 
     private final PricingPlanMapper pricingPlanMapper;
     private final PricingPlanCache pricingPlanCache;
@@ -27,17 +27,22 @@ public class SystemPricingPlansListenerDelegate implements FeedCacheEntryListene
     }
 
     @Override
-    public void onCreated(CacheEntryEvent<? extends String, ? extends GBFSBase> event) {
+    public void onCreated(CacheEntryEvent<? extends String, GBFSBase> event) {
         addOrUpdateSystemPricingPlan(event);
     }
 
     @Override
-    public void onUpdated(CacheEntryEvent<? extends String, ? extends GBFSBase> event) {
+    public void onUpdated(CacheEntryEvent<? extends String, GBFSBase> event) {
         addOrUpdateSystemPricingPlan(event);
     }
 
     @Override
-    public void onRemoved(CacheEntryEvent<? extends String, ? extends GBFSBase> event) {
+    public void onRemoved(CacheEntryEvent<? extends String, GBFSBase> event) {
+        // TODO implement
+    }
+
+    @Override
+    public void onExpired(CacheEntryEvent<? extends String, GBFSBase> event) {
         // TODO implement
     }
 

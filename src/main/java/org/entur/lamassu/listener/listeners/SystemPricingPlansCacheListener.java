@@ -1,7 +1,7 @@
 package org.entur.lamassu.listener.listeners;
 
-import org.entur.lamassu.listener.FeedCacheEntryListenerDelegate;
-import org.entur.lamassu.listener.FeedCacheListener;
+import org.entur.lamassu.listener.CacheEntryListenerDelegate;
+import org.entur.lamassu.listener.CacheListener;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
 import org.entur.lamassu.model.gbfs.v2_1.SystemPricingPlans;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,32 +12,20 @@ import javax.cache.configuration.FactoryBuilder;
 import javax.cache.configuration.MutableCacheEntryListenerConfiguration;
 
 @Component
-public class SystemPricingPlansCacheListener implements FeedCacheListener<SystemPricingPlans> {
-    private final Cache<String, GBFSBase> cache;
-    private final FeedCacheEntryListenerDelegate<SystemPricingPlans> delegate;
+public class SystemPricingPlansCacheListener extends AbstractCacheListener<GBFSBase, SystemPricingPlans> implements CacheListener<SystemPricingPlans> {
     private MutableCacheEntryListenerConfiguration<String, GBFSBase> listenerConfiguration;
 
     @Autowired
-    public SystemPricingPlansCacheListener(Cache<String, GBFSBase> cache, FeedCacheEntryListenerDelegate<SystemPricingPlans> delegate) {
-        this.cache = cache;
-        this.delegate = delegate;
+    public SystemPricingPlansCacheListener(Cache<String, GBFSBase> cache, CacheEntryListenerDelegate<GBFSBase, SystemPricingPlans> delegate) {
+        super(cache, delegate);
     }
 
     @Override
-    public void startListening() {
-        cache.registerCacheEntryListener(getListenerConfiguration());
-    }
-
-    @Override
-    public void stopListening() {
-        cache.registerCacheEntryListener(getListenerConfiguration());
-    }
-
-    private MutableCacheEntryListenerConfiguration<String, GBFSBase> getListenerConfiguration() {
+    protected MutableCacheEntryListenerConfiguration<String, GBFSBase> getListenerConfiguration(CacheEntryListenerDelegate<GBFSBase, SystemPricingPlans> delegate) {
         if (listenerConfiguration == null) {
             listenerConfiguration = new MutableCacheEntryListenerConfiguration<>(
                     FactoryBuilder.factoryOf(
-                            new FeedCacheEntryListener(delegate)
+                            new CacheEntryListener<>(delegate)
                     ),
                     FactoryBuilder.factoryOf(
                             SystemPricingPlansEventFilter.class

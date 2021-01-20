@@ -1,9 +1,8 @@
 package org.entur.lamassu.updater;
 
-import org.entur.lamassu.cache.GBFSFeedCache;
-import org.entur.lamassu.cache.VehicleCache;
-import org.entur.lamassu.listener.FeedCacheListener;
+import org.entur.lamassu.listener.CacheListener;
 import org.entur.lamassu.model.FeedProvider;
+import org.entur.lamassu.model.Vehicle;
 import org.entur.lamassu.model.gbfs.v2_1.FreeBikeStatus;
 import org.entur.lamassu.model.gbfs.v2_1.GBFS;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSFeedName;
@@ -32,19 +31,16 @@ public class FeedUpdateScheduler {
     private Scheduler feedUpdateQuartzScheduler;
 
     @Autowired
-    private GBFSFeedCache feedCache;
+    private CacheListener<FreeBikeStatus> freeBikeStatusFeedCacheListener;
 
     @Autowired
-    private VehicleCache vehicleCache;
+    private CacheListener<VehicleTypes> vehicleTypesFeedCacheListener;
 
     @Autowired
-    private FeedCacheListener<FreeBikeStatus> freeBikeStatusFeedCacheListener;
+    private CacheListener<SystemPricingPlans> systemPricingPlansFeedCacheListener;
 
     @Autowired
-    private FeedCacheListener<VehicleTypes> vehicleTypesFeedCacheListener;
-
-    @Autowired
-    private FeedCacheListener<SystemPricingPlans> systemPricingPlansFeedCacheListener;
+    private CacheListener<Vehicle> vehicleCacheListener;
 
     @Value("${org.entur.lamassu.feedupdateinterval:30}")
     private int feedUpdateInterval;
@@ -58,7 +54,7 @@ public class FeedUpdateScheduler {
         freeBikeStatusFeedCacheListener.startListening();
         vehicleTypesFeedCacheListener.startListening();
         systemPricingPlansFeedCacheListener.startListening();
-        vehicleCache.startListening();
+        vehicleCacheListener.startListening();
     }
 
     public void stop() {
@@ -75,7 +71,7 @@ public class FeedUpdateScheduler {
         freeBikeStatusFeedCacheListener.stopListening();
         vehicleTypesFeedCacheListener.stopListening();
         systemPricingPlansFeedCacheListener.stopListening();
-        vehicleCache.stopListening();
+        vehicleCacheListener.stopListening();
     }
 
     public void scheduleFetchDiscoveryFeeds() {

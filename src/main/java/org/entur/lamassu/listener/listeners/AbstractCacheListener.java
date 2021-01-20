@@ -1,30 +1,27 @@
 package org.entur.lamassu.listener.listeners;
 
-import org.entur.lamassu.listener.FeedCacheEntryListenerDelegate;
-import org.entur.lamassu.listener.FeedCacheListener;
-import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
+import org.entur.lamassu.listener.CacheEntryListenerDelegate;
 
 import javax.cache.Cache;
 import javax.cache.configuration.MutableCacheEntryListenerConfiguration;
 
-public abstract class AbstractCacheListener<T extends GBFSBase> implements FeedCacheListener<T> {
+public abstract class AbstractCacheListener<T, S> {
 
-    private final Cache<String, GBFSBase> cache;
-    private final FeedCacheEntryListenerDelegate<? extends GBFSBase> delegate;
+    private final Cache<String, T> cache;
+    private final CacheEntryListenerDelegate<T, S> delegate;
 
-    protected AbstractCacheListener(Cache<String, GBFSBase> cache, FeedCacheEntryListenerDelegate<? extends GBFSBase> delegate) {
+    protected AbstractCacheListener(Cache<String, T> cache, CacheEntryListenerDelegate<T, S> delegate) {
         this.cache = cache;
         this.delegate = delegate;
     }
 
-    @Override
     public void startListening() {
         cache.registerCacheEntryListener(getListenerConfiguration(delegate));
     }
-    @Override
+
     public void stopListening() {
         cache.deregisterCacheEntryListener(getListenerConfiguration(delegate));
     }
 
-    protected abstract MutableCacheEntryListenerConfiguration<String, GBFSBase> getListenerConfiguration(FeedCacheEntryListenerDelegate<? extends GBFSBase> delegate);
+    protected abstract MutableCacheEntryListenerConfiguration<String, T> getListenerConfiguration(CacheEntryListenerDelegate<T, S> delegate);
 }
