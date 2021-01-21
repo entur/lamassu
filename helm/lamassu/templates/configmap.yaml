@@ -34,6 +34,7 @@ data:
     graphiql.endpoint.graphql=/mobility/v2/graphql
     graphiql.endpoint.subscriptions=/mobility/v2/subscriptions
     graphql.servlet.actuator-metrics=true
+    graphql.servlet.corsEnabled=false
 
     org.entur.lamassu.feedproviders=file:/etc/application-config/feedproviders.yml
     org.entur.lamassu.baseUrl={{ .Values.configMap.baseUrl }}
