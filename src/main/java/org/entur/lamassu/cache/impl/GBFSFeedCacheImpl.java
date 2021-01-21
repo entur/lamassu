@@ -1,4 +1,4 @@
-package org.entur.lamassu.cache.jcache;
+package org.entur.lamassu.cache.impl;
 
 import org.entur.lamassu.cache.GBFSFeedCache;
 import org.entur.lamassu.model.FeedProvider;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import javax.cache.Cache;
 
 @Component
-public class GBFSFeedCacheJCache implements GBFSFeedCache {
+public class GBFSFeedCacheImpl implements GBFSFeedCache {
 
     @Autowired
     private Cache<String, GBFSBase> cache;
@@ -36,4 +36,6 @@ public class GBFSFeedCacheJCache implements GBFSFeedCache {
     private String mergeStrings(String first, String second) {
         return String.format("%s_%s", first, second);
     }
+
+
 }

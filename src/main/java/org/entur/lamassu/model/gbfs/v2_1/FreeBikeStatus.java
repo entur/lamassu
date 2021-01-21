@@ -64,6 +64,34 @@ public class FreeBikeStatus extends GBFSBase {
             return lon;
         }
 
+        public Boolean getReserved() {
+            return isReserved;
+        }
+
+        public Boolean getDisabled() {
+            return isDisabled;
+        }
+
+        public RentalUris getRentalUris() {
+            return rentalUris;
+        }
+
+        public String getVehicleTypeId() {
+            return vehicleTypeId;
+        }
+
+        public String getStationId() {
+            return stationId;
+        }
+
+        public String getPricingPlanId() {
+            return pricingPlanId;
+        }
+
+        public Float getCurrentRangeMeters() {
+            return currentRangeMeters;
+        }
+
         @Override
         public String toString() {
             return "Bike{" +

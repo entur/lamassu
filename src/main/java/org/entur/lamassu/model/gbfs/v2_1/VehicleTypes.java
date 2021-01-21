@@ -8,9 +8,17 @@ import java.util.List;
 public class VehicleTypes extends GBFSBase {
     @JsonProperty("data") Data data;
 
+    public Data getData() {
+        return data;
+    }
+
     public static class Data {
         @JsonProperty("vehicle_types")
         List<VehicleType> vehicleTypes;
+
+        public List<VehicleType> getVehicleTypes() {
+            return vehicleTypes;
+        }
     }
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -20,6 +28,26 @@ public class VehicleTypes extends GBFSBase {
         @JsonProperty("propulsion_type") PropulsionType propulsionType;
         @JsonProperty("max_range_meters") Float maxRangeMeters;
         @JsonProperty("name") String name;
+
+        public String getVehicleTypeId() {
+            return vehicleTypeId;
+        }
+
+        public FormFactor getFormFactor() {
+            return formFactor;
+        }
+
+        public PropulsionType getPropulsionType() {
+            return propulsionType;
+        }
+
+        public Float getMaxRangeMeters() {
+            return maxRangeMeters;
+        }
+
+        public String getName() {
+            return name;
+        }
     }
 
     public enum FormFactor {

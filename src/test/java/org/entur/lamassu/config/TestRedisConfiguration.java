@@ -1,28 +1,26 @@
 package org.entur.lamassu.config;
 
+import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
+import org.redisson.config.Config;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
-import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import redis.embedded.RedisServer;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-
-@TestConfiguration
+@Configuration
 public class TestRedisConfiguration {
 
-    private RedisServer redisServer;
-
-    public TestRedisConfiguration(RedisProperties redisProperties) {
-        this.redisServer = new RedisServer(redisProperties.getPort());
+    @Bean(destroyMethod = "shutdown")
+    @DependsOn("redissonServer")
+    public RedissonClient redissonClient(Config redissonConfig) {
+        return Redisson.create(redissonConfig);
     }
 
-    @PostConstruct
-    public void postConstruct() {
-        redisServer.start();
+    @Bean(initMethod = "start", destroyMethod = "stop")
+    public RedisServer redissonServer(RedisProperties redisProperties) {
+        return new RedisServer(redisProperties.getPort());
     }
 
-    @PreDestroy
-    public void preDestroy() {
-        redisServer.stop();
-    }
 }
