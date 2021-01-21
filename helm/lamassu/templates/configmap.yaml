@@ -32,6 +32,7 @@ data:
     graphiql.enabled=true
     graphiql.static.basePath=/mobility/v2/
     graphiql.endpoint.graphql=/mobility/v2/graphql
+    graphiql.endpoint.subscriptions=/mobility/v2/subscriptions
     graphql.servlet.actuator-metrics=true
 
     org.entur.lamassu.feedproviders=file:/etc/application-config/feedproviders.yml
