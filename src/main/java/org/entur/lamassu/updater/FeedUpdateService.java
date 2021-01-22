@@ -39,7 +39,7 @@ public class FeedUpdateService {
 
     public void fetchDiscoveryFeed(FeedProvider feedProvider) {
         api.getDiscoveryFeed(feedProvider).subscribe(discovery -> {
-            logger.debug("Fetched discovery feed {}", feedProvider.getUrl());
+            logger.info("Fetched discovery feed {}", feedProvider.getUrl());
             var mappedFeed = discoveryFeedMapper.mapDiscoveryFeed(discovery, feedProvider);
             feedCache.update(GBFSFeedName.GBFS, feedProvider, mappedFeed);
             discovery.getData().get(feedProvider.getLanguage()).getFeeds().forEach(feedSource -> {
