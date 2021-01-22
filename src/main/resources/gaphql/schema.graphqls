@@ -14,7 +14,7 @@ type Query {
     vehicles(
         lat: Float!
         lon: Float!
-        range: Int
+        range: Int!
         count: Int
 #        operators: [String]
 #        codespaces: [String]

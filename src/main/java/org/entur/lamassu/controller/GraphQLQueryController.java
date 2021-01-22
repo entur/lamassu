@@ -23,7 +23,7 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
             Double range,
             Integer count
     ) {
-        logger.info("vehicles called lat={} lon={} count={} range={}", lat, lon, count, range);
+        logger.info("vehicles called lat={} lon={} range={} count={}", lat, lon, range, count);
         return vehiclesNearbyService.getVehiclesNearby(
                 lon,
                 lat,

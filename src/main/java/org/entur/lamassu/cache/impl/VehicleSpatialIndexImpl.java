@@ -15,7 +15,7 @@ public class VehicleSpatialIndexImpl implements VehicleSpatialIndex {
     RGeo<String> spatialIndex;
 
     @Override
-    public long add(double longitude, double latitude, String id) {
+    public long add(Double longitude, Double latitude, String id) {
         return spatialIndex.add(longitude, latitude, id);
     }
 
@@ -25,7 +25,11 @@ public class VehicleSpatialIndexImpl implements VehicleSpatialIndex {
     }
 
     @Override
-    public List<String> radius(double longitude, double latitude, double radius, GeoUnit geoUnit, GeoOrder geoOrder, int count) {
-        return spatialIndex.radius(longitude, latitude, radius, geoUnit, geoOrder, count);
+    public List<String> radius(Double longitude, Double latitude, Double radius, GeoUnit geoUnit, GeoOrder geoOrder, Integer count) {
+        if (count != null) {
+            return spatialIndex.radius(longitude, latitude, radius, geoUnit, geoOrder, count);
+        } else {
+            return spatialIndex.radius(longitude, latitude, radius, geoUnit, geoOrder);
+        }
     }
 }

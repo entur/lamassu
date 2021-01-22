@@ -6,7 +6,7 @@ import org.redisson.api.GeoUnit;
 import java.util.List;
 
 public interface VehicleSpatialIndex {
-    long add(double longitude, double latitude, String id);
+    long add(Double longitude, Double latitude, String id);
     boolean remove(String id);
-    List<String> radius(double longitude, double latitude, double radius, GeoUnit geoUnit, GeoOrder geoOrder, int count);
+    List<String> radius(Double longitude, Double latitude, Double radius, GeoUnit geoUnit, GeoOrder geoOrder, Integer count);
 }
