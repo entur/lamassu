@@ -20,7 +20,7 @@
         <redisson.version>3.14.1</redisson.version>
         <embedded-redis.version>0.8.1</embedded-redis.version>
         <quartz.version>2.3.2</quartz.version>
-        <okhttp.version>4.9.0</okhttp.version>
+        <okhttp.version>4.9.1</okhttp.version>
     </properties>
 
     <dependencies>
