@@ -17,7 +17,7 @@
         <java.version>11</java.version>
         <graphql-starter.version>7.1.0</graphql-starter.version>
         <entur.helpers.version>1.0.36</entur.helpers.version>
-        <redisson.version>3.14.1</redisson.version>
+        <redisson.version>3.15.0</redisson.version>
         <embedded-redis.version>0.8.1</embedded-redis.version>
         <quartz.version>2.3.2</quartz.version>
         <okhttp.version>4.9.0</okhttp.version>
