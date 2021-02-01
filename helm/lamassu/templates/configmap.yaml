@@ -36,6 +36,13 @@ data:
     graphql.servlet.actuator-metrics=true
     graphql.servlet.corsEnabled=false
 
+    # spring boot
+    # Enable response compression and http2
+    server.compression.enabled=true
+    server.compression.mime-types=text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
+    server.compression.min-response-size=1024
+    server.http2.enabled=true
+
     org.entur.lamassu.feedproviders=file:/etc/application-config/feedproviders.yml
     org.entur.lamassu.baseUrl={{ .Values.configMap.baseUrl }}
   feedproviders.yml: |-
