@@ -1,6 +1,6 @@
 type Query {
-#    operators: [Operator]
-#    codespaces: [String]
+    operators: [Operator]
+    codespaces: [String]
 
 #    stations(
 #        lat: Float!
@@ -25,10 +25,10 @@ type Query {
     ): [Vehicle]
 }
 
-#type Operator {
-#    name: String
-#    codespace: String
-#}
+type Operator {
+    name: String
+    codespace: String
+}
 
 #type Station {
 #    id: ID!
