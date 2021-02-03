@@ -1,11 +1,11 @@
 package org.entur.lamassu.listener.delegates;
 
+import org.entur.lamassu.cache.SpatialIndexId;
 import org.entur.lamassu.cache.VehicleSpatialIndex;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.listener.CacheEntryListenerDelegate;
 import org.entur.lamassu.model.FeedProvider;
 import org.entur.lamassu.model.Vehicle;
-import org.entur.lamassu.util.SpatialIndexIdUtil;
 import org.redisson.client.RedisException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +49,7 @@ public class VehicleListenerDelegate implements CacheEntryListenerDelegate<Vehic
     private void updateSpatialIndex(CacheEntryEvent<? extends String, ? extends Vehicle> event) {
         var vehicle= event.getValue();
         try {
-            long added = spatialIndex.add(vehicle.getLon(), vehicle.getLat(), SpatialIndexIdUtil.getIndexId(vehicle, getFeedProvider(event.getKey())));
+            long added = spatialIndex.add(vehicle.getLon(), vehicle.getLat(), SpatialIndexId.createAsString(vehicle, getFeedProvider(event.getKey())));
             if (added > 0) {
                 logger.debug("Added vehicle to spatial index: {}", vehicle.getId());
             } else {
@@ -62,7 +62,7 @@ public class VehicleListenerDelegate implements CacheEntryListenerDelegate<Vehic
 
     private void removeFromSpatialIndex(CacheEntryEvent<? extends String, ? extends Vehicle> event) {
         var vehicle= event.getValue();
-        spatialIndex.remove(SpatialIndexIdUtil.getIndexId(vehicle, getFeedProvider(event.getKey())));
+        spatialIndex.remove(SpatialIndexId.createAsString(vehicle, getFeedProvider(event.getKey())));
         logger.debug("Removed vehicle from spatial index: {}", vehicle.getId());
     }
 

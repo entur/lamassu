@@ -2,12 +2,11 @@ package org.entur.lamassu.service.impl;
 
 import org.entur.lamassu.cache.VehicleCache;
 import org.entur.lamassu.cache.VehicleSpatialIndex;
-import org.entur.lamassu.model.ParsedSpatialIndexId;
+import org.entur.lamassu.cache.SpatialIndexId;
 import org.entur.lamassu.model.Vehicle;
 import org.entur.lamassu.model.VehicleFilterParameters;
 import org.entur.lamassu.model.VehicleQueryParameters;
 import org.entur.lamassu.service.VehiclesNearbyService;
-import org.entur.lamassu.util.SpatialIndexIdUtil;
 import org.redisson.api.GeoOrder;
 import org.redisson.api.GeoUnit;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +36,7 @@ public class VehiclesNearbyServiceImpl implements VehiclesNearbyService {
         List<String> indexIds = spatialIndex.radius(longitude, latitude, range, GeoUnit.METERS, GeoOrder.ASC);
 
         Set<String> vehicleIds = indexIds.stream()
-                .map(SpatialIndexIdUtil::parseIndexId)
+                .map(SpatialIndexId::fromString)
                 .filter(Objects::nonNull)
                 .filter(id -> filterVehicle(id, vehicleFilterParameters))
                 .limit(count)
@@ -47,7 +46,7 @@ public class VehiclesNearbyServiceImpl implements VehiclesNearbyService {
         return vehicleCache.getAll(vehicleIds);
     }
 
-    private boolean filterVehicle(ParsedSpatialIndexId parsedId, VehicleFilterParameters filters) {
+    private boolean filterVehicle(SpatialIndexId parsedId, VehicleFilterParameters filters) {
         if (filters.getOperators() != null && !filters.getOperators().contains(parsedId.getOperator())) {
             return false;
         }
