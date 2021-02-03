@@ -25,11 +25,7 @@ public class VehicleSpatialIndexImpl implements VehicleSpatialIndex {
     }
 
     @Override
-    public List<String> radius(Double longitude, Double latitude, Double radius, GeoUnit geoUnit, GeoOrder geoOrder, Integer count) {
-        if (count != null) {
-            return spatialIndex.radius(longitude, latitude, radius, geoUnit, geoOrder, count);
-        } else {
-            return spatialIndex.radius(longitude, latitude, radius, geoUnit, geoOrder);
-        }
+    public List<String> radius(Double longitude, Double latitude, Double radius, GeoUnit geoUnit, GeoOrder geoOrder) {
+        return spatialIndex.radius(longitude, latitude, radius, geoUnit, geoOrder);
     }
 }

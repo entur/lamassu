@@ -93,5 +93,21 @@ public class PricingPlan implements Entity {
     public void setSurgePricing(Boolean surgePricing) {
         this.surgePricing = surgePricing;
     }
+
+    @Override
+    public String toString() {
+        return "PricingPlan{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", url='" + url + '\'' +
+                ", currency='" + currency + '\'' +
+                ", price=" + price +
+                ", isTaxable=" + isTaxable +
+                ", description='" + description + '\'' +
+                ", perKmPricing=" + perKmPricing +
+                ", perMinPricing=" + perMinPricing +
+                ", surgePricing=" + surgePricing +
+                '}';
+    }
 }
 

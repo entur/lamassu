@@ -3,8 +3,10 @@ package org.entur.lamassu.listener.delegates;
 import org.entur.lamassu.cache.PricingPlanCache;
 import org.entur.lamassu.cache.VehicleCache;
 import org.entur.lamassu.cache.VehicleTypeCache;
+import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.listener.CacheEntryListenerDelegate;
 import org.entur.lamassu.mapper.VehicleMapper;
+import org.entur.lamassu.model.FeedProvider;
 import org.entur.lamassu.model.gbfs.v2_1.FreeBikeStatus;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
 import org.slf4j.Logger;
@@ -22,6 +24,7 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
     private final VehicleCache vehicleCache;
     private final VehicleTypeCache vehicleTypeCache;
     private final PricingPlanCache pricingPlanCache;
+    private final FeedProviderConfig feedProviderConfig;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -29,12 +32,14 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
             VehicleMapper vehicleMapper,
             VehicleCache vehicleCache,
             VehicleTypeCache vehicleTypeCache,
-            PricingPlanCache pricingPlanCache
+            PricingPlanCache pricingPlanCache,
+            FeedProviderConfig feedProviderConfig
     ) {
         this.vehicleMapper = vehicleMapper;
         this.vehicleCache = vehicleCache;
         this.vehicleTypeCache = vehicleTypeCache;
         this.pricingPlanCache = pricingPlanCache;
+        this.feedProviderConfig = feedProviderConfig;
     }
 
     @Override
@@ -58,6 +63,8 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
     }
 
     private void addOrUpdateVehicles(CacheEntryEvent<? extends String, ? extends GBFSBase> event) {
+        var split = event.getKey().split("_");
+        var providerName = split[split.length - 1];
         var freeBikeStatusFeed = (FreeBikeStatus) event.getValue();
         try {
             var vehicles = freeBikeStatusFeed.getData().getBikes().stream()
@@ -66,7 +73,7 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
                             vehicleTypeCache.get(vehicle.getVehicleTypeId()),
                             pricingPlanCache.get(vehicle.getPricingPlanId())
                     ))
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toMap(v -> providerName + "_" + v.getId(), v -> v));
             vehicleCache.updateAll(vehicles);
             logger.info("Added vehicles to vehicle cache from feed {}", event.getKey());
         } catch (NullPointerException e) {

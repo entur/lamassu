@@ -7,6 +7,7 @@ import javax.cache.Cache;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 abstract class EntityCacheImpl<T extends Entity> implements EntityCache<T> {
@@ -27,19 +28,7 @@ abstract class EntityCacheImpl<T extends Entity> implements EntityCache<T> {
     }
 
     @Override
-    public void updateAll(List<T> entities) {
-        cache.putAll(
-                entities.stream().reduce(
-                        new HashMap<>(),
-                        ((acc, entity) -> {
-                            acc.put(entity.getId(), entity);
-                            return acc;
-                        }),
-                        ((acc1, acc2) -> {
-                            acc1.putAll(acc2);
-                            return acc1;
-                        })
-                )
-        );
+    public void updateAll(Map<String, T> entities) {
+        cache.putAll(entities);
     }
 }

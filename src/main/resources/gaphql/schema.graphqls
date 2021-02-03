@@ -16,12 +16,12 @@ type Query {
         lon: Float!
         range: Int!
         count: Int
-#        operators: [String]
-#        codespaces: [String]
-#        formFactors: [FormFactor]
-#        propulsionTypes: [PropulsionType]
-#        includeReserved: Boolean
-#        includeDisabled: Boolean
+        operators: [String]
+        codespaces: [String]
+        formFactors: [FormFactor]
+        propulsionTypes: [PropulsionType]
+        includeReserved: Boolean
+        includeDisabled: Boolean
     ): [Vehicle]
 }
 

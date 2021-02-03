@@ -73,6 +73,20 @@ public class Vehicle implements Entity {
     public void setPricingPlan(PricingPlan pricingPlan) {
         this.pricingPlan = pricingPlan;
     }
+
+    @Override
+    public String toString() {
+        return "Vehicle{" +
+                "id='" + id + '\'' +
+                ", lat=" + lat +
+                ", lon=" + lon +
+                ", isReserved=" + isReserved +
+                ", isDisabled=" + isDisabled +
+                ", currentRangeMeters=" + currentRangeMeters +
+                ", vehicleType=" + vehicleType +
+                ", pricingPlan=" + pricingPlan +
+                '}';
+    }
 }
 
 

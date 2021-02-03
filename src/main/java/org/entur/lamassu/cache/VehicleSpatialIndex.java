@@ -8,5 +8,5 @@ import java.util.List;
 public interface VehicleSpatialIndex {
     long add(Double longitude, Double latitude, String id);
     boolean remove(String id);
-    List<String> radius(Double longitude, Double latitude, Double radius, GeoUnit geoUnit, GeoOrder geoOrder, Integer count);
+    List<String> radius(Double longitude, Double latitude, Double radius, GeoUnit geoUnit, GeoOrder geoOrder);
 }

@@ -46,4 +46,15 @@ public class VehicleType implements Entity {
     public String getName() {
         return name;
     }
+
+    @Override
+    public String toString() {
+        return "VehicleType{" +
+                "id='" + id + '\'' +
+                ", formFactor=" + formFactor +
+                ", propulsionType=" + propulsionType +
+                ", maxRangeMeters=" + maxRangeMeters +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

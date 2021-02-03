@@ -3,6 +3,7 @@ package org.entur.lamassu.listener.delegates;
 import org.entur.lamassu.cache.VehicleTypeCache;
 import org.entur.lamassu.listener.CacheEntryListenerDelegate;
 import org.entur.lamassu.mapper.VehicleTypeMapper;
+import org.entur.lamassu.model.VehicleType;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
 import org.entur.lamassu.model.gbfs.v2_1.VehicleTypes;
 import org.slf4j.Logger;
@@ -51,7 +52,8 @@ public class VehicleTypesListenerDelegate implements CacheEntryListenerDelegate<
         var vehicleTypesFeed = (VehicleTypes) event.getValue();
         try {
             var vehicleTypes = vehicleTypesFeed.getData().getVehicleTypes().stream()
-                    .map(vehicleTypeMapper::mapVehicleType).collect(Collectors.toList());
+                    .map(vehicleTypeMapper::mapVehicleType)
+                    .collect(Collectors.toMap(VehicleType::getId, vehicleType -> vehicleType));
             vehicleTypeCache.updateAll(vehicleTypes);
             logger.info("Added vehicle types to vehicle types cache from feed {}", event.getKey());
         } catch (NullPointerException e) {
