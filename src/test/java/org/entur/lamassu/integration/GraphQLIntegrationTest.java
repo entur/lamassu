@@ -25,7 +25,7 @@ public class GraphQLIntegrationTest extends AbstractIntegrationTestBase {
     }
 
     @Test
-    public void testVehicleQueryWithFilters() throws IOException {
+    public void testVehicleQueryWithoutDisabled() throws IOException {
         GraphQLResponse response = graphQLTestTemplate.postForResource("vehicles_query_without_disabled.graphql");
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(response.get("$.data.vehicles", List.class).isEmpty());
