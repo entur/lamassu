@@ -1,4 +1,7 @@
-package org.entur.lamassu.model;
+package org.entur.lamassu.service;
+
+import org.entur.lamassu.model.FormFactor;
+import org.entur.lamassu.model.PropulsionType;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package org.entur.lamassu.model;
+package org.entur.lamassu.service;
 
 public class VehicleQueryParameters {
     private Double lat;
