@@ -4,8 +4,6 @@ import org.entur.lamassu.listener.CacheListener;
 import org.entur.lamassu.model.FeedProvider;
 import org.entur.lamassu.model.Vehicle;
 import org.entur.lamassu.model.gbfs.v2_1.FreeBikeStatus;
-import org.entur.lamassu.model.gbfs.v2_1.GBFS;
-import org.entur.lamassu.model.gbfs.v2_1.GBFSFeedName;
 import org.entur.lamassu.model.gbfs.v2_1.SystemPricingPlans;
 import org.entur.lamassu.model.gbfs.v2_1.VehicleTypes;
 import org.quartz.Job;
@@ -95,21 +93,6 @@ public class FeedUpdateScheduler {
             logger.debug("Scheduled fetch discovery feed");
         } catch (SchedulerException e) {
             logger.warn("Failed to schedule fetch discovery feed", e);
-        }
-    }
-
-    public void scheduleFeedUpdate(FeedProvider feedProvider, GBFS discoveryFeed, GBFSFeedName feedName) {
-        try {
-            JobDataMap jobDataMap = new JobDataMap();
-            jobDataMap.put("feedProvider", feedProvider);
-            jobDataMap.put("discoveryFeed", discoveryFeed);
-            jobDataMap.put("feedName", feedName);
-            JobDetail jobDetail = buildJobDetail(FeedUpdateJob.class, "feedUpdate_" + feedProvider.toString() + "_" + feedName.toValue(), jobDataMap);
-            Trigger trigger = buildJobTrigger(jobDetail);
-            feedUpdateQuartzScheduler.scheduleJob(jobDetail, trigger);
-            logger.debug("Scheduled feed update");
-        } catch (SchedulerException e) {
-            logger.warn("Failed to schedule feed update", e);
         }
     }
 
