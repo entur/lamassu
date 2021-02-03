@@ -7,6 +7,7 @@ import org.entur.lamassu.model.Vehicle;
 import org.entur.lamassu.service.VehicleFilterParameters;
 import org.entur.lamassu.service.VehicleQueryParameters;
 import org.entur.lamassu.service.VehiclesNearbyService;
+import org.entur.lamassu.util.VehicleFilter;
 import org.redisson.api.GeoOrder;
 import org.redisson.api.GeoUnit;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +21,14 @@ import java.util.stream.Collectors;
 @Component
 public class VehiclesNearbyServiceImpl implements VehiclesNearbyService {
 
-    @Autowired
-    VehicleSpatialIndex spatialIndex;
+    private final VehicleSpatialIndex spatialIndex;
+    private final VehicleCache vehicleCache;
 
     @Autowired
-    VehicleCache vehicleCache;
+    public VehiclesNearbyServiceImpl(VehicleSpatialIndex spatialIndex, VehicleCache vehicleCache) {
+        this.spatialIndex = spatialIndex;
+        this.vehicleCache = vehicleCache;
+    }
 
     @Override
     public List<Vehicle> getVehiclesNearby(VehicleQueryParameters vehicleQueryParameters, VehicleFilterParameters vehicleFilterParameters) {
@@ -38,7 +42,7 @@ public class VehiclesNearbyServiceImpl implements VehiclesNearbyService {
         Set<String> vehicleIds = indexIds.stream()
                 .map(SpatialIndexId::fromString)
                 .filter(Objects::nonNull)
-                .filter(id -> filterVehicle(id, vehicleFilterParameters))
+                .filter(id -> VehicleFilter.filterVehicle(id, vehicleFilterParameters))
                 .limit(count)
                 .map(id -> id.getOperator() + "_" + id.getVehicleId())
                 .collect(Collectors.toSet());
@@ -46,31 +50,4 @@ public class VehiclesNearbyServiceImpl implements VehiclesNearbyService {
         return vehicleCache.getAll(vehicleIds);
     }
 
-    private boolean filterVehicle(SpatialIndexId parsedId, VehicleFilterParameters filters) {
-        if (filters.getOperators() != null && !filters.getOperators().contains(parsedId.getOperator())) {
-            return false;
-        }
-
-        if (filters.getCodespaces() != null && !filters.getCodespaces().contains(parsedId.getCodespace())) {
-            return false;
-        }
-
-        if (filters.getFormFactors() != null && !filters.getFormFactors().contains(parsedId.getFormFactor())) {
-            return false;
-        }
-
-        if (filters.getPropulsionTypes() != null && !filters.getPropulsionTypes().contains(parsedId.getPropulsionTypes())) {
-            return false;
-        }
-
-        if (Boolean.FALSE.equals(filters.getIncludeReserved()) && Boolean.TRUE.equals(parsedId.getReserved())) {
-            return false;
-        }
-
-        if (Boolean.FALSE.equals(filters.getIncludeDisabled()) && Boolean.TRUE.equals(parsedId.getDisabled())) {
-            return false;
-        }
-
-        return true;
-    }
 }
