@@ -6,7 +6,6 @@ import org.entur.lamassu.cache.VehicleTypeCache;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.listener.CacheEntryListenerDelegate;
 import org.entur.lamassu.mapper.VehicleMapper;
-import org.entur.lamassu.model.FeedProvider;
 import org.entur.lamassu.model.gbfs.v2_1.FreeBikeStatus;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
 import org.slf4j.Logger;
@@ -24,7 +23,6 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
     private final VehicleCache vehicleCache;
     private final VehicleTypeCache vehicleTypeCache;
     private final PricingPlanCache pricingPlanCache;
-    private final FeedProviderConfig feedProviderConfig;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -39,7 +37,6 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
         this.vehicleCache = vehicleCache;
         this.vehicleTypeCache = vehicleTypeCache;
         this.pricingPlanCache = pricingPlanCache;
-        this.feedProviderConfig = feedProviderConfig;
     }
 
     @Override

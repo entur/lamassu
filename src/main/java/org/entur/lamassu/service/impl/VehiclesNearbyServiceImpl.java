@@ -2,9 +2,7 @@ package org.entur.lamassu.service.impl;
 
 import org.entur.lamassu.cache.VehicleCache;
 import org.entur.lamassu.cache.VehicleSpatialIndex;
-import org.entur.lamassu.model.FormFactor;
 import org.entur.lamassu.model.ParsedSpatialIndexId;
-import org.entur.lamassu.model.PropulsionType;
 import org.entur.lamassu.model.Vehicle;
 import org.entur.lamassu.model.VehicleFilterParameters;
 import org.entur.lamassu.model.VehicleQueryParameters;
@@ -12,8 +10,6 @@ import org.entur.lamassu.service.VehiclesNearbyService;
 import org.entur.lamassu.util.SpatialIndexIdUtil;
 import org.redisson.api.GeoOrder;
 import org.redisson.api.GeoUnit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,8 +26,6 @@ public class VehiclesNearbyServiceImpl implements VehiclesNearbyService {
 
     @Autowired
     VehicleCache vehicleCache;
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public List<Vehicle> getVehiclesNearby(VehicleQueryParameters vehicleQueryParameters, VehicleFilterParameters vehicleFilterParameters) {

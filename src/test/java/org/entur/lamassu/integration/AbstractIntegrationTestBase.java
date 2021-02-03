@@ -5,7 +5,6 @@ import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 import org.entur.lamassu.TestLamassuApplication;
-import org.entur.lamassu.config.TestRedisConfiguration;
 import org.entur.lamassu.updater.ClusterSingletonService;
 import org.jetbrains.annotations.NotNull;
 import org.junit.AfterClass;

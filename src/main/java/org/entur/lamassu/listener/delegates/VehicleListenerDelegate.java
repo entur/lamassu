@@ -13,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.cache.event.CacheEntryEvent;
-import java.util.Arrays;
-import java.util.Optional;
 
 @Component
 public class VehicleListenerDelegate implements CacheEntryListenerDelegate<Vehicle, Vehicle> {
