@@ -70,7 +70,7 @@ public class VehiclesNearbyServiceImpl implements VehiclesNearbyService {
             return false;
         }
 
-        if (Boolean.FALSE.equals(!filters.getIncludeReserved()) && Boolean.TRUE.equals(parsedId.getReserved())) {
+        if (Boolean.FALSE.equals(filters.getIncludeReserved()) && Boolean.TRUE.equals(parsedId.getReserved())) {
             return false;
         }
 
