@@ -1,0 +1,20 @@
+{
+    vehicles(
+        lat: 59.9146,
+        lon: 10.7604,
+        count: 1,
+        range: 500
+        includeDisabled: false
+    ) {
+        id
+        lat
+        lon
+        vehicleType {
+            formFactor
+        }
+        pricingPlan {
+            price
+            perMinPricing {start rate interval end}
+        }
+    }
+}
