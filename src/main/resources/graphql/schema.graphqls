@@ -20,8 +20,8 @@ type Query {
         codespaces: [String]
         formFactors: [FormFactor]
         propulsionTypes: [PropulsionType]
-        includeReserved: Boolean
-        includeDisabled: Boolean
+        includeReserved: Boolean = false
+        includeDisabled: Boolean = false
     ): [Vehicle]
 }
 

@@ -70,11 +70,11 @@ public class VehiclesNearbyServiceImpl implements VehiclesNearbyService {
             return false;
         }
 
-        if (filters.getIncludeReserved() != null && !filters.getIncludeReserved() && parsedId.getReserved()) {
+        if (Boolean.FALSE.equals(!filters.getIncludeReserved()) && Boolean.TRUE.equals(parsedId.getReserved())) {
             return false;
         }
 
-        if (filters.getIncludeDisabled() != null && !filters.getIncludeDisabled() && parsedId.getDisabled()) {
+        if (Boolean.FALSE.equals(filters.getIncludeDisabled()) && Boolean.TRUE.equals(parsedId.getDisabled())) {
             return false;
         }
 
