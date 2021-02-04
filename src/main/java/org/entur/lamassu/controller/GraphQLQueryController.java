@@ -41,6 +41,7 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
             Boolean includeReserved,
             Boolean includeDisabled
     ) {
+
         var queryParams = new VehicleQueryParameters();
         queryParams.setLat(lat);
         queryParams.setLon(lon);

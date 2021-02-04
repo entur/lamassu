@@ -39,12 +39,17 @@ public class VehiclesNearbyServiceImpl implements VehiclesNearbyService {
 
         List<String> indexIds = spatialIndex.radius(longitude, latitude, range, GeoUnit.METERS, GeoOrder.ASC);
 
-        Set<String> vehicleIds = indexIds.stream()
+
+        var stream = indexIds.stream()
                 .map(SpatialIndexId::fromString)
                 .filter(Objects::nonNull)
-                .filter(id -> VehicleFilter.filterVehicle(id, vehicleFilterParameters))
-                .limit(count)
-                .map(id -> id.getOperator() + "_" + id.getVehicleId())
+                .filter(id -> VehicleFilter.filterVehicle(id, vehicleFilterParameters));
+
+        if (count != null) {
+            stream = stream.limit(count.longValue());
+        }
+
+        Set<String> vehicleIds = stream.map(id -> id.getOperator() + "_" + id.getVehicleId())
                 .collect(Collectors.toSet());
 
         return vehicleCache.getAll(vehicleIds);
