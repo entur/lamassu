@@ -35,12 +35,9 @@ public class GBFSFeedController {
     @GetMapping("/gbfs/{provider}/{feed}")
     public GBFSBase getGbfsFeedForProvider(@PathVariable String provider, @PathVariable String feed) {
         try {
-            GBFSFeedName feedName = GBFSFeedName.valueOf(feed.toUpperCase());
-            return feedProviderConfig.getProviders().stream()
-                    .filter(fp -> fp.getName().equalsIgnoreCase(provider))
-                    .findFirst()
-                    .map(feedProvider -> feedCache.find(feedName, feedProvider))
-                    .orElseThrow();
+            var feedName = GBFSFeedName.valueOf(feed.toUpperCase());
+            var feedProvider = feedProviderConfig.get(provider);
+            return feedCache.find(feedName, feedProvider);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         } catch (NoSuchElementException e) {

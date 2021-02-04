@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface FeedProviderConfig {
     List<FeedProvider> getProviders();
+    FeedProvider get(String name);
 }

@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Configuration
 @ConfigurationProperties(prefix = "lamassu")
@@ -17,6 +18,14 @@ public class FeedProviderConfigFile implements FeedProviderConfig {
     @Override
     public List<FeedProvider> getProviders() {
         return providers;
+    }
+
+    @Override
+    public FeedProvider get(String name) {
+        return this.getProviders().stream()
+                .filter(fp -> fp.getName().equalsIgnoreCase(name))
+                .findFirst()
+                .orElseThrow(NoSuchElementException::new);
     }
 
     public void setProviders(List<FeedProvider> providers) {

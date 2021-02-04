@@ -70,11 +70,7 @@ public class VehicleListenerDelegate implements CacheEntryListenerDelegate<Vehic
         var providerName = vehicleCacheKey.split("_")[0];
 
         if (providerName != null) {
-            return feedProviderConfig.getProviders()
-                    .stream()
-                    .filter(p -> p.getName().equalsIgnoreCase(providerName))
-                    .findFirst()
-                    .orElseThrow(IllegalArgumentException::new);
+            return feedProviderConfig.get(providerName);
         } else {
             throw new IllegalArgumentException();
         }
