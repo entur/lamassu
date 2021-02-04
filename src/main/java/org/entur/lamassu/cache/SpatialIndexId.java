@@ -1,9 +1,7 @@
 package org.entur.lamassu.cache;
 
-import org.entur.lamassu.model.feedprovider.FeedProvider;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PropulsionType;
-import org.entur.lamassu.model.entities.Vehicle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -4,6 +4,8 @@ import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.feedprovider.FeedProvider;
 
 public class SpatialIndexIdUtil {
+    private SpatialIndexIdUtil() {}
+
     public static String createSpatialIndexId(Vehicle vehicle, FeedProvider feedProvider) {
         return vehicle.getId()
                 + "_" + feedProvider.getName()

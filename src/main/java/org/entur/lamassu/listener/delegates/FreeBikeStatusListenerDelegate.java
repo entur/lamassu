@@ -30,8 +30,7 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
             VehicleMapper vehicleMapper,
             VehicleCache vehicleCache,
             VehicleTypeCache vehicleTypeCache,
-            PricingPlanCache pricingPlanCache,
-            FeedProviderConfig feedProviderConfig
+            PricingPlanCache pricingPlanCache
     ) {
         this.vehicleMapper = vehicleMapper;
         this.vehicleCache = vehicleCache;
