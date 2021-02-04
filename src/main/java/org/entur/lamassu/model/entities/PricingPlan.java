@@ -1,4 +1,4 @@
-package org.entur.lamassu.model;
+package org.entur.lamassu.model.entities;
 
 import java.util.List;
 

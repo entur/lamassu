@@ -1,11 +1,11 @@
 package org.entur.lamassu.util;
 
 import org.entur.lamassu.cache.SpatialIndexId;
-import org.entur.lamassu.model.FeedProvider;
-import org.entur.lamassu.model.FormFactor;
-import org.entur.lamassu.model.PropulsionType;
-import org.entur.lamassu.model.Vehicle;
-import org.entur.lamassu.model.VehicleType;
+import org.entur.lamassu.model.feedprovider.FeedProvider;
+import org.entur.lamassu.model.entities.FormFactor;
+import org.entur.lamassu.model.entities.PropulsionType;
+import org.entur.lamassu.model.entities.Vehicle;
+import org.entur.lamassu.model.entities.VehicleType;
 import org.entur.lamassu.service.VehicleFilterParameters;
 import org.junit.Assert;
 import org.junit.Test;
@@ -118,7 +118,7 @@ public class VehicleFilterTest {
     }
 
     private SpatialIndexId testId() {
-        return SpatialIndexId.fromString(SpatialIndexId.createAsString(testVehicle(), testProvider()));
+        return SpatialIndexId.fromString(SpatialIndexIdUtil.createSpatialIndexId(testVehicle(), testProvider()));
     }
 
     private Vehicle testVehicle() {

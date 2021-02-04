@@ -3,7 +3,7 @@ package org.entur.lamassu.service.impl;
 import org.entur.lamassu.cache.VehicleCache;
 import org.entur.lamassu.cache.VehicleSpatialIndex;
 import org.entur.lamassu.cache.SpatialIndexId;
-import org.entur.lamassu.model.Vehicle;
+import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.service.VehicleFilterParameters;
 import org.entur.lamassu.service.VehicleQueryParameters;
 import org.entur.lamassu.service.VehiclesNearbyService;

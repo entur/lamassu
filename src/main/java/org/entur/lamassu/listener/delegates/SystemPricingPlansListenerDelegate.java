@@ -3,7 +3,7 @@ package org.entur.lamassu.listener.delegates;
 import org.entur.lamassu.cache.PricingPlanCache;
 import org.entur.lamassu.listener.CacheEntryListenerDelegate;
 import org.entur.lamassu.mapper.PricingPlanMapper;
-import org.entur.lamassu.model.PricingPlan;
+import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
 import org.entur.lamassu.model.gbfs.v2_1.SystemPricingPlans;
 import org.slf4j.Logger;

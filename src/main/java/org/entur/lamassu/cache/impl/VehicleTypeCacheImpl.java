@@ -1,7 +1,7 @@
 package org.entur.lamassu.cache.impl;
 
 import org.entur.lamassu.cache.VehicleTypeCache;
-import org.entur.lamassu.model.VehicleType;
+import org.entur.lamassu.model.entities.VehicleType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

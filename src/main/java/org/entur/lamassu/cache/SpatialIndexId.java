@@ -1,9 +1,9 @@
 package org.entur.lamassu.cache;
 
-import org.entur.lamassu.model.FeedProvider;
-import org.entur.lamassu.model.FormFactor;
-import org.entur.lamassu.model.PropulsionType;
-import org.entur.lamassu.model.Vehicle;
+import org.entur.lamassu.model.feedprovider.FeedProvider;
+import org.entur.lamassu.model.entities.FormFactor;
+import org.entur.lamassu.model.entities.PropulsionType;
+import org.entur.lamassu.model.entities.Vehicle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,16 +16,6 @@ public class SpatialIndexId {
     private PropulsionType propulsionTypes;
     private Boolean isReserved;
     private Boolean isDisabled;
-
-    public static String createAsString(Vehicle vehicle, FeedProvider feedProvider) {
-        return vehicle.getId()
-                + "_" + feedProvider.getName()
-                + "_" + feedProvider.getCodespace()
-                + "_" + vehicle.getVehicleType().getFormFactor()
-                + "_" + vehicle.getVehicleType().getPropulsionType()
-                + "_" + vehicle.getReserved()
-                + "_" + vehicle.getDisabled();
-    }
 
     public static SpatialIndexId fromString(String indexId) {
         try {

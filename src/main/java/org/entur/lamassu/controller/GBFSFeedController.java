@@ -2,7 +2,7 @@ package org.entur.lamassu.controller;
 
 import org.entur.lamassu.cache.GBFSFeedCache;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
-import org.entur.lamassu.model.FeedProviderDiscovery;
+import org.entur.lamassu.model.feedprovider.FeedProviderDiscovery;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSFeedName;
 import org.entur.lamassu.service.ProviderDiscoveryService;

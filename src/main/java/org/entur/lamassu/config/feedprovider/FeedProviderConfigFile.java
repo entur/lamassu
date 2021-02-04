@@ -1,6 +1,6 @@
 package org.entur.lamassu.config.feedprovider;
 
-import org.entur.lamassu.model.FeedProvider;
+import org.entur.lamassu.model.feedprovider.FeedProvider;
 import org.entur.lamassu.util.YamlPropertySourceFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;

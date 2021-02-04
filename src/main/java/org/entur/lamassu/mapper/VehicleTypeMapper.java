@@ -1,8 +1,8 @@
 package org.entur.lamassu.mapper;
 
-import org.entur.lamassu.model.FormFactor;
-import org.entur.lamassu.model.PropulsionType;
-import org.entur.lamassu.model.VehicleType;
+import org.entur.lamassu.model.entities.FormFactor;
+import org.entur.lamassu.model.entities.PropulsionType;
+import org.entur.lamassu.model.entities.VehicleType;
 import org.entur.lamassu.model.gbfs.v2_1.VehicleTypes;
 import org.springframework.stereotype.Component;
 

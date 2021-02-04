@@ -13,6 +13,7 @@ public class ClusterSingletonServiceTest {
 
     RLock mockedLock = mock(RLock.class);
     FeedUpdateScheduler mockedFeedUpdateScheduler = mock(FeedUpdateScheduler.class);
+    ListenerManager mockedListenerManager = mock(ListenerManager.class);
 
     @Test
     public void testBecomeLeaderStartsScheduler() throws InterruptedException {
@@ -37,7 +38,7 @@ public class ClusterSingletonServiceTest {
     @Test(expected = InterruptedException.class)
     public void testBecomeLeaderThrowsInterruptStopsSchedulingAndRethrows() throws InterruptedException {
         when(mockedLock.tryLock(anyLong(), anyLong(), any(TimeUnit.class))).thenThrow(InterruptedException.class);
-        var service = new ClusterSingletonService(mockedLock, mockedFeedUpdateScheduler);
+        var service = new ClusterSingletonService(mockedLock, mockedFeedUpdateScheduler, mockedListenerManager);
         service.heartbeat();
         verify(mockedFeedUpdateScheduler).stop();
     }
@@ -52,7 +53,7 @@ public class ClusterSingletonServiceTest {
 
     private ClusterSingletonService baseCase() throws InterruptedException {
         when(mockedLock.tryLock(anyLong(), anyLong(), any(TimeUnit.class))).thenReturn(true);
-        var service = new ClusterSingletonService(mockedLock, mockedFeedUpdateScheduler);
+        var service = new ClusterSingletonService(mockedLock, mockedFeedUpdateScheduler, mockedListenerManager);
         service.heartbeat();
         verify(mockedFeedUpdateScheduler).start();
         return service;

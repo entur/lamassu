@@ -1,11 +1,5 @@
 package org.entur.lamassu.updater;
 
-import org.entur.lamassu.listener.CacheListener;
-import org.entur.lamassu.model.FeedProvider;
-import org.entur.lamassu.model.Vehicle;
-import org.entur.lamassu.model.gbfs.v2_1.FreeBikeStatus;
-import org.entur.lamassu.model.gbfs.v2_1.SystemPricingPlans;
-import org.entur.lamassu.model.gbfs.v2_1.VehicleTypes;
 import org.quartz.Job;
 import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
@@ -28,51 +22,11 @@ public class FeedUpdateScheduler {
     @Autowired
     private Scheduler feedUpdateQuartzScheduler;
 
-    @Autowired
-    private CacheListener<FreeBikeStatus> freeBikeStatusFeedCacheListener;
-
-    @Autowired
-    private CacheListener<VehicleTypes> vehicleTypesFeedCacheListener;
-
-    @Autowired
-    private CacheListener<SystemPricingPlans> systemPricingPlansFeedCacheListener;
-
-    @Autowired
-    private CacheListener<Vehicle> vehicleCacheListener;
 
     @Value("${org.entur.lamassu.feedupdateinterval:30}")
     private int feedUpdateInterval;
 
     public void start() {
-        startListeners();
-        scheduleFetchDiscoveryFeeds();
-    }
-
-    private void startListeners() {
-        freeBikeStatusFeedCacheListener.startListening();
-        vehicleTypesFeedCacheListener.startListening();
-        systemPricingPlansFeedCacheListener.startListening();
-        vehicleCacheListener.startListening();
-    }
-
-    public void stop() {
-        try {
-            feedUpdateQuartzScheduler.clear();
-            stopListeners();
-            logger.info("Cleared feed update scheduler");
-        } catch (SchedulerException e) {
-            logger.warn("Failed to clear feed update scheduler", e);
-        }
-    }
-
-    private void stopListeners() {
-        freeBikeStatusFeedCacheListener.stopListening();
-        vehicleTypesFeedCacheListener.stopListening();
-        systemPricingPlansFeedCacheListener.stopListening();
-        vehicleCacheListener.stopListening();
-    }
-
-    public void scheduleFetchDiscoveryFeeds() {
         try {
             JobDetail jobDetail = buildJobDetail(FetchDiscoveryFeedsJob.class, "fetchDiscoveryFeeds", new JobDataMap());
             Trigger trigger = buildJobTrigger(jobDetail, getFeedUpdateScheduleBuilder());
@@ -83,16 +37,12 @@ public class FeedUpdateScheduler {
         }
     }
 
-    public void scheduleFetchDiscoveryFeed(FeedProvider feedProvider) {
+    public void stop() {
         try {
-            JobDataMap jobDataMap = new JobDataMap();
-            jobDataMap.put("feedProvider", feedProvider);
-            JobDetail jobDetail = buildJobDetail(FetchDiscoveryFeedJob.class, "fetchDiscoveryFeed_" + feedProvider.toString(), jobDataMap);
-            Trigger trigger = buildJobTrigger(jobDetail);
-            feedUpdateQuartzScheduler.scheduleJob(jobDetail, trigger);
-            logger.debug("Scheduled fetch discovery feed");
+            feedUpdateQuartzScheduler.clear();
+            logger.info("Cleared feed update scheduler");
         } catch (SchedulerException e) {
-            logger.warn("Failed to schedule fetch discovery feed", e);
+            logger.warn("Failed to clear feed update scheduler", e);
         }
     }
 
@@ -101,10 +51,6 @@ public class FeedUpdateScheduler {
                 .withIdentity(description)
                 .setJobData(jobData)
                 .build();
-    }
-
-    private Trigger buildJobTrigger(JobDetail jobDetail) {
-        return buildJobTrigger(jobDetail, null);
     }
 
     private Trigger buildJobTrigger(JobDetail jobDetail, SimpleScheduleBuilder scheduleBuilder) {
@@ -121,5 +67,4 @@ public class FeedUpdateScheduler {
                 .repeatForever()
                 .withMisfireHandlingInstructionFireNow();
     }
-
 }

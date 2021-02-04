@@ -1,6 +1,6 @@
 package org.entur.lamassu.cache;
 
-import org.entur.lamassu.model.Entity;
+import org.entur.lamassu.model.entities.Entity;
 
 import java.util.List;
 import java.util.Map;

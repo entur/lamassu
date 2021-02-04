@@ -1,7 +1,7 @@
 package org.entur.lamassu.cache.impl;
 
 import org.entur.lamassu.cache.PricingPlanCache;
-import org.entur.lamassu.model.PricingPlan;
+import org.entur.lamassu.model.entities.PricingPlan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

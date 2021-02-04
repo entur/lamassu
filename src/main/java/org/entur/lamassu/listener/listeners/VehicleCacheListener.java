@@ -2,7 +2,7 @@ package org.entur.lamassu.listener.listeners;
 
 import org.entur.lamassu.listener.CacheEntryListenerDelegate;
 import org.entur.lamassu.listener.CacheListener;
-import org.entur.lamassu.model.Vehicle;
+import org.entur.lamassu.model.entities.Vehicle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

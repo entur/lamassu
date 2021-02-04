@@ -1,6 +1,6 @@
 package org.entur.lamassu.service;
 
-import org.entur.lamassu.model.Vehicle;
+import org.entur.lamassu.model.entities.Vehicle;
 
 import java.util.List;
 

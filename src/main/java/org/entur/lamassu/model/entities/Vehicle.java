@@ -1,4 +1,4 @@
-package org.entur.lamassu.model;
+package org.entur.lamassu.model.entities;
 
 public class Vehicle implements Entity {
     private String id;

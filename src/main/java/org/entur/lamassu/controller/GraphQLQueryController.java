@@ -2,11 +2,11 @@ package org.entur.lamassu.controller;
 
 import graphql.kickstart.tools.GraphQLQueryResolver;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
-import org.entur.lamassu.model.FeedProvider;
-import org.entur.lamassu.model.FormFactor;
-import org.entur.lamassu.model.Operator;
-import org.entur.lamassu.model.PropulsionType;
-import org.entur.lamassu.model.Vehicle;
+import org.entur.lamassu.model.feedprovider.FeedProvider;
+import org.entur.lamassu.model.entities.FormFactor;
+import org.entur.lamassu.model.entities.Operator;
+import org.entur.lamassu.model.entities.PropulsionType;
+import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.service.VehicleFilterParameters;
 import org.entur.lamassu.service.VehicleQueryParameters;
 import org.entur.lamassu.service.VehiclesNearbyService;

@@ -1,4 +1,4 @@
-package org.entur.lamassu.model;
+package org.entur.lamassu.model.feedprovider;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

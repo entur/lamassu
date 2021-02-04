@@ -1,7 +1,7 @@
 package org.entur.lamassu.cache.impl;
 
 import org.entur.lamassu.cache.EntityCache;
-import org.entur.lamassu.model.Entity;
+import org.entur.lamassu.model.entities.Entity;
 
 import javax.cache.Cache;
 import java.util.ArrayList;

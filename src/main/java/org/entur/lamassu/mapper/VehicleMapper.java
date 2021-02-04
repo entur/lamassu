@@ -1,8 +1,8 @@
 package org.entur.lamassu.mapper;
 
-import org.entur.lamassu.model.PricingPlan;
-import org.entur.lamassu.model.Vehicle;
-import org.entur.lamassu.model.VehicleType;
+import org.entur.lamassu.model.entities.PricingPlan;
+import org.entur.lamassu.model.entities.Vehicle;
+import org.entur.lamassu.model.entities.VehicleType;
 import org.entur.lamassu.model.gbfs.v2_1.FreeBikeStatus;
 import org.springframework.stereotype.Component;
 

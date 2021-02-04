@@ -1,7 +1,7 @@
 package org.entur.lamassu.mapper;
 
-import org.entur.lamassu.model.FeedProvider;
-import org.entur.lamassu.model.FeedProviderDiscovery;
+import org.entur.lamassu.model.feedprovider.FeedProvider;
+import org.entur.lamassu.model.feedprovider.FeedProviderDiscovery;
 import org.entur.lamassu.model.gbfs.v2_1.GBFS;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSFeedName;
 import org.slf4j.Logger;

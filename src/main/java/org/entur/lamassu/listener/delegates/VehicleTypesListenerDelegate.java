@@ -3,7 +3,7 @@ package org.entur.lamassu.listener.delegates;
 import org.entur.lamassu.cache.VehicleTypeCache;
 import org.entur.lamassu.listener.CacheEntryListenerDelegate;
 import org.entur.lamassu.mapper.VehicleTypeMapper;
-import org.entur.lamassu.model.VehicleType;
+import org.entur.lamassu.model.entities.VehicleType;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
 import org.entur.lamassu.model.gbfs.v2_1.VehicleTypes;
 import org.slf4j.Logger;
