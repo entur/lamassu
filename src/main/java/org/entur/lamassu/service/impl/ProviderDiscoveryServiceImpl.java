@@ -13,11 +13,8 @@ import java.util.stream.Collectors;
 public class ProviderDiscoveryServiceImpl implements ProviderDiscoveryService {
     FeedProviderDiscovery feedProviderDiscovery;
 
-    private ProviderDiscoveryServiceImpl(
-            @Autowired FeedProviderConfig feedProviderConfig,
-            @Autowired DiscoveryFeedMapper discoveryFeedMapper
-            ) {
-
+    @Autowired
+    public ProviderDiscoveryServiceImpl(FeedProviderConfig feedProviderConfig, DiscoveryFeedMapper discoveryFeedMapper) {
         feedProviderDiscovery = new FeedProviderDiscovery();
         feedProviderDiscovery.setFeedProviders(
                 feedProviderConfig.getProviders().stream()

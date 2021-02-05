@@ -11,9 +11,12 @@ import javax.cache.Cache;
 
 @Component
 public class GBFSFeedCacheImpl implements GBFSFeedCache {
+    private final Cache<String, GBFSBase> cache;
 
     @Autowired
-    private Cache<String, GBFSBase> cache;
+    public GBFSFeedCacheImpl(Cache<String, GBFSBase> cache) {
+        this.cache = cache;
+    }
 
     @Override
     public GBFSBase find(GBFSFeedName feedName, FeedProvider feedProvider) {

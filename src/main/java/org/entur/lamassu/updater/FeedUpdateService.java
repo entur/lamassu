@@ -16,17 +16,18 @@ import org.springframework.stereotype.Component;
 public class FeedUpdateService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    private GBFSFeedApi api;
+    private final GBFSFeedApi api;
+    private final FeedProviderConfig feedProviderConfig;
+    private final GBFSFeedCache feedCache;
+    private final DiscoveryFeedMapper discoveryFeedMapper;
 
     @Autowired
-    private FeedProviderConfig feedProviderConfig;
-
-    @Autowired
-    private GBFSFeedCache feedCache;
-
-    @Autowired
-    private DiscoveryFeedMapper discoveryFeedMapper;
+    public FeedUpdateService(GBFSFeedApi api, FeedProviderConfig feedProviderConfig, GBFSFeedCache feedCache, DiscoveryFeedMapper discoveryFeedMapper) {
+        this.api = api;
+        this.feedProviderConfig = feedProviderConfig;
+        this.feedCache = feedCache;
+        this.discoveryFeedMapper = discoveryFeedMapper;
+    }
 
     public void fetchDiscoveryFeeds() {
         logger.debug("Fetching discovery feeds");

@@ -13,9 +13,9 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class GraphQLIntegrationTest extends AbstractIntegrationTestBase {
+
     @Autowired
     private GraphQLTestTemplate graphQLTestTemplate;
-
 
     @Test
     public void testVehiclesQuery() throws IOException {

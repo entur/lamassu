@@ -10,8 +10,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class FetchDiscoveryFeedsJob extends QuartzJobBean {
 
+    private final FeedUpdateService feedUpdateService;
+
     @Autowired
-    private FeedUpdateService feedUpdateService;
+    public FetchDiscoveryFeedsJob(FeedUpdateService feedUpdateService) {
+        this.feedUpdateService = feedUpdateService;
+    }
 
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {

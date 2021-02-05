@@ -23,11 +23,14 @@ import java.util.stream.Collectors;
 public class GraphQLQueryController implements GraphQLQueryResolver {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    VehiclesNearbyService vehiclesNearbyService;
+    private final VehiclesNearbyService vehiclesNearbyService;
+    private final FeedProviderConfig feedProviderConfig;
 
     @Autowired
-    FeedProviderConfig feedProviderConfig;
+    public GraphQLQueryController(VehiclesNearbyService vehiclesNearbyService, FeedProviderConfig feedProviderConfig) {
+        this.vehiclesNearbyService = vehiclesNearbyService;
+        this.feedProviderConfig = feedProviderConfig;
+    }
 
     public Collection<Vehicle> vehicles(
             Double lat,

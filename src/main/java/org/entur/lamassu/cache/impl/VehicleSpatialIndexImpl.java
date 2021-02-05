@@ -11,8 +11,12 @@ import java.util.List;
 
 @Component
 public class VehicleSpatialIndexImpl implements VehicleSpatialIndex {
+    private final RGeo<String> spatialIndex;
+
     @Autowired
-    RGeo<String> spatialIndex;
+    public VehicleSpatialIndexImpl(RGeo<String> spatialIndex) {
+        this.spatialIndex = spatialIndex;
+    }
 
     @Override
     public long add(Double longitude, Double latitude, String id) {

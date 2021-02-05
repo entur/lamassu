@@ -19,12 +19,15 @@ import org.springframework.stereotype.Component;
 public class FeedUpdateScheduler {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    private Scheduler feedUpdateQuartzScheduler;
-
+    private final Scheduler feedUpdateQuartzScheduler;
 
     @Value("${org.entur.lamassu.feedupdateinterval:30}")
     private int feedUpdateInterval;
+
+    @Autowired
+    public FeedUpdateScheduler(Scheduler feedUpdateQuartzScheduler) {
+        this.feedUpdateQuartzScheduler = feedUpdateQuartzScheduler;
+    }
 
     public void start() {
         try {

@@ -17,15 +17,16 @@ import java.util.NoSuchElementException;
 
 @RestController
 public class GBFSFeedController {
+    private final ProviderDiscoveryService providerDiscoveryService;
+    private final GBFSFeedCache feedCache;
+    private final FeedProviderConfig feedProviderConfig;
 
     @Autowired
-    ProviderDiscoveryService providerDiscoveryService;
-
-    @Autowired
-    GBFSFeedCache feedCache;
-
-    @Autowired
-    FeedProviderConfig feedProviderConfig;
+    public GBFSFeedController(ProviderDiscoveryService providerDiscoveryService, GBFSFeedCache feedCache, FeedProviderConfig feedProviderConfig) {
+        this.providerDiscoveryService = providerDiscoveryService;
+        this.feedCache = feedCache;
+        this.feedProviderConfig = feedProviderConfig;
+    }
 
     @GetMapping("/gbfs")
     public FeedProviderDiscovery getFeedProviderDiscovery() {
