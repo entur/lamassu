@@ -71,6 +71,7 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
                     ))
                     .filter(vehicle -> vehicle.getVehicleType() != null)
                     .filter(vehicle -> vehicle.getPricingPlan() != null)
+                    .distinct()
                     .collect(Collectors.toMap(v -> providerName + "_" + v.getId(), v -> v));
             vehicleCache.updateAll(vehicles);
             logger.info("Added vehicles to vehicle cache from feed {}", event.getKey());

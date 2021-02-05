@@ -1,5 +1,7 @@
 package org.entur.lamassu.model.entities;
 
+import java.util.Objects;
+
 public class Vehicle implements Entity {
     private String id;
     private Double lat;
@@ -86,6 +88,19 @@ public class Vehicle implements Entity {
                 ", vehicleType=" + vehicleType +
                 ", pricingPlan=" + pricingPlan +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Vehicle)) return false;
+        Vehicle vehicle = (Vehicle) o;
+        return getId().equals(vehicle.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 }
 
