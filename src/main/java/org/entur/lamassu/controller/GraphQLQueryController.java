@@ -1,5 +1,6 @@
 package org.entur.lamassu.controller;
 
+import graphql.GraphqlErrorException;
 import graphql.kickstart.tools.GraphQLQueryResolver;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.model.feedprovider.FeedProvider;
@@ -44,6 +45,8 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
             Boolean includeReserved,
             Boolean includeDisabled
     ) {
+        validateCodespaces(codespaces);
+        validateOperators(operators);
 
         var queryParams = new VehicleQueryParameters();
         queryParams.setLat(lat);
@@ -77,5 +80,24 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
         operator.setName(feedProvider.getName());
         operator.setCodespace(feedProvider.getCodespace());
         return operator;
+    }
+
+    private void validateCodespaces(List<String> codespaces) {
+        if (codespaces != null) {
+            var validCodespaces = codespaces();
+            if(!validCodespaces.containsAll(codespaces)) {
+                throw new GraphqlErrorException.Builder().message("Unknown codespace(s)").build();
+            }
+        }
+    }
+
+    private void validateOperators(List<String> operators) {
+        if (operators != null) {
+            var validOperators = operators();
+            if (!validOperators.stream().map(Operator::getName).collect(Collectors.toList()).containsAll(operators)) {
+                throw new GraphqlErrorException.Builder().message("Unknown operator(s)").build();
+            }
+        }
+
     }
 }
