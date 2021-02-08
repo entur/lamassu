@@ -32,7 +32,7 @@ resource "kubernetes_secret" "service_account_credentials" {
   }
 }
 
-resource "kubernetes_secret" "ror-anshar-sanntid-secrets" {
+resource "kubernetes_secret" "basic_auth_secret" {
   metadata {
     name      = "${var.labels.team}-${var.labels.app}-basic-auth"
     namespace = var.kube_namespace
