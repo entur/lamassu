@@ -32,6 +32,17 @@ resource "kubernetes_secret" "service_account_credentials" {
   }
 }
 
+resource "kubernetes_secret" "ror-anshar-sanntid-secrets" {
+  metadata {
+    name      = "${var.labels.team}-${var.labels.app}-basic-auth"
+    namespace = var.kube_namespace
+  }
+
+  data = {
+    "lamassu.admin.password"     = var.ror-lamassu-admin-password
+  }
+}
+
 module "redis" {
   source = "github.com/entur/terraform//modules/redis"
   gcp_project = var.redis_project

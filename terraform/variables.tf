@@ -44,3 +44,5 @@ variable "redis_prevent_destroy" {
   type        = bool
   default     = false
 }
+
+variable "ror-lamassu-admin-password" {}
