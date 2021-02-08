@@ -23,11 +23,11 @@ public class VehicleFilter {
             return false;
         }
 
-        if (Boolean.FALSE.equals(filters.getIncludeReserved()) && Boolean.TRUE.equals(parsedId.getReserved())) {
+        if (!filters.getIncludeReserved() && parsedId.getReserved()) {
             return false;
         }
 
-        if (Boolean.FALSE.equals(filters.getIncludeDisabled()) && Boolean.TRUE.equals(parsedId.getDisabled())) {
+        if (!filters.getIncludeDisabled() && parsedId.getDisabled()) {
             return false;
         }
 

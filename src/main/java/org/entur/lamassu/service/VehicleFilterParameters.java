@@ -10,8 +10,8 @@ public class VehicleFilterParameters {
     private List<String> codespaces;
     private List<FormFactor> formFactors;
     private List<PropulsionType> propulsionTypes;
-    private Boolean includeReserved;
-    private Boolean includeDisabled;
+    private boolean includeReserved;
+    private boolean includeDisabled;
 
     public List<String> getOperators() {
         return operators;
@@ -45,19 +45,19 @@ public class VehicleFilterParameters {
         this.propulsionTypes = propulsionTypes;
     }
 
-    public Boolean getIncludeReserved() {
+    public boolean getIncludeReserved() {
         return includeReserved;
     }
 
-    public void setIncludeReserved(Boolean includeReserved) {
+    public void setIncludeReserved(boolean includeReserved) {
         this.includeReserved = includeReserved;
     }
 
-    public Boolean getIncludeDisabled() {
+    public boolean getIncludeDisabled() {
         return includeDisabled;
     }
 
-    public void setIncludeDisabled(Boolean includeDisabled) {
+    public void setIncludeDisabled(boolean includeDisabled) {
         this.includeDisabled = includeDisabled;
     }
 }

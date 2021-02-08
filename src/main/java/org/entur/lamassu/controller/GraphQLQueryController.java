@@ -42,8 +42,8 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
             List<String> codespaces,
             List<FormFactor> formFactors,
             List<PropulsionType> propulsionTypes,
-            Boolean includeReserved,
-            Boolean includeDisabled
+            boolean includeReserved,
+            boolean includeDisabled
     ) {
         validateCodespaces(codespaces);
         validateOperators(operators);

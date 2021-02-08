@@ -87,7 +87,7 @@ public class VehicleFilterTest {
 
     @Test
     public void testIncludeReservedFilter() {
-        var testId = testId();
+        var testId = testReservedId();
         var params = testFilterParams();
 
         params.setIncludeReserved(true);
@@ -103,7 +103,7 @@ public class VehicleFilterTest {
 
     @Test
     public void testIncludeDisabledFilter() {
-        var testId = testId();
+        var testId = testDisabledId();
         var params = testFilterParams();
 
         params.setIncludeDisabled(true);
@@ -121,11 +121,23 @@ public class VehicleFilterTest {
         return SpatialIndexId.fromString(SpatialIndexIdUtil.createSpatialIndexId(testVehicle(), testProvider()));
     }
 
+    private SpatialIndexId testReservedId() {
+        var vehicle = testVehicle();
+        vehicle.setReserved(true);
+        return SpatialIndexId.fromString(SpatialIndexIdUtil.createSpatialIndexId(vehicle, testProvider()));
+    }
+
+    private SpatialIndexId testDisabledId() {
+        var vehicle = testVehicle();
+        vehicle.setDisabled(true);
+        return SpatialIndexId.fromString(SpatialIndexIdUtil.createSpatialIndexId(vehicle, testProvider()));
+    }
+
     private Vehicle testVehicle() {
         var vehicle = new Vehicle();
         vehicle.setId("TST:Vehicle:abc123");
-        vehicle.setReserved(true);
-        vehicle.setDisabled(true);
+        vehicle.setReserved(false);
+        vehicle.setDisabled(false);
         vehicle.setVehicleType(scooterVehicle());
         return vehicle;
     }
@@ -146,6 +158,9 @@ public class VehicleFilterTest {
     }
 
     private VehicleFilterParameters testFilterParams() {
-        return new VehicleFilterParameters();
+        var params = new VehicleFilterParameters();
+        params.setIncludeReserved(false);
+        params.setIncludeDisabled(false);
+        return params;
     }
 }
