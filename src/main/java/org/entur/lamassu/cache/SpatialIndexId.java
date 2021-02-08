@@ -33,6 +33,17 @@ public class SpatialIndexId {
         }
     }
 
+    @Override
+    public String toString() {
+        return vehicleId + '_' +
+                operator + '_' +
+                codespace + '_' +
+                formFactor + '_' +
+                propulsionTypes + '_' +
+                isReserved + '_' +
+                isDisabled;
+    }
+
     private SpatialIndexId() {}
 
     public String getVehicleId() {
