@@ -1,8 +1,5 @@
-package org.entur.lamassu.model;
+package org.entur.lamassu.model.feedprovider;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class FeedProvider {
     private String name;
     private String codespace;

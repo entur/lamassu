@@ -14,11 +14,14 @@ public class ClusterSingletonService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final RLock feedUpdateSchedulerLock;
     private final FeedUpdateScheduler feedUpdateScheduler;
+    private final ListenerManager listenerManager;
+
     private boolean isLeader = false;
 
-    public ClusterSingletonService(RLock feedUpdateSchedulerLock, @Autowired FeedUpdateScheduler feedUpdateScheduler) {
+    public ClusterSingletonService(RLock feedUpdateSchedulerLock, @Autowired FeedUpdateScheduler feedUpdateScheduler, @Autowired ListenerManager listenerManager) {
         this.feedUpdateSchedulerLock = feedUpdateSchedulerLock;
         this.feedUpdateScheduler = feedUpdateScheduler;
+        this.listenerManager = listenerManager;
     }
 
     /**
@@ -40,6 +43,7 @@ public class ClusterSingletonService {
                 logger.info("Lost leadership");
                 isLeader = false;
                 feedUpdateScheduler.stop();
+                listenerManager.stop();
             }
         } else {
             logger.debug("Trying to become leader.");
@@ -47,6 +51,7 @@ public class ClusterSingletonService {
                 logger.info("I became the leader");
                 isLeader = true;
                 feedUpdateScheduler.start();
+                listenerManager.start();
             } else {
                 logger.debug("Sorry, someone else is the leader, try again soon");
             }
@@ -63,6 +68,7 @@ public class ClusterSingletonService {
         } catch (InterruptedException e) {
             isLeader = false;
             feedUpdateScheduler.stop();
+            listenerManager.stop();
             throw e;
         }
     }

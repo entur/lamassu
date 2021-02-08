@@ -1,19 +1,22 @@
 package org.entur.lamassu.cache.impl;
 
 import org.entur.lamassu.cache.EntityCache;
-import org.entur.lamassu.model.Entity;
+import org.entur.lamassu.model.entities.Entity;
+import org.redisson.api.CacheAsync;
 
 import javax.cache.Cache;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 abstract class EntityCacheImpl<T extends Entity> implements EntityCache<T> {
     protected final Cache<String, T> cache;
+    private final CacheAsync<String, T> cacheAsync;
 
     protected EntityCacheImpl(Cache<String, T> cache) {
         this.cache = cache;
+        this.cacheAsync = cache.unwrap(CacheAsync.class);
     }
 
     @Override
@@ -27,19 +30,7 @@ abstract class EntityCacheImpl<T extends Entity> implements EntityCache<T> {
     }
 
     @Override
-    public void updateAll(List<T> entities) {
-        cache.putAll(
-                entities.stream().reduce(
-                        new HashMap<>(),
-                        ((acc, entity) -> {
-                            acc.put(entity.getId(), entity);
-                            return acc;
-                        }),
-                        ((acc1, acc2) -> {
-                            acc1.putAll(acc2);
-                            return acc1;
-                        })
-                )
-        );
+    public void updateAll(Map<String, T> entities) {
+        cacheAsync.putAllAsync(entities);
     }
 }

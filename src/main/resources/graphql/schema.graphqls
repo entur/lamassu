@@ -2,26 +2,17 @@ type Query {
     operators: [Operator]
     codespaces: [String]
 
-#    stations(
-#        lat: Float!
-#        lon: Float!
-#        range: Int
-#        max: Int
-#        operators: [String]
-#        codespaces: [String]
-#    ): [Station]
-
     vehicles(
         lat: Float!
         lon: Float!
         range: Int!
         count: Int
-#        operators: [String]
-#        codespaces: [String]
-#        formFactors: [FormFactor]
-#        propulsionTypes: [PropulsionType]
-#        includeReserved: Boolean
-#        includeDisabled: Boolean
+        operators: [String]
+        codespaces: [String]
+        formFactors: [FormFactor]
+        propulsionTypes: [PropulsionType]
+        includeReserved: Boolean = false
+        includeDisabled: Boolean = false
     ): [Vehicle]
 }
 
@@ -29,23 +20,6 @@ type Operator {
     name: String
     codespace: String
 }
-
-#type Station {
-#    id: ID!
-#    name: String!
-#    lat: Float!
-#    lon: Float!
-#    address: String
-#    capacity: Int
-#    numBikesAvailable: Int
-#    vehicleTypesAvailable: VehicleTypeAvailability
-#    numDocksAvailable: Int
-#    isInstalled: Boolean
-#    isRenting: Boolean
-#    isReturning: Boolean
-#    lastReported: Int
-#    system: System
-#}
 
 type VehicleTypeAvailability {
     vehicleType: VehicleType!
@@ -61,7 +35,6 @@ type Vehicle {
     currentRangeMeters: Float
     vehicleType: VehicleType
     pricingPlan: PricingPlan
-    #system: System
 }
 
 type VehicleType {
@@ -106,13 +79,3 @@ type PricingSegment {
     interval: Int
     end: Int
 }
-
-#type System {
-#    id: ID!
-#    language: String
-#    name: String
-#    operator: String
-#    phoneNumber: String
-#    email: String
-#    timezone: String
-#}

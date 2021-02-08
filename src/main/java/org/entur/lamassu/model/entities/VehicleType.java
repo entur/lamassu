@@ -1,4 +1,4 @@
-package org.entur.lamassu.model;
+package org.entur.lamassu.model.entities;
 
 public class VehicleType implements Entity {
     private String id;
@@ -45,5 +45,16 @@ public class VehicleType implements Entity {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public String toString() {
+        return "VehicleType{" +
+                "id='" + id + '\'' +
+                ", formFactor=" + formFactor +
+                ", propulsionType=" + propulsionType +
+                ", maxRangeMeters=" + maxRangeMeters +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

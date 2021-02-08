@@ -2,7 +2,7 @@ package org.entur.lamassu.controller;
 
 import org.entur.lamassu.cache.GBFSFeedCache;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
-import org.entur.lamassu.model.FeedProviderDiscovery;
+import org.entur.lamassu.model.feedprovider.FeedProviderDiscovery;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSFeedName;
 import org.entur.lamassu.service.ProviderDiscoveryService;
@@ -17,15 +17,16 @@ import java.util.NoSuchElementException;
 
 @RestController
 public class GBFSFeedController {
+    private final ProviderDiscoveryService providerDiscoveryService;
+    private final GBFSFeedCache feedCache;
+    private final FeedProviderConfig feedProviderConfig;
 
     @Autowired
-    ProviderDiscoveryService providerDiscoveryService;
-
-    @Autowired
-    GBFSFeedCache feedCache;
-
-    @Autowired
-    FeedProviderConfig feedProviderConfig;
+    public GBFSFeedController(ProviderDiscoveryService providerDiscoveryService, GBFSFeedCache feedCache, FeedProviderConfig feedProviderConfig) {
+        this.providerDiscoveryService = providerDiscoveryService;
+        this.feedCache = feedCache;
+        this.feedProviderConfig = feedProviderConfig;
+    }
 
     @GetMapping("/gbfs")
     public FeedProviderDiscovery getFeedProviderDiscovery() {
@@ -35,12 +36,9 @@ public class GBFSFeedController {
     @GetMapping("/gbfs/{provider}/{feed}")
     public GBFSBase getGbfsFeedForProvider(@PathVariable String provider, @PathVariable String feed) {
         try {
-            GBFSFeedName feedName = GBFSFeedName.valueOf(feed.toUpperCase());
-            return feedProviderConfig.getProviders().stream()
-                    .filter(fp -> fp.getName().equalsIgnoreCase(provider))
-                    .findFirst()
-                    .map(feedProvider -> feedCache.find(feedName, feedProvider))
-                    .orElseThrow();
+            var feedName = GBFSFeedName.valueOf(feed.toUpperCase());
+            var feedProvider = feedProviderConfig.get(provider);
+            return feedCache.find(feedName, feedProvider);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         } catch (NoSuchElementException e) {

@@ -11,25 +11,25 @@ import java.util.List;
 
 @Component
 public class VehicleSpatialIndexImpl implements VehicleSpatialIndex {
+    private final RGeo<String> spatialIndex;
+
     @Autowired
-    RGeo<String> spatialIndex;
-
-    @Override
-    public long add(Double longitude, Double latitude, String id) {
-        return spatialIndex.add(longitude, latitude, id);
+    public VehicleSpatialIndexImpl(RGeo<String> spatialIndex) {
+        this.spatialIndex = spatialIndex;
     }
 
     @Override
-    public boolean remove(String id) {
-        return spatialIndex.remove(id);
+    public void add(Double longitude, Double latitude, String id) {
+        spatialIndex.addAsync(longitude, latitude, id);
     }
 
     @Override
-    public List<String> radius(Double longitude, Double latitude, Double radius, GeoUnit geoUnit, GeoOrder geoOrder, Integer count) {
-        if (count != null) {
-            return spatialIndex.radius(longitude, latitude, radius, geoUnit, geoOrder, count);
-        } else {
-            return spatialIndex.radius(longitude, latitude, radius, geoUnit, geoOrder);
-        }
+    public void remove(String id) {
+        spatialIndex.removeAsync(id);
+    }
+
+    @Override
+    public List<String> radius(Double longitude, Double latitude, Double radius, GeoUnit geoUnit, GeoOrder geoOrder) {
+        return spatialIndex.radius(longitude, latitude, radius, geoUnit, geoOrder);
     }
 }
