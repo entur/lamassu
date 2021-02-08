@@ -35,6 +35,11 @@ spec:
                 -Dfile.encoding=UTF-8 -Drutebanken.kubernetes.enabled=true -Drutebanken.kubernetes.namespace={{ .Release.Namespace }}
             - name: TZ
               value: Europe/Oslo
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ror-lamassu-basic-auth
+                  key: lamassu.admin.password
           envFrom:
             - configMapRef:
                 name: lamassu-redis-configmap

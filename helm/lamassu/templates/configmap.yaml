@@ -45,6 +45,10 @@ data:
 
     org.entur.lamassu.feedproviders=file:/etc/application-config/feedproviders.yml
     org.entur.lamassu.baseUrl={{ .Values.configMap.baseUrl }}
+
+    # Admin endpoint basic auth
+    org.entur.lamassu.adminPassword=${ADMIN_PASSWORD}
+
   feedproviders.yml: |-
     {{- with .Values.lamassu.feedProviders }}
     lamassu:
