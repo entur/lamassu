@@ -12,8 +12,8 @@ public class SpatialIndexId {
     private String codespace;
     private FormFactor formFactor;
     private PropulsionType propulsionTypes;
-    private Boolean isReserved;
-    private Boolean isDisabled;
+    private boolean isReserved;
+    private boolean isDisabled;
 
     public static SpatialIndexId fromString(String indexId) {
         try {
@@ -86,19 +86,19 @@ public class SpatialIndexId {
         this.propulsionTypes = propulsionTypes;
     }
 
-    public Boolean getReserved() {
+    public boolean getReserved() {
         return isReserved;
     }
 
-    public void setReserved(Boolean reserved) {
+    public void setReserved(boolean reserved) {
         isReserved = reserved;
     }
 
-    public Boolean getDisabled() {
+    public boolean getDisabled() {
         return isDisabled;
     }
 
-    public void setDisabled(Boolean disabled) {
+    public void setDisabled(boolean disabled) {
         isDisabled = disabled;
     }
 }
