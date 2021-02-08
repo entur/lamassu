@@ -1,7 +1,5 @@
 package org.entur.lamassu.updater;
 
-
-import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.model.feedprovider.FeedProvider;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
