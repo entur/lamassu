@@ -1,5 +1,6 @@
 package org.entur.lamassu.updater;
 
+import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.quartz.Job;
 import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
@@ -21,23 +22,30 @@ public class FeedUpdateScheduler {
 
     private final Scheduler feedUpdateQuartzScheduler;
 
+    private final FeedProviderConfig feedProviderConfig;
+
     @Value("${org.entur.lamassu.feedupdateinterval:30}")
     private int feedUpdateInterval;
 
     @Autowired
-    public FeedUpdateScheduler(Scheduler feedUpdateQuartzScheduler) {
+    public FeedUpdateScheduler(Scheduler feedUpdateQuartzScheduler, FeedProviderConfig feedProviderConfig) {
         this.feedUpdateQuartzScheduler = feedUpdateQuartzScheduler;
+        this.feedProviderConfig = feedProviderConfig;
     }
 
     public void start() {
-        try {
-            JobDetail jobDetail = buildJobDetail(FetchDiscoveryFeedsJob.class, "fetchDiscoveryFeeds", new JobDataMap());
+        feedProviderConfig.getProviders().parallelStream().forEach(feedProvider ->  {
+            var jobData = new JobDataMap();
+            jobData.put("feedProvider", feedProvider);
+            JobDetail jobDetail = buildJobDetail(FetchDiscoveryFeedJob.class, feedProvider.getName(), jobData);
             Trigger trigger = buildJobTrigger(jobDetail, getFeedUpdateScheduleBuilder());
-            feedUpdateQuartzScheduler.scheduleJob(jobDetail, trigger);
-            logger.debug("Scheduled fetch discovery feeds");
-        } catch (SchedulerException e) {
-            logger.warn("Failed to schedule fetch discovery feeds", e);
-        }
+            try {
+                feedUpdateQuartzScheduler.scheduleJob(jobDetail, trigger);
+            } catch (SchedulerException e) {
+                logger.warn("Failed to schedule fetch discovery feed for {}", feedProvider.getName(), e);
+            }
+            logger.debug("Scheduled fetch discovery feed for {}", feedProvider.getName());
+        });
     }
 
     public void stop() {

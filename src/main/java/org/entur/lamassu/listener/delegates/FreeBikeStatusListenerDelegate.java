@@ -114,12 +114,7 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
 
     private void addOrUpdateSpatialIndex(String id, Vehicle vehicle) {
         try {
-            long added = spatialIndex.add(vehicle.getLon(), vehicle.getLat(), id);
-            if (added > 0) {
-                logger.debug("Added vehicle to spatial index: indexId={} vehicle={}", id, vehicle);
-            } else {
-                logger.debug("Updated vehicle in spatial index: indexId={} vehicle={}", id, vehicle);
-            }
+            spatialIndex.add(vehicle.getLon(), vehicle.getLat(), id);
         } catch (RedisException | IllegalArgumentException e) {
             logger.warn("Caught exception when trying to add vehicle to spatial index for vehicle={}", vehicle, e);
         }

@@ -2,7 +2,6 @@ package org.entur.lamassu.updater;
 
 import org.entur.lamassu.api.GBFSFeedApi;
 import org.entur.lamassu.cache.GBFSFeedCache;
-import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.mapper.DiscoveryFeedMapper;
 import org.entur.lamassu.model.feedprovider.FeedProvider;
 import org.entur.lamassu.model.gbfs.v2_1.GBFS;
@@ -17,24 +16,17 @@ public class FeedUpdateService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final GBFSFeedApi api;
-    private final FeedProviderConfig feedProviderConfig;
     private final GBFSFeedCache feedCache;
     private final DiscoveryFeedMapper discoveryFeedMapper;
 
     @Autowired
-    public FeedUpdateService(GBFSFeedApi api, FeedProviderConfig feedProviderConfig, GBFSFeedCache feedCache, DiscoveryFeedMapper discoveryFeedMapper) {
+    public FeedUpdateService(GBFSFeedApi api, GBFSFeedCache feedCache, DiscoveryFeedMapper discoveryFeedMapper) {
         this.api = api;
-        this.feedProviderConfig = feedProviderConfig;
         this.feedCache = feedCache;
         this.discoveryFeedMapper = discoveryFeedMapper;
     }
 
-    public void fetchDiscoveryFeeds() {
-        logger.debug("Fetching discovery feeds");
-        feedProviderConfig.getProviders().forEach(this::fetchDiscoveryFeed);
-    }
-
-    private void fetchDiscoveryFeed(FeedProvider feedProvider) {
+    public void fetchDiscoveryFeed(FeedProvider feedProvider) {
         api.getDiscoveryFeed(feedProvider).subscribe(discovery -> {
             logger.info("Fetched discovery feed {}", feedProvider.getUrl());
             var mappedFeed = discoveryFeedMapper.mapDiscoveryFeed(discovery, feedProvider);

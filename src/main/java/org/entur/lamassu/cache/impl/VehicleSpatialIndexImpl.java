@@ -19,13 +19,13 @@ public class VehicleSpatialIndexImpl implements VehicleSpatialIndex {
     }
 
     @Override
-    public long add(Double longitude, Double latitude, String id) {
-        return spatialIndex.add(longitude, latitude, id);
+    public void add(Double longitude, Double latitude, String id) {
+        spatialIndex.addAsync(longitude, latitude, id);
     }
 
     @Override
-    public boolean remove(String id) {
-        return spatialIndex.remove(id);
+    public void remove(String id) {
+        spatialIndex.removeAsync(id);
     }
 
     @Override

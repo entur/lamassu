@@ -1,13 +1,14 @@
 package org.entur.lamassu.updater;
 
 
+import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
+import org.entur.lamassu.model.feedprovider.FeedProvider;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
-import org.springframework.stereotype.Component;
 
-public class FetchDiscoveryFeedsJob extends QuartzJobBean {
+public class FetchDiscoveryFeedJob extends QuartzJobBean {
 
     // This works thanks to org.entur.lamassu.util.AutowiringSpringBeanJobFactory
     @Autowired
@@ -15,6 +16,7 @@ public class FetchDiscoveryFeedsJob extends QuartzJobBean {
 
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        feedUpdateService.fetchDiscoveryFeeds();
+        var feedProvider = (FeedProvider) jobExecutionContext.getJobDetail().getJobDataMap().get("feedProvider");
+        feedUpdateService.fetchDiscoveryFeed(feedProvider);
     }
 }
