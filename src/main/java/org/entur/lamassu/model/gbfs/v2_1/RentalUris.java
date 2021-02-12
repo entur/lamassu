@@ -8,4 +8,17 @@ public class RentalUris {
     @JsonProperty("android") String android;
     @JsonProperty("ios") String ios;
     @JsonProperty("web") String web;
+
+    public String getAndroid() {
+        return android;
+    }
+
+    public String getIos() {
+        return ios;
+    }
+
+    public String getWeb() {
+        return web;
+    }
+
 }
