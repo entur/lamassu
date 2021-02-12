@@ -35,6 +35,7 @@ type Vehicle {
     currentRangeMeters: Float
     vehicleType: VehicleType
     pricingPlan: PricingPlan
+    rentalUris: RentalUris
 }
 
 type VehicleType {
@@ -78,4 +79,10 @@ type PricingSegment {
     rate: Float
     interval: Int
     end: Int
+}
+
+type RentalUris {
+    android: String
+    ios: String
+    web: String
 }

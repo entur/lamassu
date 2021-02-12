@@ -1,6 +1,7 @@
 package org.entur.lamassu.mapper;
 
 import org.entur.lamassu.model.entities.PricingPlan;
+import org.entur.lamassu.model.entities.RentalUris;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.entities.VehicleType;
 import org.entur.lamassu.model.gbfs.v2_1.FreeBikeStatus;
@@ -19,6 +20,15 @@ public class VehicleMapper {
         vehicle.setCurrentRangeMeters(bike.getCurrentRangeMeters());
         vehicle.setVehicleType(vehicleType);
         vehicle.setPricingPlan(pricingPlan);
+        vehicle.setRentalUris(mapRentalUris(bike.getRentalUris()));
         return vehicle;
+    }
+
+    private RentalUris mapRentalUris(org.entur.lamassu.model.gbfs.v2_1.RentalUris rentalUris) {
+        var mapped = new RentalUris();
+        mapped.setAndroid(rentalUris.getAndroid());
+        mapped.setIos(rentalUris.getIos());
+        mapped.setWeb(rentalUris.getWeb());
+        return mapped;
     }
 }

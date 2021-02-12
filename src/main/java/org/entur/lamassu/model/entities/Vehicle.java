@@ -12,6 +12,8 @@ public class Vehicle implements Entity {
     private VehicleType vehicleType;
     private PricingPlan pricingPlan;
 
+    private RentalUris rentalUris;
+
     public String getId() {
         return id;
     }
@@ -76,6 +78,14 @@ public class Vehicle implements Entity {
         this.pricingPlan = pricingPlan;
     }
 
+    public RentalUris getRentalUris() {
+        return rentalUris;
+    }
+
+    public void setRentalUris(RentalUris rentalUris) {
+        this.rentalUris = rentalUris;
+    }
+
     @Override
     public String toString() {
         return "Vehicle{" +
@@ -87,6 +97,7 @@ public class Vehicle implements Entity {
                 ", currentRangeMeters=" + currentRangeMeters +
                 ", vehicleType=" + vehicleType +
                 ", pricingPlan=" + pricingPlan +
+                ", rentalUris=" + rentalUris +
                 '}';
     }
 
