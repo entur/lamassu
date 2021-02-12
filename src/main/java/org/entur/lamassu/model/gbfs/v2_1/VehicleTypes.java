@@ -12,12 +12,26 @@ public class VehicleTypes extends GBFSBase {
         return data;
     }
 
+    @Override
+    public String toString() {
+        return "VehicleTypes{" +
+                "data=" + data +
+                '}';
+    }
+
     public static class Data {
         @JsonProperty("vehicle_types")
         List<VehicleType> vehicleTypes;
 
         public List<VehicleType> getVehicleTypes() {
             return vehicleTypes;
+        }
+
+        @Override
+        public String toString() {
+            return "Data{" +
+                    "vehicleTypes=" + vehicleTypes +
+                    '}';
         }
     }
 
@@ -47,6 +61,17 @@ public class VehicleTypes extends GBFSBase {
 
         public String getName() {
             return name;
+        }
+
+        @Override
+        public String toString() {
+            return "VehicleType{" +
+                    "vehicleTypeId='" + vehicleTypeId + '\'' +
+                    ", formFactor=" + formFactor +
+                    ", propulsionType=" + propulsionType +
+                    ", maxRangeMeters=" + maxRangeMeters +
+                    ", name='" + name + '\'' +
+                    '}';
         }
     }
 

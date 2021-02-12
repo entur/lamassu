@@ -30,4 +30,13 @@ public abstract class GBFSBase {
     public void setVersion(String version) {
         this.version = version;
     }
+
+    @Override
+    public String toString() {
+        return "GBFSBase{" +
+                "lastUpdated=" + lastUpdated +
+                ", ttl=" + ttl +
+                ", version='" + version + '\'' +
+                '}';
+    }
 }
