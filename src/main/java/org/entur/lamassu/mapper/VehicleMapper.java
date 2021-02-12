@@ -25,6 +25,10 @@ public class VehicleMapper {
     }
 
     private RentalUris mapRentalUris(org.entur.lamassu.model.gbfs.v2_1.RentalUris rentalUris) {
+        if (rentalUris == null) {
+            return null;
+        }
+
         var mapped = new RentalUris();
         mapped.setAndroid(rentalUris.getAndroid());
         mapped.setIos(rentalUris.getIos());
