@@ -17,7 +17,6 @@
         <entur.helpers.version>1.0.36</entur.helpers.version>
         <redisson.version>3.14.1</redisson.version>
         <embedded-redis.version>0.8.1</embedded-redis.version>
-        <quartz.version>2.3.2</quartz.version>
         <okhttp.version>4.9.0</okhttp.version>
     </properties>
 
@@ -58,7 +57,6 @@
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
-            <version>${quartz.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
