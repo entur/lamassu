@@ -19,6 +19,16 @@
         system {
             id
             name
+            rentalApps {
+                android {
+                    storeUri
+                    discoveryUri
+                }
+                ios {
+                    storeUri
+                    discoveryUri
+                }
+            }
         }
     }
 }
