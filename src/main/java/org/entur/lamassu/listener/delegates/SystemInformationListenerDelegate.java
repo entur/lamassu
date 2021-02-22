@@ -1,12 +1,9 @@
 package org.entur.lamassu.listener.delegates;
 
 import org.entur.lamassu.cache.SystemCache;
-import org.entur.lamassu.cache.VehicleTypeCache;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.listener.CacheEntryListenerDelegate;
 import org.entur.lamassu.mapper.SystemMapper;
-import org.entur.lamassu.mapper.VehicleTypeMapper;
-import org.entur.lamassu.model.entities.VehicleType;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
 import org.entur.lamassu.model.gbfs.v2_1.SystemInformation;
 import org.slf4j.Logger;
@@ -44,12 +41,12 @@ public class SystemInformationListenerDelegate implements CacheEntryListenerDele
 
     @Override
     public void onRemoved(CacheEntryEvent<? extends String, GBFSBase> event) {
-        // TODO implement
+        // noop
     }
 
     @Override
     public void onExpired(CacheEntryEvent<? extends String, GBFSBase> event) {
-        // TODO implement
+        // noop
     }
 
     public void addOrUpdateSystem(CacheEntryEvent<? extends String, ? extends GBFSBase> event) {

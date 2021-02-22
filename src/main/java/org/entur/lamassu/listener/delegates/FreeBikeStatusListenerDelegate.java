@@ -64,12 +64,12 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
 
     @Override
     public void onRemoved(CacheEntryEvent<? extends String, GBFSBase> event) {
-        // TODO implement
+        // noop
     }
 
     @Override
     public void onExpired(CacheEntryEvent<? extends String, GBFSBase> event) {
-        // TODO implement
+        // noop
     }
 
     private void addOrUpdateVehicles(CacheEntryEvent<? extends String, ? extends GBFSBase> event) {

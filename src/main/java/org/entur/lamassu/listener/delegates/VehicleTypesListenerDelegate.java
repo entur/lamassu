@@ -40,12 +40,12 @@ public class VehicleTypesListenerDelegate implements CacheEntryListenerDelegate<
 
     @Override
     public void onRemoved(CacheEntryEvent<? extends String, GBFSBase> event) {
-        // TODO implement
+        // noop
     }
 
     @Override
     public void onExpired(CacheEntryEvent<? extends String, GBFSBase> event) {
-        // TODO implement
+        // noop
     }
 
     public void addOrUpdateVehicleType(CacheEntryEvent<? extends String, ? extends GBFSBase> event) {
