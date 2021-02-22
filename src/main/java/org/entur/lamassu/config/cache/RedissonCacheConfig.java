@@ -1,6 +1,7 @@
 package org.entur.lamassu.config.cache;
 
 import org.entur.lamassu.model.entities.PricingPlan;
+import org.entur.lamassu.model.entities.System;
 import org.entur.lamassu.model.entities.VehicleType;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
 import org.entur.lamassu.model.entities.Vehicle;
@@ -30,6 +31,7 @@ public class RedissonCacheConfig {
     public static final String VEHICLE_CACHE_KEY = "vehicleCache";
     public static final String VEHICLE_TYPE_CACHE_KEY = "vehicleTypeCache";
     public static final String PRICING_PLAN_CACHE_KEY = "pricingPlanCache";
+    public static final String SYSTEM_CACHE_KEY = "systemCache";
     public static final String VEHICLE_SPATIAL_INDEX_KEY = "vehicleSpatialIndex";
     public static final String FEED_UPDATE_SCHEDULER_LOCK = "leader";
 
@@ -103,6 +105,15 @@ public class RedissonCacheConfig {
         var redissonCacheConfig = RedissonConfiguration.fromConfig(redissonConfig, cacheConfig);
         var manager = Caching.getCachingProvider().getCacheManager();
         return manager.createCache(PRICING_PLAN_CACHE_KEY, redissonCacheConfig);
+    }
+
+    @Bean
+    public Cache<String, System> systemCache(Config redissonConfig) {
+        var cacheConfig = new MutableConfiguration<String, System>();
+        cacheConfig.setExpiryPolicyFactory((Factory<ExpiryPolicy>) () -> new CustomExpiryPolicy(Duration.ONE_MINUTE, null, Duration.ONE_MINUTE));
+        var redissonCacheConfig = RedissonConfiguration.fromConfig(redissonConfig, cacheConfig);
+        var manager = Caching.getCachingProvider().getCacheManager();
+        return manager.createCache(SYSTEM_CACHE_KEY, redissonCacheConfig);
     }
 
     @Bean

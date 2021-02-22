@@ -36,6 +36,7 @@ type Vehicle {
     vehicleType: VehicleType
     pricingPlan: PricingPlan
     rentalUris: RentalUris
+    system: System
 }
 
 type VehicleType {
@@ -85,4 +86,31 @@ type RentalUris {
     android: String
     ios: String
     web: String
+}
+
+type System {
+    id: ID!
+    language: String!
+    name: String!
+    shortName: String
+    operator: String
+    url: String
+    purchaseUrl: String
+    startDate: String
+    phoneNumber: String
+    email: String
+    feedContactEmail: String
+    timezone: String!
+    licenseUrl: String
+    rentalApps: RentalApps
+}
+
+type RentalApps {
+    ios: RentalApp
+    android: RentalApp
+}
+
+type RentalApp {
+    storeUri: String
+    discoveryUri: String
 }
