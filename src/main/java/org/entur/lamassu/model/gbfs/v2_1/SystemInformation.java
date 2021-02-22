@@ -7,6 +7,10 @@ public class SystemInformation extends GBFSBase {
     @JsonProperty("data")
     Data data;
 
+    public Data getData() {
+        return data;
+    }
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Data {
         @JsonProperty("system_id")
@@ -37,17 +41,89 @@ public class SystemInformation extends GBFSBase {
         String licenseUrl;
         @JsonProperty("rental_apps")
         RentalApps rentalApps;
+
+        public String getSystemId() {
+            return systemId;
+        }
+
+        public String getLanguage() {
+            return language;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getShortName() {
+            return shortName;
+        }
+
+        public String getOperator() {
+            return operator;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public String getPurchaseUrl() {
+            return purchaseUrl;
+        }
+
+        public String getStartDate() {
+            return startDate;
+        }
+
+        public String getPhoneNumber() {
+            return phoneNumber;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public String getFeedContactEmail() {
+            return feedContactEmail;
+        }
+
+        public String getTimezone() {
+            return timezone;
+        }
+
+        public String getLicenseUrl() {
+            return licenseUrl;
+        }
+
+        public RentalApps getRentalApps() {
+            return rentalApps;
+        }
     }
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RentalApps {
         @JsonProperty("ios") RentalApp ios;
         @JsonProperty("android") RentalApp android;
+
+        public RentalApp getIos() {
+            return ios;
+        }
+
+        public RentalApp getAndroid() {
+            return android;
+        }
     }
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RentalApp {
         @JsonProperty("store_uri") String storeURI;
         @JsonProperty("discovery_uri") String discoveryURI;
+
+        public String getStoreURI() {
+            return storeURI;
+        }
+
+        public String getDiscoveryURI() {
+            return discoveryURI;
+        }
     }
 }

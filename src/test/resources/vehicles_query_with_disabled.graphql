@@ -16,5 +16,19 @@
             price
             perMinPricing {start rate interval end}
         }
+        system {
+            id
+            name
+            rentalApps {
+                android {
+                    storeUri
+                    discoveryUri
+                }
+                ios {
+                    storeUri
+                    discoveryUri
+                }
+            }
+        }
     }
 }

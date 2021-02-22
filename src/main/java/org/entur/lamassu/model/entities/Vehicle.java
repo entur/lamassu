@@ -11,6 +11,7 @@ public class Vehicle implements Entity {
     private Float currentRangeMeters;
     private VehicleType vehicleType;
     private PricingPlan pricingPlan;
+    private System system;
 
     private RentalUris rentalUris;
 
@@ -86,6 +87,14 @@ public class Vehicle implements Entity {
         this.rentalUris = rentalUris;
     }
 
+    public System getSystem() {
+        return system;
+    }
+
+    public void setSystem(System system) {
+        this.system = system;
+    }
+
     @Override
     public String toString() {
         return "Vehicle{" +
@@ -97,6 +106,7 @@ public class Vehicle implements Entity {
                 ", currentRangeMeters=" + currentRangeMeters +
                 ", vehicleType=" + vehicleType +
                 ", pricingPlan=" + pricingPlan +
+                ", system=" + system +
                 ", rentalUris=" + rentalUris +
                 '}';
     }

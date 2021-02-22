@@ -39,12 +39,12 @@ public class SystemPricingPlansListenerDelegate implements CacheEntryListenerDel
 
     @Override
     public void onRemoved(CacheEntryEvent<? extends String, GBFSBase> event) {
-        // TODO implement
+        // noop
     }
 
     @Override
     public void onExpired(CacheEntryEvent<? extends String, GBFSBase> event) {
-        // TODO implement
+        // noop
     }
 
     private void addOrUpdateSystemPricingPlan(CacheEntryEvent<? extends String, ? extends GBFSBase> event) {

@@ -1,6 +1,7 @@
 package org.entur.lamassu.listener.delegates;
 
 import org.entur.lamassu.cache.PricingPlanCache;
+import org.entur.lamassu.cache.SystemCache;
 import org.entur.lamassu.cache.VehicleCache;
 import org.entur.lamassu.cache.VehicleSpatialIndex;
 import org.entur.lamassu.cache.VehicleTypeCache;
@@ -27,6 +28,7 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
     private final VehicleCache vehicleCache;
     private final VehicleTypeCache vehicleTypeCache;
     private final PricingPlanCache pricingPlanCache;
+    private final SystemCache systemCache;
     private final FeedProviderConfig feedProviderConfig;
     private final VehicleSpatialIndex spatialIndex;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -37,6 +39,7 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
             VehicleCache vehicleCache,
             VehicleTypeCache vehicleTypeCache,
             PricingPlanCache pricingPlanCache,
+            SystemCache systemCache,
             FeedProviderConfig feedProviderConfig,
             VehicleSpatialIndex spatialIndex
     ) {
@@ -44,6 +47,7 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
         this.vehicleCache = vehicleCache;
         this.vehicleTypeCache = vehicleTypeCache;
         this.pricingPlanCache = pricingPlanCache;
+        this.systemCache = systemCache;
         this.feedProviderConfig = feedProviderConfig;
         this.spatialIndex = spatialIndex;
     }
@@ -60,12 +64,12 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
 
     @Override
     public void onRemoved(CacheEntryEvent<? extends String, GBFSBase> event) {
-        // TODO implement
+        // noop
     }
 
     @Override
     public void onExpired(CacheEntryEvent<? extends String, GBFSBase> event) {
-        // TODO implement
+        // noop
     }
 
     private void addOrUpdateVehicles(CacheEntryEvent<? extends String, ? extends GBFSBase> event) {
@@ -77,7 +81,8 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
                     .map(vehicle -> vehicleMapper.mapVehicle(
                             vehicle,
                             vehicleTypeCache.get(vehicle.getVehicleTypeId()),
-                            pricingPlanCache.get(vehicle.getPricingPlanId())
+                            pricingPlanCache.get(vehicle.getPricingPlanId()),
+                            systemCache.get(feedProvider.getName())
                     )).collect(Collectors.toList());
 
             if (vehicles.stream().distinct().count() != (long) vehicles.size()) {

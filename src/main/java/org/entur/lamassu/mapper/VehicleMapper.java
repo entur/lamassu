@@ -2,6 +2,7 @@ package org.entur.lamassu.mapper;
 
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.RentalUris;
+import org.entur.lamassu.model.entities.System;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.entities.VehicleType;
 import org.entur.lamassu.model.gbfs.v2_1.FreeBikeStatus;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class VehicleMapper {
 
-    public Vehicle mapVehicle(FreeBikeStatus.Bike bike, VehicleType vehicleType, PricingPlan pricingPlan) {
+    public Vehicle mapVehicle(FreeBikeStatus.Bike bike, VehicleType vehicleType, PricingPlan pricingPlan, System system) {
         var vehicle = new Vehicle();
         vehicle.setId(bike.getBikeId());
         vehicle.setLat(bike.getLat());
@@ -21,6 +22,7 @@ public class VehicleMapper {
         vehicle.setVehicleType(vehicleType);
         vehicle.setPricingPlan(pricingPlan);
         vehicle.setRentalUris(mapRentalUris(bike.getRentalUris()));
+        vehicle.setSystem(system);
         return vehicle;
     }
 
