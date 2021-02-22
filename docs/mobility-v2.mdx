@@ -1,0 +1,86 @@
+---
+name: v2-beta
+menu: Mobility
+---
+
+# Mobility v2-beta
+
+Aggregation API for micro-mobility services. This API is currently in beta, and breaking changes may occur without notice.
+
+## GBFS
+
+Currently we offer data from a number of citybike and scooter operators in several Norwegian cities.
+
+All of our data is served in [version 2.1 of the General Bikeshare Feed Specification (GBFS)](https://github.com/NABSA/gbfs/blob/v2.1-RC2/gbfs.md) format which is a standardized data feed for micro-mobility systems.
+
+### List the GBFS endpoint for all operators
+
+All currently implemented operators and their respective gbfs endpoints will be listed under the root endpoint.
+
+#### HTTP Request
+
+`GET https://api.entur.io/mobility/v2/gbfs`
+
+#### Example response
+
+```
+{
+    "operators": [
+        {
+            "name": "oslobysykkel",
+            "url": "https://api.entur.io/mobility/v2/gbfs/oslobysykkel/gbfs"
+        },
+        {
+            "name": "boltoslo",
+            "url": "https://api.entur.io/mobility/v2/gbfs/boltoslo/gbfs"
+        }
+    ]
+}
+
+```
+
+### GBFS information for an operator
+
+Get the different GBFS endpoints for a specific operator.
+
+#### HTTP Request
+
+`GET https://api.entur.io/mobility/v2/gbfs/{operator}/gbfs`
+
+Where `{operator}` is one of the above mentioned operators, for instance `oslobysykkel`.
+
+#### Example response
+
+```
+{
+    "last_updated": 1610375175,
+    "ttl": 15,
+    "version": "2.1",
+    "data": {
+        "nb": {
+            "feeds": [
+                {
+                    "name": "system_information",
+                    "url": "https://api.entur.io/mobility/v2/gbfs/oslobysykkel/system_information"
+                },
+                {
+                    "name": "station_information",
+                    "url": "https://api.entur.io/mobility/v2/gbfs/oslobysykkel/station_information"
+                },
+                {
+                    "name": "station_status",
+                    "url": "https://api.entur.io/mobility/v2/gbfs/oslobysykkel/station_status"
+                },
+                {
+                    "name": "system_pricing_plans",
+                    "url": "https://api.entur.io/mobility/v2/gbfs/oslobysykkel/system_pricing_plans"
+                },
+                {
+                    "name": "vehicle_types",
+                    "url": "https://api.entur.io/mobility/v2/gbfs/oslobysykkel/vehicle_types"
+                }
+            ]
+        }
+    }
+}
+```
