@@ -76,3 +76,8 @@ lamassu:
       city: Drammen
       url: https://api.dev.entur.io/mobility/v1/bikes/v2_1_proxy/drammenbysykkel/gbfs.json
       language: nb
+    - codespace: ENT
+      name: Entur Carsharing POC
+      city: Oslo
+      url: https://storage.googleapis.com/ror-mobility-car-sharing-poc/gbfs.json
+      language: en
