@@ -50,11 +50,11 @@ public class SystemPricingPlans extends GBFSBase {
             return currency;
         }
 
-
         public Float getPrice() {
             return price;
         }
 
+        @JsonProperty("is_taxable")
         public Boolean getTaxable() {
             return isTaxable;
         }
@@ -71,6 +71,7 @@ public class SystemPricingPlans extends GBFSBase {
             return perMinPricing;
         }
 
+        @JsonProperty("surge_pricing")
         public Boolean getSurgePricing() {
             return surgePricing;
         }

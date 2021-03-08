@@ -64,10 +64,12 @@ public class FreeBikeStatus extends GBFSBase {
             return lon;
         }
 
+        @JsonProperty("is_reserved")
         public Boolean getReserved() {
             return isReserved;
         }
 
+        @JsonProperty("is_disabled")
         public Boolean getDisabled() {
             return isDisabled;
         }
