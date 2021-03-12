@@ -55,7 +55,7 @@ lamassu:
 #      city: Stavanger
 #      url: https://api.dev.entur.io/mobility/v1/bikes/v2_1_proxy/kolumbusbysykkel/gbfs.json
 #      language: nb
-#    - codespace: YLI
+#    - codespace: YLS
 #      name: lillestrombysykkel
 #      city: Lillestrøm
 #      url: https://api.dev.entur.io/mobility/v1/bikes/v2_1_proxy/lillestrombysykkel/gbfs.json
