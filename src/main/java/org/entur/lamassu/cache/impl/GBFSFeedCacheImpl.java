@@ -31,8 +31,11 @@ public class GBFSFeedCacheImpl implements GBFSFeedCache {
         var key = getKey(feedName, feedProvider.getName());
         try {
             return cache.getAsync(key).get(1, TimeUnit.SECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+        } catch (ExecutionException | TimeoutException e) {
             logger.warn("Unable to fetch feed from cache within 1 second", e);
+        } catch (InterruptedException e) {
+            logger.warn("Interrupted while fetching feed from cache", e);
+            Thread.currentThread().interrupt();
         }
 
         return null;
