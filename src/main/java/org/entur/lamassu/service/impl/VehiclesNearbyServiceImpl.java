@@ -49,10 +49,14 @@ public class VehiclesNearbyServiceImpl implements VehiclesNearbyService {
             stream = stream.limit(count.longValue());
         }
 
-        Set<String> vehicleIds = stream.map(SpatialIndexId::getVehicleId)
+        Set<String> vehicleIds = stream.map(this::getVehicleCacheKey)
                 .collect(Collectors.toSet());
 
         return vehicleCache.getAll(vehicleIds);
+    }
+
+    private String getVehicleCacheKey(SpatialIndexId spatialIndexId) {
+        return spatialIndexId.getVehicleId() + "_" + spatialIndexId.getOperator();
     }
 
 }
