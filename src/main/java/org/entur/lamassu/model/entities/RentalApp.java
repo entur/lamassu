@@ -1,6 +1,8 @@
 package org.entur.lamassu.model.entities;
 
-public class RentalApp {
+import java.io.Serializable;
+
+public class RentalApp implements Serializable {
     private String storeUri;
     private String discoveryUri;
 

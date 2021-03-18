@@ -1,6 +1,8 @@
 package org.entur.lamassu.model.entities;
 
-public class PricingSegment {
+import java.io.Serializable;
+
+public class PricingSegment implements Serializable {
     private Integer start;
     private Float rate;
     private Integer interval;

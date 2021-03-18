@@ -5,25 +5,37 @@ import org.entur.lamassu.model.feedprovider.FeedProvider;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSFeedName;
 import org.redisson.api.CacheAsync;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.cache.Cache;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 @Component
 public class GBFSFeedCacheImpl implements GBFSFeedCache {
-    private final Cache<String, GBFSBase> cache;
-    CacheAsync<String, GBFSBase> cacheAsync;
+    private CacheAsync<String, GBFSBase> cache;
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public GBFSFeedCacheImpl(Cache<String, GBFSBase> cache) {
-        this.cache = cache;
-        this.cacheAsync = cache.unwrap(CacheAsync.class);
+        this.cache = cache.unwrap(CacheAsync.class);
     }
 
     @Override
     public GBFSBase find(GBFSFeedName feedName, FeedProvider feedProvider) {
-        return cache.get(getKey(feedName, feedProvider.getName()));
+        var key = getKey(feedName, feedProvider.getName());
+        try {
+            return cache.getAsync(key).get(1, TimeUnit.SECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            logger.warn("Unable to fetch feed from cache within 1 second", e);
+        }
+
+        return null;
     }
 
     @Override
@@ -32,7 +44,7 @@ public class GBFSFeedCacheImpl implements GBFSFeedCache {
                 feedName,
                 feedProvider.getName()
         );
-        cacheAsync.putAsync(key, feed);
+        cache.putAsync(key, feed);
     }
 
     private String getKey(GBFSFeedName feedName, String providerName) {
@@ -42,6 +54,4 @@ public class GBFSFeedCacheImpl implements GBFSFeedCache {
     private String mergeStrings(String first, String second) {
         return String.format("%s_%s", first, second);
     }
-
-
 }
