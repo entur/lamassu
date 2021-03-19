@@ -9,6 +9,7 @@ import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.listener.CacheEntryListenerDelegate;
 import org.entur.lamassu.mapper.VehicleMapper;
 import org.entur.lamassu.model.entities.Vehicle;
+import org.entur.lamassu.model.feedprovider.FeedProvider;
 import org.entur.lamassu.model.gbfs.v2_1.FreeBikeStatus;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
 import org.entur.lamassu.util.SpatialIndexIdUtil;
@@ -109,7 +110,7 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
                     .collect(Collectors.toList());
 
             var vehiclesMap = vehicles.stream()
-                    .collect(Collectors.toMap(Vehicle::getId, v -> v));
+                    .collect(Collectors.toMap(v -> getVehicleCacheKey(v, feedProvider), v -> v));
 
             Map<String, Vehicle> spatialIndexUpdateMap = new java.util.HashMap<>(Map.of());
 
@@ -119,7 +120,7 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
                 if (previousVehicle != null) {
                     var oldSpatialIndexId = SpatialIndexIdUtil.createSpatialIndexId(previousVehicle, feedProvider);
                     if (!oldSpatialIndexId.equalsIgnoreCase(spatialIndexId)) {
-                        removeFromSpatialIndex(oldSpatialIndexId, previousVehicle);
+                        spatialIndex.remove(spatialIndexId);
                     }
                 }
                 spatialIndexUpdateMap.put(spatialIndexId, vehicle);
@@ -134,8 +135,7 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
         }
     }
 
-    private void removeFromSpatialIndex(String id, Vehicle vehicle) {
-        spatialIndex.remove(id);
-        logger.debug("Removed vehicle from spatial index: {}", vehicle.getId());
+    private String getVehicleCacheKey(Vehicle vehicle, FeedProvider feedProvider) {
+        return vehicle.getId() + "_" + feedProvider.getName();
     }
 }
