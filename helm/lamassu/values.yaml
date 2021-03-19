@@ -7,10 +7,10 @@ rollingUpdate:
   maxUnavailable: 1
 
 resources:
-  cpuLimit: 750m
+  cpuLimit: 2
   memLimit: 2000Mi
-  cpuRequest: 500m
-  memRequest: 1750Mi
+  cpuRequest: 2
+  memRequest: 2000Mi
   xss: 1024m
   xmx: 700m
 
