@@ -58,6 +58,6 @@ abstract class EntityCacheImpl<T extends Entity> implements EntityCache<T> {
 
     @Override
     public void updateAll(Map<String, T> entities) {
-        cache.putAllAsync(entities).awaitUninterruptibly();
+        cache.putAllAsync(entities);
     }
 }
