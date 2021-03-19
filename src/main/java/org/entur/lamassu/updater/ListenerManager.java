@@ -1,6 +1,7 @@
 package org.entur.lamassu.updater;
 
 import org.entur.lamassu.listener.CacheListener;
+import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.gbfs.v2_1.FreeBikeStatus;
 import org.entur.lamassu.model.gbfs.v2_1.SystemInformation;
 import org.entur.lamassu.model.gbfs.v2_1.SystemPricingPlans;
@@ -14,18 +15,21 @@ public class ListenerManager {
     private final CacheListener<VehicleTypes> vehicleTypesCacheListener;
     private final CacheListener<SystemPricingPlans> systemPricingPlansCacheListener;
     private final CacheListener<SystemInformation> systemInformationCacheListener;
+    private final CacheListener<Vehicle> vehicleCacheListener;
 
     @Autowired
     public ListenerManager(
             CacheListener<FreeBikeStatus> freeBikeStatusCacheListener,
             CacheListener<VehicleTypes> vehicleTypesCacheListener,
             CacheListener<SystemPricingPlans> systemPricingPlansCacheListener,
-            CacheListener<SystemInformation> systemInformationCacheListener
+            CacheListener<SystemInformation> systemInformationCacheListener,
+            CacheListener<Vehicle> vehicleCacheListener
     ) {
         this.freeBikeStatusCacheListener = freeBikeStatusCacheListener;
         this.vehicleTypesCacheListener = vehicleTypesCacheListener;
         this.systemPricingPlansCacheListener = systemPricingPlansCacheListener;
         this.systemInformationCacheListener = systemInformationCacheListener;
+        this.vehicleCacheListener = vehicleCacheListener;
     }
 
     public void start() {
@@ -33,6 +37,7 @@ public class ListenerManager {
         vehicleTypesCacheListener.startListening();
         systemPricingPlansCacheListener.startListening();
         systemInformationCacheListener.startListening();
+        vehicleCacheListener.startListening();
     }
 
     public void stop() {
@@ -40,5 +45,6 @@ public class ListenerManager {
         vehicleTypesCacheListener.stopListening();
         systemPricingPlansCacheListener.stopListening();
         systemInformationCacheListener.stopListening();
+        vehicleCacheListener.stopListening();
     }
 }
