@@ -9,7 +9,7 @@ import org.redisson.Redisson;
 import org.redisson.api.RGeo;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
-import org.redisson.codec.JsonJacksonCodec;
+import org.redisson.codec.Kryo5Codec;
 import org.redisson.config.Config;
 import org.redisson.jcache.configuration.RedissonConfiguration;
 import org.redisson.spring.data.connection.RedissonConnectionFactory;
@@ -35,24 +35,27 @@ public class RedissonCacheConfig {
     public static final String VEHICLE_SPATIAL_INDEX_KEY = "vehicleSpatialIndex";
     public static final String FEED_UPDATE_SCHEDULER_LOCK = "leader";
 
-    private final Config config;
+    private final Config redissonConfig;
 
     public RedissonCacheConfig(RedisProperties redisProperties) {
-        config = new Config();
-        config.setCodec(JsonJacksonCodec.INSTANCE);
+        redissonConfig = new Config();
+
+        var codec = new Kryo5Codec(this.getClass().getClassLoader());
+
+        redissonConfig.setCodec(codec);
 
         String address = String.format(
                 "redis://%s:%s",
                 redisProperties.getHost(),
                 redisProperties.getPort()
         );
-        config.useSingleServer()
+        redissonConfig.useSingleServer()
                 .setAddress(address);
     }
 
     @Bean
     public Config redissonConfig() {
-        return config;
+        return redissonConfig;
     }
 
     @Bean(destroyMethod = "shutdown")

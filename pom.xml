@@ -18,6 +18,7 @@
         <redisson.version>3.14.1</redisson.version>
         <embedded-redis.version>0.8.1</embedded-redis.version>
         <okhttp.version>4.9.0</okhttp.version>
+        <kryo.version>5.0.4</kryo.version>
     </properties>
 
     <dependencies>
@@ -129,6 +130,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.esotericsoftware</groupId>
+            <artifactId>kryo</artifactId>
+            <version>${kryo.version}</version>
         </dependency>
     </dependencies>
 

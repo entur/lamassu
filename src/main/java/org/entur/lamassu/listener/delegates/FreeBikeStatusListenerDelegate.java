@@ -12,13 +12,13 @@ import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.gbfs.v2_1.FreeBikeStatus;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
 import org.entur.lamassu.util.SpatialIndexIdUtil;
-import org.redisson.client.RedisException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.cache.event.CacheEntryEvent;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
@@ -76,13 +76,26 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
         var split = event.getKey().split("_");
         var feedProvider = feedProviderConfig.get(split[split.length - 1]);
         var freeBikeStatusFeed = (FreeBikeStatus) event.getValue();
+
+        var originalVehicleIds = freeBikeStatusFeed.getData().getBikes().stream()
+                .map(FreeBikeStatus.Bike::getBikeId).collect(Collectors.toSet());
+        var vehicleTypeIds = freeBikeStatusFeed.getData().getBikes().stream()
+                .map(FreeBikeStatus.Bike::getVehicleTypeId).collect(Collectors.toSet());
+        var pricingPlanIds = freeBikeStatusFeed.getData().getBikes().stream()
+                .map(FreeBikeStatus.Bike::getPricingPlanId).collect(Collectors.toSet());
+
         try {
+            var originalVehicles = vehicleCache.getAllAsMap(originalVehicleIds);
+            var vehicleTypes = vehicleTypeCache.getAllAsMap(vehicleTypeIds);
+            var pricingPlans = pricingPlanCache.getAllAsMap(pricingPlanIds);
+            var system = systemCache.get(feedProvider.getName());
+
             var vehicles = freeBikeStatusFeed.getData().getBikes().stream()
                     .map(vehicle -> vehicleMapper.mapVehicle(
                             vehicle,
-                            vehicleTypeCache.get(vehicle.getVehicleTypeId()),
-                            pricingPlanCache.get(vehicle.getPricingPlanId()),
-                            systemCache.get(feedProvider.getName())
+                            vehicleTypes.get(vehicle.getVehicleTypeId()),
+                            pricingPlans.get(vehicle.getPricingPlanId()),
+                            system
                     )).collect(Collectors.toList());
 
             if (vehicles.stream().distinct().count() != (long) vehicles.size()) {
@@ -98,30 +111,26 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
             var vehiclesMap = vehicles.stream()
                     .collect(Collectors.toMap(Vehicle::getId, v -> v));
 
+            Map<String, Vehicle> spatialIndexUpdateMap = new java.util.HashMap<>(Map.of());
+
             vehicles.forEach(vehicle -> {
-                    var spatialIndexId = SpatialIndexIdUtil.createSpatialIndexId(vehicle, feedProvider);
-                    var previousVehicle = vehicleCache.get(vehicle.getId());
-                    if (previousVehicle != null) {
-                        var oldSpatialIndexId = SpatialIndexIdUtil.createSpatialIndexId(previousVehicle, feedProvider);
-                        if (!oldSpatialIndexId.equalsIgnoreCase(spatialIndexId)) {
-                            removeFromSpatialIndex(oldSpatialIndexId, previousVehicle);
-                        }
+                var spatialIndexId = SpatialIndexIdUtil.createSpatialIndexId(vehicle, feedProvider);
+                var previousVehicle = originalVehicles.get(vehicle.getId());
+                if (previousVehicle != null) {
+                    var oldSpatialIndexId = SpatialIndexIdUtil.createSpatialIndexId(previousVehicle, feedProvider);
+                    if (!oldSpatialIndexId.equalsIgnoreCase(spatialIndexId)) {
+                        removeFromSpatialIndex(oldSpatialIndexId, previousVehicle);
                     }
-                    addOrUpdateSpatialIndex(spatialIndexId, vehicle);
-                });
+                }
+                spatialIndexUpdateMap.put(spatialIndexId, vehicle);
+            });
 
             vehicleCache.updateAll(vehiclesMap);
+            spatialIndex.addAll(spatialIndexUpdateMap);
+
             logger.info("Added vehicles to vehicle cache from feed {}", event.getKey());
         } catch (NullPointerException e) {
             logger.warn("Caught NullPointerException when updating vehicle cache from freeBikeStatusFeed: {}", freeBikeStatusFeed, e);
-        }
-    }
-
-    private void addOrUpdateSpatialIndex(String id, Vehicle vehicle) {
-        try {
-            spatialIndex.add(vehicle.getLon(), vehicle.getLat(), id);
-        } catch (RedisException | IllegalArgumentException e) {
-            logger.warn("Caught exception when trying to add vehicle to spatial index for vehicle={}", vehicle, e);
         }
     }
 

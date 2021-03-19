@@ -12,7 +12,6 @@ public class Vehicle implements Entity {
     private VehicleType vehicleType;
     private PricingPlan pricingPlan;
     private System system;
-
     private RentalUris rentalUris;
 
     public String getId() {

@@ -1,6 +1,8 @@
 package org.entur.lamassu.model.entities;
 
-public class RentalApps {
+import java.io.Serializable;
+
+public class RentalApps implements Serializable {
     private RentalApp ios;
     private RentalApp android;
 
