@@ -142,22 +142,22 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
                         .collect(Collectors.toSet())
         );
 
-        if (spatialIndicesToRemove.size() > 0) {
+        if (!spatialIndicesToRemove.isEmpty()) {
             logger.debug("Removing {} stale entries in spatial index", spatialIndicesToRemove.size());
             spatialIndex.removeAll(spatialIndicesToRemove);
         }
 
-        if (vehicleIdsToRemove.size() > 0) {
+        if (!vehicleIdsToRemove.isEmpty()) {
             logger.debug("Removing {} vehicles from vehicle cache", vehicleIdsToRemove.size());
             vehicleCache.removeAll(vehicleIdsToRemove);
         }
 
-        if (vehicles.size() > 0) {
+        if (!vehicles.isEmpty()) {
             logger.debug("Adding/updating {} vehicles in vechile cache", vehicles.size());
             vehicleCache.updateAll(vehicles);
         }
 
-        if (spatialIndexUpdateMap.size() > 0) {
+        if (!spatialIndexUpdateMap.isEmpty()) {
             logger.debug("Updating {} entries in spatial index", spatialIndexUpdateMap.size());
             spatialIndex.addAll(spatialIndexUpdateMap);
         }
