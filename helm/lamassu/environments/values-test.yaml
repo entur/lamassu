@@ -1,13 +1,5 @@
 env: staging
 
-resources:
-  cpuLimit: 500m
-  memLimit: 2000Mi
-  cpuRequest: 200m
-  memRequest: 1500Mi
-  xss: 1024m
-  xmx: 1000m
-
 configMap:
   logLevel: INFO
   baseUrl: https://api.staging.entur.io/mobility/v2

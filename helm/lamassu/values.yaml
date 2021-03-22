@@ -12,7 +12,7 @@ resources:
   cpuRequest: 2
   memRequest: 2000Mi
   xss: 1024m
-  xmx: 700m
+  xmx: 1000m
 
 secretMount:
   name: lamassu-key
