@@ -30,7 +30,7 @@ public class FreeBikeStatusCacheListener extends AbstractCacheListener<GBFSBase,
                     FactoryBuilder.factoryOf(
                             FreeBikeStatusEventFilter.class
                     ),
-                    false,
+                    true,
                     false
             );
         }

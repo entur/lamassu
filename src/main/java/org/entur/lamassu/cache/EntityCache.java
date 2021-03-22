@@ -11,4 +11,5 @@ public interface EntityCache<T extends Entity> {
     Map<String, T> getAllAsMap(Set<String> keys);
     T get(String key);
     void updateAll(Map<String, T> entities);
+    void removeAll(Set<String> keys);
 }

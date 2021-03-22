@@ -19,7 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.cache.event.CacheEntryEvent;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -78,60 +80,85 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
         var feedProvider = feedProviderConfig.get(split[split.length - 1]);
         var freeBikeStatusFeed = (FreeBikeStatus) event.getValue();
 
-        var originalVehicleIds = freeBikeStatusFeed.getData().getBikes().stream()
+        var vehicleIds = freeBikeStatusFeed.getData().getBikes().stream()
                 .map(FreeBikeStatus.Bike::getBikeId).collect(Collectors.toSet());
+
+        Set<String> vehicleIdsToRemove = Set.of();
+
+        if (event.isOldValueAvailable()) {
+            var oldFreeBikeStatusFeed = (FreeBikeStatus) event.getOldValue();
+            vehicleIdsToRemove = oldFreeBikeStatusFeed.getData().getBikes().stream()
+                    .map(FreeBikeStatus.Bike::getBikeId).collect(Collectors.toSet());
+            vehicleIdsToRemove.removeAll(vehicleIds);
+
+            logger.debug("Found {} vehicleIds to remove from old free_bike_status feed", vehicleIdsToRemove.size());
+
+            vehicleIds.addAll(vehicleIdsToRemove);
+        } else {
+            logger.debug("Old free_bike_status feed was not available. Unable to find vehicles to remove from old feed.");
+        }
+
         var vehicleTypeIds = freeBikeStatusFeed.getData().getBikes().stream()
                 .map(FreeBikeStatus.Bike::getVehicleTypeId).collect(Collectors.toSet());
         var pricingPlanIds = freeBikeStatusFeed.getData().getBikes().stream()
                 .map(FreeBikeStatus.Bike::getPricingPlanId).collect(Collectors.toSet());
 
-        try {
-            var originalVehicles = vehicleCache.getAllAsMap(originalVehicleIds);
-            var vehicleTypes = vehicleTypeCache.getAllAsMap(vehicleTypeIds);
-            var pricingPlans = pricingPlanCache.getAllAsMap(pricingPlanIds);
-            var system = systemCache.get(feedProvider.getName());
+        var originalVehicles = vehicleCache.getAllAsMap(vehicleIds);
+        var vehicleTypes = vehicleTypeCache.getAllAsMap(vehicleTypeIds);
+        var pricingPlans = pricingPlanCache.getAllAsMap(pricingPlanIds);
+        var system = systemCache.get(feedProvider.getName());
 
-            var vehicles = freeBikeStatusFeed.getData().getBikes().stream()
-                    .map(vehicle -> vehicleMapper.mapVehicle(
-                            vehicle,
-                            vehicleTypes.get(vehicle.getVehicleTypeId()),
-                            pricingPlans.get(vehicle.getPricingPlanId()),
-                            system
-                    )).collect(Collectors.toList());
+        var vehicles = freeBikeStatusFeed.getData().getBikes().stream()
+                .map(vehicle -> vehicleMapper.mapVehicle(
+                        vehicle,
+                        vehicleTypes.get(vehicle.getVehicleTypeId()),
+                        pricingPlans.get(vehicle.getPricingPlanId()),
+                        system
+                ))
+                .filter(vehicle -> vehicle.getVehicleType() != null)
+                .filter(vehicle -> vehicle.getPricingPlan() != null)
+                .collect(Collectors.toMap(v -> getVehicleCacheKey(v, feedProvider), v -> v));
 
-            if (vehicles.stream().distinct().count() != (long) vehicles.size()) {
-                logger.warn("Found duplicates in freeBikeStatusFeed with key={}", event.getKey());
-            }
+        Set<String> spatialIndicesToRemove = new java.util.HashSet<>(Set.of());
+        Map<String, Vehicle> spatialIndexUpdateMap = new java.util.HashMap<>(Map.of());
 
-            vehicles = vehicles.stream()
-                    .distinct()
-                    .filter(vehicle -> vehicle.getVehicleType() != null)
-                    .filter(vehicle -> vehicle.getPricingPlan() != null)
-                    .collect(Collectors.toList());
+        vehicles.forEach((key, vehicle) -> {
+            var spatialIndexId = SpatialIndexIdUtil.createSpatialIndexId(vehicle, feedProvider);
+            var previousVehicle = originalVehicles.get(getVehicleCacheKey(vehicle, feedProvider));
 
-            var vehiclesMap = vehicles.stream()
-                    .collect(Collectors.toMap(v -> getVehicleCacheKey(v, feedProvider), v -> v));
-
-            Map<String, Vehicle> spatialIndexUpdateMap = new java.util.HashMap<>(Map.of());
-
-            vehicles.forEach(vehicle -> {
-                var spatialIndexId = SpatialIndexIdUtil.createSpatialIndexId(vehicle, feedProvider);
-                var previousVehicle = originalVehicles.get(vehicle.getId());
-                if (previousVehicle != null) {
-                    var oldSpatialIndexId = SpatialIndexIdUtil.createSpatialIndexId(previousVehicle, feedProvider);
-                    if (!oldSpatialIndexId.equalsIgnoreCase(spatialIndexId)) {
-                        spatialIndex.remove(spatialIndexId);
-                    }
+            if (previousVehicle != null) {
+                var oldSpatialIndexId = SpatialIndexIdUtil.createSpatialIndexId(previousVehicle, feedProvider);
+                if (!oldSpatialIndexId.equalsIgnoreCase(spatialIndexId)) {
+                    spatialIndicesToRemove.add(oldSpatialIndexId);
                 }
-                spatialIndexUpdateMap.put(spatialIndexId, vehicle);
-            });
+            }
+            spatialIndexUpdateMap.put(spatialIndexId, vehicle);
+        });
 
-            vehicleCache.updateAll(vehiclesMap);
+        spatialIndicesToRemove.addAll(
+                vehicleIdsToRemove.stream()
+                        .map(vehicleId -> SpatialIndexIdUtil.createSpatialIndexId(originalVehicles.get(vehicleId), feedProvider))
+                        .collect(Collectors.toSet())
+        );
+
+        if (spatialIndicesToRemove.size() > 0) {
+            logger.debug("Removing {} stale entries in spatial index", spatialIndicesToRemove.size());
+            spatialIndex.removeAll(spatialIndicesToRemove);
+        }
+
+        if (vehicleIdsToRemove.size() > 0) {
+            logger.debug("Removing {} vehicles from vehicle cache", vehicleIdsToRemove.size());
+            vehicleCache.removeAll(vehicleIdsToRemove);
+        }
+
+        if (vehicles.size() > 0) {
+            logger.debug("Adding/updating {} vehicles in vechile cache", vehicles.size());
+            vehicleCache.updateAll(vehicles);
+        }
+
+        if (spatialIndexUpdateMap.size() > 0) {
+            logger.debug("Updating {} entries in spatial index", spatialIndexUpdateMap.size());
             spatialIndex.addAll(spatialIndexUpdateMap);
-
-            logger.info("Added vehicles to vehicle cache from feed {}", event.getKey());
-        } catch (NullPointerException e) {
-            logger.warn("Caught NullPointerException when updating vehicle cache from freeBikeStatusFeed: {}", freeBikeStatusFeed, e);
         }
     }
 
