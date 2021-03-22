@@ -120,7 +120,7 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
                 if (previousVehicle != null) {
                     var oldSpatialIndexId = SpatialIndexIdUtil.createSpatialIndexId(previousVehicle, feedProvider);
                     if (!oldSpatialIndexId.equalsIgnoreCase(spatialIndexId)) {
-                        spatialIndex.remove(spatialIndexId);
+                        spatialIndex.remove(oldSpatialIndexId);
                     }
                 }
                 spatialIndexUpdateMap.put(spatialIndexId, vehicle);
