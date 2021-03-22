@@ -29,23 +29,28 @@ public class SystemInformationListenerDelegate implements CacheEntryListenerDele
         this.feedProviderConfig = feedProviderConfig;
     }
 
+
     @Override
-    public void onCreated(CacheEntryEvent<? extends String, GBFSBase> event) {
-        addOrUpdateSystem(event);
+    public void onCreated(Iterable<CacheEntryEvent<? extends String, ? extends GBFSBase>> iterable) {
+        for (var event : iterable) {
+            addOrUpdateSystem(event);
+        }
     }
 
     @Override
-    public void onUpdated(CacheEntryEvent<? extends String, GBFSBase> event) {
-        addOrUpdateSystem(event);
+    public void onUpdated(Iterable<CacheEntryEvent<? extends String, ? extends GBFSBase>> iterable) {
+        for (var event : iterable) {
+            addOrUpdateSystem(event);
+        }
     }
 
     @Override
-    public void onRemoved(CacheEntryEvent<? extends String, GBFSBase> event) {
+    public void onRemoved(Iterable<CacheEntryEvent<? extends String, ? extends GBFSBase>> iterable) {
         // noop
     }
 
     @Override
-    public void onExpired(CacheEntryEvent<? extends String, GBFSBase> event) {
+    public void onExpired(Iterable<CacheEntryEvent<? extends String, ? extends GBFSBase>> iterable) {
         // noop
     }
 
@@ -62,4 +67,5 @@ public class SystemInformationListenerDelegate implements CacheEntryListenerDele
             logger.warn("Caught NullPointerException when updating system cache from systemInformationFeed: {}", systemInformationFeed, e);
         }
     }
+
 }

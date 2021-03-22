@@ -29,22 +29,26 @@ public class VehicleTypesListenerDelegate implements CacheEntryListenerDelegate<
     }
 
     @Override
-    public void onCreated(CacheEntryEvent<? extends String, GBFSBase> event) {
-        addOrUpdateVehicleType(event);
+    public void onCreated(Iterable<CacheEntryEvent<? extends String, ? extends GBFSBase>> iterable) {
+        for (var event : iterable) {
+            addOrUpdateVehicleType(event);
+        }
     }
 
     @Override
-    public void onUpdated(CacheEntryEvent<? extends String, GBFSBase> event) {
-        addOrUpdateVehicleType(event);
+    public void onUpdated(Iterable<CacheEntryEvent<? extends String, ? extends GBFSBase>> iterable) {
+        for (var event : iterable) {
+            addOrUpdateVehicleType(event);
+        }
     }
 
     @Override
-    public void onRemoved(CacheEntryEvent<? extends String, GBFSBase> event) {
+    public void onRemoved(Iterable<CacheEntryEvent<? extends String, ? extends GBFSBase>> iterable) {
         // noop
     }
 
     @Override
-    public void onExpired(CacheEntryEvent<? extends String, GBFSBase> event) {
+    public void onExpired(Iterable<CacheEntryEvent<? extends String, ? extends GBFSBase>> iterable) {
         // noop
     }
 
@@ -60,4 +64,6 @@ public class VehicleTypesListenerDelegate implements CacheEntryListenerDelegate<
             logger.warn("Caught NullPointerException when updating vehicle type cache from vehicleTypesFeed: {}", vehicleTypesFeed, e);
         }
     }
+
+
 }

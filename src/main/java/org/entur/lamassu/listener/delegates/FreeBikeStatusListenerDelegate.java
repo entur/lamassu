@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.cache.event.CacheEntryEvent;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -55,22 +56,26 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
     }
 
     @Override
-    public void onCreated(CacheEntryEvent<? extends String, GBFSBase> event) {
-        addOrUpdateVehicles(event);
+    public void onCreated(Iterable<CacheEntryEvent<? extends String, ? extends GBFSBase>> iterable) {
+        for (var event : iterable) {
+            addOrUpdateVehicles(event);
+        }
     }
 
     @Override
-    public void onUpdated(CacheEntryEvent<? extends String, GBFSBase> event) {
-        addOrUpdateVehicles(event);
+    public void onUpdated(Iterable<CacheEntryEvent<? extends String, ? extends GBFSBase>> iterable) {
+        for (var event : iterable) {
+            addOrUpdateVehicles(event);
+        }
     }
 
     @Override
-    public void onRemoved(CacheEntryEvent<? extends String, GBFSBase> event) {
+    public void onRemoved(Iterable<CacheEntryEvent<? extends String, ? extends GBFSBase>> iterable) {
         // noop
     }
 
     @Override
-    public void onExpired(CacheEntryEvent<? extends String, GBFSBase> event) {
+    public void onExpired(Iterable<CacheEntryEvent<? extends String, ? extends GBFSBase>> iterable) {
         // noop
     }
 
@@ -80,9 +85,10 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
         var freeBikeStatusFeed = (FreeBikeStatus) event.getValue();
 
         var vehicleIds = freeBikeStatusFeed.getData().getBikes().stream()
-                .map(FreeBikeStatus.Bike::getBikeId).collect(Collectors.toSet());
+                .map(FreeBikeStatus.Bike::getBikeId)
+                .collect(Collectors.toSet());
 
-        Set<String> vehicleIdsToRemove = Set.of();
+        Set<String> vehicleIdsToRemove;
 
         // Note: This conditional will never be true due to a suspected bug in redisson:
         // https://github.com/redisson/redisson/issues/3511
@@ -99,7 +105,10 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
             // fetch current vehicles from cache
             vehicleIds.addAll(vehicleIdsToRemove);
         } else {
-            logger.debug("Old free_bike_status feed was not available. Unable to find vehicles to remove from old feed.");
+
+            // In order to avoid stale vehicles hanging around, as a workaround, remove all vehicles for this provider.
+            vehicleIdsToRemove = new HashSet<>(vehicleIds);
+            logger.debug("Old free_bike_status feed was not available. As a workaround, removing all vehicles for this provider.");
         }
 
         var vehicleTypeIds = freeBikeStatusFeed.getData().getBikes().stream()
@@ -141,6 +150,7 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
 
         spatialIndicesToRemove.addAll(
                 vehicleIdsToRemove.stream()
+                        .filter(originalVehicles::containsKey)
                         .map(vehicleId -> SpatialIndexIdUtil.createSpatialIndexId(originalVehicles.get(vehicleId), feedProvider))
                         .collect(Collectors.toSet())
         );

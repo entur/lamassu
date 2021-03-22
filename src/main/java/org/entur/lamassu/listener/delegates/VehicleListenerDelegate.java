@@ -29,6 +29,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.cache.event.CacheEntryEvent;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Component
 public class VehicleListenerDelegate implements CacheEntryListenerDelegate<Vehicle, Vehicle> {
@@ -46,27 +49,33 @@ public class VehicleListenerDelegate implements CacheEntryListenerDelegate<Vehic
     }
 
     @Override
-    public void onCreated(CacheEntryEvent<? extends String, Vehicle> event) {
+    public void onCreated(Iterable<CacheEntryEvent<? extends String, ? extends Vehicle>> iterable) {
         // noop
     }
 
     @Override
-    public void onUpdated(CacheEntryEvent<? extends String, Vehicle> event) {
+    public void onUpdated(Iterable<CacheEntryEvent<? extends String, ? extends Vehicle>> iterable) {
         // noop
     }
 
     @Override
-    public void onRemoved(CacheEntryEvent<? extends String, Vehicle> event) {
+    public void onRemoved(Iterable<CacheEntryEvent<? extends String, ? extends Vehicle>> iterable) {
         // noop
     }
 
     @Override
-    public void onExpired(CacheEntryEvent<? extends String, Vehicle> event) {
-        var split = event.getKey().split("_");
-        var feedProvider = feedProviderConfig.get(split[split.length - 1]);
-        var vehicle = event.getValue();
-        var id = SpatialIndexIdUtil.createSpatialIndexId(vehicle, feedProvider);
-        spatialIndex.remove(id);
-        logger.debug("Removed entry from spatial index with key {}", id);
+    public void onExpired(Iterable<CacheEntryEvent<? extends String, ? extends Vehicle>> iterable) {
+        var ids = new HashSet<String>(Set.of());
+
+        for (CacheEntryEvent<? extends String, ? extends Vehicle> entry : iterable) {
+            var split = entry.getKey().split("_");
+            var feedProvider = feedProviderConfig.get(split[split.length - 1]);
+            var vehicle = entry.getValue();
+            var id = SpatialIndexIdUtil.createSpatialIndexId(vehicle, feedProvider);
+            ids.add(id);
+        }
+
+        spatialIndex.removeAll(ids);
+        logger.debug("Removed {} entries from spatial index", ids.size());
     }
 }

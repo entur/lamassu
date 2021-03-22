@@ -26,36 +26,28 @@ public class CacheEntryListener<T, S> implements
     @Override
     public void onCreated(Iterable<CacheEntryEvent<? extends String, ? extends T>> iterable) throws CacheEntryListenerException {
         if (iterable != null) {
-            for (CacheEntryEvent<? extends String, ? extends T> entry : iterable) {
-                delegate.onCreated((CacheEntryEvent<? extends String, T>) entry);
-            }
+            delegate.onCreated(iterable);
         }
     }
 
     @Override
     public void onRemoved(Iterable<CacheEntryEvent<? extends String, ? extends T>> iterable) throws CacheEntryListenerException {
         if (iterable != null) {
-            for (CacheEntryEvent<? extends String, ? extends T> entry : iterable) {
-                delegate.onRemoved((CacheEntryEvent<? extends String, T>) entry);
-            }
+            delegate.onRemoved(iterable);
         }
     }
 
     @Override
     public void onUpdated(Iterable<CacheEntryEvent<? extends String, ? extends T>> iterable) throws CacheEntryListenerException {
         if (iterable != null) {
-            for (CacheEntryEvent<? extends String, ? extends T> entry : iterable) {
-                delegate.onUpdated((CacheEntryEvent<? extends String, T>) entry);
-            }
+            delegate.onUpdated(iterable);
         }
     }
 
     @Override
     public void onExpired(Iterable<CacheEntryEvent<? extends String, ? extends T>> iterable) throws CacheEntryListenerException {
         if (iterable != null) {
-            for (CacheEntryEvent<? extends String, ? extends T> entry : iterable) {
-                delegate.onExpired((CacheEntryEvent<? extends String, T>) entry);
-            }
+            delegate.onExpired(iterable);
         }
     }
 }

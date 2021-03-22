@@ -28,22 +28,26 @@ public class SystemPricingPlansListenerDelegate implements CacheEntryListenerDel
     }
 
     @Override
-    public void onCreated(CacheEntryEvent<? extends String, GBFSBase> event) {
-        addOrUpdateSystemPricingPlan(event);
+    public void onCreated(Iterable<CacheEntryEvent<? extends String, ? extends GBFSBase>> iterable) {
+        for (var event : iterable) {
+            addOrUpdateSystemPricingPlan(event);
+        }
     }
 
     @Override
-    public void onUpdated(CacheEntryEvent<? extends String, GBFSBase> event) {
-        addOrUpdateSystemPricingPlan(event);
+    public void onUpdated(Iterable<CacheEntryEvent<? extends String, ? extends GBFSBase>> iterable) {
+        for (var event : iterable) {
+            addOrUpdateSystemPricingPlan(event);
+        }
     }
 
     @Override
-    public void onRemoved(CacheEntryEvent<? extends String, GBFSBase> event) {
+    public void onRemoved(Iterable<CacheEntryEvent<? extends String, ? extends GBFSBase>> iterable) {
         // noop
     }
 
     @Override
-    public void onExpired(CacheEntryEvent<? extends String, GBFSBase> event) {
+    public void onExpired(Iterable<CacheEntryEvent<? extends String, ? extends GBFSBase>> iterable) {
         // noop
     }
 
@@ -59,4 +63,6 @@ public class SystemPricingPlansListenerDelegate implements CacheEntryListenerDel
             logger.warn("Caught NullPointerException when updating pricing plan cache from pricingPlansFeed: {}", pricingPlansFeed, e);
         }
     }
+
+
 }
