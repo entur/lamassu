@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~
+  ~ /*
+  ~  * Licensed under the EUPL, Version 1.2 or – as soon they will be approved by
+  ~  * the European Commission - subsequent versions of the EUPL (the "Licence");
+  ~  * You may not use this work except in compliance with the Licence.
+  ~  * You may obtain a copy of the Licence at:
+  ~  *
+  ~  *   https://joinup.ec.europa.eu/software/page/eupl
+  ~  *
+  ~  * Unless required by applicable law or agreed to in writing, software
+  ~  * distributed under the Licence is distributed on an "AS IS" basis,
+  ~  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  * See the Licence for the specific language governing permissions and
+  ~  * limitations under the Licence.
+  ~  */
+  -->
+
+<!--
+
+  ~ Licensed under the EUPL, Version 1.2 or – as soon they will be approved by
+
+  ~ the European Commission - subsequent versions of the EUPL (the "Licence");
+
+  ~ You may not use this work except in compliance with the Licence.
+
+  ~ You may obtain a copy of the Licence at:
+
+  ~
+
+  ~   https://joinup.ec.europa.eu/software/page/eupl
+
+  ~
+
+  ~ Unless required by applicable law or agreed to in writing, software
+
+  ~ distributed under the Licence is distributed on an "AS IS" basis,
+
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+  ~ See the Licence for the specific language governing permissions and
+
+  ~ limitations under the Licence.
+
+  -->
+
+
+
+<configuration>
+
+    <property name="FILE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- - %-10.10X{camel.exchangeId} - %-10.10X{camel.routeId} - [%t] %-40.40logger{39} : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"/>
+
+
+
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+
+    <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
+
+    <conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
+
+
+
+    <property name="CONSOLE_LOG_PATTERN" value="%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} - %-10.10X{camel.exchangeId} - %-10.10X{camel.routeId} -  %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"/>
+
+    <property name="FILE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%t] %-40.40logger{39} : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"/>
+
+
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+
+        <layout class="ch.qos.logback.classic.PatternLayout">
+
+            <Pattern>
+
+                %clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}
+
+            </Pattern>
+
+        </layout>
+
+    </appender>
+
+
+
+    <logger name="org.apache.catalina.startup.DigesterFactory" level="ERROR"/>
+
+    <logger name="org.apache.catalina.util.LifecycleBase" level="ERROR"/>
+
+    <logger name="org.apache.coyote.http11.Http11NioProtocol" level="WARN"/>
+
+    <logger name="org.apache.sshd.common.util.SecurityUtils" level="WARN"/>
+
+    <logger name="org.apache.tomcat.util.net.NioSelectorPool" level="WARN"/>
+
+    <logger name="org.crsh.plugin" level="WARN"/>
+
+    <logger name="org.crsh.ssh" level="WARN"/>
+
+    <logger name="org.eclipse.jetty.util.component.AbstractLifeCycle" level="ERROR"/>
+
+    <logger name="org.hibernate.validator.internal.util.Version" level="WARN"/>
+
+    <logger name="org.springframework.boot.actuate.autoconfigure.CrshAutoConfiguration" level="WARN"/>
+
+
+
+    <property name="LOG_FILE" value="/Users/testower/Developer/github/entur/lamassu/lamassu.log"/>
+
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+
+    <include resource="org/springframework/boot/logging/logback/file-appender.xml" />
+
+    <root level="INFO">
+
+        <appender-ref ref="CONSOLE" />
+
+        <appender-ref ref="FILE" />
+
+    </root>
+
+
+    <logger name="org.apache.camel" level="INFO" />
+    <logger name="org.apache.camel.processor.Pipeline" level="INFO" />
+    <logger name="org.apache.camel.processor.SendProcessor" level="INFO" />
+    <logger name="org.apache.camel.impl.InterceptSendToEndpointProcessor" level="INFO" />
+    <logger name="org.apache.camel.processor.SendDynamicProcessor" level="DEBUG" />
+    <logger name="org.apache.camel.util.concurrent.RejectableThreadPoolExecutor" level="DEBUG" />
+    <logger name="org.apache.camel.processor.RedeliveryErrorHandler" level="DEBUG" />
+    <logger name="org.apache.camel.processor.DefaultErrorHandler" level="INFO" />
+    <logger name="org.apache.camel.component.jackson.JacksonDataFormat" level="WARN" />
+
+
+
+    <logger name="org.apache.camel.impl.RouteService" level="INFO" />
+
+    <logger name="no.rutebanken" level="INFO" />
+    <logger name="org.rutebanken" level="INFO" />
+    <logger name="org.opentripplanner.graph_builder" level="INFO" />
+    <logger name="org.opentripplanner.netex.mapping.TripMapper" level="INFO" />
+
+    <logger name="no.rutebanken.marduk.repository.CacheProviderRepository" level="DEBUG" />
+
+
+
+
+    <!--Disabling logging of graph builder annotations since they are also written in the graph building report-->
+    <logger name="GRAPH_BUILDER_ANNOTATION_LOG" level="WARN" />
+
+
+
+
+
+</configuration>

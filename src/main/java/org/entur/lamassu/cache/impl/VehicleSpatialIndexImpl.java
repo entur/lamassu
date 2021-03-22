@@ -7,6 +7,7 @@ import org.redisson.api.GeoEntry;
 import org.redisson.api.GeoOrder;
 import org.redisson.api.GeoUnit;
 import org.redisson.api.RGeo;
+import org.redisson.api.geo.GeoSearchArgs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,6 @@ public class VehicleSpatialIndexImpl implements VehicleSpatialIndex {
 
     @Override
     public List<String> radius(Double longitude, Double latitude, Double radius, GeoUnit geoUnit, GeoOrder geoOrder) {
-        return spatialIndex.radius(longitude, latitude, radius, geoUnit, geoOrder);
+        return spatialIndex.search(GeoSearchArgs.from(longitude, latitude).radius(radius, geoUnit).order(geoOrder));
     }
 }
