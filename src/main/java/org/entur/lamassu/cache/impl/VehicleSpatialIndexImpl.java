@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Component
 public class VehicleSpatialIndexImpl implements VehicleSpatialIndex {
@@ -46,6 +47,11 @@ public class VehicleSpatialIndexImpl implements VehicleSpatialIndex {
     @Override
     public void remove(String id) {
         spatialIndex.removeAsync(id);
+    }
+
+    @Override
+    public void removeAll(Set<String> ids) {
+        spatialIndex.removeAllAsync(ids);
     }
 
     @Override

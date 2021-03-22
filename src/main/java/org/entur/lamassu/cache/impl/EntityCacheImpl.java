@@ -60,4 +60,9 @@ abstract class EntityCacheImpl<T extends Entity> implements EntityCache<T> {
     public void updateAll(Map<String, T> entities) {
         cache.putAllAsync(entities);
     }
+
+    @Override
+    public void removeAll(Set<String> keys) {
+        cache.removeAllAsync(keys);
+    }
 }
