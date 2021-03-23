@@ -24,27 +24,12 @@ import java.util.Objects;
 public class Station implements Entity {
     private String id;
     private String name;
-    //private String shortName;
     private Double lat;
     private Double lon;
     private String address;
-    //private String crossStreet;
-    //private Region region;
-    //private String postCode;
-    //private List<RentalMethod> rentalMethods;
-    //private Boolean isVirtualStation;
-    //private StationArea stationArea;
     private Integer capacity;
-    //private List<VehicleTypeCapacity> vehicleCapacity;
-    //private List<VehicleTypeCapacity> vehicleTypeCapacity
-    //private Boolean isValetStation;
-    //private RentalUris rentalUris;
     private Integer numBikesAvailable;
-    //private List<VehicleTypeAvailability> vehicleTypesAvailable;
-    //private Integer numBikesDisabled;
     private Integer numDocksAvailable;
-    //private List<VehicleDockAvailability> vehicleDocksAvailable;
-    //private Integer numDocksDisabled;
     private Boolean isInstalled;
     private Boolean isRenting;
     private Boolean isReturning;
