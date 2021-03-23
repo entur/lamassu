@@ -23,6 +23,8 @@ type Query {
         operators: [String]
         codespaces: [String]
     ): [Station]
+
+    stationsById(ids: [String]!): [Station]
 }
 
 type Operator {
