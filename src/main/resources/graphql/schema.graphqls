@@ -96,27 +96,12 @@ type PricingSegment {
 type Station {
     id: ID!
     name: String!
-    shortName: String
     lat: Float!
     lon: Float!
     address: String
-    crossStreet: String
-    region: Region
-    postCode: String
-    rentalMethods: [RentalMethod]
-    isVirtualStation: Boolean
-    stationArea: StationArea
     capacity: Int
-    vehicleCapacities: [VehicleTypeCapacity]
-    vehicleTypeCapacities: [VehicleTypeCapacity]
-    isValetStation: Boolean
-    rentalUris: RentalUris
     numBikesAvailable: Int!
-    vehicleTypesAvailable: [VehicleTypeAvailability]
-    numBikesDisabled: Int
     numDocksAvailable: Int
-    vehicleDocksAvailable: [VehicleDockAvailability]
-    numDocksDisabled: Int
     isInstalled: Boolean
     isRenting: Boolean
     isReturning: Boolean
@@ -134,27 +119,6 @@ enum RentalMethod {
     TRANSIT_CARD
     ACCOUNT_NUMBER
     PHONE
-}
-
-type VehicleTypeCapacity {
-    vehicleTypeId: String!
-    capacity: Int!
-}
-
-type VehicleTypeAvailability {
-    vehicleTypeId: String!
-    count: Int!
-}
-
-type VehicleDockAvailability {
-    vehicleTypeIds: [String]!
-    count: Int!
-}
-
-type RentalUris {
-    android: String
-    ios: String
-    web: String
 }
 
 type System {
