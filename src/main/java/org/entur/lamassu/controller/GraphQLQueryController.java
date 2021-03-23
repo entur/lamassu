@@ -3,6 +3,7 @@ package org.entur.lamassu.controller;
 import graphql.GraphqlErrorException;
 import graphql.kickstart.tools.GraphQLQueryResolver;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
+import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.feedprovider.FeedProvider;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.Operator;
@@ -33,7 +34,15 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
         this.feedProviderConfig = feedProviderConfig;
     }
 
-    public Collection<Vehicle> vehicles(
+    public Collection<String> getCodespaces() {
+        return feedProviderConfig.getProviders().stream().map(FeedProvider::getCodespace).collect(Collectors.toSet());
+    }
+
+    public Collection<Operator> getOperators() {
+        return feedProviderConfig.getProviders().stream().map(this::mapToOperator).collect(Collectors.toList());
+    }
+
+    public Collection<Vehicle> getVehicles(
             Double lat,
             Double lon,
             Double range,
@@ -67,12 +76,21 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
         return vehiclesNearbyService.getVehiclesNearby(queryParams, filterParams);
     }
 
-    public Collection<String> codespaces() {
-        return feedProviderConfig.getProviders().stream().map(FeedProvider::getCodespace).collect(Collectors.toSet());
+    public Collection<Station> getStations(
+            Double lat,
+            Double lon,
+            Double range,
+            Integer count,
+            List<String> operators,
+            List<String> codespaces
+    ) {
+        return List.of();
     }
 
-    public Collection<Operator> operators() {
-        return feedProviderConfig.getProviders().stream().map(this::mapToOperator).collect(Collectors.toList());
+    public Collection<Station> getStationsById(
+        List<String> ids
+    ) {
+        return List.of();
     }
 
     private Operator mapToOperator(FeedProvider feedProvider) {
@@ -84,7 +102,7 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
 
     private void validateCodespaces(List<String> codespaces) {
         if (codespaces != null) {
-            var validCodespaces = codespaces();
+            var validCodespaces = getCodespaces();
             if(!validCodespaces.containsAll(codespaces)) {
                 throw new GraphqlErrorException.Builder().message("Unknown codespace(s)").build();
             }
@@ -93,7 +111,7 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
 
     private void validateOperators(List<String> operators) {
         if (operators != null) {
-            var validOperators = operators();
+            var validOperators = getOperators();
             if (!validOperators.stream().map(Operator::getName).collect(Collectors.toList()).containsAll(operators)) {
                 throw new GraphqlErrorException.Builder().message("Unknown operator(s)").build();
             }
