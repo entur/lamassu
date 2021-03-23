@@ -30,4 +30,11 @@ public class GraphQLIntegrationTest extends AbstractIntegrationTestBase {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(response.get("$.data.vehicles", List.class).isEmpty());
     }
+
+    @Test
+    public void testStationsQuery() throws IOException {
+        GraphQLResponse response = graphQLTestTemplate.postForResource("stations_query.graphql");
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertTrue(response.get("$.data.stations", List.class).isEmpty());
+    }
 }
