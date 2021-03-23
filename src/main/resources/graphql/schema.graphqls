@@ -32,11 +32,6 @@ type Operator {
     codespace: String
 }
 
-type VehicleTypeAvailability {
-    vehicleType: VehicleType!
-    count: Int!
-}
-
 type Vehicle {
     id: ID!
     lat: Float!
@@ -93,6 +88,12 @@ type PricingSegment {
     end: Int
 }
 
+type RentalUris {
+    android: String
+    ios: String
+    web: String
+}
+
 type Station {
     id: ID!
     name: String!
@@ -108,17 +109,6 @@ type Station {
     lastReported: Int
     system: System
     pricingPlans: [PricingPlan]
-}
-
-enum RentalMethod {
-    KEY
-    CREDIT_CARD
-    PAY_PASS
-    APPLE_PAY
-    ANDROID_PAY
-    TRANSIT_CARD
-    ACCOUNT_NUMBER
-    PHONE
 }
 
 type System {
