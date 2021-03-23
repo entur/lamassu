@@ -14,6 +14,15 @@ type Query {
         includeReserved: Boolean = false
         includeDisabled: Boolean = false
     ): [Vehicle]
+
+    stations(
+        lat: Float!
+        lon: Float!
+        range: Int
+        count: Int
+        operators: [String]
+        codespaces: [String]
+    ): [Station]
 }
 
 type Operator {
@@ -80,6 +89,64 @@ type PricingSegment {
     rate: Float
     interval: Int
     end: Int
+}
+
+type Station {
+    id: ID!
+    name: String!
+    shortName: String
+    lat: Float!
+    lon: Float!
+    address: String
+    crossStreet: String
+    region: Region
+    postCode: String
+    rentalMethods: [RentalMethod]
+    isVirtualStation: Boolean
+    stationArea: StationArea
+    capacity: Int
+    vehicleCapacities: [VehicleTypeCapacity]
+    vehicleTypeCapacities: [VehicleTypeCapacity]
+    isValetStation: Boolean
+    rentalUris: RentalUris
+    numBikesAvailable: Int!
+    vehicleTypesAvailable: [VehicleTypeAvailability]
+    numBikesDisabled: Int
+    numDocksAvailable: Int
+    vehicleDocksAvailable: [VehicleDockAvailability]
+    numDocksDisabled: Int
+    isInstalled: Boolean
+    isRenting: Boolean
+    isReturning: Boolean
+    lastReported: Int
+    system: System
+    pricingPlans: [PricingPlan]
+}
+
+enum RentalMethod {
+    KEY
+    CREDIT_CARD
+    PAY_PASS
+    APPLE_PAY
+    ANDROID_PAY
+    TRANSIT_CARD
+    ACCOUNT_NUMBER
+    PHONE
+}
+
+type VehicleTypeCapacity {
+    vehicleTypeId: String!
+    capacity: Int!
+}
+
+type VehicleTypeAvailability {
+    vehicleTypeId: String!
+    count: Int!
+}
+
+type VehicleDockAvailability {
+    vehicleTypeIds: [String]!
+    count: Int!
 }
 
 type RentalUris {
