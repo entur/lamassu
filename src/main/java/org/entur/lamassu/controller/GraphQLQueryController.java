@@ -2,6 +2,7 @@ package org.entur.lamassu.controller;
 
 import graphql.GraphqlErrorException;
 import graphql.kickstart.tools.GraphQLQueryResolver;
+import org.entur.lamassu.cache.StationCache;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.feedprovider.FeedProvider;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,11 +29,13 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
 
     private final VehiclesNearbyService vehiclesNearbyService;
     private final FeedProviderConfig feedProviderConfig;
+    private final StationCache stationCache;
 
     @Autowired
-    public GraphQLQueryController(VehiclesNearbyService vehiclesNearbyService, FeedProviderConfig feedProviderConfig) {
+    public GraphQLQueryController(VehiclesNearbyService vehiclesNearbyService, FeedProviderConfig feedProviderConfig, StationCache stationCache) {
         this.vehiclesNearbyService = vehiclesNearbyService;
         this.feedProviderConfig = feedProviderConfig;
+        this.stationCache = stationCache;
     }
 
     public Collection<String> getCodespaces() {
@@ -90,7 +94,8 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
     public Collection<Station> getStationsById(
         List<String> ids
     ) {
-        return List.of();
+        var result = stationCache.getAll(new HashSet<>(ids));
+        return result;
     }
 
     private Operator mapToOperator(FeedProvider feedProvider) {

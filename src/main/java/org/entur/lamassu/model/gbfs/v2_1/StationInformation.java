@@ -9,8 +9,16 @@ import java.util.Map;
 public class StationInformation extends GBFSBase {
     @JsonProperty("data") Data data;
 
+    public Data getData() {
+        return data;
+    }
+
     public static class Data {
         @JsonProperty("stations") List<Station> stations;
+
+        public List<Station> getStations() {
+            return stations;
+        }
     }
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -32,6 +40,142 @@ public class StationInformation extends GBFSBase {
         @JsonProperty("is_valet_station") Boolean isValetStation;
         @JsonProperty("rental_uris") RentalUris rentalUris;
         @JsonProperty("vehicle_type_capacity") Map<String, Integer> vehicleTypeCapacity;
+
+        public String getStationId() {
+            return stationId;
+        }
+
+        public void setStationId(String stationId) {
+            this.stationId = stationId;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getShortName() {
+            return shortName;
+        }
+
+        public void setShortName(String shortName) {
+            this.shortName = shortName;
+        }
+
+        public Double getLat() {
+            return lat;
+        }
+
+        public void setLat(Double lat) {
+            this.lat = lat;
+        }
+
+        public Double getLon() {
+            return lon;
+        }
+
+        public void setLon(Double lon) {
+            this.lon = lon;
+        }
+
+        public String getAddress() {
+            return address;
+        }
+
+        public void setAddress(String address) {
+            this.address = address;
+        }
+
+        public String getCrossStreet() {
+            return crossStreet;
+        }
+
+        public void setCrossStreet(String crossStreet) {
+            this.crossStreet = crossStreet;
+        }
+
+        public String getRegionId() {
+            return regionId;
+        }
+
+        public void setRegionId(String regionId) {
+            this.regionId = regionId;
+        }
+
+        public String getPostCode() {
+            return postCode;
+        }
+
+        public void setPostCode(String postCode) {
+            this.postCode = postCode;
+        }
+
+        public List<RentalMethod> getRentalMethods() {
+            return rentalMethods;
+        }
+
+        public void setRentalMethods(List<RentalMethod> rentalMethods) {
+            this.rentalMethods = rentalMethods;
+        }
+
+        public Boolean getVirtualStation() {
+            return isVirtualStation;
+        }
+
+        public void setVirtualStation(Boolean virtualStation) {
+            isVirtualStation = virtualStation;
+        }
+
+        public MultiPolygon getStationArea() {
+            return stationArea;
+        }
+
+        public void setStationArea(MultiPolygon stationArea) {
+            this.stationArea = stationArea;
+        }
+
+        public Integer getCapacity() {
+            return capacity;
+        }
+
+        public void setCapacity(Integer capacity) {
+            this.capacity = capacity;
+        }
+
+        public Map<String, Integer> getVehicleCapacity() {
+            return vehicleCapacity;
+        }
+
+        public void setVehicleCapacity(Map<String, Integer> vehicleCapacity) {
+            this.vehicleCapacity = vehicleCapacity;
+        }
+
+        public Boolean getValetStation() {
+            return isValetStation;
+        }
+
+        public void setValetStation(Boolean valetStation) {
+            isValetStation = valetStation;
+        }
+
+        public RentalUris getRentalUris() {
+            return rentalUris;
+        }
+
+        public void setRentalUris(RentalUris rentalUris) {
+            this.rentalUris = rentalUris;
+        }
+
+        public Map<String, Integer> getVehicleTypeCapacity() {
+            return vehicleTypeCapacity;
+        }
+
+        public void setVehicleTypeCapacity(Map<String, Integer> vehicleTypeCapacity) {
+            this.vehicleTypeCapacity = vehicleTypeCapacity;
+        }
     }
 
     public enum RentalMethod {

@@ -47,7 +47,14 @@ public class GBFSFeedCacheImpl implements GBFSFeedCache {
                 feedName,
                 feedProvider.getName()
         );
-        cache.putAsync(key, feed);
+        try {
+            cache.putAsync(key, feed).get(1, TimeUnit.SECONDS);
+        } catch (ExecutionException | TimeoutException e) {
+            logger.warn("Unable to update feed from cache within 1 second", e);
+        } catch (InterruptedException e) {
+            logger.warn("Interrupted while updating feed from cache", e);
+            Thread.currentThread().interrupt();
+        }
     }
 
     private String getKey(GBFSFeedName feedName, String providerName) {

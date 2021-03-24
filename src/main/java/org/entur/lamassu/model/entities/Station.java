@@ -33,7 +33,7 @@ public class Station implements Entity {
     private Boolean isInstalled;
     private Boolean isRenting;
     private Boolean isReturning;
-    private Integer lastReported;
+    private Long lastReported;
     private System system;
     private List<PricingPlan> pricingPlans;
 
@@ -126,11 +126,11 @@ public class Station implements Entity {
         isReturning = returning;
     }
 
-    public Integer getLastReported() {
+    public Long getLastReported() {
         return lastReported;
     }
 
-    public void setLastReported(Integer lastReported) {
+    public void setLastReported(Long lastReported) {
         this.lastReported = lastReported;
     }
 

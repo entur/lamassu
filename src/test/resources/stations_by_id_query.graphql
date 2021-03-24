@@ -1,0 +1,9 @@
+{
+    stationsById(
+        ids: ["TST:Station:1"]
+    ) {
+        id
+        lat
+        lon
+    }
+}

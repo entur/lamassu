@@ -1,6 +1,8 @@
 package org.entur.lamassu.model.gbfs.v2_1;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;

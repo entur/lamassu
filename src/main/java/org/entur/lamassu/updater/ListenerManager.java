@@ -3,6 +3,7 @@ package org.entur.lamassu.updater;
 import org.entur.lamassu.listener.CacheListener;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.gbfs.v2_1.FreeBikeStatus;
+import org.entur.lamassu.model.gbfs.v2_1.StationStatus;
 import org.entur.lamassu.model.gbfs.v2_1.SystemInformation;
 import org.entur.lamassu.model.gbfs.v2_1.SystemPricingPlans;
 import org.entur.lamassu.model.gbfs.v2_1.VehicleTypes;
@@ -15,6 +16,7 @@ public class ListenerManager {
     private final CacheListener<VehicleTypes> vehicleTypesCacheListener;
     private final CacheListener<SystemPricingPlans> systemPricingPlansCacheListener;
     private final CacheListener<SystemInformation> systemInformationCacheListener;
+    private final CacheListener<StationStatus> stationStatusCacheListener;
     private final CacheListener<Vehicle> vehicleCacheListener;
 
     @Autowired
@@ -23,12 +25,14 @@ public class ListenerManager {
             CacheListener<VehicleTypes> vehicleTypesCacheListener,
             CacheListener<SystemPricingPlans> systemPricingPlansCacheListener,
             CacheListener<SystemInformation> systemInformationCacheListener,
+            CacheListener<StationStatus> stationStatusCacheListener,
             CacheListener<Vehicle> vehicleCacheListener
     ) {
         this.freeBikeStatusCacheListener = freeBikeStatusCacheListener;
         this.vehicleTypesCacheListener = vehicleTypesCacheListener;
         this.systemPricingPlansCacheListener = systemPricingPlansCacheListener;
         this.systemInformationCacheListener = systemInformationCacheListener;
+        this.stationStatusCacheListener = stationStatusCacheListener;
         this.vehicleCacheListener = vehicleCacheListener;
     }
 
@@ -37,6 +41,7 @@ public class ListenerManager {
         vehicleTypesCacheListener.startListening();
         systemPricingPlansCacheListener.startListening();
         systemInformationCacheListener.startListening();
+        stationStatusCacheListener.startListening();
         vehicleCacheListener.startListening();
     }
 
@@ -45,6 +50,7 @@ public class ListenerManager {
         vehicleTypesCacheListener.stopListening();
         systemPricingPlansCacheListener.stopListening();
         systemInformationCacheListener.stopListening();
+        stationStatusCacheListener.stopListening();
         vehicleCacheListener.stopListening();
     }
 }

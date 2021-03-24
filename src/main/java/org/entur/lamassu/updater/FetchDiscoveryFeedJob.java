@@ -15,6 +15,6 @@ public class FetchDiscoveryFeedJob extends QuartzJobBean {
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         var feedProvider = (FeedProvider) jobExecutionContext.getJobDetail().getJobDataMap().get("feedProvider");
-        feedUpdateService.fetchDiscoveryFeed(feedProvider);
+        feedUpdateService.update(feedProvider);
     }
 }
