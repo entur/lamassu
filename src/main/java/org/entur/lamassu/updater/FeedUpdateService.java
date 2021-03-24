@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class FeedUpdateService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -32,7 +34,7 @@ public class FeedUpdateService {
             var mappedFeed = discoveryFeedMapper.mapDiscoveryFeed(discovery, feedProvider);
             feedCache.update(GBFSFeedName.GBFS, feedProvider, mappedFeed);
             discovery.getData().get(feedProvider.getLanguage()).getFeeds().stream()
-                    .sorted(this::sortFreeBikeStatusLast)
+                    .sorted(this::sortFeeds)
                     .forEach(feedSource -> fetchFeed(feedProvider, discovery, feedSource));
         });
     }
@@ -56,15 +58,13 @@ public class FeedUpdateService {
         });
     }
 
-    // When feeds are fetched sequentially, ensure FREE_BIKE_STATUS is fetched last, in order
-    // to ensure that all feeds are up-to-date when populating vehicle cache
-    private int sortFreeBikeStatusLast(GBFS.GBFSFeed a, GBFS.GBFSFeed b) {
-        if (a.getName().equals(GBFSFeedName.FREE_BIKE_STATUS)) {
-            return 1;
-        } else if (b.getName().equals(GBFSFeedName.FREE_BIKE_STATUS)) {
-            return 1;
-        } else {
-            return -1;
-        }
+    private static final List<GBFSFeedName> feedPriority = List.of(
+            GBFSFeedName.STATION_INFORMATION,
+            GBFSFeedName.STATION_STATUS,
+            GBFSFeedName.FREE_BIKE_STATUS
+    );
+
+    private int sortFeeds(GBFS.GBFSFeed a, GBFS.GBFSFeed b) {
+        return Integer.compare(feedPriority.indexOf(a.getName()), feedPriority.indexOf(b.getName()));
     }
 }
