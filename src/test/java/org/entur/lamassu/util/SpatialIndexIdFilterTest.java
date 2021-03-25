@@ -1,6 +1,6 @@
 package org.entur.lamassu.util;
 
-import org.entur.lamassu.cache.SpatialIndexId;
+import org.entur.lamassu.cache.VehicleSpatialIndexId;
 import org.entur.lamassu.model.feedprovider.FeedProvider;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PropulsionType;
@@ -12,12 +12,12 @@ import org.junit.Test;
 
 import java.util.List;
 
-public class VehicleFilterTest {
+public class SpatialIndexIdFilterTest {
 
     @Test
     public void testNoFilter() {
         Assert.assertTrue(
-                VehicleFilter.filterVehicle(testId(), testFilterParams())
+                SpatialIndexIdFilter.filterVehicle(testId(), testFilterParams())
         );
     }
 
@@ -28,12 +28,12 @@ public class VehicleFilterTest {
 
         params.setOperators(List.of("testprovider"));
         Assert.assertTrue(
-                VehicleFilter.filterVehicle(testId, params)
+                SpatialIndexIdFilter.filterVehicle(testId, params)
         );
 
         params.setOperators(List.of("foobar"));
         Assert.assertFalse(
-                VehicleFilter.filterVehicle(testId, params)
+                SpatialIndexIdFilter.filterVehicle(testId, params)
         );
     }
 
@@ -44,12 +44,12 @@ public class VehicleFilterTest {
 
         params.setCodespaces(List.of("TST"));
         Assert.assertTrue(
-                VehicleFilter.filterVehicle(testId, params)
+                SpatialIndexIdFilter.filterVehicle(testId, params)
         );
 
         params.setCodespaces(List.of("FOO"));
         Assert.assertFalse(
-                VehicleFilter.filterVehicle(testId, params)
+                SpatialIndexIdFilter.filterVehicle(testId, params)
         );
     }
 
@@ -60,12 +60,12 @@ public class VehicleFilterTest {
 
         params.setFormFactors(List.of(FormFactor.SCOOTER));
         Assert.assertTrue(
-                VehicleFilter.filterVehicle(testId, params)
+                SpatialIndexIdFilter.filterVehicle(testId, params)
         );
 
         params.setFormFactors(List.of(FormFactor.BICYCLE));
         Assert.assertFalse(
-                VehicleFilter.filterVehicle(testId, params)
+                SpatialIndexIdFilter.filterVehicle(testId, params)
         );
     }
 
@@ -76,12 +76,12 @@ public class VehicleFilterTest {
 
         params.setPropulsionTypes(List.of(PropulsionType.ELECTRIC));
         Assert.assertTrue(
-                VehicleFilter.filterVehicle(testId, params)
+                SpatialIndexIdFilter.filterVehicle(testId, params)
         );
 
         params.setPropulsionTypes(List.of(PropulsionType.COMBUSTION));
         Assert.assertFalse(
-                VehicleFilter.filterVehicle(testId, params)
+                SpatialIndexIdFilter.filterVehicle(testId, params)
         );
     }
 
@@ -92,12 +92,12 @@ public class VehicleFilterTest {
 
         params.setIncludeReserved(true);
         Assert.assertTrue(
-                VehicleFilter.filterVehicle(testId, params)
+                SpatialIndexIdFilter.filterVehicle(testId, params)
         );
 
         params.setIncludeReserved(false);
         Assert.assertFalse(
-                VehicleFilter.filterVehicle(testId, params)
+                SpatialIndexIdFilter.filterVehicle(testId, params)
         );
     }
 
@@ -108,29 +108,29 @@ public class VehicleFilterTest {
 
         params.setIncludeDisabled(true);
         Assert.assertTrue(
-                VehicleFilter.filterVehicle(testId, params)
+                SpatialIndexIdFilter.filterVehicle(testId, params)
         );
 
         params.setIncludeDisabled(false);
         Assert.assertFalse(
-                VehicleFilter.filterVehicle(testId, params)
+                SpatialIndexIdFilter.filterVehicle(testId, params)
         );
     }
 
-    private SpatialIndexId testId() {
-        return SpatialIndexId.fromString(SpatialIndexIdUtil.createSpatialIndexId(testVehicle(), testProvider()));
+    private VehicleSpatialIndexId testId() {
+        return VehicleSpatialIndexId.fromString(SpatialIndexIdUtil.createVehicleSpatialIndexId(testVehicle(), testProvider()));
     }
 
-    private SpatialIndexId testReservedId() {
+    private VehicleSpatialIndexId testReservedId() {
         var vehicle = testVehicle();
         vehicle.setReserved(true);
-        return SpatialIndexId.fromString(SpatialIndexIdUtil.createSpatialIndexId(vehicle, testProvider()));
+        return VehicleSpatialIndexId.fromString(SpatialIndexIdUtil.createVehicleSpatialIndexId(vehicle, testProvider()));
     }
 
-    private SpatialIndexId testDisabledId() {
+    private VehicleSpatialIndexId testDisabledId() {
         var vehicle = testVehicle();
         vehicle.setDisabled(true);
-        return SpatialIndexId.fromString(SpatialIndexIdUtil.createSpatialIndexId(vehicle, testProvider()));
+        return VehicleSpatialIndexId.fromString(SpatialIndexIdUtil.createVehicleSpatialIndexId(vehicle, testProvider()));
     }
 
     private Vehicle testVehicle() {

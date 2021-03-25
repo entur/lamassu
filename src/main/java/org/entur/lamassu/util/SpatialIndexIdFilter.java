@@ -1,12 +1,14 @@
 package org.entur.lamassu.util;
 
-import org.entur.lamassu.cache.SpatialIndexId;
+import org.entur.lamassu.cache.StationSpatialIndexId;
+import org.entur.lamassu.cache.VehicleSpatialIndexId;
+import org.entur.lamassu.service.FilterParameters;
 import org.entur.lamassu.service.VehicleFilterParameters;
 
-public class VehicleFilter {
-    private VehicleFilter() {}
+public class SpatialIndexIdFilter {
+    private SpatialIndexIdFilter() {}
 
-    public static boolean filterVehicle(SpatialIndexId parsedId, VehicleFilterParameters filters) {
+    public static boolean filterVehicle(VehicleSpatialIndexId parsedId, VehicleFilterParameters filters) {
         if (filters.getOperators() != null && !filters.getOperators().contains(parsedId.getOperator())) {
             return false;
         }
@@ -28,6 +30,18 @@ public class VehicleFilter {
         }
 
         if (!filters.getIncludeDisabled() && parsedId.getDisabled()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean filterStation(StationSpatialIndexId parsedId, FilterParameters filters) {
+        if (filters.getOperators() != null && !filters.getOperators().contains(parsedId.getOperator())) {
+            return false;
+        }
+
+        if (filters.getCodespaces() != null && !filters.getCodespaces().contains(parsedId.getCodespace())) {
             return false;
         }
 

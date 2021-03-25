@@ -10,9 +10,10 @@ import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.Operator;
 import org.entur.lamassu.model.entities.PropulsionType;
 import org.entur.lamassu.model.entities.Vehicle;
+import org.entur.lamassu.service.FilterParameters;
 import org.entur.lamassu.service.VehicleFilterParameters;
-import org.entur.lamassu.service.VehicleQueryParameters;
-import org.entur.lamassu.service.VehiclesNearbyService;
+import org.entur.lamassu.service.RangeQueryParameters;
+import org.entur.lamassu.service.GeoSearchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,13 +28,13 @@ import java.util.stream.Collectors;
 public class GraphQLQueryController implements GraphQLQueryResolver {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final VehiclesNearbyService vehiclesNearbyService;
+    private final GeoSearchService geoSearchService;
     private final FeedProviderConfig feedProviderConfig;
     private final StationCache stationCache;
 
     @Autowired
-    public GraphQLQueryController(VehiclesNearbyService vehiclesNearbyService, FeedProviderConfig feedProviderConfig, StationCache stationCache) {
-        this.vehiclesNearbyService = vehiclesNearbyService;
+    public GraphQLQueryController(GeoSearchService geoSearchService, FeedProviderConfig feedProviderConfig, StationCache stationCache) {
+        this.geoSearchService = geoSearchService;
         this.feedProviderConfig = feedProviderConfig;
         this.stationCache = stationCache;
     }
@@ -61,7 +62,7 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
         validateCodespaces(codespaces);
         validateOperators(operators);
 
-        var queryParams = new VehicleQueryParameters();
+        var queryParams = new RangeQueryParameters();
         queryParams.setLat(lat);
         queryParams.setLon(lon);
         queryParams.setRange(range);
@@ -75,9 +76,9 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
         filterParams.setIncludeReserved(includeReserved);
         filterParams.setIncludeDisabled(includeDisabled);
 
-        logger.debug("vehicles called query={} filter={}", queryParams, filterParams);
+        logger.debug("getVehicles called query={} filter={}", queryParams, filterParams);
 
-        return vehiclesNearbyService.getVehiclesNearby(queryParams, filterParams);
+        return geoSearchService.getVehiclesNearby(queryParams, filterParams);
     }
 
     public Collection<Station> getStations(
@@ -88,14 +89,29 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
             List<String> operators,
             List<String> codespaces
     ) {
-        return List.of();
+        validateCodespaces(codespaces);
+        validateOperators(operators);
+
+        var queryParams = new RangeQueryParameters();
+        queryParams.setLat(lat);
+        queryParams.setLon(lon);
+        queryParams.setRange(range);
+        queryParams.setCount(count);
+
+        var filterParams = new FilterParameters();
+        filterParams.setCodespaces(codespaces);
+        filterParams.setOperators(operators);
+
+        logger.debug("getStations called query={} filter={}", queryParams, filterParams);
+
+        return geoSearchService.getStationsNearby(queryParams, filterParams);
     }
 
     public Collection<Station> getStationsById(
         List<String> ids
     ) {
-        var result = stationCache.getAll(new HashSet<>(ids));
-        return result;
+        logger.debug("getStationsByIds called ids={}", ids);
+        return stationCache.getAll(new HashSet<>(ids));
     }
 
     private Operator mapToOperator(FeedProvider feedProvider) {

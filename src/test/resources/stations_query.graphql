@@ -1,12 +1,23 @@
 {
     stations(
-        lat: 59.9146,
-        lon: 10.7604,
+        lat: 11.342,
+        lon: 44.673,
         count: 1,
         range: 500
     ) {
         id
         lat
         lon
+        address
+        capacity
+        numBikesAvailable
+        numDocksAvailable
+        isInstalled
+        isRenting
+        isReturning
+        lastReported
+        system { id }
+        pricingPlans { id }
     }
 }
+,

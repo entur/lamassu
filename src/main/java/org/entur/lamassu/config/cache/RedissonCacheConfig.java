@@ -35,6 +35,7 @@ public class RedissonCacheConfig {
     public static final String SYSTEM_CACHE_KEY = "systemCache";
     public static final String STATION_CACHE_KEY = "stationCache";
     public static final String VEHICLE_SPATIAL_INDEX_KEY = "vehicleSpatialIndex";
+    public static final String STATION_SPATIAL_INDEX_KEY = "stationSpatialIndex";
     public static final String FEED_UPDATE_SCHEDULER_LOCK = "leader";
 
     private final Config redissonConfig;
@@ -131,7 +132,12 @@ public class RedissonCacheConfig {
     }
 
     @Bean
-    public RGeo<String> spatialIndex(RedissonClient redissonClient) {
+    public RGeo<String> vehicleSpatialIndex(RedissonClient redissonClient) {
         return redissonClient.getGeo(VEHICLE_SPATIAL_INDEX_KEY);
+    }
+
+    @Bean
+    public RGeo<String> stationSpatialIndex(RedissonClient redissonClient) {
+        return redissonClient.getGeo(STATION_SPATIAL_INDEX_KEY);
     }
 }

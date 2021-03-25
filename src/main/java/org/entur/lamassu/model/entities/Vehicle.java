@@ -2,7 +2,7 @@ package org.entur.lamassu.model.entities;
 
 import java.util.Objects;
 
-public class Vehicle implements Entity {
+public class Vehicle implements LocationEntity {
     private String id;
     private Double lat;
     private Double lon;

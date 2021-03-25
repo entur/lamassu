@@ -30,7 +30,6 @@ import org.springframework.stereotype.Component;
 
 import javax.cache.event.CacheEntryEvent;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Component
@@ -71,7 +70,7 @@ public class VehicleListenerDelegate implements CacheEntryListenerDelegate<Vehic
             var split = entry.getKey().split("_");
             var feedProvider = feedProviderConfig.get(split[split.length - 1]);
             var vehicle = entry.getValue();
-            var id = SpatialIndexIdUtil.createSpatialIndexId(vehicle, feedProvider);
+            var id = SpatialIndexIdUtil.createVehicleSpatialIndexId(vehicle, feedProvider);
             ids.add(id);
         }
 

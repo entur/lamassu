@@ -5,5 +5,14 @@
         id
         lat
         lon
+        capacity
+        numBikesAvailable
+        numDocksAvailable
+        isInstalled
+        isRenting
+        isReturning
+        lastReported
+        system { id }
+        pricingPlans { id }
     }
 }

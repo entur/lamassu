@@ -21,7 +21,7 @@ package org.entur.lamassu.model.entities;
 import java.util.List;
 import java.util.Objects;
 
-public class Station implements Entity {
+public class Station implements LocationEntity {
     private String id;
     private String name;
     private Double lat;

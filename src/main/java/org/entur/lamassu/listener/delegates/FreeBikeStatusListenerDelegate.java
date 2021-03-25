@@ -136,11 +136,11 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
         Map<String, Vehicle> spatialIndexUpdateMap = new java.util.HashMap<>(Map.of());
 
         vehicles.forEach((key, vehicle) -> {
-            var spatialIndexId = SpatialIndexIdUtil.createSpatialIndexId(vehicle, feedProvider);
+            var spatialIndexId = SpatialIndexIdUtil.createVehicleSpatialIndexId(vehicle, feedProvider);
             var previousVehicle = originalVehicles.get(key);
 
             if (previousVehicle != null) {
-                var oldSpatialIndexId = SpatialIndexIdUtil.createSpatialIndexId(previousVehicle, feedProvider);
+                var oldSpatialIndexId = SpatialIndexIdUtil.createVehicleSpatialIndexId(previousVehicle, feedProvider);
                 if (!oldSpatialIndexId.equalsIgnoreCase(spatialIndexId)) {
                     spatialIndicesToRemove.add(oldSpatialIndexId);
                 }
@@ -151,7 +151,7 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
         spatialIndicesToRemove.addAll(
                 vehicleIdsToRemove.stream()
                         .filter(originalVehicles::containsKey)
-                        .map(vehicleId -> SpatialIndexIdUtil.createSpatialIndexId(originalVehicles.get(vehicleId), feedProvider))
+                        .map(vehicleId -> SpatialIndexIdUtil.createVehicleSpatialIndexId(originalVehicles.get(vehicleId), feedProvider))
                         .collect(Collectors.toSet())
         );
 
