@@ -49,32 +49,32 @@ lamassu:
     - codespace: YOS
       name: oslobysykkel
       city: Oslo
-      url: https://api.dev.entur.io/mobility/v1/bikes/v2_1_proxy/oslobysykkel/gbfs.json
+      url: https://api.dev.entur.io/mobility/v1/bikes/v2_2_proxy/oslobysykkel/gbfs.json
       language: nb
     - codespace: YBE
       name: bergenbysykkel
       city: Bergen
-      url: https://api.dev.entur.io/mobility/v1/bikes/v2_1_proxy/bergenbysykkel/gbfs.json
+      url: https://api.dev.entur.io/mobility/v1/bikes/v2_2_proxy/bergenbysykkel/gbfs.json
       language: nb
     - codespace: YTR
       name: trondheimbysykkel
       city: Trondheim
-      url: https://api.dev.entur.io/mobility/v1/bikes/v2_1_proxy/trondheimbysykkel/gbfs.json
+      url: https://api.dev.entur.io/mobility/v1/bikes/v2_2_proxy/trondheimbysykkel/gbfs.json
       language: nb
     - codespace: YKO
       name: kolumbusbysykkel
       city: Stavanger
-      url: https://api.dev.entur.io/mobility/v1/bikes/v2_1_proxy/kolumbusbysykkel/gbfs.json
+      url: https://api.dev.entur.io/mobility/v1/bikes/v2_2_proxy/kolumbusbysykkel/gbfs.json
       language: nb
     - codespace: YLS
       name: lillestrombysykkel
       city: Lillestrøm
-      url: https://api.dev.entur.io/mobility/v1/bikes/v2_1_proxy/lillestrombysykkel/gbfs.json
+      url: https://api.dev.entur.io/mobility/v1/bikes/v2_2_proxy/lillestrombysykkel/gbfs.json
       language: nb
     - codespace: YDR
       name: drammenbysykkel
       city: Drammen
-      url: https://api.dev.entur.io/mobility/v1/bikes/v2_1_proxy/drammenbysykkel/gbfs.json
+      url: https://api.dev.entur.io/mobility/v1/bikes/v2_2_proxy/drammenbysykkel/gbfs.json
       language: nb
     - codespace: ENT
       name: entur-car-sharing-poc
