@@ -33,9 +33,14 @@ public class FeedUpdateService {
     public void update(FeedProvider feedProvider) {
         var discovery = fetchDiscoveryFeed(feedProvider).block();
         logger.debug("Fetched discovery feed  for provider {}", feedProvider.getName());
+
+        if (discovery == null) {
+            logger.warn("Discovery response was null - unable to update feed for provider {}", feedProvider.getName());
+            return;
+        }
+
         var mappedFeed = discoveryFeedMapper.mapDiscoveryFeed(discovery, feedProvider);
         feedCache.update(GBFSFeedName.GBFS, feedProvider, mappedFeed);
-
         discovery.getData().get(feedProvider.getLanguage()).getFeeds().stream()
                 .sorted(this::sortFeeds)
                 .forEach(feedSource -> {
