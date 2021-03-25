@@ -139,10 +139,7 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
                         system,
                         pricingPlans,
                         Objects.requireNonNull(stationInformationFeed.getData().getStations().stream()
-                                .filter(s -> {
-                                    var match = s.getStationId().equals(station.getStationId());
-                                    return match;
-                                }).findFirst().orElse(null)),
+                                .filter(s -> s.getStationId().equals(station.getStationId())).findFirst().orElse(null)),
                         station)
                 ).collect(Collectors.toMap(Station::getId, s->s));
 

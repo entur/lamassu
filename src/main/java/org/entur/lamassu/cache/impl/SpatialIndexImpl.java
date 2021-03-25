@@ -20,9 +20,7 @@ package org.entur.lamassu.cache.impl;
 
 import io.lettuce.core.RedisException;
 import org.entur.lamassu.cache.SpatialIndex;
-import org.entur.lamassu.model.entities.Entity;
 import org.entur.lamassu.model.entities.LocationEntity;
-import org.entur.lamassu.model.entities.Vehicle;
 import org.redisson.api.GeoEntry;
 import org.redisson.api.GeoOrder;
 import org.redisson.api.GeoUnit;

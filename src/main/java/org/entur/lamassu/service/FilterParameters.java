@@ -18,9 +18,6 @@
 
 package org.entur.lamassu.service;
 
-import org.entur.lamassu.model.entities.FormFactor;
-import org.entur.lamassu.model.entities.PropulsionType;
-
 import java.util.List;
 
 public class FilterParameters {

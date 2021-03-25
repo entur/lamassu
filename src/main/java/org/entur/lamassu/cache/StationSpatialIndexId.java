@@ -22,7 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class StationSpatialIndexId {
-    private static final Logger logger = LoggerFactory.getLogger(VehicleSpatialIndexId.class);
+    private static final Logger logger = LoggerFactory.getLogger(StationSpatialIndexId.class);
     private String stationId;
     private String operator;
     private String codespace;
