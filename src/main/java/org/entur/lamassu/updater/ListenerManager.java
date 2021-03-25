@@ -4,9 +4,6 @@ import org.entur.lamassu.listener.CacheListener;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.gbfs.v2_1.FreeBikeStatus;
 import org.entur.lamassu.model.gbfs.v2_1.StationStatus;
-import org.entur.lamassu.model.gbfs.v2_1.SystemInformation;
-import org.entur.lamassu.model.gbfs.v2_1.SystemPricingPlans;
-import org.entur.lamassu.model.gbfs.v2_1.VehicleTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

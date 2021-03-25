@@ -1,11 +1,8 @@
 package org.entur.lamassu.listener.delegates;
 
 import org.entur.lamassu.cache.GBFSFeedCache;
-import org.entur.lamassu.cache.PricingPlanCache;
-import org.entur.lamassu.cache.SystemCache;
 import org.entur.lamassu.cache.VehicleCache;
 import org.entur.lamassu.cache.VehicleSpatialIndex;
-import org.entur.lamassu.cache.VehicleTypeCache;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.listener.CacheEntryListenerDelegate;
 import org.entur.lamassu.mapper.PricingPlanMapper;
