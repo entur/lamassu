@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class VehicleSpatialIndexImpl extends SpatialIndexImpl<Vehicle> implements VehicleSpatialIndex {
 
     @Autowired
-    public VehicleSpatialIndexImpl(RGeo<String> stationSpatialIndex) {
-        super(stationSpatialIndex);
+    public VehicleSpatialIndexImpl(RGeo<String> vehicleSpatialIndex) {
+        super(vehicleSpatialIndex);
     }
 }
