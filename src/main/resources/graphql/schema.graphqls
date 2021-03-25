@@ -14,16 +14,22 @@ type Query {
         includeReserved: Boolean = false
         includeDisabled: Boolean = false
     ): [Vehicle]
+
+    stations(
+        lat: Float!
+        lon: Float!
+        range: Int
+        count: Int
+        operators: [String]
+        codespaces: [String]
+    ): [Station]
+
+    stationsById(ids: [String]!): [Station]
 }
 
 type Operator {
     name: String
     codespace: String
-}
-
-type VehicleTypeAvailability {
-    vehicleType: VehicleType!
-    count: Int!
 }
 
 type Vehicle {
@@ -86,6 +92,23 @@ type RentalUris {
     android: String
     ios: String
     web: String
+}
+
+type Station {
+    id: ID!
+    name: String!
+    lat: Float!
+    lon: Float!
+    address: String
+    capacity: Int
+    numBikesAvailable: Int!
+    numDocksAvailable: Int
+    isInstalled: Boolean
+    isRenting: Boolean
+    isReturning: Boolean
+    lastReported: Int
+    system: System
+    pricingPlans: [PricingPlan]
 }
 
 type System {

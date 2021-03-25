@@ -2,21 +2,25 @@ package org.entur.lamassu.controller;
 
 import graphql.GraphqlErrorException;
 import graphql.kickstart.tools.GraphQLQueryResolver;
+import org.entur.lamassu.cache.StationCache;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
+import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.feedprovider.FeedProvider;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.Operator;
 import org.entur.lamassu.model.entities.PropulsionType;
 import org.entur.lamassu.model.entities.Vehicle;
+import org.entur.lamassu.service.FilterParameters;
 import org.entur.lamassu.service.VehicleFilterParameters;
-import org.entur.lamassu.service.VehicleQueryParameters;
-import org.entur.lamassu.service.VehiclesNearbyService;
+import org.entur.lamassu.service.RangeQueryParameters;
+import org.entur.lamassu.service.GeoSearchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,16 +28,26 @@ import java.util.stream.Collectors;
 public class GraphQLQueryController implements GraphQLQueryResolver {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final VehiclesNearbyService vehiclesNearbyService;
+    private final GeoSearchService geoSearchService;
     private final FeedProviderConfig feedProviderConfig;
+    private final StationCache stationCache;
 
     @Autowired
-    public GraphQLQueryController(VehiclesNearbyService vehiclesNearbyService, FeedProviderConfig feedProviderConfig) {
-        this.vehiclesNearbyService = vehiclesNearbyService;
+    public GraphQLQueryController(GeoSearchService geoSearchService, FeedProviderConfig feedProviderConfig, StationCache stationCache) {
+        this.geoSearchService = geoSearchService;
         this.feedProviderConfig = feedProviderConfig;
+        this.stationCache = stationCache;
     }
 
-    public Collection<Vehicle> vehicles(
+    public Collection<String> getCodespaces() {
+        return feedProviderConfig.getProviders().stream().map(FeedProvider::getCodespace).collect(Collectors.toSet());
+    }
+
+    public Collection<Operator> getOperators() {
+        return feedProviderConfig.getProviders().stream().map(this::mapToOperator).collect(Collectors.toList());
+    }
+
+    public Collection<Vehicle> getVehicles(
             Double lat,
             Double lon,
             Double range,
@@ -48,7 +62,7 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
         validateCodespaces(codespaces);
         validateOperators(operators);
 
-        var queryParams = new VehicleQueryParameters();
+        var queryParams = new RangeQueryParameters();
         queryParams.setLat(lat);
         queryParams.setLon(lon);
         queryParams.setRange(range);
@@ -62,17 +76,42 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
         filterParams.setIncludeReserved(includeReserved);
         filterParams.setIncludeDisabled(includeDisabled);
 
-        logger.debug("vehicles called query={} filter={}", queryParams, filterParams);
+        logger.debug("getVehicles called query={} filter={}", queryParams, filterParams);
 
-        return vehiclesNearbyService.getVehiclesNearby(queryParams, filterParams);
+        return geoSearchService.getVehiclesNearby(queryParams, filterParams);
     }
 
-    public Collection<String> codespaces() {
-        return feedProviderConfig.getProviders().stream().map(FeedProvider::getCodespace).collect(Collectors.toSet());
+    public Collection<Station> getStations(
+            Double lat,
+            Double lon,
+            Double range,
+            Integer count,
+            List<String> operators,
+            List<String> codespaces
+    ) {
+        validateCodespaces(codespaces);
+        validateOperators(operators);
+
+        var queryParams = new RangeQueryParameters();
+        queryParams.setLat(lat);
+        queryParams.setLon(lon);
+        queryParams.setRange(range);
+        queryParams.setCount(count);
+
+        var filterParams = new FilterParameters();
+        filterParams.setCodespaces(codespaces);
+        filterParams.setOperators(operators);
+
+        logger.debug("getStations called query={} filter={}", queryParams, filterParams);
+
+        return geoSearchService.getStationsNearby(queryParams, filterParams);
     }
 
-    public Collection<Operator> operators() {
-        return feedProviderConfig.getProviders().stream().map(this::mapToOperator).collect(Collectors.toList());
+    public Collection<Station> getStationsById(
+        List<String> ids
+    ) {
+        logger.debug("getStationsByIds called ids={}", ids);
+        return stationCache.getAll(new HashSet<>(ids));
     }
 
     private Operator mapToOperator(FeedProvider feedProvider) {
@@ -84,7 +123,7 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
 
     private void validateCodespaces(List<String> codespaces) {
         if (codespaces != null) {
-            var validCodespaces = codespaces();
+            var validCodespaces = getCodespaces();
             if(!validCodespaces.containsAll(codespaces)) {
                 throw new GraphqlErrorException.Builder().message("Unknown codespace(s)").build();
             }
@@ -93,7 +132,7 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
 
     private void validateOperators(List<String> operators) {
         if (operators != null) {
-            var validOperators = operators();
+            var validOperators = getOperators();
             if (!validOperators.stream().map(Operator::getName).collect(Collectors.toList()).containsAll(operators)) {
                 throw new GraphqlErrorException.Builder().message("Unknown operator(s)").build();
             }

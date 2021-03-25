@@ -5,29 +5,11 @@ import org.entur.lamassu.model.entities.PropulsionType;
 
 import java.util.List;
 
-public class VehicleFilterParameters {
-    private List<String> operators;
-    private List<String> codespaces;
+public class VehicleFilterParameters extends FilterParameters {
     private List<FormFactor> formFactors;
     private List<PropulsionType> propulsionTypes;
     private boolean includeReserved;
     private boolean includeDisabled;
-
-    public List<String> getOperators() {
-        return operators;
-    }
-
-    public void setOperators(List<String> operators) {
-        this.operators = operators;
-    }
-
-    public List<String> getCodespaces() {
-        return codespaces;
-    }
-
-    public void setCodespaces(List<String> codespaces) {
-        this.codespaces = codespaces;
-    }
 
     public List<FormFactor> getFormFactors() {
         return formFactors;

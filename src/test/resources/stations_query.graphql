@@ -1,0 +1,24 @@
+{
+    stations(
+        lat: 11.342,
+        lon: 44.673,
+        count: 1,
+        range: 500
+    ) {
+        id
+        name
+        lat
+        lon
+        address
+        capacity
+        numBikesAvailable
+        numDocksAvailable
+        isInstalled
+        isRenting
+        isReturning
+        lastReported
+        system { id }
+        pricingPlans { id }
+    }
+}
+,

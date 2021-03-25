@@ -5,8 +5,8 @@ import org.entur.lamassu.model.entities.PropulsionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SpatialIndexId {
-    private static final Logger logger = LoggerFactory.getLogger(SpatialIndexId.class);
+public class VehicleSpatialIndexId {
+    private static final Logger logger = LoggerFactory.getLogger(VehicleSpatialIndexId.class);
     private String vehicleId;
     private String operator;
     private String codespace;
@@ -15,9 +15,9 @@ public class SpatialIndexId {
     private boolean isReserved;
     private boolean isDisabled;
 
-    public static SpatialIndexId fromString(String indexId) {
+    public static VehicleSpatialIndexId fromString(String indexId) {
         try {
-            var parsed = new SpatialIndexId();
+            var parsed = new VehicleSpatialIndexId();
             var parts = indexId.split("_");
             parsed.setVehicleId(parts[0]);
             parsed.setOperator(parts[1]);
@@ -44,7 +44,7 @@ public class SpatialIndexId {
                 isDisabled;
     }
 
-    private SpatialIndexId() {}
+    private VehicleSpatialIndexId() {}
 
     public String getVehicleId() {
         return vehicleId;

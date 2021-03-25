@@ -1,13 +1,18 @@
 package org.entur.lamassu.service.impl;
 
+import org.entur.lamassu.cache.StationCache;
+import org.entur.lamassu.cache.StationSpatialIndex;
+import org.entur.lamassu.cache.StationSpatialIndexId;
 import org.entur.lamassu.cache.VehicleCache;
 import org.entur.lamassu.cache.VehicleSpatialIndex;
-import org.entur.lamassu.cache.SpatialIndexId;
+import org.entur.lamassu.cache.VehicleSpatialIndexId;
+import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.Vehicle;
+import org.entur.lamassu.service.FilterParameters;
 import org.entur.lamassu.service.VehicleFilterParameters;
-import org.entur.lamassu.service.VehicleQueryParameters;
-import org.entur.lamassu.service.VehiclesNearbyService;
-import org.entur.lamassu.util.VehicleFilter;
+import org.entur.lamassu.service.RangeQueryParameters;
+import org.entur.lamassu.service.GeoSearchService;
+import org.entur.lamassu.util.SpatialIndexIdFilter;
 import org.redisson.api.GeoOrder;
 import org.redisson.api.GeoUnit;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,31 +24,34 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
-public class VehiclesNearbyServiceImpl implements VehiclesNearbyService {
+public class VehiclesNearbyServiceImpl implements GeoSearchService {
 
-    private final VehicleSpatialIndex spatialIndex;
+    private final VehicleSpatialIndex vehicleSpatialIndex;
+    private final StationSpatialIndex stationSpatialIndex;
     private final VehicleCache vehicleCache;
+    private final StationCache stationCache;
 
     @Autowired
-    public VehiclesNearbyServiceImpl(VehicleSpatialIndex spatialIndex, VehicleCache vehicleCache) {
-        this.spatialIndex = spatialIndex;
+    public VehiclesNearbyServiceImpl(VehicleSpatialIndex vehicleSpatialIndex, StationSpatialIndex stationSpatialIndex, VehicleCache vehicleCache, StationCache stationCache) {
+        this.vehicleSpatialIndex = vehicleSpatialIndex;
+        this.stationSpatialIndex = stationSpatialIndex;
         this.vehicleCache = vehicleCache;
+        this.stationCache = stationCache;
     }
 
     @Override
-    public List<Vehicle> getVehiclesNearby(VehicleQueryParameters vehicleQueryParameters, VehicleFilterParameters vehicleFilterParameters) {
-        Double longitude = vehicleQueryParameters.getLon();
-        Double latitude = vehicleQueryParameters.getLat();
-        Double range = vehicleQueryParameters.getRange();
-        Integer count = vehicleQueryParameters.getCount();
+    public List<Vehicle> getVehiclesNearby(RangeQueryParameters rangeQueryParameters, VehicleFilterParameters vehicleFilterParameters) {
+        Double longitude = rangeQueryParameters.getLon();
+        Double latitude = rangeQueryParameters.getLat();
+        Double range = rangeQueryParameters.getRange();
+        Integer count = rangeQueryParameters.getCount();
 
-        List<String> indexIds = spatialIndex.radius(longitude, latitude, range, GeoUnit.METERS, GeoOrder.ASC);
-
+        List<String> indexIds = vehicleSpatialIndex.radius(longitude, latitude, range, GeoUnit.METERS, GeoOrder.ASC);
 
         var stream = indexIds.stream()
-                .map(SpatialIndexId::fromString)
+                .map(VehicleSpatialIndexId::fromString)
                 .filter(Objects::nonNull)
-                .filter(id -> VehicleFilter.filterVehicle(id, vehicleFilterParameters));
+                .filter(id -> SpatialIndexIdFilter.filterVehicle(id, vehicleFilterParameters));
 
         if (count != null) {
             stream = stream.limit(count.longValue());
@@ -55,8 +63,30 @@ public class VehiclesNearbyServiceImpl implements VehiclesNearbyService {
         return vehicleCache.getAll(vehicleIds);
     }
 
-    private String getVehicleCacheKey(SpatialIndexId spatialIndexId) {
+    private String getVehicleCacheKey(VehicleSpatialIndexId spatialIndexId) {
         return spatialIndexId.getVehicleId() + "_" + spatialIndexId.getOperator();
     }
 
+    @Override
+    public List<Station> getStationsNearby(RangeQueryParameters rangeQueryParameters, FilterParameters filterParameters) {
+        Double longitude = rangeQueryParameters.getLon();
+        Double latitude = rangeQueryParameters.getLat();
+        Double range = rangeQueryParameters.getRange();
+        Integer count = rangeQueryParameters.getCount();
+
+        List<String> indexIds = stationSpatialIndex.radius(longitude, latitude, range, GeoUnit.METERS, GeoOrder.ASC);
+
+        var stream = indexIds.stream()
+                .map(StationSpatialIndexId::fromString)
+                .filter(Objects::nonNull)
+                .filter(id -> SpatialIndexIdFilter.filterStation(id, filterParameters));
+
+        if (count != null) {
+            stream = stream.limit(count.longValue());
+        }
+
+        Set<String> stationIds = stream.map(StationSpatialIndexId::getStationId).collect(Collectors.toSet());
+
+        return stationCache.getAll(stationIds);
+    }
 }

@@ -1,6 +1,6 @@
 package org.entur.lamassu.service;
 
-public class VehicleQueryParameters {
+public class RangeQueryParameters {
     private Double lat;
     private Double lon;
     private Double range;

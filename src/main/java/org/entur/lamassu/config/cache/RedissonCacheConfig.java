@@ -1,6 +1,7 @@
 package org.entur.lamassu.config.cache;
 
 import org.entur.lamassu.model.entities.PricingPlan;
+import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.System;
 import org.entur.lamassu.model.entities.VehicleType;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
@@ -32,7 +33,9 @@ public class RedissonCacheConfig {
     public static final String VEHICLE_TYPE_CACHE_KEY = "vehicleTypeCache";
     public static final String PRICING_PLAN_CACHE_KEY = "pricingPlanCache";
     public static final String SYSTEM_CACHE_KEY = "systemCache";
+    public static final String STATION_CACHE_KEY = "stationCache";
     public static final String VEHICLE_SPATIAL_INDEX_KEY = "vehicleSpatialIndex";
+    public static final String STATION_SPATIAL_INDEX_KEY = "stationSpatialIndex";
     public static final String FEED_UPDATE_SCHEDULER_LOCK = "leader";
 
     private final Config redissonConfig;
@@ -120,7 +123,21 @@ public class RedissonCacheConfig {
     }
 
     @Bean
-    public RGeo<String> spatialIndex(RedissonClient redissonClient) {
+    public Cache<String, Station> stationCache(Config redissonConfig) {
+        var cacheConfig = new MutableConfiguration<String, Station>();
+        cacheConfig.setExpiryPolicyFactory((Factory<ExpiryPolicy>) () -> new CustomExpiryPolicy(Duration.ONE_MINUTE, null, Duration.ONE_MINUTE));
+        var redissonCacheConfig = RedissonConfiguration.fromConfig(redissonConfig, cacheConfig);
+        var manager = Caching.getCachingProvider().getCacheManager();
+        return manager.createCache(STATION_CACHE_KEY, redissonCacheConfig);
+    }
+
+    @Bean
+    public RGeo<String> vehicleSpatialIndex(RedissonClient redissonClient) {
         return redissonClient.getGeo(VEHICLE_SPATIAL_INDEX_KEY);
+    }
+
+    @Bean
+    public RGeo<String> stationSpatialIndex(RedissonClient redissonClient) {
+        return redissonClient.getGeo(STATION_SPATIAL_INDEX_KEY);
     }
 }
