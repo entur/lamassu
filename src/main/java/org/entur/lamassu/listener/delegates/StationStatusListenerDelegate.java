@@ -51,21 +51,29 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
     private final GBFSFeedCache feedCache;
     private final StationCache stationCache;
     private final FeedProviderConfig feedProviderConfig;
+    private final StationSpatialIndex spatialIndex;
     private final SystemMapper systemMapper;
     private final PricingPlanMapper pricingPlanMapper;
     private final StationMapper stationMapper;
-    private final StationSpatialIndex spatialIndex;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public StationStatusListenerDelegate(GBFSFeedCache feedCache, StationCache stationCache, FeedProviderConfig feedProviderConfig, SystemMapper systemMapper, PricingPlanMapper pricingPlanMapper, StationMapper stationMapper, StationSpatialIndex spatialIndex) {
+    public StationStatusListenerDelegate(
+            GBFSFeedCache feedCache,
+            StationCache stationCache,
+            FeedProviderConfig feedProviderConfig,
+            StationSpatialIndex spatialIndex,
+            SystemMapper systemMapper,
+            PricingPlanMapper pricingPlanMapper,
+            StationMapper stationMapper
+    ) {
         this.feedCache = feedCache;
         this.stationCache = stationCache;
         this.feedProviderConfig =  feedProviderConfig;
+        this.spatialIndex = spatialIndex;
         this.systemMapper = systemMapper;
         this.pricingPlanMapper = pricingPlanMapper;
         this.stationMapper = stationMapper;
-        this.spatialIndex = spatialIndex;
     }
 
     @Override

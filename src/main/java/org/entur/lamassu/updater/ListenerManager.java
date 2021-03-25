@@ -13,43 +13,28 @@ import org.springframework.stereotype.Component;
 @Component
 public class ListenerManager {
     private final CacheListener<FreeBikeStatus> freeBikeStatusCacheListener;
-    private final CacheListener<VehicleTypes> vehicleTypesCacheListener;
-    private final CacheListener<SystemPricingPlans> systemPricingPlansCacheListener;
-    private final CacheListener<SystemInformation> systemInformationCacheListener;
     private final CacheListener<StationStatus> stationStatusCacheListener;
     private final CacheListener<Vehicle> vehicleCacheListener;
 
     @Autowired
     public ListenerManager(
             CacheListener<FreeBikeStatus> freeBikeStatusCacheListener,
-            CacheListener<VehicleTypes> vehicleTypesCacheListener,
-            CacheListener<SystemPricingPlans> systemPricingPlansCacheListener,
-            CacheListener<SystemInformation> systemInformationCacheListener,
             CacheListener<StationStatus> stationStatusCacheListener,
             CacheListener<Vehicle> vehicleCacheListener
     ) {
         this.freeBikeStatusCacheListener = freeBikeStatusCacheListener;
-        this.vehicleTypesCacheListener = vehicleTypesCacheListener;
-        this.systemPricingPlansCacheListener = systemPricingPlansCacheListener;
-        this.systemInformationCacheListener = systemInformationCacheListener;
         this.stationStatusCacheListener = stationStatusCacheListener;
         this.vehicleCacheListener = vehicleCacheListener;
     }
 
     public void start() {
         freeBikeStatusCacheListener.startListening();
-        vehicleTypesCacheListener.startListening();
-        systemPricingPlansCacheListener.startListening();
-        systemInformationCacheListener.startListening();
         stationStatusCacheListener.startListening();
         vehicleCacheListener.startListening();
     }
 
     public void stop() {
         freeBikeStatusCacheListener.stopListening();
-        vehicleTypesCacheListener.stopListening();
-        systemPricingPlansCacheListener.stopListening();
-        systemInformationCacheListener.stopListening();
         stationStatusCacheListener.stopListening();
         vehicleCacheListener.stopListening();
     }
