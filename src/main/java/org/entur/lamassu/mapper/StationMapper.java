@@ -35,6 +35,7 @@ public class StationMapper {
         station.setId(stationStatus.getStationId());
         station.setLat(stationInformation.getLat());
         station.setLon(stationInformation.getLon());
+        station.setName(stationInformation.getName());
         station.setAddress(stationInformation.getAddress());
         station.setCapacity(stationInformation.getCapacity());
         station.setNumBikesAvailable(stationStatus.getNumBikesAvailable());

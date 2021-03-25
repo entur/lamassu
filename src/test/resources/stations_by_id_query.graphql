@@ -3,8 +3,10 @@
         ids: ["TST:Station:1"]
     ) {
         id
+        name
         lat
         lon
+        address
         capacity
         numBikesAvailable
         numDocksAvailable

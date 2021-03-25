@@ -6,6 +6,7 @@
         range: 500
     ) {
         id
+        name
         lat
         lon
         address
