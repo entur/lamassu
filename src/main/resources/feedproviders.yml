@@ -1,15 +1,10 @@
 lamassu:
   providers:
-    - codespace: YBO
-      name: boltbergen
-      city: Bergen
-      url: https://api.staging.entur.io/mobility/v1/gbfs-v2_1/boltbergen/gbfs
-      language: en
-#    - codespace: YVO
-#      name: voioslo
-#      city: Oslo
-#      url: https://api.staging.entur.io/mobility/v1/gbfs-v2_1/voioslo/gbfs
-#      language: en
+    #- codespace: YVO
+    #  name: voioslo
+    #  city: Oslo
+    #  url: https://api.staging.entur.io/mobility/v1/gbfs-v2_1/voioslo/gbfs
+    #  language: en
 #    - codespace: YVO
 #      name: voitrondheim
 #      city: Trondheim
@@ -35,11 +30,16 @@ lamassu:
 #      city: Fredrikstad
 #      url: https://api.staging.entur.io/mobility/v1/gbfs-v2_1/boltfredrikstad/gbfs
 #      language: en
-#    - codespace: YOS
-#      name: oslobysykkel
-#      city: Oslo
-#      url: https://api.dev.entur.io/mobility/v1/bikes/v2_1_proxy/oslobysykkel/gbfs.json
-#      language: nb
+#    - codespace: YBO
+#      name: boltbergen
+#      city: Bergen
+#      url: https://api.staging.entur.io/mobility/v1/gbfs-v2_1/boltbergen/gbfs
+#      language: en
+    - codespace: YOS
+      name: oslobysykkel
+      city: Oslo
+      url: https://api.dev.entur.io/mobility/v1/bikes/v2_2_proxy/oslobysykkel/gbfs.json
+      language: nb
 #    - codespace: YBE
 #      name: bergenbysykkel
 #      city: Bergen
@@ -65,3 +65,8 @@ lamassu:
 #      city: Drammen
 #      url: https://api.dev.entur.io/mobility/v1/bikes/v2_1_proxy/drammenbysykkel/gbfs.json
 #      language: nb
+#    - codespace: ENT
+#      name: entur-car-sharing-poc
+#      city: Oslo
+#      url: https://storage.googleapis.com/ror-mobility-car-sharing-poc/gbfs.json
+#      language: en
