@@ -48,8 +48,6 @@ public class BaseRoute extends RouteBuilder {
         restConfiguration()
                 .component("servlet")
                 .contextPath("services")
-                .host("0.0.0.0")
-                .port(8080)
                 .bindingMode(RestBindingMode.json);
 
         rest("/admin")

@@ -49,6 +49,9 @@ data:
     # Admin endpoint basic auth
     org.entur.lamassu.adminPassword=${ADMIN_PASSWORD}
 
+    # Camel
+    camel.component.servlet.mapping.context-path=/services/*
+
   feedproviders.yml: |-
     {{- with .Values.lamassu.feedProviders }}
     lamassu:
