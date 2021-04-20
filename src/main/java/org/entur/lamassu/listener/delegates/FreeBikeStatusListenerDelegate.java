@@ -137,8 +137,6 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
                         pricingPlans.get(vehicle.getPricingPlanId()),
                         system
                 ))
-                .filter(vehicle -> vehicle.getVehicleType() != null)
-                .filter(vehicle -> vehicle.getPricingPlan() != null)
                 .collect(Collectors.toMap(v -> getVehicleCacheKey(v.getId(), feedProvider), v -> v));
 
         Set<String> spatialIndicesToRemove = new java.util.HashSet<>(Set.of());
