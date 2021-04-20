@@ -38,7 +38,13 @@ public class GBFSFeedController {
         try {
             var feedName = GBFSFeedName.valueOf(feed.toUpperCase());
             var feedProvider = feedProviderConfig.get(provider);
-            return feedCache.find(feedName, feedProvider);
+            var data = feedCache.find(feedName, feedProvider);
+
+            if (data == null) {
+                throw new NoSuchElementException();
+            }
+
+            return data;
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         } catch (NoSuchElementException e) {
