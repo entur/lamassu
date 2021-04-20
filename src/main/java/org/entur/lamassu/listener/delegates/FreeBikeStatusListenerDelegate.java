@@ -159,7 +159,9 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
 
         spatialIndicesToRemove.addAll(
                 vehicleIdsToRemove.stream()
-                        .map(vehicleId -> SpatialIndexIdUtil.createVehicleSpatialIndexId(currentVehicles.get(getVehicleCacheKey(vehicleId, feedProvider)), feedProvider))
+                        .map(vehicleId -> getVehicleCacheKey(vehicleId, feedProvider))
+                        .filter(currentVehicles::containsKey)
+                        .map(vehicleCacheKey -> SpatialIndexIdUtil.createVehicleSpatialIndexId(currentVehicles.get(vehicleCacheKey), feedProvider))
                         .collect(Collectors.toSet())
         );
 
