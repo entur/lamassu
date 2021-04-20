@@ -33,7 +33,7 @@ public class GBFSFeedController {
         return providerDiscoveryService.getFeedProviderDiscovery();
     }
 
-    @GetMapping("/gbfs/{provider}/{feed}")
+    @GetMapping(value = {"/gbfs/{provider}/{feed}", "/gbfs/{provider}/{feed}.json"})
     public GBFSBase getGbfsFeedForProvider(@PathVariable String provider, @PathVariable String feed) {
         try {
             var feedName = GBFSFeedName.valueOf(feed.toUpperCase());
