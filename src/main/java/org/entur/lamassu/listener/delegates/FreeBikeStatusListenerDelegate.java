@@ -96,7 +96,7 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
         var pricingPlansFeed = (SystemPricingPlans) feedCache.find(GBFSFeedName.SYSTEM_PRICING_PLANS, feedProvider);
         var vehicleTypesFeed = (VehicleTypes) feedCache.find(GBFSFeedName.VEHICLE_TYPES, feedProvider);
 
-        var vehicleIds = freeBikeStatusFeed.getData().getBikes().stream()
+        var originalVehicleIds = freeBikeStatusFeed.getData().getBikes().stream()
                 .map(FreeBikeStatus.Bike::getBikeId)
                 .collect(Collectors.toSet());
 
@@ -106,15 +106,19 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
             var oldFreeBikeStatusFeed = (FreeBikeStatus) event.getOldValue();
             vehicleIdsToRemove = oldFreeBikeStatusFeed.getData().getBikes().stream()
                     .map(FreeBikeStatus.Bike::getBikeId).collect(Collectors.toSet());
-            vehicleIdsToRemove.removeAll(vehicleIds);
+            vehicleIdsToRemove.removeAll(originalVehicleIds);
             logger.debug("Found {} vehicleIds to remove from old free_bike_status feed", vehicleIdsToRemove.size());
 
             // Add vehicle ids that are staged for removal to the set of vehicle ids that will be used to
             // fetch current vehicles from cache
-            vehicleIds.addAll(vehicleIdsToRemove);
+            originalVehicleIds.addAll(vehicleIdsToRemove);
         }
 
-        var originalVehicles = vehicleCache.getAllAsMap(vehicleIds.stream().map(id -> getVehicleCacheKey(id, feedProvider)).collect(Collectors.toSet()));
+        var originalVehicles = vehicleCache.getAllAsMap(
+                originalVehicleIds.stream()
+                        .map(id -> getVehicleCacheKey(id, feedProvider))
+                        .collect(Collectors.toSet())
+        );
 
         var vehicleTypes = vehicleTypesFeed.getData().getVehicleTypes().stream()
                 .map(vehicleTypeMapper::mapVehicleType)
