@@ -26,7 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.cache.event.CacheEntryEvent;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -101,12 +100,8 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
                 .map(FreeBikeStatus.Bike::getBikeId)
                 .collect(Collectors.toSet());
 
-        Set<String> vehicleIdsToRemove;
+        Set<String> vehicleIdsToRemove = Set.of();
 
-        // Note: This conditional will never be true due to a suspected bug in redisson:
-        // https://github.com/redisson/redisson/issues/3511
-        // For now, vehicles that are dropped from the feed will need to rely on the
-        // expiry policy and be removed in VehicleListenerDelegate
         if (event.isOldValueAvailable()) {
             var oldFreeBikeStatusFeed = (FreeBikeStatus) event.getOldValue();
             vehicleIdsToRemove = oldFreeBikeStatusFeed.getData().getBikes().stream()
@@ -117,11 +112,6 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
             // Add vehicle ids that are staged for removal to the set of vehicle ids that will be used to
             // fetch current vehicles from cache
             vehicleIds.addAll(vehicleIdsToRemove);
-        } else {
-
-            // In order to avoid stale vehicles hanging around, as a workaround, remove all vehicles for this provider.
-            vehicleIdsToRemove = new HashSet<>(vehicleIds);
-            logger.debug("Old free_bike_status feed was not available. As a workaround, removing all vehicles for this provider.");
         }
 
         var originalVehicles = vehicleCache.getAllAsMap(vehicleIds.stream().map(id -> getVehicleCacheKey(id, feedProvider)).collect(Collectors.toSet()));
