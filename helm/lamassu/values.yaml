@@ -8,11 +8,11 @@ rollingUpdate:
 
 resources:
   cpuLimit: 2
-  memLimit: 2000Mi
+  memLimit: 3000Mi
   cpuRequest: 2
-  memRequest: 2000Mi
+  memRequest: 3000Mi
   xss: 1024m
-  xmx: 1000m
+  xmx: 2048m
 
 secretMount:
   name: lamassu-key
