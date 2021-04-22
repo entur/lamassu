@@ -17,37 +17,37 @@ lamassu:
       name: voioslo
       city: Oslo
       url: https://api.entur.io/mobility/v1/gbfs-v2_2/voioslo/gbfs
-      language: en
+      language: nb
     - codespace: YVO
       name: voitrondheim
       city: Trondheim
       url: https://api.entur.io/mobility/v1/gbfs-v2_2/voitrondheim/gbfs
-      language: en
+      language: nb
     - codespace: YLI
       name: limeoslo
       city: Oslo
       url: https://api.entur.io/mobility/v1/gbfs-v2_2/limeoslo/gbfs
-      language: en
+      language: nb
     - codespace: YBO
       name: boltoslo
       city: Oslo
       url: https://api.entur.io/mobility/v1/gbfs-v2_2/boltoslo/gbfs
-      language: en
+      language: nb
     - codespace: YBO
       name: boltlillestrom
       city: Lillestrøm
       url: https://api.entur.io/mobility/v1/gbfs-v2_2/boltlillestrom/gbfs
-      language: en
+      language: nb
     - codespace: YBO
       name: boltfredrikstad
       city: Fredrikstad
       url: https://api.entur.io/mobility/v1/gbfs-v2_2/boltfredrikstad/gbfs
-      language: en
+      language: nb
     - codespace: YBO
       name: boltbergen
       city: Bergen
       url: https://api.entur.io/mobility/v1/gbfs-v2_2/boltbergen/gbfs
-      language: en
+      language: nb
     - codespace: YOS
       name: oslobysykkel
       city: Oslo
