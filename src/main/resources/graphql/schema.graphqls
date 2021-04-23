@@ -36,13 +36,13 @@ type Vehicle {
     id: ID!
     lat: Float!
     lon: Float!
-    isReserved: Boolean
-    isDisabled: Boolean
-    currentRangeMeters: Float
-    vehicleType: VehicleType
-    pricingPlan: PricingPlan
+    isReserved: Boolean!
+    isDisabled: Boolean!
+    currentRangeMeters: Float!
+    vehicleType: VehicleType!
+    pricingPlan: PricingPlan!
     rentalUris: RentalUris
-    system: System
+    system: System!
 }
 
 type VehicleType {
@@ -71,20 +71,20 @@ enum PropulsionType {
 type PricingPlan {
     id: ID!
     url: String
-    name: String
-    currency: String
-    price: Float
-    isTaxable: Boolean
-    description: String
+    name: String!
+    currency: String!
+    price: Float!
+    isTaxable: Boolean!
+    description: String!
     perKmPricing: [PricingSegment]
     perMinPricing: [PricingSegment]
     surgePricing: Boolean
 }
 
 type PricingSegment {
-    start: Int
-    rate: Float
-    interval: Int
+    start: Int!
+    rate: Float!
+    interval: Int!
     end: Int
 }
 
@@ -103,12 +103,12 @@ type Station {
     capacity: Int
     numBikesAvailable: Int!
     numDocksAvailable: Int
-    isInstalled: Boolean
-    isRenting: Boolean
-    isReturning: Boolean
-    lastReported: Int
-    system: System
-    pricingPlans: [PricingPlan]
+    isInstalled: Boolean!
+    isRenting: Boolean!
+    isReturning: Boolean!
+    lastReported: Int!
+    system: System!
+    pricingPlans: [PricingPlan]!
 }
 
 type System {
