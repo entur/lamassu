@@ -21,8 +21,6 @@ package org.entur.lamassu.mapper;
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.System;
-import org.entur.lamassu.model.entities.Translation;
-import org.entur.lamassu.model.entities.TranslatedString;
 import org.entur.lamassu.model.gbfs.v2_1.StationInformation;
 import org.entur.lamassu.model.gbfs.v2_1.StationStatus;
 import org.springframework.beans.factory.annotation.Autowired;

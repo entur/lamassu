@@ -3,13 +3,9 @@ package org.entur.lamassu.mapper;
 import org.entur.lamassu.model.entities.RentalApp;
 import org.entur.lamassu.model.entities.RentalApps;
 import org.entur.lamassu.model.entities.System;
-import org.entur.lamassu.model.entities.Translation;
-import org.entur.lamassu.model.entities.TranslatedString;
 import org.entur.lamassu.model.gbfs.v2_1.SystemInformation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public class SystemMapper {

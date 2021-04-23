@@ -2,8 +2,6 @@ package org.entur.lamassu.mapper;
 
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.PricingSegment;
-import org.entur.lamassu.model.entities.Translation;
-import org.entur.lamassu.model.entities.TranslatedString;
 import org.entur.lamassu.model.gbfs.v2_1.SystemPricingPlans;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
