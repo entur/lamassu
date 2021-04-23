@@ -19,23 +19,32 @@
 package org.entur.lamassu.model.entities;
 
 import java.io.Serializable;
-import java.util.List;
 
 public class Translation implements Serializable {
-    private List<TranslatedString> translation;
+    private String language;
+    private String value;
 
-    public List<TranslatedString> getTranslation() {
-        return translation;
+    public String getLanguage() {
+        return language;
     }
 
-    public void setTranslation(List<TranslatedString> translation) {
-        this.translation = translation;
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 
     @Override
     public String toString() {
         return "Translation{" +
-                "translation=" + translation +
+                "language='" + language + '\'' +
+                ", value='" + value + '\'' +
                 '}';
     }
 }

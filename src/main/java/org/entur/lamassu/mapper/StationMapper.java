@@ -21,23 +21,30 @@ package org.entur.lamassu.mapper;
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.System;
-import org.entur.lamassu.model.entities.TranslatedString;
 import org.entur.lamassu.model.entities.Translation;
+import org.entur.lamassu.model.entities.TranslatedString;
 import org.entur.lamassu.model.gbfs.v2_1.StationInformation;
 import org.entur.lamassu.model.gbfs.v2_1.StationStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
 public class StationMapper {
+    private final TranslationMapper translationMapper;
+
+    @Autowired
+    public StationMapper(TranslationMapper translationMapper) {
+        this.translationMapper = translationMapper;
+    }
 
     public Station mapStation(System system, List<PricingPlan> pricingPlans, StationInformation.Station stationInformation, StationStatus.Station stationStatus, String language) {
         var station = new Station();
         station.setId(stationStatus.getStationId());
         station.setLat(stationInformation.getLat());
         station.setLon(stationInformation.getLon());
-        station.setName(mapTranslation(stationInformation.getName(), language));
+        station.setName(translationMapper.mapSingleTranslation(language, stationInformation.getName()));
         station.setAddress(stationInformation.getAddress());
         station.setCapacity(stationInformation.getCapacity());
         station.setNumBikesAvailable(stationStatus.getNumBikesAvailable());
@@ -49,14 +56,5 @@ public class StationMapper {
         station.setSystem(system);
         station.setPricingPlans(pricingPlans);
         return station;
-    }
-
-    private Translation mapTranslation(String value, String language) {
-        var translation = new Translation();
-        var translatedString = new TranslatedString();
-        translatedString.setLanguage(language);
-        translatedString.setValue(value);
-        translation.setTranslation(List.of(translatedString));
-        return translation;
     }
 }

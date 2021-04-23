@@ -2,9 +2,10 @@ package org.entur.lamassu.mapper;
 
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.PricingSegment;
-import org.entur.lamassu.model.entities.TranslatedString;
 import org.entur.lamassu.model.entities.Translation;
+import org.entur.lamassu.model.entities.TranslatedString;
 import org.entur.lamassu.model.gbfs.v2_1.SystemPricingPlans;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -12,11 +13,19 @@ import java.util.stream.Collectors;
 
 @Component
 public class PricingPlanMapper {
+
+    private final TranslationMapper translationMapper;
+
+    @Autowired
+    public PricingPlanMapper(TranslationMapper translationMapper) {
+        this.translationMapper = translationMapper;
+    }
+
     public PricingPlan mapPricingPlan(SystemPricingPlans.Plan plan, String language) {
         var mapped = new PricingPlan();
         mapped.setId(plan.getPlanId());
-        mapped.setName(mapTranslation(plan.getName(), language));
-        mapped.setDescription(mapTranslation(plan.getDescription(), language));
+        mapped.setName(translationMapper.mapSingleTranslation(language, plan.getName()));
+        mapped.setDescription(translationMapper.mapSingleTranslation(language, plan.getDescription()));
         mapped.setUrl(plan.getUrl());
         mapped.setCurrency(plan.getCurrency());
         mapped.setPrice(plan.getPrice());
@@ -25,15 +34,6 @@ public class PricingPlanMapper {
         mapped.setPerKmPricing(mapPricingSegments(plan.getPerKmPricing()));
         mapped.setPerMinPricing(mapPricingSegments(plan.getPerMinPricing()));
         return mapped;
-    }
-
-    private Translation mapTranslation(String value, String language) {
-        var translation = new Translation();
-        var translatedString = new TranslatedString();
-        translatedString.setLanguage(language);
-        translatedString.setValue(value);
-        translation.setTranslation(List.of(translatedString));
-        return translation;
     }
 
     private List<PricingSegment> mapPricingSegments(List<SystemPricingPlans.PricingSegment> pricingSegments) {

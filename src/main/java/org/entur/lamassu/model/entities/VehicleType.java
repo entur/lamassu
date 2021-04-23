@@ -5,7 +5,7 @@ public class VehicleType implements Entity {
     private FormFactor formFactor;
     private PropulsionType propulsionType;
     private Float maxRangeMeters;
-    private Translation name;
+    private TranslatedString name;
 
     public String getId() {
         return id;
@@ -39,11 +39,11 @@ public class VehicleType implements Entity {
         this.maxRangeMeters = maxRangeMeters;
     }
 
-    public void setName(Translation name) {
+    public void setName(TranslatedString name) {
         this.name = name;
     }
 
-    public Translation getName() {
+    public TranslatedString getName() {
         return name;
     }
 
