@@ -23,7 +23,7 @@ import java.util.Objects;
 
 public class Station implements LocationEntity {
     private String id;
-    private String name;
+    private Translation name;
     private Double lat;
     private Double lon;
     private String address;
@@ -46,11 +46,11 @@ public class Station implements LocationEntity {
         this.id = id;
     }
 
-    public String getName() {
+    public Translation getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(Translation name) {
         this.name = name;
     }
 

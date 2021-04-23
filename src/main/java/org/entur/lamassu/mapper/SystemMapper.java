@@ -3,18 +3,22 @@ package org.entur.lamassu.mapper;
 import org.entur.lamassu.model.entities.RentalApp;
 import org.entur.lamassu.model.entities.RentalApps;
 import org.entur.lamassu.model.entities.System;
+import org.entur.lamassu.model.entities.TranslatedString;
+import org.entur.lamassu.model.entities.Translation;
 import org.entur.lamassu.model.gbfs.v2_1.SystemInformation;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class SystemMapper {
-    public System mapSystem(SystemInformation.Data systemInformation) {
+    public System mapSystem(SystemInformation.Data systemInformation, String language) {
         var system =  new System();
         system.setId(systemInformation.getSystemId());
         system.setLanguage(systemInformation.getLanguage());
-        system.setName(systemInformation.getName());
-        system.setShortName(systemInformation.getShortName());
-        system.setOperator(systemInformation.getOperator());
+        system.setName(mapTranslation(systemInformation.getName(), language));
+        system.setShortName(mapTranslation(systemInformation.getShortName(), language));
+        system.setOperator(mapTranslation(systemInformation.getOperator(), language));
         system.setUrl(systemInformation.getUrl());
         system.setPurchaseUrl(systemInformation.getPurchaseUrl());
         system.setStartDate(systemInformation.getStartDate());
@@ -25,6 +29,15 @@ public class SystemMapper {
         system.setLicenseUrl(systemInformation.getLicenseUrl());
         system.setRentalApps(mapRentalApps(systemInformation.getRentalApps()));
         return system;
+    }
+
+    private Translation mapTranslation(String value, String language) {
+        var translation = new Translation();
+        var translatedString = new TranslatedString();
+        translatedString.setLanguage(language);
+        translatedString.setValue(value);
+        translation.setTranslation(List.of(translatedString));
+        return translation;
     }
 
     private RentalApps mapRentalApps(SystemInformation.RentalApps sourceRentalApps) {

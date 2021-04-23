@@ -137,9 +137,9 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
 
         var originalStations = stationCache.getAllAsMap(stationIds);
 
-        var system = systemMapper.mapSystem(systemInformationFeed.getData());
+        var system = systemMapper.mapSystem(systemInformationFeed.getData(), feedProvider.getLanguage());
         var pricingPlans = pricingPlansFeed.getData().getPlans().stream()
-                .map(pricingPlanMapper::mapPricingPlan)
+                .map(pricingPlan -> pricingPlanMapper.mapPricingPlan(pricingPlan, feedProvider.getLanguage()))
                 .collect(Collectors.toList());
 
         var stations = stationStatusFeed.getData().getStations().stream()
@@ -148,7 +148,8 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
                         pricingPlans,
                         Objects.requireNonNull(stationInformationFeed.getData().getStations().stream()
                                 .filter(s -> s.getStationId().equals(station.getStationId())).findFirst().orElse(null)),
-                        station)
+                        station,
+                        feedProvider.getLanguage())
                 ).collect(Collectors.toMap(Station::getId, s->s));
 
         Set<String> spatialIndicesToRemove = new java.util.HashSet<>(Set.of());

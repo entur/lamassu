@@ -4,12 +4,12 @@ import java.util.List;
 
 public class PricingPlan implements Entity {
     private String id;
-    private String name;
+    private Translation name;
     private String url;
     private String currency;
     private Float price;
     private Boolean isTaxable;
-    private String description;
+    private Translation description;
     private List<PricingSegment> perKmPricing;
     private List<PricingSegment> perMinPricing;
     private Boolean surgePricing;
@@ -22,11 +22,11 @@ public class PricingPlan implements Entity {
         this.id = id;
     }
 
-    public String getName() {
+    public Translation getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(Translation name) {
         this.name = name;
     }
 
@@ -62,11 +62,11 @@ public class PricingPlan implements Entity {
         isTaxable = taxable;
     }
 
-    public String getDescription() {
+    public Translation getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(Translation description) {
         this.description = description;
     }
 

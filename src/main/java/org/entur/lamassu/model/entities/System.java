@@ -3,9 +3,9 @@ package org.entur.lamassu.model.entities;
 public class System implements Entity {
     String id;
     String language;
-    String name;
-    String shortName;
-    String operator;
+    Translation name;
+    Translation shortName;
+    Translation operator;
     String url;
     String purchaseUrl;
     String startDate;
@@ -33,27 +33,27 @@ public class System implements Entity {
         this.language = language;
     }
 
-    public String getName() {
+    public Translation getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(Translation name) {
         this.name = name;
     }
 
-    public String getShortName() {
+    public Translation getShortName() {
         return shortName;
     }
 
-    public void setShortName(String shortName) {
+    public void setShortName(Translation shortName) {
         this.shortName = shortName;
     }
 
-    public String getOperator() {
+    public Translation getOperator() {
         return operator;
     }
 
-    public void setOperator(String operator) {
+    public void setOperator(Translation operator) {
         this.operator = operator;
     }
 
