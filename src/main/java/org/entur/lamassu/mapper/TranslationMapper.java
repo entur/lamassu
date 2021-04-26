@@ -27,6 +27,9 @@ import java.util.List;
 @Component
 public class TranslationMapper {
     public TranslatedString mapSingleTranslation(String language, String value) {
+        if (language == null || value == null) {
+            return null;
+        }
         var translation = mapTranslation(language, value);
         return mapTranslatedString(List.of(translation));
     }
