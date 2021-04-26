@@ -50,7 +50,7 @@ type VehicleType {
     formFactor: FormFactor!
     propulsionType: PropulsionType!
     maxRangeMeters: Float
-    name: String
+    name: TranslatedString
 }
 
 enum FormFactor {
@@ -71,11 +71,11 @@ enum PropulsionType {
 type PricingPlan {
     id: ID!
     url: String
-    name: String!
+    name: TranslatedString!
     currency: String!
     price: Float!
     isTaxable: Boolean!
-    description: String!
+    description: TranslatedString!
     perKmPricing: [PricingSegment]
     perMinPricing: [PricingSegment]
     surgePricing: Boolean
@@ -96,7 +96,7 @@ type RentalUris {
 
 type Station {
     id: ID!
-    name: String!
+    name: TranslatedString!
     lat: Float!
     lon: Float!
     address: String
@@ -114,9 +114,9 @@ type Station {
 type System {
     id: ID!
     language: String!
-    name: String!
-    shortName: String
-    operator: String
+    name: TranslatedString!
+    shortName: TranslatedString
+    operator: TranslatedString
     url: String
     purchaseUrl: String
     startDate: String
@@ -136,4 +136,13 @@ type RentalApps {
 type RentalApp {
     storeUri: String
     discoveryUri: String
+}
+
+type Translation {
+    language: String!
+    value: String!
+}
+
+type TranslatedString {
+    translation: [Translation]!
 }

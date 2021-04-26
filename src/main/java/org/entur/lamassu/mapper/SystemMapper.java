@@ -4,17 +4,26 @@ import org.entur.lamassu.model.entities.RentalApp;
 import org.entur.lamassu.model.entities.RentalApps;
 import org.entur.lamassu.model.entities.System;
 import org.entur.lamassu.model.gbfs.v2_1.SystemInformation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class SystemMapper {
-    public System mapSystem(SystemInformation.Data systemInformation) {
+
+    private final TranslationMapper translationMapper;
+
+    @Autowired
+    public SystemMapper(TranslationMapper translationMapper) {
+        this.translationMapper = translationMapper;
+    }
+
+    public System mapSystem(SystemInformation.Data systemInformation, String language) {
         var system =  new System();
         system.setId(systemInformation.getSystemId());
         system.setLanguage(systemInformation.getLanguage());
-        system.setName(systemInformation.getName());
-        system.setShortName(systemInformation.getShortName());
-        system.setOperator(systemInformation.getOperator());
+        system.setName(translationMapper.mapSingleTranslation(language, systemInformation.getName()));
+        system.setShortName(translationMapper.mapSingleTranslation(language, systemInformation.getShortName()));
+        system.setOperator(translationMapper.mapSingleTranslation(language, systemInformation.getOperator()));
         system.setUrl(systemInformation.getUrl());
         system.setPurchaseUrl(systemInformation.getPurchaseUrl());
         system.setStartDate(systemInformation.getStartDate());

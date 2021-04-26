@@ -18,7 +18,12 @@
         }
         system {
             id
-            name
+            name {
+                translation {
+                    language
+                    value
+                }
+            }
             rentalApps {
                 android {
                     storeUri
