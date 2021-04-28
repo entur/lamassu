@@ -5,7 +5,7 @@ public class System implements Entity {
     String language;
     TranslatedString name;
     TranslatedString shortName;
-    TranslatedString operator;
+    Operator operator;
     String url;
     String purchaseUrl;
     String startDate;
@@ -49,11 +49,11 @@ public class System implements Entity {
         this.shortName = shortName;
     }
 
-    public TranslatedString getOperator() {
+    public Operator getOperator() {
         return operator;
     }
 
-    public void setOperator(TranslatedString operator) {
+    public void setOperator(Operator operator) {
         this.operator = operator;
     }
 

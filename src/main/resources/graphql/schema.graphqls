@@ -108,7 +108,7 @@ type System {
     language: String!
     name: TranslatedString!
     shortName: TranslatedString
-    operator: TranslatedString
+    operator: Operator!
     url: String
     purchaseUrl: String
     startDate: String
@@ -137,4 +137,9 @@ type Translation {
 
 type TranslatedString {
     translation: [Translation]!
+}
+
+type Operator {
+    id: ID!
+    name: TranslatedString!
 }

@@ -137,7 +137,7 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
 
         var originalStations = stationCache.getAllAsMap(stationIds);
 
-        var system = systemMapper.mapSystem(systemInformationFeed.getData(), feedProvider.getLanguage());
+        var system = systemMapper.mapSystem(systemInformationFeed.getData(), feedProvider);
         var pricingPlans = pricingPlansFeed.getData().getPlans().stream()
                 .map(pricingPlan -> pricingPlanMapper.mapPricingPlan(pricingPlan, feedProvider.getLanguage()))
                 .collect(Collectors.toList());

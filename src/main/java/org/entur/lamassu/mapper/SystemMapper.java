@@ -1,5 +1,7 @@
 package org.entur.lamassu.mapper;
 
+import org.entur.lamassu.model.discovery.FeedProvider;
+import org.entur.lamassu.model.entities.Operator;
 import org.entur.lamassu.model.entities.RentalApp;
 import org.entur.lamassu.model.entities.RentalApps;
 import org.entur.lamassu.model.entities.System;
@@ -17,13 +19,13 @@ public class SystemMapper {
         this.translationMapper = translationMapper;
     }
 
-    public System mapSystem(SystemInformation.Data systemInformation, String language) {
+    public System mapSystem(SystemInformation.Data systemInformation, FeedProvider feedProvider) {
         var system =  new System();
         system.setId(systemInformation.getSystemId());
         system.setLanguage(systemInformation.getLanguage());
-        system.setName(translationMapper.mapSingleTranslation(language, systemInformation.getName()));
-        system.setShortName(translationMapper.mapSingleTranslation(language, systemInformation.getShortName()));
-        system.setOperator(translationMapper.mapSingleTranslation(language, systemInformation.getOperator()));
+        system.setName(translationMapper.mapSingleTranslation(feedProvider.getLanguage(), systemInformation.getName()));
+        system.setShortName(translationMapper.mapSingleTranslation(feedProvider.getLanguage(), systemInformation.getShortName()));
+        system.setOperator(mapOperator(systemInformation.getOperator(), feedProvider));
         system.setUrl(systemInformation.getUrl());
         system.setPurchaseUrl(systemInformation.getPurchaseUrl());
         system.setStartDate(systemInformation.getStartDate());
@@ -59,5 +61,17 @@ public class SystemMapper {
         rentalApp.setStoreUri(sourceRentalApp.getStoreURI());
         rentalApp.setDiscoveryUri(sourceRentalApp.getDiscoveryURI());
         return rentalApp;
+    }
+
+    private Operator mapOperator(String operatorName, FeedProvider feedProvider) {
+        var operator = new Operator();
+        operator.setId(feedProvider.getOperatorId());
+        operator.setName(
+                translationMapper.mapSingleTranslation(
+                        feedProvider.getLanguage(),
+                        operatorName != null ? operatorName : feedProvider.getOperatorName()
+                )
+        );
+        return operator;
     }
 }

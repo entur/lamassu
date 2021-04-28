@@ -125,7 +125,7 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
         var vehicleTypes = vehicleTypesFeed.getData().getVehicleTypes().stream()
                 .map(vehicleType -> vehicleTypeMapper.mapVehicleType(vehicleType, feedProvider.getLanguage()))
                 .collect(Collectors.toMap(VehicleType::getId, i -> i));
-        var system = systemMapper.mapSystem(systemInformationFeed.getData(), feedProvider.getLanguage());
+        var system = systemMapper.mapSystem(systemInformationFeed.getData(), feedProvider);
         var pricingPlans = pricingPlansFeed.getData().getPlans().stream()
                 .map(pricingPlan -> pricingPlanMapper.mapPricingPlan(pricingPlan, feedProvider.getLanguage()))
                 .collect(Collectors.toMap(PricingPlan::getId, i -> i));
