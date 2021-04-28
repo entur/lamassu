@@ -9,8 +9,9 @@ public class SpatialIndexIdUtil {
 
     public static String createVehicleSpatialIndexId(Vehicle vehicle, FeedProvider feedProvider) {
         return vehicle.getId()
-                + "_" + feedProvider.getSystemSlug()
                 + "_" + feedProvider.getCodespace()
+                + "_" + feedProvider.getSystemId()
+                + "_" + feedProvider.getOperatorId()
                 + "_" + vehicle.getVehicleType().getFormFactor()
                 + "_" + vehicle.getVehicleType().getPropulsionType()
                 + "_" + vehicle.getReserved()
@@ -19,7 +20,8 @@ public class SpatialIndexIdUtil {
 
     public static String createStationSpatialIndexId(Station station, FeedProvider feedProvider) {
         return station.getId()
-                + "_" + feedProvider.getSystemSlug()
-                + "_" + feedProvider.getCodespace();
+                + "_" + feedProvider.getCodespace()
+                + "_" + feedProvider.getSystemId()
+                + "_" + feedProvider.getOperatorId();
     }
 }

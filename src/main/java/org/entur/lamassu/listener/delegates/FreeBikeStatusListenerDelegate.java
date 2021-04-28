@@ -186,6 +186,6 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
 
 
     private String getVehicleCacheKey(String vehicleId, FeedProvider feedProvider) {
-        return vehicleId + "_" + feedProvider.getSystemSlug();
+        return vehicleId + "_" + feedProvider.getSystemId();
     }
 }

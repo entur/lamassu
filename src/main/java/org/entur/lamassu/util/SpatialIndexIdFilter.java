@@ -13,6 +13,14 @@ public class SpatialIndexIdFilter {
             return false;
         }
 
+        if (filters.getSystems() != null && !filters.getSystems().contains(parsedId.getSystemId())) {
+            return false;
+        }
+
+        if (filters.getOperators() != null && !filters.getOperators().contains(parsedId.getOperatorId())) {
+            return false;
+        }
+
         if (filters.getFormFactors() != null && !filters.getFormFactors().contains(parsedId.getFormFactor())) {
             return false;
         }
@@ -34,6 +42,14 @@ public class SpatialIndexIdFilter {
 
     public static boolean filterStation(StationSpatialIndexId parsedId, FilterParameters filters) {
         if (filters.getCodespaces() != null && !filters.getCodespaces().contains(parsedId.getCodespace())) {
+            return false;
+        }
+
+        if (filters.getSystems() != null && !filters.getSystems().contains(parsedId.getSystemId())) {
+            return false;
+        }
+
+        if (filters.getOperators() != null && !filters.getOperators().contains(parsedId.getOperatorId())) {
             return false;
         }
 

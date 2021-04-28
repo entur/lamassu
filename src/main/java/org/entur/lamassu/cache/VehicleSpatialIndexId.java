@@ -8,8 +8,9 @@ import org.slf4j.LoggerFactory;
 public class VehicleSpatialIndexId {
     private static final Logger logger = LoggerFactory.getLogger(VehicleSpatialIndexId.class);
     private String vehicleId;
-    private String operator;
     private String codespace;
+    private String operatorId;
+    private String systemId;
     private FormFactor formFactor;
     private PropulsionType propulsionTypes;
     private boolean isReserved;
@@ -20,12 +21,13 @@ public class VehicleSpatialIndexId {
             var parsed = new VehicleSpatialIndexId();
             var parts = indexId.split("_");
             parsed.setVehicleId(parts[0]);
-            parsed.setOperator(parts[1]);
-            parsed.setCodespace(parts[2]);
-            parsed.setFormFactor(FormFactor.valueOf(parts[3]));
-            parsed.setPropulsionTypes(PropulsionType.valueOf(parts[4]));
-            parsed.setReserved(Boolean.parseBoolean(parts[5]));
-            parsed.setDisabled(Boolean.parseBoolean(parts[6]));
+            parsed.setCodespace(parts[1]);
+            parsed.setSystemId(parts[2]);
+            parsed.setOperatorId(parts[3]);
+            parsed.setFormFactor(FormFactor.valueOf(parts[4]));
+            parsed.setPropulsionTypes(PropulsionType.valueOf(parts[5]));
+            parsed.setReserved(Boolean.parseBoolean(parts[6]));
+            parsed.setDisabled(Boolean.parseBoolean(parts[7]));
             return parsed;
         } catch (IndexOutOfBoundsException e) {
             logger.warn("Caught IndexOutOfBoundsException while trying to parse spatial index id {}", indexId, e);
@@ -36,8 +38,9 @@ public class VehicleSpatialIndexId {
     @Override
     public String toString() {
         return vehicleId + '_' +
-                operator + '_' +
                 codespace + '_' +
+                systemId + '_' +
+                operatorId + '_' +
                 formFactor + '_' +
                 propulsionTypes + '_' +
                 isReserved + '_' +
@@ -54,12 +57,12 @@ public class VehicleSpatialIndexId {
         this.vehicleId = vehicleId;
     }
 
-    public String getOperator() {
-        return operator;
+    public String getOperatorId() {
+        return operatorId;
     }
 
-    public void setOperator(String operator) {
-        this.operator = operator;
+    public void setOperatorId(String operatorId) {
+        this.operatorId = operatorId;
     }
 
     public String getCodespace() {
@@ -68,6 +71,14 @@ public class VehicleSpatialIndexId {
 
     public void setCodespace(String codespace) {
         this.codespace = codespace;
+    }
+
+    public void setSystemId(String systemId) {
+        this.systemId = systemId;
+    }
+
+    public String getSystemId() {
+        return systemId;
     }
 
     public FormFactor getFormFactor() {

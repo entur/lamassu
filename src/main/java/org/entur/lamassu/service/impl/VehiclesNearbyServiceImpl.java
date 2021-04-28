@@ -64,7 +64,7 @@ public class VehiclesNearbyServiceImpl implements GeoSearchService {
     }
 
     private String getVehicleCacheKey(VehicleSpatialIndexId spatialIndexId) {
-        return spatialIndexId.getVehicleId() + "_" + spatialIndexId.getOperator();
+        return spatialIndexId.getVehicleId() + "_" + spatialIndexId.getSystemId();
     }
 
     @Override

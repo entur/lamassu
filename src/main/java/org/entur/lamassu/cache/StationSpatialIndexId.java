@@ -24,16 +24,18 @@ import org.slf4j.LoggerFactory;
 public class StationSpatialIndexId {
     private static final Logger logger = LoggerFactory.getLogger(StationSpatialIndexId.class);
     private String stationId;
-    private String operator;
     private String codespace;
+    private String systemId;
+    private String operatorId;
 
     public static StationSpatialIndexId fromString(String indexId) {
         try {
             var parsed = new StationSpatialIndexId();
             var parts = indexId.split("_");
             parsed.setStationId(parts[0]);
-            parsed.setOperator(parts[1]);
-            parsed.setCodespace(parts[2]);
+            parsed.setCodespace(parts[1]);
+            parsed.setSystemId(parts[2]);
+            parsed.setOperatorId(parts[3]);
             return parsed;
         } catch (IndexOutOfBoundsException e) {
             logger.warn("Caught IndexOutOfBoundsException while trying to parse spatial index id {}", indexId, e);
@@ -44,8 +46,9 @@ public class StationSpatialIndexId {
     @Override
     public String toString() {
         return stationId + '_' +
-                operator + '_' +
-                codespace + '_';
+                codespace + '_' +
+                systemId + '_' +
+                operatorId;
     }
 
 
@@ -57,12 +60,12 @@ public class StationSpatialIndexId {
         this.stationId = stationId;
     }
 
-    public String getOperator() {
-        return operator;
+    public String getOperatorId() {
+        return operatorId;
     }
 
-    public void setOperator(String operator) {
-        this.operator = operator;
+    public void setOperatorId(String operatorId) {
+        this.operatorId = operatorId;
     }
 
     public String getCodespace() {
@@ -71,5 +74,13 @@ public class StationSpatialIndexId {
 
     public void setCodespace(String codespace) {
         this.codespace = codespace;
+    }
+
+    public void setSystemId(String systemId) {
+        this.systemId = systemId;
+    }
+
+    public String getSystemId() {
+        return systemId;
     }
 }

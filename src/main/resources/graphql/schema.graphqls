@@ -1,5 +1,7 @@
 type Query {
     codespaces: [String]
+    operators: [String]
+    systems: [String]
 
     vehicles(
         lat: Float!
@@ -7,6 +9,8 @@ type Query {
         range: Int!
         count: Int
         codespaces: [String]
+        systems: [String]
+        operators: [String]
         formFactors: [FormFactor]
         propulsionTypes: [PropulsionType]
         includeReserved: Boolean = false
@@ -19,6 +23,8 @@ type Query {
         range: Int
         count: Int
         codespaces: [String]
+        systems: [String]
+        operators: [String]
     ): [Station]
 
     stationsById(ids: [String]!): [Station]
