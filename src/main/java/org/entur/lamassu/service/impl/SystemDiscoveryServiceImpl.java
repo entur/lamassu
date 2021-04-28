@@ -1,6 +1,5 @@
 package org.entur.lamassu.service.impl;
 
-import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.mapper.SystemDiscoveryMapper;
 import org.entur.lamassu.model.discovery.SystemDiscovery;
 import org.entur.lamassu.service.FeedProviderService;

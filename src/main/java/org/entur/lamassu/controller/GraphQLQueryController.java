@@ -3,7 +3,6 @@ package org.entur.lamassu.controller;
 import graphql.GraphqlErrorException;
 import graphql.kickstart.tools.GraphQLQueryResolver;
 import org.entur.lamassu.cache.StationCache;
-import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.discovery.FeedProvider;
 import org.entur.lamassu.model.entities.FormFactor;

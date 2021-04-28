@@ -22,6 +22,8 @@ import org.entur.lamassu.model.discovery.FeedProvider;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSFeedName;
 
 public class FeedUrlUtil {
+    private FeedUrlUtil() {}
+
     public static String mapFeedUrl(String baseUrl, GBFSFeedName feedName, FeedProvider feedProvider) {
         var providerName= feedProvider.getSystemSlug();
         var feedUrl = addToPath(baseUrl, "gbfs");

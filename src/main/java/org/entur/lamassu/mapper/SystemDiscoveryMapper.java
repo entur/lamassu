@@ -31,7 +31,7 @@ public class SystemDiscoveryMapper {
     private String baseUrl;
 
     public System mapSystemDiscovery(FeedProvider feedProvider) {
-        System mapped = new System();
+        var mapped = new System();
         mapped.setId(feedProvider.getSystemId());
         mapped.setUrl(FeedUrlUtil.mapFeedUrl(baseUrl, GBFSFeedName.GBFS, feedProvider));
         return mapped;

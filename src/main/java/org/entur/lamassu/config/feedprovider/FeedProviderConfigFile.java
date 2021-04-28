@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Configuration
 @ConfigurationProperties(prefix = "lamassu")
