@@ -24,6 +24,7 @@ public class VehicleSpatialIndexId extends AbstractSpatialIndexId {
         }
     }
 
+    @Override
     public void parse(String[] parts) {
         super.parse(parts);
         setFormFactor(FormFactor.valueOf(parts[4]));
