@@ -21,7 +21,6 @@ package org.entur.lamassu.listener.delegates;
 import org.entur.lamassu.cache.GBFSFeedCache;
 import org.entur.lamassu.cache.StationCache;
 import org.entur.lamassu.cache.StationSpatialIndex;
-import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.listener.CacheEntryListenerDelegate;
 import org.entur.lamassu.mapper.PricingPlanMapper;
 import org.entur.lamassu.mapper.StationMapper;
@@ -103,7 +102,7 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
 
     private void addOrUpdateStation(CacheEntryEvent<? extends String, ? extends GBFSBase> event) {
         var split = event.getKey().split("_");
-        var feedProvider = feedProviderService.getFeedProviderBySystemName(split[split.length - 1]);
+        var feedProvider = feedProviderService.getFeedProviderBySystemSlug(split[split.length - 1]);
 
         var systemInformationFeed = (SystemInformation) feedCache.find(GBFSFeedName.SYSTEM_INFORMATION, feedProvider);
         var pricingPlansFeed = (SystemPricingPlans) feedCache.find(GBFSFeedName.SYSTEM_PRICING_PLANS, feedProvider);

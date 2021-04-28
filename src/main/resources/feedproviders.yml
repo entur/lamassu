@@ -1,6 +1,6 @@
 lamassu:
   providers:
-    - systemId: YBO:System:boltbergen
+    - systemId: YBO:System:BoltEUBergen
       systemSlug: boltbergen
       operatorId: YBO:Operator:bolt
       operatorName: Bolt

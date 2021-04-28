@@ -22,14 +22,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class System {
     @JsonProperty("id") private String id;
-    @JsonProperty("name") private String name;
     @JsonProperty("url") private String url;
 
     public void setId(String id) {
         this.id = id;
     }
-
-    public void setName(String name) { this.name = name; }
 
     public void setUrl(String url) {
         this.url = url;

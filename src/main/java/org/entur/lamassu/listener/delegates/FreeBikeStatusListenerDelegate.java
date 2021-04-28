@@ -89,7 +89,7 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
 
     private void addOrUpdateVehicles(CacheEntryEvent<? extends String, ? extends GBFSBase> event) {
         var split = event.getKey().split("_");
-        var feedProvider = feedProviderService.getFeedProviderBySystemName(split[split.length - 1]);
+        var feedProvider = feedProviderService.getFeedProviderBySystemSlug(split[split.length - 1]);
         var freeBikeStatusFeed = (FreeBikeStatus) event.getValue();
 
         var systemInformationFeed = (SystemInformation) feedCache.find(GBFSFeedName.SYSTEM_INFORMATION, feedProvider);

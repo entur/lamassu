@@ -19,7 +19,6 @@
 package org.entur.lamassu.listener.delegates;
 
 import org.entur.lamassu.cache.VehicleSpatialIndex;
-import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.listener.CacheEntryListenerDelegate;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.service.FeedProviderService;
@@ -69,7 +68,7 @@ public class VehicleListenerDelegate implements CacheEntryListenerDelegate<Vehic
 
         for (CacheEntryEvent<? extends String, ? extends Vehicle> entry : iterable) {
             var split = entry.getKey().split("_");
-            var feedProvider = feedProviderService.getFeedProviderBySystemName(split[split.length - 1]);
+            var feedProvider = feedProviderService.getFeedProviderBySystemSlug(split[split.length - 1]);
             var vehicle = entry.getValue();
             var id = SpatialIndexIdUtil.createVehicleSpatialIndexId(vehicle, feedProvider);
             ids.add(id);

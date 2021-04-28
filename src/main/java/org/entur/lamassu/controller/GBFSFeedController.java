@@ -1,7 +1,6 @@
 package org.entur.lamassu.controller;
 
 import org.entur.lamassu.cache.GBFSFeedCache;
-import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.model.discovery.SystemDiscovery;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSFeedName;
@@ -38,7 +37,7 @@ public class GBFSFeedController {
     public GBFSBase getGbfsFeedForProvider(@PathVariable String provider, @PathVariable String feed) {
         try {
             var feedName = GBFSFeedName.valueOf(feed.toUpperCase());
-            var feedProvider = feedProviderService.getFeedProviderBySystemName(provider);
+            var feedProvider = feedProviderService.getFeedProviderBySystemSlug(provider);
 
             if (feedProvider == null) {
                 throw new NoSuchElementException();

@@ -24,6 +24,5 @@ import java.util.List;
 
 public interface FeedProviderService {
     List<FeedProvider> getFeedProviders();
-    FeedProvider getFeedProviderBySystemName(String name);
-    FeedProvider getFeedProviderBySystemId(String id);
+    FeedProvider getFeedProviderBySystemSlug(String systemSlug);
 }
