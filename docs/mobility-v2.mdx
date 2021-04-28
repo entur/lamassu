@@ -26,13 +26,13 @@ All currently implemented operators and their respective gbfs endpoints will be 
 
 ```
 {
-    "operators": [
+    "systems": [
         {
-            "name": "oslobysykkel",
+            "id": "YOS:System:oslobysykkel",
             "url": "https://api.entur.io/mobility/v2/gbfs/oslobysykkel/gbfs"
         },
         {
-            "name": "boltoslo",
+            "id": "YBO:System:boltoslo",
             "url": "https://api.entur.io/mobility/v2/gbfs/boltoslo/gbfs"
         }
     ]
@@ -46,9 +46,9 @@ Get the different GBFS endpoints for a specific operator.
 
 #### HTTP Request
 
-`GET https://api.entur.io/mobility/v2/gbfs/{operator}/gbfs`
+`GET https://api.entur.io/mobility/v2/gbfs/{system}/gbfs`
 
-Where `{operator}` is one of the above mentioned operators, for instance `oslobysykkel`.
+Where `{system}` is one of the last part of the system id, for instance `oslobysykkel`.
 
 #### Example response
 

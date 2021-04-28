@@ -64,7 +64,7 @@ public class VehiclesNearbyServiceImpl implements GeoSearchService {
     }
 
     private String getVehicleCacheKey(VehicleSpatialIndexId spatialIndexId) {
-        return spatialIndexId.getVehicleId() + "_" + spatialIndexId.getOperator();
+        return spatialIndexId.getId() + "_" + spatialIndexId.getSystemId();
     }
 
     @Override
@@ -85,7 +85,7 @@ public class VehiclesNearbyServiceImpl implements GeoSearchService {
             stream = stream.limit(count.longValue());
         }
 
-        Set<String> stationIds = stream.map(StationSpatialIndexId::getStationId).collect(Collectors.toSet());
+        Set<String> stationIds = stream.map(StationSpatialIndexId::getId).collect(Collectors.toSet());
 
         return stationCache.getAll(stationIds);
     }

@@ -1,7 +1,7 @@
 package org.entur.lamassu.util;
 
 import org.entur.lamassu.cache.VehicleSpatialIndexId;
-import org.entur.lamassu.model.feedprovider.FeedProvider;
+import org.entur.lamassu.model.discovery.FeedProvider;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PropulsionType;
 import org.entur.lamassu.model.entities.Vehicle;
@@ -22,22 +22,6 @@ public class SpatialIndexIdFilterTest {
     }
 
     @Test
-    public void testOperatorFilter() {
-        var testId = testId();
-        var params = testFilterParams();
-
-        params.setOperators(List.of("testprovider"));
-        Assert.assertTrue(
-                SpatialIndexIdFilter.filterVehicle(testId, params)
-        );
-
-        params.setOperators(List.of("foobar"));
-        Assert.assertFalse(
-                SpatialIndexIdFilter.filterVehicle(testId, params)
-        );
-    }
-
-    @Test
     public void testCodespaceFilter() {
         var testId = testId();
         var params = testFilterParams();
@@ -48,6 +32,38 @@ public class SpatialIndexIdFilterTest {
         );
 
         params.setCodespaces(List.of("FOO"));
+        Assert.assertFalse(
+                SpatialIndexIdFilter.filterVehicle(testId, params)
+        );
+    }
+
+    @Test
+    public void testSystemFilter() {
+        var testId = testId();
+        var params = testFilterParams();
+
+        params.setSystems(List.of("TST:System:testprovider"));
+        Assert.assertTrue(
+                SpatialIndexIdFilter.filterVehicle(testId, params)
+        );
+
+        params.setSystems(List.of("FOO:System:foo"));
+        Assert.assertFalse(
+                SpatialIndexIdFilter.filterVehicle(testId, params)
+        );
+    }
+
+    @Test
+    public void testOperatorFilter() {
+        var testId = testId();
+        var params = testFilterParams();
+
+        params.setOperators(List.of("TST:Operator:test"));
+        Assert.assertTrue(
+                SpatialIndexIdFilter.filterVehicle(testId, params)
+        );
+
+        params.setOperators(List.of("FOO:Operator:foo"));
         Assert.assertFalse(
                 SpatialIndexIdFilter.filterVehicle(testId, params)
         );
@@ -152,8 +168,10 @@ public class SpatialIndexIdFilterTest {
 
     private FeedProvider testProvider() {
         var provider = new FeedProvider();
-        provider.setName("testprovider");
         provider.setCodespace("TST");
+        provider.setSystemId("TST:System:testprovider");
+        provider.setOperatorId("TST:Operator:test");
+        provider.setOperatorName("testprovider");
         return provider;
     }
 

@@ -3,7 +3,7 @@ package org.entur.lamassu.updater;
 import org.entur.lamassu.api.GBFSFeedApi;
 import org.entur.lamassu.cache.GBFSFeedCache;
 import org.entur.lamassu.mapper.DiscoveryFeedMapper;
-import org.entur.lamassu.model.feedprovider.FeedProvider;
+import org.entur.lamassu.model.discovery.FeedProvider;
 import org.entur.lamassu.model.gbfs.v2_1.GBFS;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSFeedName;
@@ -32,10 +32,10 @@ public class FeedUpdateService {
 
     public void update(FeedProvider feedProvider) {
         var discovery = fetchDiscoveryFeed(feedProvider).block();
-        logger.debug("Fetched discovery feed  for provider {}", feedProvider.getName());
+        logger.debug("Fetched discovery feed  for provider {}", feedProvider.getSystemSlug());
 
         if (discovery == null) {
-            logger.warn("Discovery response was null - unable to update feed for provider {}", feedProvider.getName());
+            logger.warn("Discovery response was null - unable to update feed for provider {}", feedProvider.getSystemSlug());
             return;
         }
 
@@ -45,20 +45,20 @@ public class FeedUpdateService {
                 .sorted(this::sortFeeds)
                 .forEach(feedSource -> {
                     var feed = fetchFeed(feedProvider, discovery, feedSource);
-                    logger.debug("Fetched feed {} for provider {}", feedSource.getName(), feedProvider.getName());
+                    logger.debug("Fetched feed {} for provider {}", feedSource.getName(), feedProvider.getSystemSlug());
                     feedCache.update(feedSource.getName(), feedProvider, feed);
                 });
     }
 
     private Mono<GBFS> fetchDiscoveryFeed(FeedProvider feedProvider) {
-        logger.debug("Fetching discovery feed for provider {}", feedProvider.getName());
+        logger.debug("Fetching discovery feed for provider {}", feedProvider.getSystemSlug());
         return api.getDiscoveryFeed(feedProvider);
     }
 
     private GBFSBase fetchFeed(FeedProvider feedProvider, GBFS discovery, GBFS.GBFSFeed feedSource) {
         logger.debug("Fetching feed {} for provider {}",
                 feedSource.getUrl(),
-                feedProvider.getName()
+                feedProvider.getSystemSlug()
         );
         var feedName = feedSource.getName();
         return api.getFeed(discovery, feedName, feedProvider.getLanguage()).block();

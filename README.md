@@ -8,11 +8,12 @@ Mobility aggregation service based on the [General Bikeshare Feed Specification 
 
         lamassu:
             providers:
-              - url: https://myfavoritegbfsfeeed.com/gbfs.json
-                name: My favorite mobility provider
+              - systemId: MFM:System:mysystem
+                systemName: My System
+                operatorId: MFM:Operator:myoperator
+                operatorName: My operator
                 codespace: MFM
-                city: Atlantis
-                vehicleType: Rover
+                url: https://myfavoritegbfsfeeed.com/gbfs.json
                 language: en
 
 This will use the GBFS auto-discovery at `url` and poll `en` language feeds.
@@ -23,9 +24,9 @@ This will use the GBFS auto-discovery at `url` and poll `en` language feeds.
 
 List all GBFS feeds available via this API
 
-#### `/gbfs/{identifier}/{feed}`
+#### `/gbfs/{system}/{feed}`
 
-GBFS feeds for a specific feed provider with a unique identifier.
+GBFS feeds for a specific feed system:
 
 E.g.
 

@@ -1,14 +1,16 @@
 type Query {
-    operators: [Operator]
     codespaces: [String]
+    operators: [String]
+    systems: [String]
 
     vehicles(
         lat: Float!
         lon: Float!
         range: Int!
         count: Int
-        operators: [String]
         codespaces: [String]
+        systems: [String]
+        operators: [String]
         formFactors: [FormFactor]
         propulsionTypes: [PropulsionType]
         includeReserved: Boolean = false
@@ -20,16 +22,12 @@ type Query {
         lon: Float!
         range: Int
         count: Int
-        operators: [String]
         codespaces: [String]
+        systems: [String]
+        operators: [String]
     ): [Station]
 
     stationsById(ids: [String]!): [Station]
-}
-
-type Operator {
-    name: String
-    codespace: String
 }
 
 type Vehicle {
@@ -116,7 +114,7 @@ type System {
     language: String!
     name: TranslatedString!
     shortName: TranslatedString
-    operator: TranslatedString
+    operator: Operator!
     url: String
     purchaseUrl: String
     startDate: String
@@ -145,4 +143,9 @@ type Translation {
 
 type TranslatedString {
     translation: [Translation]!
+}
+
+type Operator {
+    id: ID!
+    name: TranslatedString!
 }

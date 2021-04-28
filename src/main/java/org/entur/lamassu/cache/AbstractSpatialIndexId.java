@@ -16,13 +16,20 @@
  *
  */
 
-package org.entur.lamassu.model.entities;
+package org.entur.lamassu.cache;
 
-import java.io.Serializable;
-
-public class Operator implements Serializable {
+public abstract class AbstractSpatialIndexId {
     private String id;
-    private TranslatedString name;
+    private String codespace;
+    private String systemId;
+    private String operatorId;
+
+    public void parse(String[] parts) {
+        this.setId(parts[0]);
+        this.setCodespace(parts[1]);
+        this.setSystemId(parts[2]);
+        this.setOperatorId(parts[3]);
+    }
 
     public String getId() {
         return id;
@@ -32,19 +39,27 @@ public class Operator implements Serializable {
         this.id = id;
     }
 
-    public TranslatedString getName() {
-        return name;
+    public String getCodespace() {
+        return codespace;
     }
 
-    public void setName(TranslatedString name) {
-        this.name = name;
+    public void setCodespace(String codespace) {
+        this.codespace = codespace;
     }
 
-    @Override
-    public String toString() {
-        return "Operator{" +
-                "id='" + id + '\'' +
-                ", name=" + name +
-                '}';
+    public String getSystemId() {
+        return systemId;
+    }
+
+    public void setSystemId(String systemId) {
+        this.systemId = systemId;
+    }
+
+    public String getOperatorId() {
+        return operatorId;
+    }
+
+    public void setOperatorId(String operatorId) {
+        this.operatorId = operatorId;
     }
 }

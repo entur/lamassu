@@ -5,11 +5,8 @@ import org.entur.lamassu.model.entities.PropulsionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class VehicleSpatialIndexId {
+public class VehicleSpatialIndexId extends AbstractSpatialIndexId {
     private static final Logger logger = LoggerFactory.getLogger(VehicleSpatialIndexId.class);
-    private String vehicleId;
-    private String operator;
-    private String codespace;
     private FormFactor formFactor;
     private PropulsionType propulsionTypes;
     private boolean isReserved;
@@ -19,13 +16,7 @@ public class VehicleSpatialIndexId {
         try {
             var parsed = new VehicleSpatialIndexId();
             var parts = indexId.split("_");
-            parsed.setVehicleId(parts[0]);
-            parsed.setOperator(parts[1]);
-            parsed.setCodespace(parts[2]);
-            parsed.setFormFactor(FormFactor.valueOf(parts[3]));
-            parsed.setPropulsionTypes(PropulsionType.valueOf(parts[4]));
-            parsed.setReserved(Boolean.parseBoolean(parts[5]));
-            parsed.setDisabled(Boolean.parseBoolean(parts[6]));
+            parsed.parse(parts);
             return parsed;
         } catch (IndexOutOfBoundsException e) {
             logger.warn("Caught IndexOutOfBoundsException while trying to parse spatial index id {}", indexId, e);
@@ -34,41 +25,27 @@ public class VehicleSpatialIndexId {
     }
 
     @Override
+    public void parse(String[] parts) {
+        super.parse(parts);
+        setFormFactor(FormFactor.valueOf(parts[4]));
+        setPropulsionTypes(PropulsionType.valueOf(parts[5]));
+        setReserved(Boolean.parseBoolean(parts[6]));
+        setDisabled(Boolean.parseBoolean(parts[7]));
+    }
+
+    @Override
     public String toString() {
-        return vehicleId + '_' +
-                operator + '_' +
-                codespace + '_' +
-                formFactor + '_' +
-                propulsionTypes + '_' +
-                isReserved + '_' +
-                isDisabled;
+        return getId() + '_' +
+                getCodespace() + '_' +
+                getSystemId() + '_' +
+                getOperatorId() + '_' +
+                getFormFactor() + '_' +
+                getPropulsionTypes() + '_' +
+                getReserved() + '_' +
+                getDisabled();
     }
 
     private VehicleSpatialIndexId() {}
-
-    public String getVehicleId() {
-        return vehicleId;
-    }
-
-    public void setVehicleId(String vehicleId) {
-        this.vehicleId = vehicleId;
-    }
-
-    public String getOperator() {
-        return operator;
-    }
-
-    public void setOperator(String operator) {
-        this.operator = operator;
-    }
-
-    public String getCodespace() {
-        return codespace;
-    }
-
-    public void setCodespace(String codespace) {
-        this.codespace = codespace;
-    }
 
     public FormFactor getFormFactor() {
         return formFactor;

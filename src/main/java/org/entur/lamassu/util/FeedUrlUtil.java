@@ -16,35 +16,22 @@
  *
  */
 
-package org.entur.lamassu.model.entities;
+package org.entur.lamassu.util;
 
-import java.io.Serializable;
+import org.entur.lamassu.model.discovery.FeedProvider;
+import org.entur.lamassu.model.gbfs.v2_1.GBFSFeedName;
 
-public class Operator implements Serializable {
-    private String id;
-    private TranslatedString name;
+public class FeedUrlUtil {
+    private FeedUrlUtil() {}
 
-    public String getId() {
-        return id;
+    public static String mapFeedUrl(String baseUrl, GBFSFeedName feedName, FeedProvider feedProvider) {
+        var providerName= feedProvider.getSystemSlug();
+        var feedUrl = addToPath(baseUrl, "gbfs");
+        feedUrl = addToPath(feedUrl, providerName);
+        return addToPath(feedUrl, feedName.toValue()).toLowerCase();
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public TranslatedString getName() {
-        return name;
-    }
-
-    public void setName(TranslatedString name) {
-        this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return "Operator{" +
-                "id='" + id + '\'' +
-                ", name=" + name +
-                '}';
+    private static String addToPath(String base, String toAdd) {
+        return String.format("%s/%s", base, toAdd);
     }
 }

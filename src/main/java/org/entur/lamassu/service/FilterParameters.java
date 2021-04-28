@@ -21,16 +21,9 @@ package org.entur.lamassu.service;
 import java.util.List;
 
 public class FilterParameters {
-    private List<String> operators;
     private List<String> codespaces;
-
-    public List<String> getOperators() {
-        return operators;
-    }
-
-    public void setOperators(List<String> operators) {
-        this.operators = operators;
-    }
+    private List<String> systems;
+    private List<String> operators;
 
     public List<String> getCodespaces() {
         return codespaces;
@@ -38,5 +31,21 @@ public class FilterParameters {
 
     public void setCodespaces(List<String> codespaces) {
         this.codespaces = codespaces;
+    }
+
+    public List<String> getSystems() {
+        return systems;
+    }
+
+    public void setSystems(List<String> systems) {
+        this.systems = systems;
+    }
+
+    public List<String> getOperators() {
+        return operators;
+    }
+
+    public void setOperators(List<String> operators) {
+        this.operators = operators;
     }
 }

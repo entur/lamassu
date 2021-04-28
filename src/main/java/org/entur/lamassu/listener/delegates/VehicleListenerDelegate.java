@@ -19,9 +19,9 @@
 package org.entur.lamassu.listener.delegates;
 
 import org.entur.lamassu.cache.VehicleSpatialIndex;
-import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.listener.CacheEntryListenerDelegate;
 import org.entur.lamassu.model.entities.Vehicle;
+import org.entur.lamassu.service.FeedProviderService;
 import org.entur.lamassu.util.SpatialIndexIdUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,16 +34,16 @@ import java.util.Set;
 
 @Component
 public class VehicleListenerDelegate implements CacheEntryListenerDelegate<Vehicle, Vehicle> {
-    private final FeedProviderConfig feedProviderConfig;
+    private final FeedProviderService feedProviderService;
     private final VehicleSpatialIndex spatialIndex;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public VehicleListenerDelegate(
-            FeedProviderConfig feedProviderConfig,
+            FeedProviderService feedProviderService,
             VehicleSpatialIndex spatialIndex
     ) {
-        this.feedProviderConfig = feedProviderConfig;
+        this.feedProviderService = feedProviderService;
         this.spatialIndex = spatialIndex;
     }
 
@@ -68,7 +68,7 @@ public class VehicleListenerDelegate implements CacheEntryListenerDelegate<Vehic
 
         for (CacheEntryEvent<? extends String, ? extends Vehicle> entry : iterable) {
             var split = entry.getKey().split("_");
-            var feedProvider = feedProviderConfig.get(split[split.length - 1]);
+            var feedProvider = feedProviderService.getFeedProviderBySystemSlug(split[split.length - 1]);
             var vehicle = entry.getValue();
             var id = SpatialIndexIdUtil.createVehicleSpatialIndexId(vehicle, feedProvider);
             ids.add(id);
