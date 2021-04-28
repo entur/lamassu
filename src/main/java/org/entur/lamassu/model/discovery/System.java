@@ -16,35 +16,19 @@
  *
  */
 
-package org.entur.lamassu.model.entities;
+package org.entur.lamassu.model.discovery;
 
-import java.io.Serializable;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Operator implements Serializable {
-    private String id;
-    private TranslatedString name;
-
-    public String getId() {
-        return id;
-    }
+public class System {
+    @JsonProperty("id") private String id;
+    @JsonProperty("url") private String url;
 
     public void setId(String id) {
         this.id = id;
     }
 
-    public TranslatedString getName() {
-        return name;
-    }
-
-    public void setName(TranslatedString name) {
-        this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return "Operator{" +
-                "id='" + id + '\'' +
-                ", name=" + name +
-                '}';
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

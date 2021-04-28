@@ -21,19 +21,14 @@ package org.entur.lamassu.cache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class StationSpatialIndexId {
+public class StationSpatialIndexId extends AbstractSpatialIndexId {
     private static final Logger logger = LoggerFactory.getLogger(StationSpatialIndexId.class);
-    private String stationId;
-    private String operator;
-    private String codespace;
 
     public static StationSpatialIndexId fromString(String indexId) {
         try {
             var parsed = new StationSpatialIndexId();
             var parts = indexId.split("_");
-            parsed.setStationId(parts[0]);
-            parsed.setOperator(parts[1]);
-            parsed.setCodespace(parts[2]);
+            parsed.parse(parts);
             return parsed;
         } catch (IndexOutOfBoundsException e) {
             logger.warn("Caught IndexOutOfBoundsException while trying to parse spatial index id {}", indexId, e);
@@ -42,34 +37,15 @@ public class StationSpatialIndexId {
     }
 
     @Override
+    public void parse(String[] parts) {
+        super.parse(parts);
+    }
+
+    @Override
     public String toString() {
-        return stationId + '_' +
-                operator + '_' +
-                codespace + '_';
-    }
-
-
-    public String getStationId() {
-        return stationId;
-    }
-
-    public void setStationId(String stationId) {
-        this.stationId = stationId;
-    }
-
-    public String getOperator() {
-        return operator;
-    }
-
-    public void setOperator(String operator) {
-        this.operator = operator;
-    }
-
-    public String getCodespace() {
-        return codespace;
-    }
-
-    public void setCodespace(String codespace) {
-        this.codespace = codespace;
+        return getId() + '_' +
+                getCodespace() + '_' +
+                getSystemId() + '_' +
+                getOperatorId();
     }
 }

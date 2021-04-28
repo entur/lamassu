@@ -21,7 +21,6 @@ package org.entur.lamassu.listener.delegates;
 import org.entur.lamassu.cache.GBFSFeedCache;
 import org.entur.lamassu.cache.StationCache;
 import org.entur.lamassu.cache.StationSpatialIndex;
-import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.listener.CacheEntryListenerDelegate;
 import org.entur.lamassu.mapper.PricingPlanMapper;
 import org.entur.lamassu.mapper.StationMapper;
@@ -33,6 +32,7 @@ import org.entur.lamassu.model.gbfs.v2_1.StationInformation;
 import org.entur.lamassu.model.gbfs.v2_1.StationStatus;
 import org.entur.lamassu.model.gbfs.v2_1.SystemInformation;
 import org.entur.lamassu.model.gbfs.v2_1.SystemPricingPlans;
+import org.entur.lamassu.service.FeedProviderService;
 import org.entur.lamassu.util.SpatialIndexIdUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +50,7 @@ import java.util.stream.Collectors;
 public class StationStatusListenerDelegate implements CacheEntryListenerDelegate<GBFSBase, StationStatus> {
     private final GBFSFeedCache feedCache;
     private final StationCache stationCache;
-    private final FeedProviderConfig feedProviderConfig;
+    private final FeedProviderService feedProviderService;
     private final StationSpatialIndex spatialIndex;
     private final SystemMapper systemMapper;
     private final PricingPlanMapper pricingPlanMapper;
@@ -61,7 +61,7 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
     public StationStatusListenerDelegate(
             GBFSFeedCache feedCache,
             StationCache stationCache,
-            FeedProviderConfig feedProviderConfig,
+            FeedProviderService feedProviderService,
             StationSpatialIndex spatialIndex,
             SystemMapper systemMapper,
             PricingPlanMapper pricingPlanMapper,
@@ -69,7 +69,7 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
     ) {
         this.feedCache = feedCache;
         this.stationCache = stationCache;
-        this.feedProviderConfig =  feedProviderConfig;
+        this.feedProviderService =  feedProviderService;
         this.spatialIndex = spatialIndex;
         this.systemMapper = systemMapper;
         this.pricingPlanMapper = pricingPlanMapper;
@@ -102,7 +102,7 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
 
     private void addOrUpdateStation(CacheEntryEvent<? extends String, ? extends GBFSBase> event) {
         var split = event.getKey().split("_");
-        var feedProvider = feedProviderConfig.get(split[split.length - 1]);
+        var feedProvider = feedProviderService.getFeedProviderBySystemSlug(split[split.length - 1]);
 
         var systemInformationFeed = (SystemInformation) feedCache.find(GBFSFeedName.SYSTEM_INFORMATION, feedProvider);
         var pricingPlansFeed = (SystemPricingPlans) feedCache.find(GBFSFeedName.SYSTEM_PRICING_PLANS, feedProvider);
@@ -137,7 +137,7 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
 
         var originalStations = stationCache.getAllAsMap(stationIds);
 
-        var system = systemMapper.mapSystem(systemInformationFeed.getData(), feedProvider.getLanguage());
+        var system = systemMapper.mapSystem(systemInformationFeed.getData(), feedProvider);
         var pricingPlans = pricingPlansFeed.getData().getPlans().stream()
                 .map(pricingPlan -> pricingPlanMapper.mapPricingPlan(pricingPlan, feedProvider.getLanguage()))
                 .collect(Collectors.toList());

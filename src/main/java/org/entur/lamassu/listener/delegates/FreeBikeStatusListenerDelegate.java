@@ -3,7 +3,6 @@ package org.entur.lamassu.listener.delegates;
 import org.entur.lamassu.cache.GBFSFeedCache;
 import org.entur.lamassu.cache.VehicleCache;
 import org.entur.lamassu.cache.VehicleSpatialIndex;
-import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.listener.CacheEntryListenerDelegate;
 import org.entur.lamassu.mapper.PricingPlanMapper;
 import org.entur.lamassu.mapper.SystemMapper;
@@ -12,13 +11,14 @@ import org.entur.lamassu.mapper.VehicleTypeMapper;
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.entities.VehicleType;
-import org.entur.lamassu.model.feedprovider.FeedProvider;
+import org.entur.lamassu.model.discovery.FeedProvider;
 import org.entur.lamassu.model.gbfs.v2_1.FreeBikeStatus;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSFeedName;
 import org.entur.lamassu.model.gbfs.v2_1.SystemInformation;
 import org.entur.lamassu.model.gbfs.v2_1.SystemPricingPlans;
 import org.entur.lamassu.model.gbfs.v2_1.VehicleTypes;
+import org.entur.lamassu.service.FeedProviderService;
 import org.entur.lamassu.util.SpatialIndexIdUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegate<GBFSBase, FreeBikeStatus> {
     private final VehicleCache vehicleCache;
     private final GBFSFeedCache feedCache;
-    private final FeedProviderConfig feedProviderConfig;
+    private final FeedProviderService feedProviderService;
     private final VehicleSpatialIndex spatialIndex;
     private final SystemMapper systemMapper;
     private final PricingPlanMapper pricingPlanMapper;
@@ -46,7 +46,7 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
     public FreeBikeStatusListenerDelegate(
             VehicleCache vehicleCache,
             GBFSFeedCache feedCache,
-            FeedProviderConfig feedProviderConfig,
+            FeedProviderService feedProviderService,
             VehicleSpatialIndex spatialIndex,
             VehicleMapper vehicleMapper,
             SystemMapper systemMapper,
@@ -55,7 +55,7 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
     ) {
         this.vehicleCache = vehicleCache;
         this.feedCache = feedCache;
-        this.feedProviderConfig = feedProviderConfig;
+        this.feedProviderService = feedProviderService;
         this.spatialIndex = spatialIndex;
         this.vehicleMapper = vehicleMapper;
         this.systemMapper = systemMapper;
@@ -89,7 +89,7 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
 
     private void addOrUpdateVehicles(CacheEntryEvent<? extends String, ? extends GBFSBase> event) {
         var split = event.getKey().split("_");
-        var feedProvider = feedProviderConfig.get(split[split.length - 1]);
+        var feedProvider = feedProviderService.getFeedProviderBySystemSlug(split[split.length - 1]);
         var freeBikeStatusFeed = (FreeBikeStatus) event.getValue();
 
         var systemInformationFeed = (SystemInformation) feedCache.find(GBFSFeedName.SYSTEM_INFORMATION, feedProvider);
@@ -125,7 +125,7 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
         var vehicleTypes = vehicleTypesFeed.getData().getVehicleTypes().stream()
                 .map(vehicleType -> vehicleTypeMapper.mapVehicleType(vehicleType, feedProvider.getLanguage()))
                 .collect(Collectors.toMap(VehicleType::getId, i -> i));
-        var system = systemMapper.mapSystem(systemInformationFeed.getData(), feedProvider.getLanguage());
+        var system = systemMapper.mapSystem(systemInformationFeed.getData(), feedProvider);
         var pricingPlans = pricingPlansFeed.getData().getPlans().stream()
                 .map(pricingPlan -> pricingPlanMapper.mapPricingPlan(pricingPlan, feedProvider.getLanguage()))
                 .collect(Collectors.toMap(PricingPlan::getId, i -> i));
@@ -186,6 +186,6 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
 
 
     private String getVehicleCacheKey(String vehicleId, FeedProvider feedProvider) {
-        return vehicleId + "_" + feedProvider.getName();
+        return vehicleId + "_" + feedProvider.getSystemId();
     }
 }

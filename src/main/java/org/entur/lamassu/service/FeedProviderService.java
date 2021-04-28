@@ -16,35 +16,13 @@
  *
  */
 
-package org.entur.lamassu.model.entities;
+package org.entur.lamassu.service;
 
-import java.io.Serializable;
+import org.entur.lamassu.model.discovery.FeedProvider;
 
-public class Operator implements Serializable {
-    private String id;
-    private TranslatedString name;
+import java.util.List;
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public TranslatedString getName() {
-        return name;
-    }
-
-    public void setName(TranslatedString name) {
-        this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return "Operator{" +
-                "id='" + id + '\'' +
-                ", name=" + name +
-                '}';
-    }
+public interface FeedProviderService {
+    List<FeedProvider> getFeedProviders();
+    FeedProvider getFeedProviderBySystemSlug(String systemSlug);
 }

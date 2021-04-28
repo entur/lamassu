@@ -1,8 +1,9 @@
 lamassu:
   providers:
-    - url: http://localhost:8888/gbfs
-      name: atlantis
+    - systemId: TST:System:testatlantis
+      systemSlug: testatlantis
+      operatorId: TST:Operator:atlantis
+      operatorName: Atlantis
+      url: http://localhost:8888/gbfs
       codespace: TST
-      city: Atlantis
-      vehicleType: Rover
       language: en

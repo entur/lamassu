@@ -9,11 +9,15 @@ public class SpatialIndexIdFilter {
     private SpatialIndexIdFilter() {}
 
     public static boolean filterVehicle(VehicleSpatialIndexId parsedId, VehicleFilterParameters filters) {
-        if (filters.getOperators() != null && !filters.getOperators().contains(parsedId.getOperator())) {
+        if (filters.getCodespaces() != null && !filters.getCodespaces().contains(parsedId.getCodespace())) {
             return false;
         }
 
-        if (filters.getCodespaces() != null && !filters.getCodespaces().contains(parsedId.getCodespace())) {
+        if (filters.getSystems() != null && !filters.getSystems().contains(parsedId.getSystemId())) {
+            return false;
+        }
+
+        if (filters.getOperators() != null && !filters.getOperators().contains(parsedId.getOperatorId())) {
             return false;
         }
 
@@ -37,11 +41,15 @@ public class SpatialIndexIdFilter {
     }
 
     public static boolean filterStation(StationSpatialIndexId parsedId, FilterParameters filters) {
-        if (filters.getOperators() != null && !filters.getOperators().contains(parsedId.getOperator())) {
+        if (filters.getCodespaces() != null && !filters.getCodespaces().contains(parsedId.getCodespace())) {
             return false;
         }
 
-        if (filters.getCodespaces() != null && !filters.getCodespaces().contains(parsedId.getCodespace())) {
+        if (filters.getSystems() != null && !filters.getSystems().contains(parsedId.getSystemId())) {
+            return false;
+        }
+
+        if (filters.getOperators() != null && !filters.getOperators().contains(parsedId.getOperatorId())) {
             return false;
         }
 
