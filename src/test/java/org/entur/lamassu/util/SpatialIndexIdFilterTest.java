@@ -38,6 +38,38 @@ public class SpatialIndexIdFilterTest {
     }
 
     @Test
+    public void testSystemFilter() {
+        var testId = testId();
+        var params = testFilterParams();
+
+        params.setSystems(List.of("TST:System:testprovider"));
+        Assert.assertTrue(
+                SpatialIndexIdFilter.filterVehicle(testId, params)
+        );
+
+        params.setSystems(List.of("FOO:System:foo"));
+        Assert.assertFalse(
+                SpatialIndexIdFilter.filterVehicle(testId, params)
+        );
+    }
+
+    @Test
+    public void testOperatorFilter() {
+        var testId = testId();
+        var params = testFilterParams();
+
+        params.setOperators(List.of("TST:Operator:test"));
+        Assert.assertTrue(
+                SpatialIndexIdFilter.filterVehicle(testId, params)
+        );
+
+        params.setOperators(List.of("FOO:Operator:foo"));
+        Assert.assertFalse(
+                SpatialIndexIdFilter.filterVehicle(testId, params)
+        );
+    }
+
+    @Test
     public void testFormFactorFilter() {
         var testId = testId();
         var params = testFilterParams();
@@ -136,9 +168,10 @@ public class SpatialIndexIdFilterTest {
 
     private FeedProvider testProvider() {
         var provider = new FeedProvider();
-        provider.setSystemId("TST:System:testprovider");
-        provider.setOperatorName("testprovider");
         provider.setCodespace("TST");
+        provider.setSystemId("TST:System:testprovider");
+        provider.setOperatorId("TST:Operator:test");
+        provider.setOperatorName("testprovider");
         return provider;
     }
 
