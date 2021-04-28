@@ -16,18 +16,20 @@
  *
  */
 
-package org.entur.lamassu.service;
+package org.entur.lamassu.util;
 
-import java.util.List;
+import org.entur.lamassu.model.discovery.FeedProvider;
+import org.entur.lamassu.model.gbfs.v2_1.GBFSFeedName;
 
-public class FilterParameters {
-    private List<String> codespaces;
-
-    public List<String> getCodespaces() {
-        return codespaces;
+public class FeedUrlUtil {
+    public static String mapFeedUrl(String baseUrl, GBFSFeedName feedName, FeedProvider feedProvider) {
+        var providerName= feedProvider.getSystemSlug();
+        var feedUrl = addToPath(baseUrl, "gbfs");
+        feedUrl = addToPath(feedUrl, providerName);
+        return addToPath(feedUrl, feedName.toValue()).toLowerCase();
     }
 
-    public void setCodespaces(List<String> codespaces) {
-        this.codespaces = codespaces;
+    private static String addToPath(String base, String toAdd) {
+        return String.format("%s/%s", base, toAdd);
     }
 }

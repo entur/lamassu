@@ -37,14 +37,14 @@ public class FeedUpdateScheduler {
         feedProviderConfig.getProviders().parallelStream().forEach(feedProvider ->  {
             var jobData = new JobDataMap();
             jobData.put("feedProvider", feedProvider);
-            JobDetail jobDetail = buildJobDetail(FetchDiscoveryFeedJob.class, feedProvider.getName(), jobData);
+            JobDetail jobDetail = buildJobDetail(FetchDiscoveryFeedJob.class, feedProvider.getSystemSlug(), jobData);
             Trigger trigger = buildJobTrigger(jobDetail, getFeedUpdateScheduleBuilder());
             try {
                 feedUpdateQuartzScheduler.scheduleJob(jobDetail, trigger);
             } catch (SchedulerException e) {
-                logger.warn("Failed to schedule fetch discovery feed for {}", feedProvider.getName(), e);
+                logger.warn("Failed to schedule fetch discovery feed for {}", feedProvider.getSystemSlug(), e);
             }
-            logger.debug("Scheduled fetch discovery feed for {}", feedProvider.getName());
+            logger.debug("Scheduled fetch discovery feed for {}", feedProvider.getSystemSlug());
         });
     }
 

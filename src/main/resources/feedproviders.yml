@@ -1,10 +1,12 @@
 lamassu:
   providers:
-    - codespace: YBO
-      name: boltbergen
-      city: Bergen
+    - systemId: YBO:System:boltbergen
+      systemSlug: boltbergen
+      operatorId: YBO:Operator:bolt
+      operatorName: Bolt
+      codespace: YBO
       url: https://api.staging.entur.io/mobility/v1/gbfs-v2_1/boltbergen/gbfs
-      language: en
+      language: nb
 #    - codespace: YVO
 #      name: voioslo
 #      city: Oslo

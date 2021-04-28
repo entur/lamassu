@@ -16,18 +16,22 @@
  *
  */
 
-package org.entur.lamassu.service;
+package org.entur.lamassu.model.discovery;
 
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class FilterParameters {
-    private List<String> codespaces;
+public class System {
+    @JsonProperty("id") private String id;
+    @JsonProperty("name") private String name;
+    @JsonProperty("url") private String url;
 
-    public List<String> getCodespaces() {
-        return codespaces;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public void setCodespaces(List<String> codespaces) {
-        this.codespaces = codespaces;
+    public void setName(String name) { this.name = name; }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

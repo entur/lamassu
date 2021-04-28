@@ -18,16 +18,12 @@
 
 package org.entur.lamassu.service;
 
+import org.entur.lamassu.model.discovery.FeedProvider;
+
 import java.util.List;
 
-public class FilterParameters {
-    private List<String> codespaces;
-
-    public List<String> getCodespaces() {
-        return codespaces;
-    }
-
-    public void setCodespaces(List<String> codespaces) {
-        this.codespaces = codespaces;
-    }
+public interface FeedProviderService {
+    List<FeedProvider> getFeedProviders();
+    FeedProvider getFeedProviderBySystemName(String name);
+    FeedProvider getFeedProviderBySystemId(String id);
 }

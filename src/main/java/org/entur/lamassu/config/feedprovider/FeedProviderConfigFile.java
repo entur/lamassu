@@ -1,6 +1,6 @@
 package org.entur.lamassu.config.feedprovider;
 
-import org.entur.lamassu.model.feedprovider.FeedProvider;
+import org.entur.lamassu.model.discovery.FeedProvider;
 import org.entur.lamassu.util.YamlPropertySourceFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -18,14 +18,6 @@ public class FeedProviderConfigFile implements FeedProviderConfig {
     @Override
     public List<FeedProvider> getProviders() {
         return providers;
-    }
-
-    @Override
-    public FeedProvider get(String name) {
-        return this.getProviders().stream()
-                .filter(fp -> fp.getName().equalsIgnoreCase(name))
-                .findFirst()
-                .orElseThrow(NoSuchElementException::new);
     }
 
     public void setProviders(List<FeedProvider> providers) {

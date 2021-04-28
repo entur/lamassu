@@ -5,9 +5,8 @@ import graphql.kickstart.tools.GraphQLQueryResolver;
 import org.entur.lamassu.cache.StationCache;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.model.entities.Station;
-import org.entur.lamassu.model.feedprovider.FeedProvider;
+import org.entur.lamassu.model.discovery.FeedProvider;
 import org.entur.lamassu.model.entities.FormFactor;
-import org.entur.lamassu.model.entities.Operator;
 import org.entur.lamassu.model.entities.PropulsionType;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.service.FilterParameters;
@@ -43,16 +42,11 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
         return feedProviderConfig.getProviders().stream().map(FeedProvider::getCodespace).collect(Collectors.toSet());
     }
 
-    public Collection<Operator> getOperators() {
-        return feedProviderConfig.getProviders().stream().map(this::mapToOperator).collect(Collectors.toList());
-    }
-
     public Collection<Vehicle> getVehicles(
             Double lat,
             Double lon,
             Double range,
             Integer count,
-            List<String> operators,
             List<String> codespaces,
             List<FormFactor> formFactors,
             List<PropulsionType> propulsionTypes,
@@ -60,7 +54,6 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
             boolean includeDisabled
     ) {
         validateCodespaces(codespaces);
-        validateOperators(operators);
 
         var queryParams = new RangeQueryParameters();
         queryParams.setLat(lat);
@@ -69,7 +62,6 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
         queryParams.setCount(count);
 
         var filterParams = new VehicleFilterParameters();
-        filterParams.setOperators(operators);
         filterParams.setCodespaces(codespaces);
         filterParams.setFormFactors(formFactors);
         filterParams.setPropulsionTypes(propulsionTypes);
@@ -86,11 +78,9 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
             Double lon,
             Double range,
             Integer count,
-            List<String> operators,
             List<String> codespaces
     ) {
         validateCodespaces(codespaces);
-        validateOperators(operators);
 
         var queryParams = new RangeQueryParameters();
         queryParams.setLat(lat);
@@ -100,7 +90,6 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
 
         var filterParams = new FilterParameters();
         filterParams.setCodespaces(codespaces);
-        filterParams.setOperators(operators);
 
         logger.debug("getStations called query={} filter={}", queryParams, filterParams);
 
@@ -114,13 +103,6 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
         return stationCache.getAll(new HashSet<>(ids));
     }
 
-    private Operator mapToOperator(FeedProvider feedProvider) {
-        var operator = new Operator();
-        operator.setName(feedProvider.getName());
-        operator.setCodespace(feedProvider.getCodespace());
-        return operator;
-    }
-
     private void validateCodespaces(List<String> codespaces) {
         if (codespaces != null) {
             var validCodespaces = getCodespaces();
@@ -128,15 +110,5 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
                 throw new GraphqlErrorException.Builder().message("Unknown codespace(s)").build();
             }
         }
-    }
-
-    private void validateOperators(List<String> operators) {
-        if (operators != null) {
-            var validOperators = getOperators();
-            if (!validOperators.stream().map(Operator::getName).collect(Collectors.toList()).containsAll(operators)) {
-                throw new GraphqlErrorException.Builder().message("Unknown operator(s)").build();
-            }
-        }
-
     }
 }

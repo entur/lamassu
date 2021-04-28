@@ -16,18 +16,9 @@
  *
  */
 
-package org.entur.lamassu.service;
+package org.entur.lamassu.model.discovery;
 
-import java.util.List;
-
-public class FilterParameters {
-    private List<String> codespaces;
-
-    public List<String> getCodespaces() {
-        return codespaces;
-    }
-
-    public void setCodespaces(List<String> codespaces) {
-        this.codespaces = codespaces;
-    }
+public class Operator {
+    private String id;
+    private String name;
 }

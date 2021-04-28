@@ -1,9 +1,10 @@
 package org.entur.lamassu.mapper;
 
-import org.entur.lamassu.model.feedprovider.FeedProvider;
-import org.entur.lamassu.model.feedprovider.FeedProviderDiscovery;
+import org.entur.lamassu.model.discovery.FeedProvider;
+import org.entur.lamassu.model.discovery.SystemDiscovery;
 import org.entur.lamassu.model.gbfs.v2_1.GBFS;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSFeedName;
+import org.entur.lamassu.util.FeedUrlUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,30 +45,12 @@ public class DiscoveryFeedMapper {
                     .map(feed -> {
                         var mappedFeed = new GBFS.GBFSFeed();
                         mappedFeed.setName(feed.getName());
-                        mappedFeed.setUrl(mapFeedUrl(feed.getName(), feedProvider));
+                        mappedFeed.setUrl(FeedUrlUtil.mapFeedUrl(baseUrl, feed.getName(), feedProvider));
                         return mappedFeed;
                     }).collect(Collectors.toList())
         );
         dataWrapper.put(feedProvider.getLanguage(), mappedData);
         mapped.setData(dataWrapper);
         return mapped;
-    }
-
-    public FeedProviderDiscovery.Provider mapFeedProvider(FeedProvider feedProvider) {
-        FeedProviderDiscovery.Provider mapped = new FeedProviderDiscovery.Provider();
-        mapped.setName(feedProvider.getName());
-        mapped.setUrl(mapFeedUrl(GBFSFeedName.GBFS, feedProvider));
-        return mapped;
-    }
-
-    private String mapFeedUrl(GBFSFeedName feedName, FeedProvider feedProvider) {
-        var providerName= feedProvider.getName();
-        var feedUrl = addToPath(baseUrl, "gbfs");
-        feedUrl = addToPath(feedUrl, providerName);
-        return addToPath(feedUrl, feedName.toValue()).toLowerCase();
-    }
-
-    private String addToPath(String base, String toAdd) {
-        return String.format("%s/%s", base, toAdd);
     }
 }

@@ -1,7 +1,7 @@
 package org.entur.lamassu.util;
 
 import org.entur.lamassu.cache.VehicleSpatialIndexId;
-import org.entur.lamassu.model.feedprovider.FeedProvider;
+import org.entur.lamassu.model.discovery.FeedProvider;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PropulsionType;
 import org.entur.lamassu.model.entities.Vehicle;
@@ -18,22 +18,6 @@ public class SpatialIndexIdFilterTest {
     public void testNoFilter() {
         Assert.assertTrue(
                 SpatialIndexIdFilter.filterVehicle(testId(), testFilterParams())
-        );
-    }
-
-    @Test
-    public void testOperatorFilter() {
-        var testId = testId();
-        var params = testFilterParams();
-
-        params.setOperators(List.of("testprovider"));
-        Assert.assertTrue(
-                SpatialIndexIdFilter.filterVehicle(testId, params)
-        );
-
-        params.setOperators(List.of("foobar"));
-        Assert.assertFalse(
-                SpatialIndexIdFilter.filterVehicle(testId, params)
         );
     }
 
@@ -152,7 +136,8 @@ public class SpatialIndexIdFilterTest {
 
     private FeedProvider testProvider() {
         var provider = new FeedProvider();
-        provider.setName("testprovider");
+        provider.setSystemId("TST:System:testprovider");
+        provider.setOperatorName("testprovider");
         provider.setCodespace("TST");
         return provider;
     }

@@ -1,6 +1,6 @@
 package org.entur.lamassu.updater;
 
-import org.entur.lamassu.model.feedprovider.FeedProvider;
+import org.entur.lamassu.model.discovery.FeedProvider;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
