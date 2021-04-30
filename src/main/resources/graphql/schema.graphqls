@@ -20,7 +20,7 @@ type Query {
     stations(
         lat: Float!
         lon: Float!
-        range: Int
+        range: Int!
         count: Int
         codespaces: [String]
         systems: [String]
