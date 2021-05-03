@@ -47,7 +47,7 @@ public class RedissonCacheConfig {
 
         redissonConfig.setCodec(codec);
 
-        String address = String.format(
+        var address = String.format(
                 "redis://%s:%s",
                 redisProperties.getHost(),
                 redisProperties.getPort()

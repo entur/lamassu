@@ -26,13 +26,13 @@ public class SchedulerConfig {
 
     @Bean
     public SchedulerFactoryBean feedUpdateQuartzScheduler(@Autowired ApplicationContext applicationContext) {
-        SchedulerFactoryBean quartzScheduler = new SchedulerFactoryBean();
+        var quartzScheduler = new SchedulerFactoryBean();
 
         quartzScheduler.setOverwriteExistingJobs(true);
         quartzScheduler.setSchedulerName("lamassu-quartz-scheduler");
 
         // custom job factory of spring with DI support for @Autowired!
-        AutowiringSpringBeanJobFactory jobFactory = new AutowiringSpringBeanJobFactory();
+        var jobFactory = new AutowiringSpringBeanJobFactory();
         jobFactory.setApplicationContext(applicationContext);
         quartzScheduler.setJobFactory(jobFactory);
 

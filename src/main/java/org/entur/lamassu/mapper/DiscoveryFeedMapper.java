@@ -20,8 +20,8 @@ public class DiscoveryFeedMapper {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public GBFS mapDiscoveryFeed(GBFS source, FeedProvider feedProvider) {
-        GBFS mapped = new GBFS();
-        GBFS.Data mappedData = new GBFS.Data();
+        var mapped = new GBFS();
+        var mappedData = new GBFS.Data();
         Map<String, GBFS.Data> dataWrapper = new HashMap<>();
         mapped.setLastUpdated(source.getLastUpdated());
         mapped.setTtl(source.getTtl());

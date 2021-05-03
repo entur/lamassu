@@ -37,11 +37,6 @@ public class StationSpatialIndexId extends AbstractSpatialIndexId {
     }
 
     @Override
-    public void parse(String[] parts) {
-        super.parse(parts);
-    }
-
-    @Override
     public String toString() {
         return getId() + '_' +
                 getCodespace() + '_' +

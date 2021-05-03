@@ -1,5 +1,6 @@
 package org.entur.lamassu.util;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.core.env.PropertySource;
@@ -11,12 +12,13 @@ import java.util.Properties;
 
 public class YamlPropertySourceFactory implements PropertySourceFactory {
 
+    @NotNull
     @Override
     public PropertySource<?> createPropertySource(String s, EncodedResource encodedResource) {
-        YamlPropertiesFactoryBean factory = new YamlPropertiesFactoryBean();
+        var factory = new YamlPropertiesFactoryBean();
         factory.setResources(encodedResource.getResource());
 
-        Properties properties = factory.getObject();
+        var properties = factory.getObject();
 
         if (properties != null) {
             return new PropertiesPropertySource(Objects.requireNonNull(encodedResource.getResource().getFilename()), properties);

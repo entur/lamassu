@@ -37,8 +37,8 @@ public class FeedUpdateScheduler {
         feedProviderConfig.getProviders().parallelStream().forEach(feedProvider ->  {
             var jobData = new JobDataMap();
             jobData.put("feedProvider", feedProvider);
-            JobDetail jobDetail = buildJobDetail(FetchDiscoveryFeedJob.class, feedProvider.getSystemSlug(), jobData);
-            Trigger trigger = buildJobTrigger(jobDetail, getFeedUpdateScheduleBuilder());
+            var jobDetail = buildJobDetail(FetchDiscoveryFeedJob.class, feedProvider.getSystemSlug(), jobData);
+            var trigger = buildJobTrigger(jobDetail, getFeedUpdateScheduleBuilder());
             try {
                 feedUpdateQuartzScheduler.scheduleJob(jobDetail, trigger);
             } catch (SchedulerException e) {

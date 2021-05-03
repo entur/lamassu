@@ -53,7 +53,7 @@ public class Operator implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Operator operator = (Operator) o;
+        var operator = (Operator) o;
         return id.equals(operator.id);
     }
 
