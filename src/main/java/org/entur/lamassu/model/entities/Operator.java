@@ -19,6 +19,7 @@
 package org.entur.lamassu.model.entities;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class Operator implements Serializable {
     private String id;
@@ -46,5 +47,18 @@ public class Operator implements Serializable {
                 "id='" + id + '\'' +
                 ", name=" + name +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Operator operator = (Operator) o;
+        return id.equals(operator.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

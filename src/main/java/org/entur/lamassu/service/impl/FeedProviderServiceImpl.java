@@ -51,17 +51,22 @@ public class FeedProviderServiceImpl implements FeedProviderService {
 
     @Override
     public List<Operator> getOperators() {
-        return getFeedProviders().stream().map(feedProvider -> {
-            var operator = new Operator();
-            operator.setId(feedProvider.getOperatorId());
-            operator.setName(
-                    translationMapper.mapSingleTranslation(
-                            feedProvider.getLanguage(),
-                            feedProvider.getOperatorName()
-                    )
-            );
-            return operator;
-        }).collect(Collectors.toList());
+        return getFeedProviders().stream()
+                .map(this::mapOperator)
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    private Operator mapOperator(FeedProvider feedProvider) {
+        var operator = new Operator();
+        operator.setId(feedProvider.getOperatorId());
+        operator.setName(
+                translationMapper.mapSingleTranslation(
+                        feedProvider.getLanguage(),
+                        feedProvider.getOperatorName()
+                )
+        );
+        return operator;
     }
 
     @Override
