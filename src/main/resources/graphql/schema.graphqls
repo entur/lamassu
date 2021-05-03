@@ -1,7 +1,6 @@
 type Query {
     codespaces: [String]
     operators: [Operator]
-    systems: [String]
 
     vehicles(
         lat: Float!

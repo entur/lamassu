@@ -43,10 +43,6 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
         return feedProviderService.getFeedProviders().stream().map(FeedProvider::getCodespace).collect(Collectors.toSet());
     }
 
-    public Collection<String> getSystems() {
-        return feedProviderService.getFeedProviders().stream().map(FeedProvider::getSystemId).collect(Collectors.toSet());
-    }
-
     public Collection<Operator> getOperators() {
         return feedProviderService.getOperators();
     }
@@ -136,6 +132,10 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
             var validSystems = getSystems();
             validate(systems, validSystems, "Unknown system(s)");
         }
+    }
+
+    private Collection<String> getSystems() {
+        return feedProviderService.getFeedProviders().stream().map(FeedProvider::getSystemId).collect(Collectors.toSet());
     }
 
     private void validateOperators(List<String> operators) {
