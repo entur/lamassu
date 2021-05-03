@@ -1,6 +1,6 @@
 type Query {
     codespaces: [String]
-    operators: [String]
+    operators: [Operator]
     systems: [String]
 
     vehicles(

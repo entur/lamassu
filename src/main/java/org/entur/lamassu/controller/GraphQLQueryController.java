@@ -3,6 +3,7 @@ package org.entur.lamassu.controller;
 import graphql.GraphqlErrorException;
 import graphql.kickstart.tools.GraphQLQueryResolver;
 import org.entur.lamassu.cache.StationCache;
+import org.entur.lamassu.model.entities.Operator;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.discovery.FeedProvider;
 import org.entur.lamassu.model.entities.FormFactor;
@@ -46,8 +47,8 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
         return feedProviderService.getFeedProviders().stream().map(FeedProvider::getSystemId).collect(Collectors.toSet());
     }
 
-    public Collection<String> getOperators() {
-        return feedProviderService.getFeedProviders().stream().map(FeedProvider::getOperatorId).collect(Collectors.toSet());
+    public Collection<Operator> getOperators() {
+        return feedProviderService.getOperators();
     }
 
     public Collection<Vehicle> getVehicles(
@@ -139,8 +140,8 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
 
     private void validateOperators(List<String> operators) {
         if (operators != null) {
-            var validOperators = getOperators();
-            validate(operators, validOperators, "Unknown system(s)");
+            var validOperators = getOperators().stream().map(Operator::getId).collect(Collectors.toList());
+            validate(operators, validOperators, "Unknown operator(s)");
         }
     }
 

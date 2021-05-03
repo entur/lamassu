@@ -19,7 +19,9 @@
 package org.entur.lamassu.service.impl;
 
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
+import org.entur.lamassu.mapper.TranslationMapper;
 import org.entur.lamassu.model.discovery.FeedProvider;
+import org.entur.lamassu.model.entities.Operator;
 import org.entur.lamassu.service.FeedProviderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -32,17 +34,34 @@ import java.util.stream.Collectors;
 public class FeedProviderServiceImpl implements FeedProviderService {
     private final Map<String, FeedProvider> feedProvidersBySystemSlug;
     private final List<FeedProvider> feedProviders;
+    private final TranslationMapper translationMapper;
 
     @Autowired
-    public FeedProviderServiceImpl(FeedProviderConfig feedProviderConfig) {
+    public FeedProviderServiceImpl(FeedProviderConfig feedProviderConfig, TranslationMapper translationMapper) {
         feedProviders = feedProviderConfig.getProviders();
         feedProvidersBySystemSlug = feedProviderConfig.getProviders().stream()
                 .collect(Collectors.toMap(FeedProvider::getSystemSlug, fp -> fp));
+        this.translationMapper = translationMapper;
     }
 
     @Override
     public List<FeedProvider> getFeedProviders() {
         return feedProviders;
+    }
+
+    @Override
+    public List<Operator> getOperators() {
+        return getFeedProviders().stream().map(feedProvider -> {
+            var operator = new Operator();
+            operator.setId(feedProvider.getOperatorId());
+            operator.setName(
+                    translationMapper.mapSingleTranslation(
+                            feedProvider.getLanguage(),
+                            feedProvider.getOperatorName()
+                    )
+            );
+            return operator;
+        }).collect(Collectors.toList());
     }
 
     @Override
