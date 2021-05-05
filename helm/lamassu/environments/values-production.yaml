@@ -13,68 +13,94 @@ ingress:
 
 lamassu:
   feedProviders:
-    - codespace: YVO
-      name: voioslo
-      city: Oslo
+    - systemId: YVO:System:voioslo
+      systemSlug: voioslo
+      operatorId: YVO:Operator:voi
+      operatorName: Voi
+      codespace: YVO
       url: https://api.entur.io/mobility/v1/gbfs-v2_2/voioslo/gbfs
       language: nb
-    - codespace: YVO
-      name: voitrondheim
-      city: Trondheim
+    - systemId: YVO:System:voitrondheim
+      systemSlug: voitrondheim
+      operatorId: YVO:Operator:voi
+      operatorName: Voi
+      codespace: YVO
       url: https://api.entur.io/mobility/v1/gbfs-v2_2/voitrondheim/gbfs
       language: nb
-    - codespace: YLI
-      name: limeoslo
-      city: Oslo
+    - systemId: YLI:System:limeoslo
+      systemSlug: limeoslo
+      operatorId: YLI:Operator:lime
+      operatorName: Lime
+      codespace: YLI
       url: https://api.entur.io/mobility/v1/gbfs-v2_2/limeoslo/gbfs
       language: nb
-    - codespace: YBO
-      name: boltoslo
-      city: Oslo
+    - systemId: YBO:System:boltoslo
+      systemSlug: boltoslo
+      operatorId: YBO:Operator:bolt
+      operatorName: Bolt
+      codespace: YBO
       url: https://api.entur.io/mobility/v1/gbfs-v2_2/boltoslo/gbfs
       language: nb
-    - codespace: YBO
-      name: boltlillestrom
-      city: Lillestrøm
+    - systemId: YBO:System:boltlillestrom
+      systemSlug: boltlillestrom
+      operatorId: YBO:Operator:bolt
+      operatorName: Bolt
+      codespace: YBO
       url: https://api.entur.io/mobility/v1/gbfs-v2_2/boltlillestrom/gbfs
       language: nb
-    - codespace: YBO
-      name: boltfredrikstad
-      city: Fredrikstad
+    - systemId: YBO:System:boltfredrikstad
+      systemSlug: boltfredrikstad
+      operatorId: YBO:Operator:bolt
+      operatorName: Bolt
+      codespace: YBO
       url: https://api.entur.io/mobility/v1/gbfs-v2_2/boltfredrikstad/gbfs
       language: nb
-    - codespace: YBO
-      name: boltbergen
-      city: Bergen
+    - systemId: YBO:System:boltbergen
+      systemSlug: boltbergen
+      operatorId: YBO:Operator:bolt
+      operatorName: Bolt
+      codespace: YBO
       url: https://api.entur.io/mobility/v1/gbfs-v2_2/boltbergen/gbfs
       language: nb
-    - codespace: YOS
-      name: oslobysykkel
-      city: Oslo
+    - systemId: YOS:System:oslobysykkel
+      systemSlug: oslobysykkel
+      operatorId: YOS:Operator:oslobysykkel
+      operatorName: Oslo bysykkel
+      codespace: YOS
       url: https://api.entur.io/mobility/v1/bikes/v2_2_proxy/oslobysykkel/gbfs.json
       language: nb
-    - codespace: YBE
-      name: bergenbysykkel
-      city: Bergen
+    - systemId: YBE:System:bergenbysykkel
+      systemSlug: bergenbysykkel
+      operatorId: YBE:Operator:bergenbysykkel
+      operatorName: Bergen bysykkel
+      codespace: YBE
       url: https://api.entur.io/mobility/v1/bikes/v2_2_proxy/bergenbysykkel/gbfs.json
       language: nb
-    - codespace: YTR
-      name: trondheimbysykkel
-      city: Trondheim
+    - systemId: YTR:System:trondheimbysykkel
+      systemSlug: trondheimbysykkel
+      operatorId: YTR:Operator:trondheimbysykkel
+      operatorName: Trondheim bysykkel
+      codespace: YTR
       url: https://api.entur.io/mobility/v1/bikes/v2_2_proxy/trondheimbysykkel/gbfs.json
       language: nb
-    - codespace: YKO
-      name: kolumbusbysykkel
-      city: Stavanger
+    - systemId: YKO:System:kolumbusbysykkel
+      systemSlug: kolumbusbysykkel
+      operatorId: YKO:Operator:kolumbusbysykkel
+      operatorName: Kolumbus bysykkel
+      codespace: YKO
       url: https://api.entur.io/mobility/v1/bikes/v2_2_proxy/kolumbusbysykkel/gbfs.json
       language: nb
-    - codespace: YLS
-      name: lillestrombysykkel
-      city: Lillestrøm
+    - systemId: YLS:System:lillestrombysykkel
+      systemSlug: lillestrombysykkel
+      operatorId: YLS:Operator:lillestrombysykkel
+      operatorName: Lillestrøm bysykkel
+      codespace: YLS
       url: https://api.entur.io/mobility/v1/bikes/v2_2_proxy/lillestrombysykkel/gbfs.json
       language: nb
-    - codespace: YDR
-      name: drammenbysykkel
-      city: Drammen
+    - systemId: YDR:System:drammenbysykkel
+      systemSlug: drammenbysykkel
+      operatorId: YDR:Operator:drammenbysykkel
+      operatorName: Drammen bysykkel
+      codespace: YDR
       url: https://api.entur.io/mobility/v1/bikes/v2_2_proxy/drammenbysykkel/gbfs.json
       language: nb
