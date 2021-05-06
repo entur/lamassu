@@ -31,10 +31,12 @@ import java.util.List;
 @Component
 public class StationMapper {
     private final TranslationMapper translationMapper;
+    private final RentalUrisMapper rentalUrisMapper;
 
     @Autowired
-    public StationMapper(TranslationMapper translationMapper) {
+    public StationMapper(TranslationMapper translationMapper, RentalUrisMapper rentalUrisMapper) {
         this.translationMapper = translationMapper;
+        this.rentalUrisMapper = rentalUrisMapper;
     }
 
     public Station mapStation(System system, List<PricingPlan> pricingPlans, StationInformation.Station stationInformation, StationStatus.Station stationStatus, String language) {
@@ -45,6 +47,7 @@ public class StationMapper {
         station.setName(translationMapper.mapSingleTranslation(language, stationInformation.getName()));
         station.setAddress(stationInformation.getAddress());
         station.setCapacity(stationInformation.getCapacity());
+        station.setRentalUris(rentalUrisMapper.mapRentalUris(stationInformation.getRentalUris()));
         station.setNumBikesAvailable(stationStatus.getNumBikesAvailable());
         station.setNumDocksAvailable(stationStatus.getNumDocksAvailable());
         station.setInstalled(stationStatus.getInstalled());
