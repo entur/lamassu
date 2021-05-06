@@ -98,6 +98,7 @@ type Station {
     lon: Float!
     address: String
     capacity: Int
+    rentalUris: RentalUris
     numBikesAvailable: Int!
     numDocksAvailable: Int
     isInstalled: Boolean!

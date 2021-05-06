@@ -38,6 +38,7 @@ public class GraphQLIntegrationTest extends AbstractIntegrationTestBase {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("TST:Station:2", response.get("$.data.stations[0].id"));
         assertEquals("Cooler bikes", response.get("$.data.stations[0].name.translation[0].value"));
+        assertEquals("https://rentmybikes.com", response.get("$.data.stations[0].rentalUris.web"));
     }
 
     @Test

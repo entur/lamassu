@@ -16,6 +16,9 @@
         lon
         address
         capacity
+        rentalUris {
+            web
+        }
         numBikesAvailable
         numDocksAvailable
         isInstalled

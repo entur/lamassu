@@ -28,6 +28,7 @@ public class Station implements LocationEntity {
     private Double lon;
     private String address;
     private Integer capacity;
+    private RentalUris rentalUris;
     private Integer numBikesAvailable;
     private Integer numDocksAvailable;
     private Boolean isInstalled;
@@ -85,6 +86,10 @@ public class Station implements LocationEntity {
     public void setCapacity(Integer capacity) {
         this.capacity = capacity;
     }
+
+    public RentalUris getRentalUris() { return rentalUris; }
+
+    public void setRentalUris(RentalUris rentalUris) { this.rentalUris = rentalUris; }
 
     public Integer getNumBikesAvailable() {
         return numBikesAvailable;
@@ -154,11 +159,12 @@ public class Station implements LocationEntity {
     public String toString() {
         return "Station{" +
                 "id='" + id + '\'' +
-                ", name='" + name + '\'' +
+                ", name=" + name +
                 ", lat=" + lat +
                 ", lon=" + lon +
                 ", address='" + address + '\'' +
                 ", capacity=" + capacity +
+                ", rentalUris=" + rentalUris +
                 ", numBikesAvailable=" + numBikesAvailable +
                 ", numDocksAvailable=" + numDocksAvailable +
                 ", isInstalled=" + isInstalled +

@@ -20,6 +20,9 @@
         "lon": 44.67,
         "vehicle_type_capacity": {
           "TST:VehicleType:CityBike": 12
+        },
+        "rental_uris": {
+          "web": "https://rentmybikes.com"
         }
       }
     ]
