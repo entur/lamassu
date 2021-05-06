@@ -1,7 +1,6 @@
 package org.entur.lamassu.mapper;
 
 import org.entur.lamassu.model.entities.PricingPlan;
-import org.entur.lamassu.model.entities.RentalUris;
 import org.entur.lamassu.model.entities.System;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.entities.VehicleType;
