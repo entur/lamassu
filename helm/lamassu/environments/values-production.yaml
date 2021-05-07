@@ -11,6 +11,11 @@ ingress:
   loadBalancerIP: 35.205.233.237
   domainName: .entur.io
 
+horizontalPodAutoscaler:
+  maxReplicas: 5
+  minReplicas: 2
+  targetCPUUtilizationPercentage: 80
+
 lamassu:
   feedProviders:
     - systemId: YVO:System:voioslo
