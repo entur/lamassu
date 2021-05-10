@@ -140,8 +140,8 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
 
         var originalStations = stationCache.getAllAsMap(stationIds);
 
-        org.entur.lamassu.model.entities.System system = getSystem(feedProvider, systemInformationFeed);
-        List<PricingPlan> pricingPlans = getPricingPlans(feedProvider, pricingPlansFeed);
+        var system = getSystem(feedProvider, systemInformationFeed);
+        var pricingPlans = getPricingPlans(feedProvider, pricingPlansFeed);
 
         var stations = stationStatusFeed.getData().getStations().stream()
                 .map(station -> stationMapper.mapStation(
