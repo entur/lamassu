@@ -20,6 +20,7 @@ import org.entur.lamassu.model.gbfs.v2_1.SystemPricingPlans;
 import org.entur.lamassu.model.gbfs.v2_1.VehicleTypes;
 import org.entur.lamassu.service.FeedProviderService;
 import org.entur.lamassu.util.SpatialIndexIdUtil;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -122,13 +123,9 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
                         .collect(Collectors.toSet())
         );
 
-        var vehicleTypes = vehicleTypesFeed.getData().getVehicleTypes().stream()
-                .map(vehicleType -> vehicleTypeMapper.mapVehicleType(vehicleType, feedProvider.getLanguage()))
-                .collect(Collectors.toMap(VehicleType::getId, i -> i));
-        var system = systemMapper.mapSystem(systemInformationFeed.getData(), feedProvider);
-        var pricingPlans = pricingPlansFeed.getData().getPlans().stream()
-                .map(pricingPlan -> pricingPlanMapper.mapPricingPlan(pricingPlan, feedProvider.getLanguage()))
-                .collect(Collectors.toMap(PricingPlan::getId, i -> i));
+        var vehicleTypes = getVehicleTypes(feedProvider, vehicleTypesFeed);
+        var system = getSystem(feedProvider, systemInformationFeed);
+        var pricingPlans = getPricingPlans(feedProvider, pricingPlansFeed);
 
         var vehicles = freeBikeStatusFeed.getData().getBikes().stream()
                 .map(vehicle -> vehicleMapper.mapVehicle(
@@ -182,6 +179,39 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
             logger.debug("Updating {} entries in spatial index", spatialIndexUpdateMap.size());
             spatialIndex.addAll(spatialIndexUpdateMap);
         }
+    }
+
+    @NotNull
+    private Map<String, VehicleType> getVehicleTypes(FeedProvider feedProvider, VehicleTypes vehicleTypesFeed) {
+        if (vehicleTypesFeed == null) {
+            logger.warn("Missing system information feed for provider {}", feedProvider);
+            return Map.of();
+        }
+
+        return vehicleTypesFeed.getData().getVehicleTypes().stream()
+                .map(vehicleType -> vehicleTypeMapper.mapVehicleType(vehicleType, feedProvider.getLanguage()))
+                .collect(Collectors.toMap(VehicleType::getId, i -> i));
+    }
+
+    private org.entur.lamassu.model.entities.System getSystem(FeedProvider feedProvider, SystemInformation systemInformationFeed) {
+        if (systemInformationFeed == null) {
+            logger.warn("Missing system information feed for provider {}", feedProvider);
+            return null;
+        }
+
+        return systemMapper.mapSystem(systemInformationFeed.getData(), feedProvider);
+    }
+
+    @NotNull
+    private Map<String, PricingPlan> getPricingPlans(FeedProvider feedProvider, SystemPricingPlans pricingPlansFeed) {
+        if (pricingPlansFeed == null) {
+            logger.warn("Missing pricing plans feed for provider {}", feedProvider);
+            return Map.of();
+        }
+
+        return pricingPlansFeed.getData().getPlans().stream()
+                .map(pricingPlan -> pricingPlanMapper.mapPricingPlan(pricingPlan, feedProvider.getLanguage()))
+                .collect(Collectors.toMap(PricingPlan::getId, i -> i));
     }
 
 

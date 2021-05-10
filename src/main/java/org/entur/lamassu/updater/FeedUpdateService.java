@@ -31,7 +31,14 @@ public class FeedUpdateService {
     }
 
     public void update(FeedProvider feedProvider) {
-        var discovery = fetchDiscoveryFeed(feedProvider).block();
+        GBFS discovery;
+        try {
+            discovery = fetchDiscoveryFeed(feedProvider).block();
+        } catch (RuntimeException e) {
+            logger.warn("Caught exception while fetching discovery feed for provider={}", feedProvider, e);
+            return;
+        }
+
         logger.debug("Fetched discovery feed  for provider {}", feedProvider.getSystemSlug());
 
         if (discovery == null) {
@@ -40,11 +47,24 @@ public class FeedUpdateService {
         }
 
         var mappedFeed = discoveryFeedMapper.mapDiscoveryFeed(discovery, feedProvider);
+
+        if (mappedFeed == null) {
+            logger.warn("Skipping update for provider due to missing discovery feed {}", feedProvider);
+            return;
+        }
+
         feedCache.update(GBFSFeedName.GBFS, feedProvider, mappedFeed);
         discovery.getData().get(feedProvider.getLanguage()).getFeeds().stream()
                 .sorted(this::sortFeeds)
                 .forEach(feedSource -> {
-                    var feed = fetchFeed(feedProvider, discovery, feedSource);
+                    GBFSBase feed;
+                    try {
+                        feed = fetchFeed(feedProvider, discovery, feedSource);
+                    } catch(RuntimeException e) {
+                        logger.warn("Caught exception while fetching feed={} for provider={}", feedSource, feedProvider, e);
+                        return;
+                    }
+
                     logger.debug("Fetched feed {} for provider {}", feedSource.getName(), feedProvider.getSystemSlug());
                     feedCache.update(feedSource.getName(), feedProvider, feed);
                 });
