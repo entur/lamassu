@@ -20,6 +20,11 @@ public class DiscoveryFeedMapper {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public GBFS mapDiscoveryFeed(GBFS source, FeedProvider feedProvider) {
+        if (source.getData() == null) {
+            logger.warn("Missing discovery data for provider={} feed={}", feedProvider, source);
+            return null;
+        }
+
         var mapped = new GBFS();
         var mappedData = new GBFS.Data();
         Map<String, GBFS.Data> dataWrapper = new HashMap<>();

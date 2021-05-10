@@ -25,6 +25,7 @@ import org.entur.lamassu.listener.CacheEntryListenerDelegate;
 import org.entur.lamassu.mapper.PricingPlanMapper;
 import org.entur.lamassu.mapper.StationMapper;
 import org.entur.lamassu.mapper.SystemMapper;
+import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSFeedName;
@@ -34,6 +35,7 @@ import org.entur.lamassu.model.gbfs.v2_1.SystemInformation;
 import org.entur.lamassu.model.gbfs.v2_1.SystemPricingPlans;
 import org.entur.lamassu.service.FeedProviderService;
 import org.entur.lamassu.util.SpatialIndexIdUtil;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +43,7 @@ import org.springframework.stereotype.Component;
 
 import javax.cache.event.CacheEntryEvent;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -137,10 +140,8 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
 
         var originalStations = stationCache.getAllAsMap(stationIds);
 
-        var system = systemMapper.mapSystem(systemInformationFeed.getData(), feedProvider);
-        var pricingPlans = pricingPlansFeed.getData().getPlans().stream()
-                .map(pricingPlan -> pricingPlanMapper.mapPricingPlan(pricingPlan, feedProvider.getLanguage()))
-                .collect(Collectors.toList());
+        var system = getSystem(feedProvider, systemInformationFeed);
+        var pricingPlans = getPricingPlans(feedProvider, pricingPlansFeed);
 
         var stations = stationStatusFeed.getData().getStations().stream()
                 .map(station -> stationMapper.mapStation(
@@ -187,5 +188,26 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
             logger.debug("Updating {} entries in spatial index", spatialIndexUpdateMap.size());
             spatialIndex.addAll(spatialIndexUpdateMap);
         }
+    }
+
+    @NotNull
+    private List<PricingPlan> getPricingPlans(org.entur.lamassu.model.discovery.FeedProvider feedProvider, SystemPricingPlans pricingPlansFeed) {
+        if (pricingPlansFeed == null) {
+            logger.warn("Missing pricing plans feed for provider {}", feedProvider);
+            return List.of();
+        }
+
+        return pricingPlansFeed.getData().getPlans().stream()
+                .map(pricingPlan -> pricingPlanMapper.mapPricingPlan(pricingPlan, feedProvider.getLanguage()))
+                .collect(Collectors.toList());
+    }
+
+    private org.entur.lamassu.model.entities.System getSystem(org.entur.lamassu.model.discovery.FeedProvider feedProvider, SystemInformation systemInformationFeed) {
+        if (systemInformationFeed == null) {
+            logger.warn("Missing system information feed for provider {}", feedProvider);
+            return null;
+        }
+
+        return systemMapper.mapSystem(systemInformationFeed.getData(), feedProvider);
     }
 }
