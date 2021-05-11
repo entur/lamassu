@@ -217,7 +217,12 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
 
     private org.entur.lamassu.model.entities.System getSystem(org.entur.lamassu.model.discovery.FeedProvider feedProvider, SystemInformation systemInformationFeed) {
         if (systemInformationFeed == null) {
-            logger.warn("Missing system information feed for provider {}", feedProvider);
+            logger.warn("Missing system information feed for provider={}", feedProvider);
+            return null;
+        }
+
+        if (systemInformationFeed.getData() == null) {
+            logger.warn("Missing system information data for provider={} feed={}", feedProvider, systemInformationFeed);
             return null;
         }
 

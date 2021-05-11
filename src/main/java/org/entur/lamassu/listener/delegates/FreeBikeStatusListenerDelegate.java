@@ -199,6 +199,11 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
             return null;
         }
 
+        if (systemInformationFeed.getData() == null) {
+            logger.warn("Missing system information data for provider={} feed={}", feedProvider, systemInformationFeed);
+            return null;
+        }
+
         return systemMapper.mapSystem(systemInformationFeed.getData(), feedProvider);
     }
 
