@@ -210,6 +210,11 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
             return List.of();
         }
 
+        if (pricingPlansFeed.getData() == null) {
+            logger.warn("Missing pricing plans data for provider={} feed={}", feedProvider, pricingPlansFeed);
+            return List.of();
+        }
+
         return pricingPlansFeed.getData().getPlans().stream()
                 .map(pricingPlan -> pricingPlanMapper.mapPricingPlan(pricingPlan, feedProvider.getLanguage()))
                 .collect(Collectors.toList());

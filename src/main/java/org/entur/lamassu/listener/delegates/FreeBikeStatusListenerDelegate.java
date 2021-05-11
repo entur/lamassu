@@ -184,7 +184,12 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
     @NotNull
     private Map<String, VehicleType> getVehicleTypes(FeedProvider feedProvider, VehicleTypes vehicleTypesFeed) {
         if (vehicleTypesFeed == null) {
-            logger.warn("Missing system information feed for provider {}", feedProvider);
+            logger.warn("Missing vehicle types feed for provider {}", feedProvider);
+            return Map.of();
+        }
+
+        if (vehicleTypesFeed.getData() == null) {
+            logger.warn("Missing vehicle types data for provider={} feed={}", feedProvider, vehicleTypesFeed);
             return Map.of();
         }
 
@@ -211,6 +216,11 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
     private Map<String, PricingPlan> getPricingPlans(FeedProvider feedProvider, SystemPricingPlans pricingPlansFeed) {
         if (pricingPlansFeed == null) {
             logger.warn("Missing pricing plans feed for provider {}", feedProvider);
+            return Map.of();
+        }
+
+        if (pricingPlansFeed.getData() == null) {
+            logger.warn("Missing pricing plans data for provider={} feed={}", feedProvider, pricingPlansFeed);
             return Map.of();
         }
 
