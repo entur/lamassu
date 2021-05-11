@@ -31,14 +31,22 @@ public class FeedUpdateService {
     }
 
     public void update(FeedProvider feedProvider) {
-        GBFS discovery;
-        try {
-            discovery = fetchDiscoveryFeed(feedProvider).block();
-        } catch (RuntimeException e) {
-            logger.warn("Caught exception while fetching discovery feed for provider={}", feedProvider, e);
-            return;
-        }
+        fetchDiscoveryFeed(feedProvider);
+    }
 
+    private void fetchDiscoveryFeed(FeedProvider feedProvider) {
+        logger.debug("Fetching discovery feed for provider {}", feedProvider.getSystemSlug());
+        api.getDiscoveryFeed(feedProvider)
+            .doOnSuccess(discovery -> onDiscoveryFeedFetchResult(discovery, feedProvider))
+            .doOnError(e -> onDiscoveryFeedFetchError(e, feedProvider))
+            .subscribe();
+    }
+
+    private void onDiscoveryFeedFetchError(Throwable e, FeedProvider feedProvider) {
+        logger.warn("Caught exception while fetching discovery feed for provider={}", feedProvider, e);
+    }
+
+    public void onDiscoveryFeedFetchResult(GBFS discovery, FeedProvider feedProvider) {
         logger.debug("Fetched discovery feed  for provider {}", feedProvider.getSystemSlug());
 
         if (discovery == null) {
@@ -54,34 +62,31 @@ public class FeedUpdateService {
         }
 
         feedCache.update(GBFSFeedName.GBFS, feedProvider, mappedFeed);
+
         discovery.getData().get(feedProvider.getLanguage()).getFeeds().stream()
                 .sorted(this::sortFeeds)
-                .forEach(feedSource -> {
-                    GBFSBase feed;
-                    try {
-                        feed = fetchFeed(feedProvider, discovery, feedSource);
-                    } catch(RuntimeException e) {
-                        logger.warn("Caught exception while fetching feed={} for provider={}", feedSource, feedProvider, e);
-                        return;
-                    }
-
-                    logger.debug("Fetched feed {} for provider {}", feedSource.getName(), feedProvider.getSystemSlug());
-                    feedCache.update(feedSource.getName(), feedProvider, feed);
-                });
+                .forEach(feedSource -> fetchFeed(feedProvider, discovery, feedSource));
     }
 
-    private Mono<GBFS> fetchDiscoveryFeed(FeedProvider feedProvider) {
-        logger.debug("Fetching discovery feed for provider {}", feedProvider.getSystemSlug());
-        return api.getDiscoveryFeed(feedProvider);
-    }
-
-    private GBFSBase fetchFeed(FeedProvider feedProvider, GBFS discovery, GBFS.GBFSFeed feedSource) {
+    private void fetchFeed(FeedProvider feedProvider, GBFS discovery, GBFS.GBFSFeed feedSource) {
         logger.debug("Fetching feed {} for provider {}",
                 feedSource.getUrl(),
                 feedProvider.getSystemSlug()
         );
         var feedName = feedSource.getName();
-        return api.getFeed(discovery, feedName, feedProvider.getLanguage()).block();
+        api.getFeed(discovery, feedName, feedProvider.getLanguage())
+                .doOnSuccess(feed -> handleFetchFeedSuccess(feed, feedSource, feedProvider))
+                .doOnError(e -> handleFetchFeedError(e, feedSource, feedProvider))
+                .subscribe();
+    }
+
+    private void handleFetchFeedSuccess(GBFSBase feed, GBFS.GBFSFeed feedSource, FeedProvider feedProvider) {
+        logger.debug("Fetched feed {} for provider {}", feedSource.getName(), feedProvider.getSystemSlug());
+        feedCache.update(feedSource.getName(), feedProvider, feed);
+    }
+
+    private void handleFetchFeedError(Throwable e, GBFS.GBFSFeed feedSource, FeedProvider feedProvider) {
+        logger.warn("Caught exception while fetching feed={} for provider={}", feedSource, feedProvider, e);
     }
 
     private static final List<GBFSFeedName> feedPriority = List.of(
