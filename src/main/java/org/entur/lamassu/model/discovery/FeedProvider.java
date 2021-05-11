@@ -65,4 +65,17 @@ public class FeedProvider {
     public void setLanguage(String language) {
         this.language = language;
     }
+
+    @Override
+    public String toString() {
+        return "FeedProvider{" +
+                "systemId='" + systemId + '\'' +
+                ", systemSlug='" + systemSlug + '\'' +
+                ", operatorId='" + operatorId + '\'' +
+                ", operatorName='" + operatorName + '\'' +
+                ", codespace='" + codespace + '\'' +
+                ", url='" + url + '\'' +
+                ", language='" + language + '\'' +
+                '}';
+    }
 }
