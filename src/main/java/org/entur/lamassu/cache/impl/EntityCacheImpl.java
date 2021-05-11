@@ -32,9 +32,9 @@ abstract class EntityCacheImpl<T extends Entity> implements EntityCache<T> {
     @Override
     public Map<String, T> getAllAsMap(Set<String> keys) {
         try {
-            return cache.getAllAsync(keys).get(1, TimeUnit.SECONDS);
+            return cache.getAllAsync(keys).get(5, TimeUnit.SECONDS);
         } catch ( ExecutionException | TimeoutException e) {
-            logger.warn("Unable to fetch entities from cache within 1 second", e);
+            logger.warn("Unable to fetch entities from cache within 5 seconds", e);
         } catch (InterruptedException e) {
             logger.warn("Interrupted while entities from cache", e);
             Thread.currentThread().interrupt();
@@ -46,9 +46,9 @@ abstract class EntityCacheImpl<T extends Entity> implements EntityCache<T> {
     @Override
     public T get(String key) {
         try {
-            return cache.getAsync(key).get(1, TimeUnit.SECONDS);
+            return cache.getAsync(key).get(5, TimeUnit.SECONDS);
         } catch (ExecutionException | TimeoutException e) {
-            logger.warn("Unable to fetch entity from cache within 1 second", e);
+            logger.warn("Unable to fetch entity from cache within 5 seconds", e);
         } catch (InterruptedException e) {
             logger.warn("Interrupted while entity from cache", e);
             Thread.currentThread().interrupt();
