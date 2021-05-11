@@ -46,6 +46,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -143,12 +144,24 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
         var system = getSystem(feedProvider, systemInformationFeed);
         var pricingPlans = getPricingPlans(feedProvider, pricingPlansFeed);
 
+        var stationInfo = Optional.ofNullable(stationInformationFeed)
+                .map(StationInformation::getData)
+                .map(StationInformation.Data::getStations)
+                .orElse(List.of())
+                .stream().collect(Collectors.toMap(StationInformation.Station::getStationId, s -> s));
+
         var stations = stationStatusFeed.getData().getStations().stream()
+                .filter(s -> {
+                    if (stationInfo.get(s.getStationId()) == null) {
+                        logger.warn("Skipping station due to missing station information feed for provider={} stationId={}", feedProvider, s.getStationId());
+                        return false;
+                    }
+                    return true;
+                })
                 .map(station -> stationMapper.mapStation(
                         system,
                         pricingPlans,
-                        Objects.requireNonNull(stationInformationFeed.getData().getStations().stream()
-                                .filter(s -> s.getStationId().equals(station.getStationId())).findFirst().orElse(null)),
+                        stationInfo.get(station.getStationId()),
                         station,
                         feedProvider.getLanguage())
                 ).collect(Collectors.toMap(Station::getId, s->s));
