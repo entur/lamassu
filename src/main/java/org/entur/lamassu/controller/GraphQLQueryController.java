@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Component
@@ -60,6 +61,8 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
             boolean includeReserved,
             boolean includeDisabled
     ) {
+        validateRange(range);
+        validateCount(count);
         validateCodespaces(codespaces);
         validateSystems(systems);
         validateOperators(operators);
@@ -93,6 +96,8 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
             List<String> systems,
             List<String> operators
     ) {
+        validateRange(range);
+        validateCount(count);
         validateCodespaces(codespaces);
         validateSystems(systems);
         validateOperators(operators);
@@ -120,17 +125,28 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
         return stationCache.getAll(new HashSet<>(ids));
     }
 
+    private void validateCount(Integer count) {
+        if (count != null) {
+            validate(p -> p > 0, count, "Count must be positive");
+        }
+    }
+
+    private void validateRange(Double range) {
+        validate(p -> p > -1, range, "Range must be non-negative");
+    }
+
+
     private void validateCodespaces(List<String> codespaces) {
         if (codespaces != null) {
             var validCodespaces = getCodespaces();
-            validate(codespaces, validCodespaces, "Unknown codespace(s)");
+            validate(validCodespaces::containsAll, codespaces, "Unknown codespace(s)");
         }
     }
 
     private void validateSystems(List<String> systems) {
         if (systems != null) {
             var validSystems = getSystems();
-            validate(systems, validSystems, "Unknown system(s)");
+            validate(validSystems::containsAll, systems, "Unknown system(s)");
         }
     }
 
@@ -141,12 +157,12 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
     private void validateOperators(List<String> operators) {
         if (operators != null) {
             var validOperators = getOperators().stream().map(Operator::getId).collect(Collectors.toList());
-            validate(operators, validOperators, "Unknown operator(s)");
+            validate(validOperators::containsAll, operators, "Unknown operator(s)");
         }
     }
 
-    private void validate(Collection<String> input, Collection<String> valid, String message) {
-        if (!valid.containsAll(input)) {
+    private <T> void validate(Predicate<T> predicate, T value, String message) {
+        if (predicate.negate().test(value)) {
             throw new GraphqlErrorException.Builder().message(message).build();
         }
     }
