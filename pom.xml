@@ -19,6 +19,7 @@
         <embedded-redis.version>0.8.1</embedded-redis.version>
         <okhttp.version>4.9.1</okhttp.version>
         <kryo.version>5.1.1</kryo.version>
+        <jackson.version>2.12.3</jackson.version>
     </properties>
 
     <dependencies>
@@ -77,6 +78,11 @@
             <groupId>org.redisson</groupId>
             <artifactId>redisson-spring-boot-starter</artifactId>
             <version>${redisson.version}</version>
+        </dependency>
+        <dependency>
+            <grouId>com.fasterxml.jackson.core</grouId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>com.graphql-java-kickstart</groupId>
