@@ -80,7 +80,7 @@
             <version>${redisson.version}</version>
         </dependency>
         <dependency>
-            <grouId>com.fasterxml.jackson.core</grouId>
+            <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
             <version>${jackson.version}</version>
         </dependency>
