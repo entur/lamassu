@@ -120,8 +120,6 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
 
         Set<String> stationIdsToRemove;
 
-        // Note: This conditional will never be true due to a suspected bug in redisson:
-        // https://github.com/redisson/redisson/issues/3511
         if (event.isOldValueAvailable()) {
             var oldStationStatusFeed = (StationStatus) event.getOldValue();
             stationIdsToRemove = oldStationStatusFeed.getData().getStations().stream()
