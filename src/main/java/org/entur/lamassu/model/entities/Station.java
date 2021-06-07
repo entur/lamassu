@@ -30,6 +30,7 @@ public class Station implements LocationEntity {
     private Integer capacity;
     private RentalUris rentalUris;
     private Integer numBikesAvailable;
+    private List<VehicleTypeAvailability> vehicleTypesAvailable;
     private Integer numDocksAvailable;
     private Boolean isInstalled;
     private Boolean isRenting;
@@ -99,6 +100,14 @@ public class Station implements LocationEntity {
         this.numBikesAvailable = numBikesAvailable;
     }
 
+    public List<VehicleTypeAvailability> getVehicleTypesAvailable() {
+        return vehicleTypesAvailable;
+    }
+
+    public void setVehicleTypesAvailable(List<VehicleTypeAvailability> vehicleTypesAvailable) {
+        this.vehicleTypesAvailable = vehicleTypesAvailable;
+    }
+
     public Integer getNumDocksAvailable() {
         return numDocksAvailable;
     }
@@ -166,6 +175,7 @@ public class Station implements LocationEntity {
                 ", capacity=" + capacity +
                 ", rentalUris=" + rentalUris +
                 ", numBikesAvailable=" + numBikesAvailable +
+                ", vehicleTypesAvailable=" + vehicleTypesAvailable +
                 ", numDocksAvailable=" + numDocksAvailable +
                 ", isInstalled=" + isInstalled +
                 ", isRenting=" + isRenting +

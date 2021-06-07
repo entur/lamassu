@@ -25,14 +25,17 @@ import org.entur.lamassu.listener.CacheEntryListenerDelegate;
 import org.entur.lamassu.mapper.PricingPlanMapper;
 import org.entur.lamassu.mapper.StationMapper;
 import org.entur.lamassu.mapper.SystemMapper;
+import org.entur.lamassu.model.discovery.FeedProvider;
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.Station;
+import org.entur.lamassu.model.entities.VehicleType;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSFeedName;
 import org.entur.lamassu.model.gbfs.v2_1.StationInformation;
 import org.entur.lamassu.model.gbfs.v2_1.StationStatus;
 import org.entur.lamassu.model.gbfs.v2_1.SystemInformation;
 import org.entur.lamassu.model.gbfs.v2_1.SystemPricingPlans;
+import org.entur.lamassu.model.gbfs.v2_1.VehicleTypes;
 import org.entur.lamassu.service.FeedProviderService;
 import org.entur.lamassu.util.SpatialIndexIdUtil;
 import org.jetbrains.annotations.NotNull;
@@ -110,6 +113,7 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
 
         var systemInformationFeed = (SystemInformation) feedCache.find(GBFSFeedName.SYSTEM_INFORMATION, feedProvider);
         var pricingPlansFeed = (SystemPricingPlans) feedCache.find(GBFSFeedName.SYSTEM_PRICING_PLANS, feedProvider);
+        var vehicleTypesFeed = (VehicleTypes) feedCache.find(GBFSFeedName.VEHICLE_TYPES, feedProvider);
 
         var stationInformationFeed = (StationInformation) feedCache.find(GBFSFeedName.STATION_INFORMATION, feedProvider);
         var stationStatusFeed = (StationStatus) event.getValue();
@@ -161,6 +165,7 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
                         pricingPlans,
                         stationInfo.get(station.getStationId()),
                         station,
+                        vehicleTypesFeed,
                         feedProvider.getLanguage())
                 ).collect(Collectors.toMap(Station::getId, s->s));
 
