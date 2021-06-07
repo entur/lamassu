@@ -1,5 +1,6 @@
 package org.entur.lamassu.model.gbfs.v2_1;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
@@ -35,6 +36,7 @@ public class GeofencingZones extends GBFSBase {
 
     }
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Properties {
         @JsonProperty("name") String name;
         @JsonProperty("start") Long start;

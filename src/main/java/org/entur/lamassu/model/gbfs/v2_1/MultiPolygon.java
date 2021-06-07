@@ -5,5 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 public class MultiPolygon {
+    @JsonProperty("type") String type = "MultiPolygon";
     @JsonProperty("coordinates") List<List<List<List<Double>>>> coordinates;
 }
