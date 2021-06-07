@@ -44,6 +44,7 @@ public class GeofencingZones extends GBFSBase {
         @JsonProperty("rules") List<Rule> rules;
     }
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Rule {
         @JsonProperty("vehicle_type_ids") List<String> vehicleTypeIds;
         @JsonProperty("ride_allowed") Boolean rideAllowed;
