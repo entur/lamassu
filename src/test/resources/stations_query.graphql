@@ -20,6 +20,13 @@
             web
         }
         numBikesAvailable
+        vehicleTypesAvailable {
+            vehicleType {
+                formFactor
+                propulsionType
+            }
+            count
+        }
         numDocksAvailable
         isInstalled
         isRenting
