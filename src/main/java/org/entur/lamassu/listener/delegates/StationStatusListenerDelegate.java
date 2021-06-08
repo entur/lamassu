@@ -33,6 +33,7 @@ import org.entur.lamassu.model.gbfs.v2_1.StationInformation;
 import org.entur.lamassu.model.gbfs.v2_1.StationStatus;
 import org.entur.lamassu.model.gbfs.v2_1.SystemInformation;
 import org.entur.lamassu.model.gbfs.v2_1.SystemPricingPlans;
+import org.entur.lamassu.model.gbfs.v2_1.VehicleTypes;
 import org.entur.lamassu.service.FeedProviderService;
 import org.entur.lamassu.util.SpatialIndexIdUtil;
 import org.jetbrains.annotations.NotNull;
@@ -110,6 +111,7 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
 
         var systemInformationFeed = (SystemInformation) feedCache.find(GBFSFeedName.SYSTEM_INFORMATION, feedProvider);
         var pricingPlansFeed = (SystemPricingPlans) feedCache.find(GBFSFeedName.SYSTEM_PRICING_PLANS, feedProvider);
+        var vehicleTypesFeed = (VehicleTypes) feedCache.find(GBFSFeedName.VEHICLE_TYPES, feedProvider);
 
         var stationInformationFeed = (StationInformation) feedCache.find(GBFSFeedName.STATION_INFORMATION, feedProvider);
         var stationStatusFeed = (StationStatus) event.getValue();
@@ -161,6 +163,7 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
                         pricingPlans,
                         stationInfo.get(station.getStationId()),
                         station,
+                        vehicleTypesFeed,
                         feedProvider.getLanguage())
                 ).collect(Collectors.toMap(Station::getId, s->s));
 
