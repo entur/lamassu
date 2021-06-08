@@ -33,6 +33,18 @@ public class GeofencingZones extends GBFSBase {
         @JsonProperty("type") String type = "Feature";
         @JsonProperty("geometry") MultiPolygon geometry;
         @JsonProperty("properties") Properties properties;
+
+        public String getType() {
+            return type;
+        }
+
+        public MultiPolygon getGeometry() {
+            return geometry;
+        }
+
+        public Properties getProperties() {
+            return properties;
+        }
     }
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -41,6 +53,22 @@ public class GeofencingZones extends GBFSBase {
         @JsonProperty("start") Long start;
         @JsonProperty("end") Long end;
         @JsonProperty("rules") List<Rule> rules;
+
+        public String getName() {
+            return name;
+        }
+
+        public Long getStart() {
+            return start;
+        }
+
+        public Long getEnd() {
+            return end;
+        }
+
+        public List<Rule> getRules() {
+            return rules;
+        }
     }
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -49,5 +77,21 @@ public class GeofencingZones extends GBFSBase {
         @JsonProperty("ride_allowed") Boolean rideAllowed;
         @JsonProperty("ride_through_allowed") Boolean rideThroughAllowed;
         @JsonProperty("maximum_speed_kph") Integer maximumSpeedKph;
+
+        public List<String> getVehicleTypeIds() {
+            return vehicleTypeIds;
+        }
+
+        public Boolean getRideAllowed() {
+            return rideAllowed;
+        }
+
+        public Boolean getRideThroughAllowed() {
+            return rideThroughAllowed;
+        }
+
+        public Integer getMaximumSpeedKph() {
+            return maximumSpeedKph;
+        }
     }
 }

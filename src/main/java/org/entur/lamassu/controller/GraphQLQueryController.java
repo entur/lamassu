@@ -2,7 +2,9 @@ package org.entur.lamassu.controller;
 
 import graphql.GraphqlErrorException;
 import graphql.kickstart.tools.GraphQLQueryResolver;
+import org.entur.lamassu.cache.GeofencingZonesCache;
 import org.entur.lamassu.cache.StationCache;
+import org.entur.lamassu.model.entities.GeofencingZones;
 import org.entur.lamassu.model.entities.Operator;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.discovery.FeedProvider;
@@ -32,12 +34,14 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
     private final GeoSearchService geoSearchService;
     private final FeedProviderService feedProviderService;
     private final StationCache stationCache;
+    private final GeofencingZonesCache geofencingZonesCache;
 
     @Autowired
-    public GraphQLQueryController(GeoSearchService geoSearchService, FeedProviderService feedProviderService, StationCache stationCache) {
+    public GraphQLQueryController(GeoSearchService geoSearchService, FeedProviderService feedProviderService, StationCache stationCache, GeofencingZonesCache geofencingZonesCache) {
         this.geoSearchService = geoSearchService;
         this.feedProviderService = feedProviderService;
         this.stationCache = stationCache;
+        this.geofencingZonesCache = geofencingZonesCache;
     }
 
     public Collection<String> getCodespaces() {
@@ -123,6 +127,16 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
     ) {
         logger.debug("getStationsByIds called ids={}", ids);
         return stationCache.getAll(new HashSet<>(ids));
+    }
+
+    public Collection<GeofencingZones> geofencingZones(
+            List<String> systemIds
+    ) {
+        logger.debug("geofencingZones called systemIds={}", systemIds);
+
+        validateSystems(systemIds);
+
+        return geofencingZonesCache.getAll(new HashSet<>(systemIds));
     }
 
     private void validateCount(Integer count) {
