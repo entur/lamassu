@@ -33,7 +33,6 @@ public class GeofencingZones extends GBFSBase {
         @JsonProperty("type") String type = "Feature";
         @JsonProperty("geometry") MultiPolygon geometry;
         @JsonProperty("properties") Properties properties;
-
     }
 
     @JsonInclude(JsonInclude.Include.NON_NULL)

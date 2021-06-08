@@ -18,7 +18,9 @@
 
 package org.entur.lamassu.model.entities;
 
-public class VehicleTypeAvailability {
+import java.io.Serializable;
+
+public class VehicleTypeAvailability implements Serializable {
     private VehicleType vehicleType;
     private Integer count;
 

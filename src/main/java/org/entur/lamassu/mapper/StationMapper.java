@@ -73,14 +73,14 @@ public class StationMapper {
 
         var mappedVehicleTypes = vehicleTypesFeed.getData().getVehicleTypes().stream()
                 .map(vehicleType -> vehicleTypeMapper.mapVehicleType(vehicleType, language))
-                .collect(Collectors.toMap(vehicleType -> vehicleType.getId(), vehicleType -> vehicleType));
+                .collect(Collectors.toMap(VehicleType::getId, vehicleType -> vehicleType));
 
         return vehicleTypesAvailable.stream()
-                .map(vehicleTypeAvailability -> mapVehicleTypeAvailability(mappedVehicleTypes.get(vehicleTypeAvailability.getVehicleTypeId()), vehicleTypeAvailability, language))
+                .map(vehicleTypeAvailability -> mapVehicleTypeAvailability(mappedVehicleTypes.get(vehicleTypeAvailability.getVehicleTypeId()), vehicleTypeAvailability))
                 .collect(Collectors.toList());
     }
 
-    private VehicleTypeAvailability mapVehicleTypeAvailability(VehicleType vehicleType, StationStatus.VehicleTypeAvailability vehicleTypeAvailability, String language) {
+    private VehicleTypeAvailability mapVehicleTypeAvailability(VehicleType vehicleType, StationStatus.VehicleTypeAvailability vehicleTypeAvailability) {
         var mapped = new VehicleTypeAvailability();
         mapped.setVehicleType(vehicleType);
         mapped.setCount(vehicleTypeAvailability.getCount());
