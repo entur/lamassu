@@ -46,7 +46,7 @@ public class VehicleCacheListener extends AbstractCacheListener<Vehicle, Vehicle
                     ),
                     null,
                     true,
-                    true
+                    false
             );
         }
         return listenerConfiguration;

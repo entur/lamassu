@@ -47,7 +47,7 @@ public class StationStatusCacheListener extends AbstractCacheListener<GBFSBase, 
                             StationStatusEventFilter.class
                     ),
                     true,
-                    true
+                    false
             );
         }
         return listenerConfiguration;
