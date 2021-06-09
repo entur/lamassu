@@ -136,7 +136,11 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
 
         validateSystems(systemIds);
 
-        return geofencingZonesCache.getAll(new HashSet<>(systemIds));
+        if (systemIds == null || systemIds.isEmpty()) {
+            return geofencingZonesCache.getAll();
+        } else {
+            return geofencingZonesCache.getAll(new HashSet<>(systemIds));
+        }
     }
 
     private void validateCount(Integer count) {

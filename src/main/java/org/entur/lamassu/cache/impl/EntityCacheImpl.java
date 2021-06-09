@@ -14,19 +14,31 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 abstract class EntityCacheImpl<T extends Entity> implements EntityCache<T> {
     private final CacheAsync<String, T> cache;
+    private final Cache<String, T> syncCache;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     protected EntityCacheImpl(Cache<String, T> cache) {
+        this.syncCache = cache;
         this.cache = cache.unwrap(CacheAsync.class);
     }
 
     @Override
     public List<T> getAll(Set<String> keys) {
         return new ArrayList<>(getAllAsMap(keys).values());
+    }
+
+    @Override
+    public List<T> getAll() {
+        return StreamSupport
+                .stream(syncCache.spliterator(), false)
+                .map(Cache.Entry::getValue)
+                .collect(Collectors.toList());
     }
 
     @Override
