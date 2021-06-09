@@ -117,12 +117,12 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
         var stationStatusFeed = (StationStatus) event.getValue();
 
         if (stationInformationFeed.getData() == null) {
-            logger.warn("stationInformationFeed has no data! feed={}", stationInformationFeed);
+            logger.warn("stationInformationFeed has no data! provider={} feed={}", feedProvider, stationInformationFeed);
             return;
         }
 
         if (stationStatusFeed.getData() == null) {
-            logger.warn("stationStatusFeed has no data! feed={}", stationStatusFeed);
+            logger.warn("stationStatusFeed has no data! provider={} feed={}", feedProvider, stationStatusFeed);
             return;
         }
 
