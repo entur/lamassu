@@ -65,8 +65,13 @@ public class FeedUpdateService {
                         return;
                     }
 
-                    logger.debug("Fetched feed {} for provider {}", feedSource.getName(), feedProvider.getSystemSlug());
-                    feedCache.update(feedSource.getName(), feedProvider, feed);
+                    if (feed == null) {
+                        logger.warn("Feed was null provider={} feedSource={}", feedProvider, feedSource);
+
+                    } else {
+                        logger.debug("Fetched feed {} for provider {}", feedSource.getName(), feedProvider.getSystemSlug());
+                        feedCache.update(feedSource.getName(), feedProvider, feed);
+                    }
                 });
     }
 
