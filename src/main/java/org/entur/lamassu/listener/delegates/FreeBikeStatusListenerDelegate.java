@@ -98,7 +98,7 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
         var vehicleTypesFeed = (VehicleTypes) feedCache.find(GBFSFeedName.VEHICLE_TYPES, feedProvider);
 
         if (freeBikeStatusFeed.getData() == null) {
-            logger.warn("freeBikeStatusFeed has no data! feed={}", freeBikeStatusFeed);
+            logger.warn("freeBikeStatusFeed has no data! provider={} feed={}", feedProvider, freeBikeStatusFeed);
             return;
         }
 
@@ -110,8 +110,13 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
 
         if (event.isOldValueAvailable()) {
             var oldFreeBikeStatusFeed = (FreeBikeStatus) event.getOldValue();
-            vehicleIdsToRemove = oldFreeBikeStatusFeed.getData().getBikes().stream()
-                    .map(FreeBikeStatus.Bike::getBikeId).collect(Collectors.toSet());
+
+            if (oldFreeBikeStatusFeed.getData() == null) {
+                logger.warn("oldFreeBikeStatus data was null provider={} feed={}", feedProvider, oldFreeBikeStatusFeed);
+            } else {
+                vehicleIdsToRemove = oldFreeBikeStatusFeed.getData().getBikes().stream()
+                        .map(FreeBikeStatus.Bike::getBikeId).collect(Collectors.toSet());
+            }
 
             // Find vehicle ids in old feed not present in new feed
             vehicleIdsToRemove.removeAll(vehicleIds);
