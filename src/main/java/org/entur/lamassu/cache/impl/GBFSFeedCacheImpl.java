@@ -30,7 +30,7 @@ public class GBFSFeedCacheImpl implements GBFSFeedCache {
     public GBFSBase find(GBFSFeedName feedName, FeedProvider feedProvider) {
         var key = getKey(feedName, feedProvider.getSystemSlug());
         try {
-            return cache.getAsync(key).get(1, TimeUnit.SECONDS);
+            return cache.getAsync(key).get(5, TimeUnit.SECONDS);
         } catch (ExecutionException | TimeoutException e) {
             logger.warn("Unable to fetch feed from cache within 1 second", e);
         } catch (InterruptedException e) {
@@ -48,11 +48,11 @@ public class GBFSFeedCacheImpl implements GBFSFeedCache {
                 feedProvider.getSystemSlug()
         );
         try {
-            cache.putAsync(key, feed).get(1, TimeUnit.SECONDS);
+            cache.putAsync(key, feed).get(5, TimeUnit.SECONDS);
         } catch (ExecutionException | TimeoutException e) {
-            logger.warn("Unable to update feed from cache within 1 second", e);
+            logger.warn("Unable to update feed cache within 1 second", e);
         } catch (InterruptedException e) {
-            logger.warn("Interrupted while updating feed from cache", e);
+            logger.warn("Interrupted while updating feed cache", e);
             Thread.currentThread().interrupt();
         }
     }
