@@ -49,7 +49,7 @@ public class FeedUpdateService {
         var mappedFeed = discoveryFeedMapper.mapDiscoveryFeed(discovery, feedProvider);
 
         if (mappedFeed == null) {
-            logger.warn("Skipping update for provider due to missing discovery feed {}", feedProvider);
+            logger.warn("Skipping update for provider due to missing discovery feed provider={} feed={}", feedProvider, discovery);
             return;
         }
 

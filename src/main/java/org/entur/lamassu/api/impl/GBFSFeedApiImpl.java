@@ -17,6 +17,8 @@ import org.entur.lamassu.model.gbfs.v2_1.SystemInformation;
 import org.entur.lamassu.model.gbfs.v2_1.SystemPricingPlans;
 import org.entur.lamassu.model.gbfs.v2_1.SystemRegions;
 import org.entur.lamassu.model.gbfs.v2_1.VehicleTypes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -26,6 +28,8 @@ import reactor.core.publisher.Mono;
 
 @Component
 public class GBFSFeedApiImpl implements GBFSFeedApi {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     private final WebClient webClient;
 
     public GBFSFeedApiImpl(@Autowired WebClient webClient) {
@@ -51,6 +55,7 @@ public class GBFSFeedApiImpl implements GBFSFeedApi {
         return webClient.get()
                 .uri(url)
                 .exchange()
+                .doOnError(e -> logger.warn("Error in api client url={} type={}", url, type, e))
                 .flatMap(res -> res.bodyToMono(type));
     }
 

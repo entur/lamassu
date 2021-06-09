@@ -116,6 +116,16 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
         var stationInformationFeed = (StationInformation) feedCache.find(GBFSFeedName.STATION_INFORMATION, feedProvider);
         var stationStatusFeed = (StationStatus) event.getValue();
 
+        if (stationInformationFeed.getData() == null) {
+            logger.warn("stationInformationFeed has no data! feed={}", stationInformationFeed);
+            return;
+        }
+
+        if (stationStatusFeed.getData() == null) {
+            logger.warn("stationStatusFeed has no data! feed={}", stationStatusFeed);
+            return;
+        }
+
         var stationIds = stationStatusFeed.getData().getStations().stream()
                 .map(StationStatus.Station::getStationId)
                 .collect(Collectors.toSet());
@@ -142,7 +152,18 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
         var originalStations = stationCache.getAllAsMap(stationIds);
 
         var system = getSystem(feedProvider, systemInformationFeed);
+
+        if (system == null) {
+            logger.warn("no system information provider={} feed={}", feedProvider, systemInformationFeed);
+            return;
+        }
+
         var pricingPlans = getPricingPlans(feedProvider, pricingPlansFeed);
+
+        if (pricingPlans == null) {
+            logger.warn("no pricing plans provider={} feed={}", feedProvider, pricingPlansFeed);
+            return;
+        }
 
         var stationInfo = Optional.ofNullable(stationInformationFeed)
                 .map(StationInformation::getData)
@@ -204,16 +225,15 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
         }
     }
 
-    @NotNull
     private List<PricingPlan> getPricingPlans(org.entur.lamassu.model.discovery.FeedProvider feedProvider, SystemPricingPlans pricingPlansFeed) {
         if (pricingPlansFeed == null) {
             logger.warn("Missing pricing plans feed for provider {}", feedProvider);
-            return List.of();
+            return null;
         }
 
         if (pricingPlansFeed.getData() == null) {
             logger.warn("Missing pricing plans data for provider={} feed={}", feedProvider, pricingPlansFeed);
-            return List.of();
+            return null;
         }
 
         return pricingPlansFeed.getData().getPlans().stream()
