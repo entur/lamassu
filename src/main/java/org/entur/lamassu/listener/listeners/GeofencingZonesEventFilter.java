@@ -20,7 +20,6 @@ package org.entur.lamassu.listener.listeners;
 
 import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
 import org.entur.lamassu.model.gbfs.v2_1.GeofencingZones;
-import org.entur.lamassu.model.gbfs.v2_1.StationStatus;
 
 import javax.cache.event.CacheEntryEvent;
 import javax.cache.event.CacheEntryEventFilter;

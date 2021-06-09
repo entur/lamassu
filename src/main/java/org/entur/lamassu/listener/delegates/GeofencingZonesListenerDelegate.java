@@ -21,17 +21,13 @@ package org.entur.lamassu.listener.delegates;
 import org.entur.lamassu.cache.GeofencingZonesCache;
 import org.entur.lamassu.listener.CacheEntryListenerDelegate;
 import org.entur.lamassu.mapper.GeofencingZonesMapper;
-import org.entur.lamassu.model.discovery.FeedProvider;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
 import org.entur.lamassu.model.gbfs.v2_1.GeofencingZones;
-import org.entur.lamassu.model.gbfs.v2_1.MultiPolygon;
 import org.entur.lamassu.service.FeedProviderService;
 import org.springframework.stereotype.Component;
 
 import javax.cache.event.CacheEntryEvent;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Component
 public class GeofencingZonesListenerDelegate implements CacheEntryListenerDelegate<GBFSBase, GeofencingZones> {
@@ -74,7 +70,7 @@ public class GeofencingZonesListenerDelegate implements CacheEntryListenerDelega
         var split = event.getKey().split("_");
         var feedProvider = feedProviderService.getFeedProviderBySystemSlug(split[split.length - 1]);
         var feed = (GeofencingZones) event.getValue();
-        org.entur.lamassu.model.entities.GeofencingZones mapped = geofencingZonesMapper.map(feed.getData().getGeofencingZones(), feedProvider);
+        var mapped = geofencingZonesMapper.map(feed.getData().getGeofencingZones(), feedProvider);
         geofencingZonesCache.updateAll(Map.of(mapped.getId(), mapped));
     }
 }

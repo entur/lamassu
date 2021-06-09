@@ -18,6 +18,7 @@
 
 package org.entur.lamassu.model.entities;
 
+import java.io.Serializable;
 import java.util.List;
 
 public class GeofencingZones implements Entity {
@@ -42,10 +43,10 @@ public class GeofencingZones implements Entity {
 
     @Override
     public String getId() {
-        return systemId;
+        return getSystemId();
     }
 
-    public static class FeatureCollection {
+    public static class FeatureCollection implements Serializable {
         private String type = "FeatureCollection";
         private List<Feature> features;
 
@@ -62,7 +63,7 @@ public class GeofencingZones implements Entity {
         }
     }
 
-    public static class Feature {
+    public static class Feature implements Serializable {
         private String type = "Feature";
         private MultiPolygon geometry;
         private Properties properties;
@@ -88,7 +89,7 @@ public class GeofencingZones implements Entity {
         }
     }
 
-    public static class MultiPolygon {
+    public static class MultiPolygon implements Serializable {
         private String type = "MultiPolygon";
         private List<List<List<List<Double>>>> coordinates;
 
@@ -105,7 +106,7 @@ public class GeofencingZones implements Entity {
         }
     }
 
-    public static class Properties {
+    public static class Properties implements Serializable {
         private String name;
         private Long start;
         private Long end;
@@ -144,7 +145,7 @@ public class GeofencingZones implements Entity {
         }
     }
 
-    public static class Rule {
+    public static class Rule implements Serializable {
         private List<String> vehicleTypeIds;
         private Boolean rideAllowed;
         private Boolean rideThroughAllowed;

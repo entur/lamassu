@@ -18,7 +18,6 @@
 
 package org.entur.lamassu.listener.listeners;
 
-import org.entur.lamassu.cache.GeofencingZonesCache;
 import org.entur.lamassu.listener.CacheEntryListenerDelegate;
 import org.entur.lamassu.listener.CacheListener;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
@@ -47,8 +46,8 @@ public class GeofencingZonesCacheListener extends AbstractCacheListener<GBFSBase
                     FactoryBuilder.factoryOf(
                             GeofencingZonesEventFilter.class
                     ),
-                    true,
-                    true
+                    false,
+                    false
             );
         }
         return listenerConfiguration;
