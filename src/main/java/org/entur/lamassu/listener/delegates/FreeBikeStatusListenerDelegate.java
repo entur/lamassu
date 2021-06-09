@@ -97,6 +97,11 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
         var pricingPlansFeed = (SystemPricingPlans) feedCache.find(GBFSFeedName.SYSTEM_PRICING_PLANS, feedProvider);
         var vehicleTypesFeed = (VehicleTypes) feedCache.find(GBFSFeedName.VEHICLE_TYPES, feedProvider);
 
+        if (freeBikeStatusFeed.getData() == null) {
+            logger.warn("freeBikeStatusFeed has no data! feed={}", freeBikeStatusFeed);
+            return;
+        }
+
         var vehicleIds = freeBikeStatusFeed.getData().getBikes().stream()
                 .map(FreeBikeStatus.Bike::getBikeId)
                 .collect(Collectors.toSet());
@@ -124,8 +129,25 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
         );
 
         var vehicleTypes = getVehicleTypes(feedProvider, vehicleTypesFeed);
+
+        if (vehicleTypes == null) {
+            logger.warn("no vehicle types provider={} feed={}", feedProvider, vehicleTypesFeed);
+            return;
+        }
+
         var system = getSystem(feedProvider, systemInformationFeed);
+
+        if (system == null) {
+            logger.warn("no system information provider={} feed={}", feedProvider, systemInformationFeed);
+            return;
+        }
+
         var pricingPlans = getPricingPlans(feedProvider, pricingPlansFeed);
+
+        if (pricingPlans == null) {
+            logger.warn("no pricing plans provider={} feed={}", feedProvider, pricingPlansFeed);
+            return;
+        }
 
         var vehicles = freeBikeStatusFeed.getData().getBikes().stream()
                 .map(vehicle -> vehicleMapper.mapVehicle(
@@ -180,17 +202,16 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
             spatialIndex.addAll(spatialIndexUpdateMap);
         }
     }
-
-    @NotNull
+    
     private Map<String, VehicleType> getVehicleTypes(FeedProvider feedProvider, VehicleTypes vehicleTypesFeed) {
         if (vehicleTypesFeed == null) {
             logger.warn("Missing vehicle types feed for provider {}", feedProvider);
-            return Map.of();
+            return null;
         }
 
         if (vehicleTypesFeed.getData() == null) {
             logger.warn("Missing vehicle types data for provider={} feed={}", feedProvider, vehicleTypesFeed);
-            return Map.of();
+            return null;
         }
 
         return vehicleTypesFeed.getData().getVehicleTypes().stream()
@@ -212,16 +233,15 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
         return systemMapper.mapSystem(systemInformationFeed.getData(), feedProvider);
     }
 
-    @NotNull
     private Map<String, PricingPlan> getPricingPlans(FeedProvider feedProvider, SystemPricingPlans pricingPlansFeed) {
         if (pricingPlansFeed == null) {
             logger.warn("Missing pricing plans feed for provider {}", feedProvider);
-            return Map.of();
+            return null;
         }
 
         if (pricingPlansFeed.getData() == null) {
             logger.warn("Missing pricing plans data for provider={} feed={}", feedProvider, pricingPlansFeed);
-            return Map.of();
+            return null;
         }
 
         return pricingPlansFeed.getData().getPlans().stream()
