@@ -43,6 +43,9 @@ data:
     server.compression.min-response-size=1024
     server.http2.enabled=true
 
+    # Graceful shutdown of server
+    server.shutdown=graceful
+
     org.entur.lamassu.feedproviders=file:/etc/application-config/feedproviders.yml
     org.entur.lamassu.baseUrl={{ .Values.configMap.baseUrl }}
 
