@@ -82,13 +82,20 @@ spec:
             periodSeconds: 10
             successThreshold: 1
             timeoutSeconds: 20
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - /bin/sh
+                  - -c
+                  - sleep 30
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
       securityContext: {}
-      terminationGracePeriodSeconds: 30
+      terminationGracePeriodSeconds: 60
       volumes:
         - name: {{ .Values.secretMount.name }}
           secret:
