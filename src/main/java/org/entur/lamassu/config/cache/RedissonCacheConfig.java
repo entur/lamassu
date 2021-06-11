@@ -91,7 +91,7 @@ public class RedissonCacheConfig {
     @Bean
     public Cache<String, Vehicle> vehicleCache(Config redissonConfig) {
         var cacheConfig = new MutableConfiguration<String, Vehicle>();
-        cacheConfig.setExpiryPolicyFactory((Factory<ExpiryPolicy>) () -> new CustomExpiryPolicy(Duration.ONE_DAY, null, Duration.ONE_DAY));
+        cacheConfig.setExpiryPolicyFactory((Factory<ExpiryPolicy>) () -> new CustomExpiryPolicy(Duration.FIVE_MINUTES, null, Duration.FIVE_MINUTES));
         var redissonCacheConfig = RedissonConfiguration.fromConfig(redissonConfig, cacheConfig);
         var manager = Caching.getCachingProvider().getCacheManager();
         return manager.createCache(VEHICLE_CACHE_KEY, redissonCacheConfig);
