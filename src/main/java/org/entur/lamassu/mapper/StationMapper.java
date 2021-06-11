@@ -67,10 +67,6 @@ public class StationMapper {
     }
 
     private List<VehicleTypeAvailability> mapVehicleTypesAvailable(VehicleTypes vehicleTypesFeed, List<StationStatus.VehicleTypeAvailability> vehicleTypesAvailable, String language) {
-        if (vehicleTypesAvailable == null) {
-            return null;
-        }
-
         var mappedVehicleTypes = vehicleTypesFeed.getData().getVehicleTypes().stream()
                 .map(vehicleType -> vehicleTypeMapper.mapVehicleType(vehicleType, language))
                 .collect(Collectors.toMap(VehicleType::getId, vehicleType -> vehicleType));

@@ -126,6 +126,11 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
             return;
         }
 
+        if (vehicleTypesFeed.getData() == null) {
+            logger.warn("vehicleTypesFeed has no data! provider={} feed={}", feedProvider, vehicleTypesFeed);
+            return;
+        }
+
         var stationIds = stationStatusFeed.getData().getStations().stream()
                 .map(StationStatus.Station::getStationId)
                 .collect(Collectors.toSet());
