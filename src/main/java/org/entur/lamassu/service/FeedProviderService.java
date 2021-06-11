@@ -27,4 +27,5 @@ public interface FeedProviderService {
     List<FeedProvider> getFeedProviders();
     List<Operator> getOperators();
     FeedProvider getFeedProviderBySystemSlug(String systemSlug);
+    FeedProvider getFeedProviderBySystemId(String systemId);
 }

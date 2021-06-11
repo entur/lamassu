@@ -68,7 +68,7 @@ public class VehicleListenerDelegate implements CacheEntryListenerDelegate<Vehic
 
         for (CacheEntryEvent<? extends String, ? extends Vehicle> entry : iterable) {
             var split = entry.getKey().split("_");
-            var feedProvider = feedProviderService.getFeedProviderBySystemSlug(split[split.length - 1]);
+            var feedProvider = feedProviderService.getFeedProviderBySystemId(split[split.length - 1]);
             var vehicle = entry.getValue();
             var id = SpatialIndexIdUtil.createVehicleSpatialIndexId(vehicle, feedProvider);
             ids.add(id);

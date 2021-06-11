@@ -33,14 +33,17 @@ import java.util.stream.Collectors;
 @Component
 public class FeedProviderServiceImpl implements FeedProviderService {
     private final Map<String, FeedProvider> feedProvidersBySystemSlug;
+    private final Map<String, FeedProvider> feedProvidersBySystemId;
     private final List<FeedProvider> feedProviders;
     private final TranslationMapper translationMapper;
 
     @Autowired
     public FeedProviderServiceImpl(FeedProviderConfig feedProviderConfig, TranslationMapper translationMapper) {
         feedProviders = feedProviderConfig.getProviders();
-        feedProvidersBySystemSlug = feedProviderConfig.getProviders().stream()
+        feedProvidersBySystemSlug = feedProviders.stream()
                 .collect(Collectors.toMap(FeedProvider::getSystemSlug, fp -> fp));
+        feedProvidersBySystemId = feedProviders.stream()
+                .collect(Collectors.toMap(FeedProvider::getSystemId, fp -> fp));
         this.translationMapper = translationMapper;
     }
 
@@ -73,5 +76,11 @@ public class FeedProviderServiceImpl implements FeedProviderService {
     public FeedProvider getFeedProviderBySystemSlug(String systemSlug) {
        return feedProvidersBySystemSlug
                .get(systemSlug);
+    }
+
+    @Override
+    public FeedProvider getFeedProviderBySystemId(String systemId) {
+        return feedProvidersBySystemId
+                .get(systemId);
     }
 }
