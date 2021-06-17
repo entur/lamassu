@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.cache.event.CacheEntryEvent;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -106,25 +107,28 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
                 .map(FreeBikeStatus.Bike::getBikeId)
                 .collect(Collectors.toSet());
 
-        Set<String> vehicleIdsToRemove = new java.util.HashSet<>(Set.of());
+        Set<String> vehicleIdsToRemove = null;
 
         if (event.isOldValueAvailable()) {
             var oldFreeBikeStatusFeed = (FreeBikeStatus) event.getOldValue();
 
-            if (oldFreeBikeStatusFeed.getData() == null) {
-                logger.warn("oldFreeBikeStatus data was null provider={} feed={}", feedProvider, oldFreeBikeStatusFeed);
-            } else {
+            if (oldFreeBikeStatusFeed.getData() != null) {
                 vehicleIdsToRemove = oldFreeBikeStatusFeed.getData().getBikes().stream()
                         .map(FreeBikeStatus.Bike::getBikeId).collect(Collectors.toSet());
+
+                // Find vehicle ids in old feed not present in new feed
+                vehicleIdsToRemove.removeAll(vehicleIds);
+                logger.debug("Found {} vehicleIds to remove from old free_bike_status feed: {}", vehicleIdsToRemove.size(), oldFreeBikeStatusFeed);
+
+                // Add vehicle ids that are staged for removal to the set of vehicle ids that will be used to
+                // fetch current vehicles from cache
+                vehicleIds.addAll(vehicleIdsToRemove);
             }
+        }
 
-            // Find vehicle ids in old feed not present in new feed
-            vehicleIdsToRemove.removeAll(vehicleIds);
-            logger.debug("Found {} vehicleIds to remove from old free_bike_status feed: {}", vehicleIdsToRemove.size(), oldFreeBikeStatusFeed);
-
-            // Add vehicle ids that are staged for removal to the set of vehicle ids that will be used to
-            // fetch current vehicles from cache
-            vehicleIds.addAll(vehicleIdsToRemove);
+        if (vehicleIdsToRemove == null) {
+            vehicleIdsToRemove = new HashSet<>(vehicleIds);
+            logger.info("Old free_bike_status feed was not available or had no data. As a workaround, removing all vehicles for this provider.");
         }
 
         var currentVehicles = vehicleCache.getAllAsMap(

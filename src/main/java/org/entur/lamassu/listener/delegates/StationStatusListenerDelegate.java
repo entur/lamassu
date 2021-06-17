@@ -135,23 +135,25 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
                 .map(StationStatus.Station::getStationId)
                 .collect(Collectors.toSet());
 
-        Set<String> stationIdsToRemove;
+        Set<String> stationIdsToRemove = null;
 
         if (event.isOldValueAvailable()) {
             var oldStationStatusFeed = (StationStatus) event.getOldValue();
-            stationIdsToRemove = oldStationStatusFeed.getData().getStations().stream()
-                    .map(StationStatus.Station::getStationId).collect(Collectors.toSet());
-            stationIdsToRemove.removeAll(stationIds);
-            logger.debug("Found {} stationIds to remove from old station_status feed", stationIdsToRemove.size());
+            if (oldStationStatusFeed.getData() != null) {
+                stationIdsToRemove = oldStationStatusFeed.getData().getStations().stream()
+                        .map(StationStatus.Station::getStationId).collect(Collectors.toSet());
+                stationIdsToRemove.removeAll(stationIds);
+                logger.debug("Found {} stationIds to remove from old station_status feed", stationIdsToRemove.size());
 
-            // Add station ids that are staged for removal to the set of stations ids that will be used to
-            // fetch current stations from cache
-            stationIds.addAll(stationIdsToRemove);
-        } else {
+                // Add station ids that are staged for removal to the set of stations ids that will be used to
+                // fetch current stations from cache
+                stationIds.addAll(stationIdsToRemove);
+            }
+        }
 
-            // In order to avoid stale stations hanging around, as a workaround, remove all stations for this provider.
+        if (stationIdsToRemove == null) {
             stationIdsToRemove = new HashSet<>(stationIds);
-            logger.debug("Old station_status feed was not available. As a workaround, removing all stations for this provider.");
+            logger.info("Old station_status feed was not available or had no data. As a workaround, removing all stations for this provider.");
         }
 
         var originalStations = stationCache.getAllAsMap(stationIds);
