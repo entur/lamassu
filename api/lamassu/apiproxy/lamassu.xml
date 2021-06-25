@@ -6,16 +6,19 @@
     <Policies>
         <Policy>add-cors</Policy>
         <Policy>flowCallout.getEnvironmentConfiguration</Policy>
-        <Policy>flowCalloutreplaceTargetUrl</Policy>
+        <Policy>flowCallout.replaceTargetUrl</Policy>
         <Policy>spikeArrest</Policy>
+        <Policy>override-content-encoding</Policy>
     </Policies>
     <ProxyEndpoints>
         <ProxyEndpoint>v2</ProxyEndpoint>
+        <ProxyEndpoint>validation-reports</ProxyEndpoint>
     </ProxyEndpoints>
     <Resources/>
     <Spec></Spec>
     <TargetServers/>
     <TargetEndpoints>
         <TargetEndpoint>v2</TargetEndpoint>
+        <TargetEndpoint>validation-reports</TargetEndpoint>
     </TargetEndpoints>
 </APIProxy>
