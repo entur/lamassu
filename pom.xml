@@ -19,7 +19,7 @@
         <embedded-redis.version>0.8.1</embedded-redis.version>
         <okhttp.version>4.9.1</okhttp.version>
         <kryo.version>5.1.1</kryo.version>
-        <jackson.version>2.12.3</jackson.version>
+        <jackson.version>2.12.4</jackson.version>
     </properties>
 
     <dependencies>
