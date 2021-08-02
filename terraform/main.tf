@@ -8,7 +8,7 @@ provider "google" {
 }
 
 provider "kubernetes" {
-  version = "~> 1.13.3"
+  version = "~> 2.4.0"
   load_config_file = var.load_config_file
 }
 
