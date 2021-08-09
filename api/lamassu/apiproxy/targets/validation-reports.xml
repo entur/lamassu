@@ -35,6 +35,6 @@
         <Response/>
     </PostFlow>
     <HTTPTargetConnection>
-        <URL>https://gbfs-validator-reports-NAMESPACE.web.app</URL>
+        <URL>https://GBFS_VALIDATION_REPORTS_PROJECT_NAME.web.app</URL>
     </HTTPTargetConnection>
 </TargetEndpoint>
