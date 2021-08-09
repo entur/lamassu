@@ -109,3 +109,10 @@ lamassu:
       codespace: ENT
       url: https://storage.googleapis.com/ror-mobility-car-sharing-poc/gbfs.json
       language: en
+    - systemId: YTI:System:tier_ASKER
+      systemSlug: tierasker
+      operatorId: YTI:Operator:Tier
+      operatorName: Tier
+      codespace: YTI
+      url: https://api.staging.entur.io/mobility/v1/gbfs-v2_2/tierasker/gbfs.json
+      language: nb
