@@ -144,13 +144,6 @@ lamassu:
       codespace: YTI
       url: https://api.staging.entur.io/mobility/v1/gbfs-v2_2/tierdrammen/gbfs.json
       language: nb
-    - systemId: YTI:System:tierhaugesund
-      systemSlug: tierhaugesund
-      operatorId: YTI:Operator:Tier
-      operatorName: Tier
-      codespace: YTI
-      url: https://api.staging.entur.io/mobility/v1/gbfs-v2_2/tierhaugesund/gbfs.json
-      language: nb
     - systemId: YTI:System:tierlillestrom
       systemSlug: tierlillestrom
       operatorId: YTI:Operator:Tier
