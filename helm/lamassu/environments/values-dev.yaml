@@ -16,49 +16,49 @@ lamassu:
       operatorId: YVO:Operator:voi
       operatorName: Voi
       codespace: YVO
-      url: https://api.staging.entur.io/mobility/v1/gbfs-v2_2/voioslo/gbfs
+      url: https://api.dev.entur.io/mobility/v1/gbfs-v2_2/voioslo/gbfs
       language: nb
     - systemId: YVO:System:voitrondheim
       systemSlug: voitrondheim
       operatorId: YVO:Operator:voi
       operatorName: Voi
       codespace: YVO
-      url: https://api.staging.entur.io/mobility/v1/gbfs-v2_2/voitrondheim/gbfs
+      url: https://api.dev.entur.io/mobility/v1/gbfs-v2_2/voitrondheim/gbfs
       language: nb
     - systemId: YLI:System:limeoslo
       systemSlug: limeoslo
       operatorId: YLI:Operator:lime
       operatorName: Lime
       codespace: YLI
-      url: https://api.staging.entur.io/mobility/v1/gbfs-v2_2/limeoslo/gbfs
+      url: https://api.dev.entur.io/mobility/v1/gbfs-v2_2/limeoslo/gbfs
       language: nb
     - systemId: YBO:System:boltoslo
       systemSlug: boltoslo
       operatorId: YBO:Operator:bolt
       operatorName: Bolt
       codespace: YBO
-      url: https://api.staging.entur.io/mobility/v1/gbfs-v2_2/boltoslo/gbfs
+      url: https://api.dev.entur.io/mobility/v1/gbfs-v2_2/boltoslo/gbfs
       language: nb
     - systemId: YBO:System:boltlillestrom
       systemSlug: boltlillestrom
       operatorId: YBO:Operator:bolt
       operatorName: Bolt
       codespace: YBO
-      url: https://api.staging.entur.io/mobility/v1/gbfs-v2_2/boltlillestrom/gbfs
+      url: https://api.dev.entur.io/mobility/v1/gbfs-v2_2/boltlillestrom/gbfs
       language: nb
     - systemId: YBO:System:boltfredrikstad
       systemSlug: boltfredrikstad
       operatorId: YBO:Operator:bolt
       operatorName: Bolt
       codespace: YBO
-      url: https://api.staging.entur.io/mobility/v1/gbfs-v2_2/boltfredrikstad/gbfs
+      url: https://api.dev.entur.io/mobility/v1/gbfs-v2_2/boltfredrikstad/gbfs
       language: nb
     - systemId: YBO:System:boltbergen
       systemSlug: boltbergen
       operatorId: YBO:Operator:bolt
       operatorName: Bolt
       codespace: YBO
-      url: https://api.staging.entur.io/mobility/v1/gbfs-v2_2/boltbergen/gbfs
+      url: https://api.dev.entur.io/mobility/v1/gbfs-v2_2/boltbergen/gbfs
       language: nb
     - systemId: YOS:System:oslobysykkel
       systemSlug: oslobysykkel
@@ -114,82 +114,82 @@ lamassu:
       operatorId: YTI:Operator:Tier
       operatorName: Tier
       codespace: YTI
-      url: https://api.staging.entur.io/mobility/v1/gbfs-v2_2/tierasane/gbfs.json
+      url: https://api.dev.entur.io/mobility/v1/gbfs-v2_2/tierasane/gbfs.json
       language: nb
     - systemId: YTI:System:tierasker
       systemSlug: tierasker
       operatorId: YTI:Operator:Tier
       operatorName: Tier
       codespace: YTI
-      url: https://api.staging.entur.io/mobility/v1/gbfs-v2_2/tierasker/gbfs.json
+      url: https://api.dev.entur.io/mobility/v1/gbfs-v2_2/tierasker/gbfs.json
       language: nb
     - systemId: YTI:System:tierbaerum
       systemSlug: tierbaerum
       operatorId: YTI:Operator:Tier
       operatorName: Tier
       codespace: YTI
-      url: https://api.staging.entur.io/mobility/v1/gbfs-v2_2/tierbaerum/gbfs.json
+      url: https://api.dev.entur.io/mobility/v1/gbfs-v2_2/tierbaerum/gbfs.json
       language: nb
     - systemId: YTI:System:tierbergen
       systemSlug: tierbergen
       operatorId: YTI:Operator:Tier
       operatorName: Tier
       codespace: YTI
-      url: https://api.staging.entur.io/mobility/v1/gbfs-v2_2/tierbergen/gbfs.json
+      url: https://api.dev.entur.io/mobility/v1/gbfs-v2_2/tierbergen/gbfs.json
       language: nb
     - systemId: YTI:System:tierdrammen
       systemSlug: tierdrammen
       operatorId: YTI:Operator:Tier
       operatorName: Tier
       codespace: YTI
-      url: https://api.staging.entur.io/mobility/v1/gbfs-v2_2/tierdrammen/gbfs.json
+      url: https://api.dev.entur.io/mobility/v1/gbfs-v2_2/tierdrammen/gbfs.json
       language: nb
     - systemId: YTI:System:tierlillestrom
       systemSlug: tierlillestrom
       operatorId: YTI:Operator:Tier
       operatorName: Tier
       codespace: YTI
-      url: https://api.staging.entur.io/mobility/v1/gbfs-v2_2/tierlillestrom/gbfs.json
+      url: https://api.dev.entur.io/mobility/v1/gbfs-v2_2/tierlillestrom/gbfs.json
       language: nb
     - systemId: YTI:System:tierlorenskog
       systemSlug: tierlorenskog
       operatorId: YTI:Operator:Tier
       operatorName: Tier
       codespace: YTI
-      url: https://api.staging.entur.io/mobility/v1/gbfs-v2_2/tierlorenskog/gbfs.json
+      url: https://api.dev.entur.io/mobility/v1/gbfs-v2_2/tierlorenskog/gbfs.json
       language: nb
     - systemId: YTI:System:tiernamsos
       systemSlug: tiernamsos
       operatorId: YTI:Operator:Tier
       operatorName: Tier
       codespace: YTI
-      url: https://api.staging.entur.io/mobility/v1/gbfs-v2_2/tiernamsos/gbfs.json
+      url: https://api.dev.entur.io/mobility/v1/gbfs-v2_2/tiernamsos/gbfs.json
       language: nb
     - systemId: YTI:System:tieroslo
       systemSlug: tieroslo
       operatorId: YTI:Operator:Tier
       operatorName: Tier
       codespace: YTI
-      url: https://api.staging.entur.io/mobility/v1/gbfs-v2_2/tieroslo/gbfs.json
+      url: https://api.dev.entur.io/mobility/v1/gbfs-v2_2/tieroslo/gbfs.json
       language: nb
     - systemId: YTI:System:tierski
       systemSlug: tierski
       operatorId: YTI:Operator:Tier
       operatorName: Tier
       codespace: YTI
-      url: https://api.staging.entur.io/mobility/v1/gbfs-v2_2/tierski/gbfs.json
+      url: https://api.dev.entur.io/mobility/v1/gbfs-v2_2/tierski/gbfs.json
       language: nb
     - systemId: YTI:System:tierstavanger
       systemSlug: tierstavanger
       operatorId: YTI:Operator:Tier
       operatorName: Tier
       codespace: YTI
-      url: https://api.staging.entur.io/mobility/v1/gbfs-v2_2/tierstavanger/gbfs.json
+      url: https://api.dev.entur.io/mobility/v1/gbfs-v2_2/tierstavanger/gbfs.json
       language: nb
     - systemId: YTI:System:tiertrondheim
       systemSlug: tiertrondheim
       operatorId: YTI:Operator:Tier
       operatorName: Tier
       codespace: YTI
-      url: https://api.staging.entur.io/mobility/v1/gbfs-v2_2/tiertrondheim/gbfs.json
+      url: https://api.dev.entur.io/mobility/v1/gbfs-v2_2/tiertrondheim/gbfs.json
       language: nb
