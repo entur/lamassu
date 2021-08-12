@@ -25,6 +25,7 @@ import org.entur.lamassu.listener.CacheEntryListenerDelegate;
 import org.entur.lamassu.mapper.PricingPlanMapper;
 import org.entur.lamassu.mapper.StationMapper;
 import org.entur.lamassu.mapper.SystemMapper;
+import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
@@ -36,7 +37,6 @@ import org.entur.lamassu.model.gbfs.v2_1.SystemPricingPlans;
 import org.entur.lamassu.model.gbfs.v2_1.VehicleTypes;
 import org.entur.lamassu.service.FeedProviderService;
 import org.entur.lamassu.util.SpatialIndexIdUtil;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +46,6 @@ import javax.cache.event.CacheEntryEvent;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -107,7 +106,7 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
 
     private void addOrUpdateStation(CacheEntryEvent<? extends String, ? extends GBFSBase> event) {
         var split = event.getKey().split("_");
-        var feedProvider = feedProviderService.getFeedProviderBySystemSlug(split[split.length - 1]);
+        var feedProvider = feedProviderService.getFeedProviderBySystemId(split[split.length - 1]);
 
         var systemInformationFeed = (SystemInformation) feedCache.find(GBFSFeedName.SYSTEM_INFORMATION, feedProvider);
         var pricingPlansFeed = (SystemPricingPlans) feedCache.find(GBFSFeedName.SYSTEM_PRICING_PLANS, feedProvider);
@@ -232,7 +231,7 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
         }
     }
 
-    private List<PricingPlan> getPricingPlans(org.entur.lamassu.model.discovery.FeedProvider feedProvider, SystemPricingPlans pricingPlansFeed) {
+    private List<PricingPlan> getPricingPlans(FeedProvider feedProvider, SystemPricingPlans pricingPlansFeed) {
         if (pricingPlansFeed == null) {
             logger.warn("Missing pricing plans feed for provider {}", feedProvider);
             return null;
@@ -248,7 +247,7 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
                 .collect(Collectors.toList());
     }
 
-    private org.entur.lamassu.model.entities.System getSystem(org.entur.lamassu.model.discovery.FeedProvider feedProvider, SystemInformation systemInformationFeed) {
+    private org.entur.lamassu.model.entities.System getSystem(FeedProvider feedProvider, SystemInformation systemInformationFeed) {
         if (systemInformationFeed == null) {
             logger.warn("Missing system information feed for provider={}", feedProvider);
             return null;

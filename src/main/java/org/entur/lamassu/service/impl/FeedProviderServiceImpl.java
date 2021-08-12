@@ -20,7 +20,7 @@ package org.entur.lamassu.service.impl;
 
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.mapper.TranslationMapper;
-import org.entur.lamassu.model.discovery.FeedProvider;
+import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.model.entities.Operator;
 import org.entur.lamassu.service.FeedProviderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,6 @@ import java.util.stream.Collectors;
 
 @Component
 public class FeedProviderServiceImpl implements FeedProviderService {
-    private final Map<String, FeedProvider> feedProvidersBySystemSlug;
     private final Map<String, FeedProvider> feedProvidersBySystemId;
     private final List<FeedProvider> feedProviders;
     private final TranslationMapper translationMapper;
@@ -40,8 +39,6 @@ public class FeedProviderServiceImpl implements FeedProviderService {
     @Autowired
     public FeedProviderServiceImpl(FeedProviderConfig feedProviderConfig, TranslationMapper translationMapper) {
         feedProviders = feedProviderConfig.getProviders();
-        feedProvidersBySystemSlug = feedProviders.stream()
-                .collect(Collectors.toMap(FeedProvider::getSystemSlug, fp -> fp));
         feedProvidersBySystemId = feedProviders.stream()
                 .collect(Collectors.toMap(FeedProvider::getSystemId, fp -> fp));
         this.translationMapper = translationMapper;
@@ -70,12 +67,6 @@ public class FeedProviderServiceImpl implements FeedProviderService {
                 )
         );
         return operator;
-    }
-
-    @Override
-    public FeedProvider getFeedProviderBySystemSlug(String systemSlug) {
-       return feedProvidersBySystemSlug
-               .get(systemSlug);
     }
 
     @Override

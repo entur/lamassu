@@ -1,7 +1,6 @@
 lamassu:
   providers:
-    - systemId: TST:System:testatlantis
-      systemSlug: testatlantis
+    - systemId: testatlantis
       operatorId: TST:Operator:atlantis
       operatorName: Atlantis
       url: http://localhost:8888/gbfs

@@ -11,7 +11,7 @@ import org.entur.lamassu.mapper.VehicleTypeMapper;
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.entities.VehicleType;
-import org.entur.lamassu.model.discovery.FeedProvider;
+import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.model.gbfs.v2_1.FreeBikeStatus;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSFeedName;
@@ -20,7 +20,6 @@ import org.entur.lamassu.model.gbfs.v2_1.SystemPricingPlans;
 import org.entur.lamassu.model.gbfs.v2_1.VehicleTypes;
 import org.entur.lamassu.service.FeedProviderService;
 import org.entur.lamassu.util.SpatialIndexIdUtil;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,7 +90,7 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
 
     private void addOrUpdateVehicles(CacheEntryEvent<? extends String, ? extends GBFSBase> event) {
         var split = event.getKey().split("_");
-        var feedProvider = feedProviderService.getFeedProviderBySystemSlug(split[split.length - 1]);
+        var feedProvider = feedProviderService.getFeedProviderBySystemId(split[split.length - 1]);
         var freeBikeStatusFeed = (FreeBikeStatus) event.getValue();
 
         var systemInformationFeed = (SystemInformation) feedCache.find(GBFSFeedName.SYSTEM_INFORMATION, feedProvider);

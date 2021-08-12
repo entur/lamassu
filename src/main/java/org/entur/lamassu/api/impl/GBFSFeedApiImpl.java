@@ -1,7 +1,7 @@
 package org.entur.lamassu.api.impl;
 
 import org.entur.lamassu.api.GBFSFeedApi;
-import org.entur.lamassu.model.discovery.FeedProvider;
+import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.model.gbfs.v2_1.FreeBikeStatus;
 import org.entur.lamassu.model.gbfs.v2_1.GBFS;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;

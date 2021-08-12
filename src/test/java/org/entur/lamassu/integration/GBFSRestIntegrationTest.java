@@ -20,7 +20,7 @@ public class GBFSRestIntegrationTest extends AbstractIntegrationTestBase {
         mockMvc.perform(get("/gbfs")
                 .contentType("application/json"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.systems[0].id").value("TST:System:testatlantis"));
+                .andExpect(jsonPath("$.systems[0].id").value("testatlantis"));
     }
 
     @Test
@@ -44,7 +44,7 @@ public class GBFSRestIntegrationTest extends AbstractIntegrationTestBase {
         mockMvc.perform(get("/gbfs/testatlantis/system_information")
                 .contentType("application/json"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.system_id").value("TST:System:Test"));
+                .andExpect(jsonPath("$.data.system_id").value("Test"));
     }
 
     @Test

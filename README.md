@@ -8,7 +8,7 @@ Mobility aggregation service based on the [General Bikeshare Feed Specification 
 
         lamassu:
             providers:
-              - systemId: MFM:System:mysystem
+              
                 systemName: My System
                 operatorId: MFM:Operator:myoperator
                 operatorName: My operator

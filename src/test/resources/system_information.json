@@ -3,7 +3,7 @@
   "ttl": 300,
   "version": "2.1",
   "data": {
-    "system_id": "TST:System:Test",
+    "system_id": "Test",
     "language": "en",
     "name": "Test",
     "url": "https://www.test.com/",

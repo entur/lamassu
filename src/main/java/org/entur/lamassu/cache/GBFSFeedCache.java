@@ -1,6 +1,6 @@
 package org.entur.lamassu.cache;
 
-import org.entur.lamassu.model.discovery.FeedProvider;
+import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSFeedName;
 

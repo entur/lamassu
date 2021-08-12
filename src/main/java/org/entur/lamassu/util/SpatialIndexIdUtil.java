@@ -2,7 +2,7 @@ package org.entur.lamassu.util;
 
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.Vehicle;
-import org.entur.lamassu.model.discovery.FeedProvider;
+import org.entur.lamassu.model.provider.FeedProvider;
 
 public class SpatialIndexIdUtil {
     private SpatialIndexIdUtil() {}

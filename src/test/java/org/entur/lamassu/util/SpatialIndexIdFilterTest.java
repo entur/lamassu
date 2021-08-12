@@ -1,7 +1,7 @@
 package org.entur.lamassu.util;
 
 import org.entur.lamassu.cache.VehicleSpatialIndexId;
-import org.entur.lamassu.model.discovery.FeedProvider;
+import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PropulsionType;
 import org.entur.lamassu.model.entities.Vehicle;

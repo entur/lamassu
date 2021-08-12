@@ -1,7 +1,7 @@
 package org.entur.lamassu.cache.impl;
 
 import org.entur.lamassu.cache.GBFSFeedCache;
-import org.entur.lamassu.model.discovery.FeedProvider;
+import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSFeedName;
 import org.redisson.api.CacheAsync;
@@ -28,7 +28,7 @@ public class GBFSFeedCacheImpl implements GBFSFeedCache {
 
     @Override
     public GBFSBase find(GBFSFeedName feedName, FeedProvider feedProvider) {
-        var key = getKey(feedName, feedProvider.getSystemSlug());
+        var key = getKey(feedName, feedProvider.getSystemId());
         try {
             return cache.getAsync(key).get(5, TimeUnit.SECONDS);
         } catch (ExecutionException | TimeoutException e) {
@@ -45,7 +45,7 @@ public class GBFSFeedCacheImpl implements GBFSFeedCache {
     public void update(GBFSFeedName feedName, FeedProvider feedProvider, GBFSBase feed) {
         String key = getKey(
                 feedName,
-                feedProvider.getSystemSlug()
+                feedProvider.getSystemId()
         );
         try {
             cache.putAsync(key, feed).get(5, TimeUnit.SECONDS);
@@ -57,8 +57,8 @@ public class GBFSFeedCacheImpl implements GBFSFeedCache {
         }
     }
 
-    private String getKey(GBFSFeedName feedName, String providerName) {
-        return mergeStrings(feedName.toValue(), providerName);
+    private String getKey(GBFSFeedName feedName, String systemId) {
+        return mergeStrings(feedName.toValue(), systemId);
     }
 
     private String mergeStrings(String first, String second) {

@@ -33,11 +33,11 @@ public class GBFSFeedController {
         return systemDiscoveryService.getSystemDiscovery();
     }
 
-    @GetMapping(value = {"/gbfs/{provider}/{feed}", "/gbfs/{provider}/{feed}.json"})
-    public GBFSBase getGbfsFeedForProvider(@PathVariable String provider, @PathVariable String feed) {
+    @GetMapping(value = {"/gbfs/{systemId}/{feed}", "/gbfs/{systemId}/{feed}.json"})
+    public GBFSBase getGbfsFeedForProvider(@PathVariable String systemId, @PathVariable String feed) {
         try {
             var feedName = GBFSFeedName.valueOf(feed.toUpperCase());
-            var feedProvider = feedProviderService.getFeedProviderBySystemSlug(provider);
+            var feedProvider = feedProviderService.getFeedProviderBySystemId(systemId);
 
             if (feedProvider == null) {
                 throw new NoSuchElementException();

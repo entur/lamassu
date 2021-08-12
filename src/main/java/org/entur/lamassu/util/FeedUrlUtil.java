@@ -18,16 +18,16 @@
 
 package org.entur.lamassu.util;
 
-import org.entur.lamassu.model.discovery.FeedProvider;
+import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.model.gbfs.v2_1.GBFSFeedName;
 
 public class FeedUrlUtil {
     private FeedUrlUtil() {}
 
     public static String mapFeedUrl(String baseUrl, GBFSFeedName feedName, FeedProvider feedProvider) {
-        var providerName= feedProvider.getSystemSlug();
+        var systemId= feedProvider.getSystemId();
         var feedUrl = addToPath(baseUrl, "gbfs");
-        feedUrl = addToPath(feedUrl, providerName);
+        feedUrl = addToPath(feedUrl, systemId);
         return addToPath(feedUrl, feedName.toValue()).toLowerCase();
     }
 

@@ -1,9 +1,44 @@
-package org.entur.lamassu.model.discovery;
+/*
+ *
+ *
+ *  * Licensed under the EUPL, Version 1.2 or – as soon they will be approved by
+ *  * the European Commission - subsequent versions of the EUPL (the "Licence");
+ *  * You may not use this work except in compliance with the Licence.
+ *  * You may obtain a copy of the Licence at:
+ *  *
+ *  *   https://joinup.ec.europa.eu/software/page/eupl
+ *  *
+ *  * Unless required by applicable law or agreed to in writing, software
+ *  * distributed under the Licence is distributed on an "AS IS" basis,
+ *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  * See the Licence for the specific language governing permissions and
+ *  * limitations under the Licence.
+ *
+ */
+
+/*
+ *
+ *
+ *  * Licensed under the EUPL, Version 1.2 or – as soon they will be approved by
+ *  * the European Commission - subsequent versions of the EUPL (the "Licence");
+ *  * You may not use this work except in compliance with the Licence.
+ *  * You may obtain a copy of the Licence at:
+ *  *
+ *  *   https://joinup.ec.europa.eu/software/page/eupl
+ *  *
+ *  * Unless required by applicable law or agreed to in writing, software
+ *  * distributed under the Licence is distributed on an "AS IS" basis,
+ *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  * See the Licence for the specific language governing permissions and
+ *  * limitations under the Licence.
+ *
+ */
+
+package org.entur.lamassu.model.provider;
 
 public class FeedProvider {
 
     private String systemId;
-    private String systemSlug;
     private String operatorId;
     private String operatorName;
     private String codespace;
@@ -16,14 +51,6 @@ public class FeedProvider {
 
     public void setSystemId(String systemId) {
         this.systemId = systemId;
-    }
-
-    public String getSystemSlug() {
-        return systemSlug;
-    }
-
-    public void setSystemSlug(String systemSlug) {
-        this.systemSlug = systemSlug;
     }
 
     public String getOperatorId() {
@@ -70,7 +97,6 @@ public class FeedProvider {
     public String toString() {
         return "FeedProvider{" +
                 "systemId='" + systemId + '\'' +
-                ", systemSlug='" + systemSlug + '\'' +
                 ", operatorId='" + operatorId + '\'' +
                 ", operatorName='" + operatorName + '\'' +
                 ", codespace='" + codespace + '\'' +

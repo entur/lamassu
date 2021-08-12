@@ -1,6 +1,6 @@
 package org.entur.lamassu.config.feedprovider;
 
-import org.entur.lamassu.model.discovery.FeedProvider;
+import org.entur.lamassu.model.provider.FeedProvider;
 
 import java.util.List;
 

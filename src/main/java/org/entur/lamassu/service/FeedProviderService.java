@@ -18,7 +18,7 @@
 
 package org.entur.lamassu.service;
 
-import org.entur.lamassu.model.discovery.FeedProvider;
+import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.model.entities.Operator;
 
 import java.util.List;
@@ -26,6 +26,5 @@ import java.util.List;
 public interface FeedProviderService {
     List<FeedProvider> getFeedProviders();
     List<Operator> getOperators();
-    FeedProvider getFeedProviderBySystemSlug(String systemSlug);
     FeedProvider getFeedProviderBySystemId(String systemId);
 }
