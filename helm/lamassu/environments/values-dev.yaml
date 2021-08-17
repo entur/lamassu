@@ -83,6 +83,12 @@ lamassu:
       codespace: YBO
       url: https://api.dev.entur.io/mobility/v1/gbfs-v2_2/boltlillehammer/gbfs
       language: nb
+    - systemId: zvipptrondheim
+      operatorId: YZV:Operator:zvipp
+      operatorName: Zvipp
+      codespace: YZV
+      url: https://api.dev.entur.io/mobility/v1/gbfs-v2_2/zvipptrondheim/gbfs
+      language: nb
     - systemId: oslobysykkel
       operatorId: YOS:Operator:oslobysykkel
       operatorName: Oslo bysykkel
