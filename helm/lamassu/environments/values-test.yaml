@@ -53,6 +53,42 @@ lamassu:
       codespace: YBO
       url: https://api.staging.entur.io/mobility/v1/gbfs-v2_2/boltbergen/gbfs
       language: nb
+    - systemId: boltsarpsborg
+      operatorId: YBO:Operator:bolt
+      operatorName: Bolt
+      codespace: YBO
+      url: https://api.staging.entur.io/mobility/v1/gbfs-v2_2/boltsarpsborg/gbfs
+      language: nb
+    - systemId: boltdrammen
+      operatorId: YBO:Operator:bolt
+      operatorName: Bolt
+      codespace: YBO
+      url: https://api.staging.entur.io/mobility/v1/gbfs-v2_2/boltdrammen/gbfs
+      language: nb
+    - systemId: boltgjovik
+      operatorId: YBO:Operator:bolt
+      operatorName: Bolt
+      codespace: YBO
+      url: https://api.staging.entur.io/mobility/v1/gbfs-v2_2/boltgjovik/gbfs
+      language: nb
+    - systemId: bolthamar
+      operatorId: YBO:Operator:bolt
+      operatorName: Bolt
+      codespace: YBO
+      url: https://api.staging.entur.io/mobility/v1/gbfs-v2_2/bolthamar/gbfs
+      language: nb
+    - systemId: boltlillehammer
+      operatorId: YBO:Operator:bolt
+      operatorName: Bolt
+      codespace: YBO
+      url: https://api.staging.entur.io/mobility/v1/gbfs-v2_2/boltlillehammer/gbfs
+      language: nb
+    - systemId: zvipptrondheim
+      operatorId: YZV:Operator:zvipp
+      operatorName: Zvipp
+      codespace: YZV
+      url: https://api.staging.entur.io/mobility/v1/gbfs-v2_2/zvipptrondheim/gbfs
+      language: nb
     - systemId: oslobysykkel
       operatorId: YOS:Operator:oslobysykkel
       operatorName: Oslo bysykkel
