@@ -18,7 +18,7 @@
         <redisson.version>3.16.2</redisson.version>
         <embedded-redis.version>0.8.1</embedded-redis.version>
         <okhttp.version>4.9.1</okhttp.version>
-        <kryo.version>5.1.1</kryo.version>
+        <kryo.version>5.2.0</kryo.version>
         <jackson.version>2.12.3</jackson.version>
     </properties>
 
