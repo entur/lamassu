@@ -75,6 +75,6 @@ public class VehicleListenerDelegate implements CacheEntryListenerDelegate<Vehic
         }
 
         spatialIndex.removeAll(ids);
-        logger.debug("Removed {} entries from spatial index", ids.size());
+        logger.info("Removed {} entries from spatial index", ids.size());
     }
 }
