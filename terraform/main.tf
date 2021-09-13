@@ -45,6 +45,7 @@ resource "kubernetes_secret" "basic_auth_secret" {
 
 module "redis" {
   source = "github.com/entur/terraform//modules/redis"
+  ref = "v0.0.23"
   gcp_project = var.redis_project
   labels = var.labels
   kubernetes_namespace = var.kube_namespace
