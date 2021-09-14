@@ -1,6 +1,7 @@
 package org.entur.lamassu.mapper;
 
 import org.entur.lamassu.model.entities.PricingPlan;
+import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.System;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.entities.VehicleType;
@@ -17,11 +18,11 @@ public class VehicleMapper {
         this.rentalUrisMapper = rentalUrisMapper;
     }
 
-    public Vehicle mapVehicle(FreeBikeStatus.Bike bike, VehicleType vehicleType, PricingPlan pricingPlan, System system) {
+    public Vehicle mapVehicle(FreeBikeStatus.Bike bike, VehicleType vehicleType, PricingPlan pricingPlan, System system, Station station) {
         var vehicle = new Vehicle();
         vehicle.setId(bike.getBikeId());
-        vehicle.setLat(bike.getLat());
-        vehicle.setLon(bike.getLon());
+        vehicle.setLat(bike.getLat() != null ? bike.getLat() : station != null ? station.getLat() : null);
+        vehicle.setLon(bike.getLon() != null ? bike.getLon() : station != null ? station.getLon() : null);
         vehicle.setReserved(bike.getReserved());
         vehicle.setDisabled(bike.getDisabled());
         vehicle.setCurrentRangeMeters(bike.getCurrentRangeMeters());

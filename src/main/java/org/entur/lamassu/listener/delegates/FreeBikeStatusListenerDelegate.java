@@ -1,6 +1,7 @@
 package org.entur.lamassu.listener.delegates;
 
 import org.entur.lamassu.cache.GBFSFeedCache;
+import org.entur.lamassu.cache.StationCache;
 import org.entur.lamassu.cache.VehicleCache;
 import org.entur.lamassu.cache.VehicleSpatialIndex;
 import org.entur.lamassu.listener.CacheEntryListenerDelegate;
@@ -34,6 +35,7 @@ import java.util.stream.Collectors;
 @Component
 public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegate<GBFSBase, FreeBikeStatus> {
     private final VehicleCache vehicleCache;
+    private final StationCache stationCache;
     private final GBFSFeedCache feedCache;
     private final FeedProviderService feedProviderService;
     private final VehicleSpatialIndex spatialIndex;
@@ -46,6 +48,7 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
     @Autowired
     public FreeBikeStatusListenerDelegate(
             VehicleCache vehicleCache,
+            StationCache stationCache,
             GBFSFeedCache feedCache,
             FeedProviderService feedProviderService,
             VehicleSpatialIndex spatialIndex,
@@ -55,6 +58,7 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
             VehicleTypeMapper vehicleTypeMapper
     ) {
         this.vehicleCache = vehicleCache;
+        this.stationCache = stationCache;
         this.feedCache = feedCache;
         this.feedProviderService = feedProviderService;
         this.spatialIndex = spatialIndex;
@@ -162,7 +166,8 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
                         vehicle,
                         vehicleTypes.get(vehicle.getVehicleTypeId()),
                         pricingPlans.get(vehicle.getPricingPlanId()),
-                        system
+                        system,
+                        vehicle.getStationId() != null ? stationCache.get(vehicle.getStationId()) : null
                 ))
                 .collect(Collectors.toMap(v -> getVehicleCacheKey(v.getId(), feedProvider), v -> v));
 
