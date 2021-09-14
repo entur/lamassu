@@ -39,13 +39,6 @@ public class ClusterSingletonService {
     @Scheduled(fixedRate = 15000)
     public void heartbeat() throws InterruptedException {
         if (isLeader()) {
-
-            var removedOrphans = geoSearchService.removeVehicleSpatialIndexOrphans();
-
-            if (removedOrphans.size() > 0) {
-                logger.info("Removed {} orphans in vehicle spatial index", removedOrphans.size());
-            }
-
             logger.debug("I am already the leader. Will try to renew.");
             if (tryToBecomeLeader()) {
                 logger.debug("Leadership renewed.");
@@ -64,6 +57,16 @@ public class ClusterSingletonService {
                 listenerManager.start();
             } else {
                 logger.debug("Sorry, someone else is the leader, try again soon");
+            }
+        }
+    }
+
+    @Scheduled(fixedRate = 60000)
+    public void removeOrphans() {
+        if (isLeader()) {
+            var removedOrphans = geoSearchService.removeVehicleSpatialIndexOrphans();
+            if (removedOrphans.size() > 0) {
+                logger.info("Removed {} orphans in vehicle spatial index", removedOrphans.size());
             }
         }
     }
