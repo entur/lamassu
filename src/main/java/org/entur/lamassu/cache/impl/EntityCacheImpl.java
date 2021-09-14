@@ -77,4 +77,13 @@ abstract class EntityCacheImpl<T extends Entity> implements EntityCache<T> {
     public void removeAll(Set<String> keys) {
         cache.removeAllAsync(keys);
     }
+
+    @Override
+    public boolean hasKey(String key) {
+        try {
+            return cache.containsKeyAsync(key).get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
 }

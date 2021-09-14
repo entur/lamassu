@@ -13,4 +13,5 @@ public interface EntityCache<T extends Entity> {
     T get(String key);
     void updateAll(Map<String, T> entities);
     void removeAll(Set<String> keys);
+    boolean hasKey(String key);
 }

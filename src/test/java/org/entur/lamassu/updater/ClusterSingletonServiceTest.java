@@ -1,5 +1,6 @@
 package org.entur.lamassu.updater;
 
+import org.entur.lamassu.service.GeoSearchService;
 import org.junit.Test;
 import org.redisson.api.RLock;
 
@@ -14,6 +15,7 @@ public class ClusterSingletonServiceTest {
     RLock mockedLock = mock(RLock.class);
     FeedUpdateScheduler mockedFeedUpdateScheduler = mock(FeedUpdateScheduler.class);
     ListenerManager mockedListenerManager = mock(ListenerManager.class);
+    GeoSearchService mockedGeoSearchService = mock(GeoSearchService.class);
 
     @Test
     public void testBecomeLeaderStartsScheduler() throws InterruptedException {
@@ -38,7 +40,7 @@ public class ClusterSingletonServiceTest {
     @Test(expected = InterruptedException.class)
     public void testBecomeLeaderThrowsInterruptStopsSchedulingAndRethrows() throws InterruptedException {
         when(mockedLock.tryLock(anyLong(), anyLong(), any(TimeUnit.class))).thenThrow(InterruptedException.class);
-        var service = new ClusterSingletonService(mockedLock, mockedFeedUpdateScheduler, mockedListenerManager);
+        var service = new ClusterSingletonService(mockedLock, mockedFeedUpdateScheduler, mockedListenerManager, mockedGeoSearchService);
         service.heartbeat();
         verify(mockedFeedUpdateScheduler).stop();
     }
@@ -53,7 +55,7 @@ public class ClusterSingletonServiceTest {
 
     private ClusterSingletonService baseCase() throws InterruptedException {
         when(mockedLock.tryLock(anyLong(), anyLong(), any(TimeUnit.class))).thenReturn(true);
-        var service = new ClusterSingletonService(mockedLock, mockedFeedUpdateScheduler, mockedListenerManager);
+        var service = new ClusterSingletonService(mockedLock, mockedFeedUpdateScheduler, mockedListenerManager, mockedGeoSearchService);
         service.heartbeat();
         verify(mockedFeedUpdateScheduler).start();
         return service;

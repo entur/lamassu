@@ -1,5 +1,6 @@
 package org.entur.lamassu.updater;
 
+import org.entur.lamassu.service.GeoSearchService;
 import org.redisson.api.RLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,13 +16,15 @@ public class ClusterSingletonService {
     private final RLock feedUpdateSchedulerLock;
     private final FeedUpdateScheduler feedUpdateScheduler;
     private final ListenerManager listenerManager;
+    private final GeoSearchService geoSearchService;
 
     private boolean isLeader = false;
 
-    public ClusterSingletonService(RLock feedUpdateSchedulerLock, @Autowired FeedUpdateScheduler feedUpdateScheduler, @Autowired ListenerManager listenerManager) {
+    public ClusterSingletonService(RLock feedUpdateSchedulerLock, @Autowired FeedUpdateScheduler feedUpdateScheduler, @Autowired ListenerManager listenerManager, @Autowired GeoSearchService geoSearchService) {
         this.feedUpdateSchedulerLock = feedUpdateSchedulerLock;
         this.feedUpdateScheduler = feedUpdateScheduler;
         this.listenerManager = listenerManager;
+        this.geoSearchService = geoSearchService;
     }
 
     /**
@@ -36,6 +39,13 @@ public class ClusterSingletonService {
     @Scheduled(fixedRate = 15000)
     public void heartbeat() throws InterruptedException {
         if (isLeader()) {
+
+            var removedOrphans = geoSearchService.removeVehicleSpatialIndexOrphans();
+
+            if (removedOrphans.size() > 0) {
+                logger.info("Removed {} orphans in vehicle spatial index", removedOrphans.size());
+            }
+
             logger.debug("I am already the leader. Will try to renew.");
             if (tryToBecomeLeader()) {
                 logger.debug("Leadership renewed.");

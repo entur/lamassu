@@ -22,13 +22,14 @@ import org.entur.lamassu.model.entities.LocationEntity;
 import org.redisson.api.GeoOrder;
 import org.redisson.api.GeoUnit;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public interface SpatialIndex<T extends LocationEntity> {
     void addAll(Map<String, T> spatialIndexUpdateMap);
-    void remove(String id);
     void removeAll(Set<String> ids);
     List<String> radius(Double longitude, Double latitude, Double radius, GeoUnit geoUnit, GeoOrder geoOrder);
+    Collection<String> getAll();
 }

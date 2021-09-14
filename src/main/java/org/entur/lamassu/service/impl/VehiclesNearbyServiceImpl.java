@@ -18,6 +18,7 @@ import org.redisson.api.GeoUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -88,5 +89,34 @@ public class VehiclesNearbyServiceImpl implements GeoSearchService {
         Set<String> stationIds = stream.map(StationSpatialIndexId::getId).collect(Collectors.toSet());
 
         return stationCache.getAll(stationIds);
+    }
+
+    @Override
+    public Collection<String> getVehicleSpatialIndexOrphans() {
+        var indexIds = vehicleSpatialIndex.getAll();
+        return indexIds.stream()
+                .map(VehicleSpatialIndexId::fromString)
+                .filter(Objects::nonNull)
+                .map(this::getVehicleCacheKey)
+                .filter(key -> !vehicleCache.hasKey(key))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Collection<String> removeVehicleSpatialIndexOrphans() {
+        var indexIds = vehicleSpatialIndex.getAll();
+        var orphans = indexIds.stream()
+                .map(VehicleSpatialIndexId::fromString)
+                .filter(Objects::nonNull)
+                .filter(indexId -> {
+                    var cacheKey = getVehicleCacheKey(indexId);
+                    return !vehicleCache.hasKey(cacheKey);
+                })
+                .map(VehicleSpatialIndexId::toString)
+                .collect(Collectors.toSet());
+
+        vehicleSpatialIndex.removeAll(orphans);
+
+        return orphans;
     }
 }

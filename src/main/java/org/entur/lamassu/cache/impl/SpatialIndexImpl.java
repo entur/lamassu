@@ -29,6 +29,7 @@ import org.redisson.api.geo.GeoSearchArgs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -59,11 +60,6 @@ public abstract class SpatialIndexImpl<T extends LocationEntity> implements Spat
     }
 
     @Override
-    public void remove(String id) {
-        spatialIndex.removeAsync(id);
-    }
-
-    @Override
     public void removeAll(Set<String> ids) {
         spatialIndex.removeAllAsync(ids);
     }
@@ -71,5 +67,10 @@ public abstract class SpatialIndexImpl<T extends LocationEntity> implements Spat
     @Override
     public List<String> radius(Double longitude, Double latitude, Double radius, GeoUnit geoUnit, GeoOrder geoOrder) {
         return spatialIndex.search(GeoSearchArgs.from(longitude, latitude).radius(radius, geoUnit).order(geoOrder));
+    }
+
+    @Override
+    public Collection<String> getAll() {
+        return spatialIndex.readAll();
     }
 }
