@@ -82,8 +82,12 @@ abstract class EntityCacheImpl<T extends Entity> implements EntityCache<T> {
     public boolean hasKey(String key) {
         try {
             return cache.containsKeyAsync(key).get();
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e.getMessage());
+        } catch (InterruptedException e) {
+            logger.warn("Interrupted while checking if cache has key");
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException e) {
+            logger.warn("Unable to check if cache has key");
         }
+        return false;
     }
 }
