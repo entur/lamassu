@@ -162,12 +162,13 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
         }
 
         var vehicles = freeBikeStatusFeed.getData().getBikes().stream()
+                // Filter out non-free-floating vehicles until we have a use case for this and filtering is possible in GraphQL API
+                .filter(vehicle -> vehicle.getStationId() == null)
                 .map(vehicle -> vehicleMapper.mapVehicle(
                         vehicle,
                         vehicleTypes.get(vehicle.getVehicleTypeId()),
                         pricingPlans.get(vehicle.getPricingPlanId()),
-                        system,
-                        vehicle.getStationId() != null ? stationCache.get(vehicle.getStationId()) : null
+                        system
                 ))
                 .collect(Collectors.toMap(v -> getVehicleCacheKey(v.getId(), feedProvider), v -> v));
 
