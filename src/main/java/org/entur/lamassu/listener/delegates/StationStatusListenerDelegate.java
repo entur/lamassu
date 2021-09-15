@@ -166,7 +166,7 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
 
         var pricingPlans = getPricingPlans(feedProvider, pricingPlansFeed);
 
-        if (pricingPlans == null) {
+        if (pricingPlans.isEmpty()) {
             logger.warn("no pricing plans provider={} feed={}", feedProvider, pricingPlansFeed);
             return;
         }
@@ -236,12 +236,12 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
     private List<PricingPlan> getPricingPlans(FeedProvider feedProvider, SystemPricingPlans pricingPlansFeed) {
         if (pricingPlansFeed == null) {
             logger.warn("Missing pricing plans feed for provider {}", feedProvider);
-            return null;
+            return List.of();
         }
 
         if (pricingPlansFeed.getData() == null) {
             logger.warn("Missing pricing plans data for provider={} feed={}", feedProvider, pricingPlansFeed);
-            return null;
+            return List.of();
         }
 
         return pricingPlansFeed.getData().getPlans().stream()
