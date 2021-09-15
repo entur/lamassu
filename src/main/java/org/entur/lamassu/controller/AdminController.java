@@ -1,6 +1,5 @@
 package org.entur.lamassu.controller;
 
-import org.entur.lamassu.cache.VehicleSpatialIndexId;
 import org.entur.lamassu.service.GeoSearchService;
 import org.redisson.api.RFuture;
 import org.redisson.api.RedissonClient;
