@@ -186,7 +186,7 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
                     return true;
                 })
                 // Filter out virtual stations until we have a use case for this, and graphql API supports filtering on it
-                .filter(s -> !stationInfo.get(s.getStationId()).getVirtualStation())
+                .filter(s -> !Optional.ofNullable(stationInfo.get(s.getStationId()).getVirtualStation()).orElse(false))
                 .map(station -> stationMapper.mapStation(
                         system,
                         pricingPlans,
