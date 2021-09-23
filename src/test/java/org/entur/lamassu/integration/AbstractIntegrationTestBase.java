@@ -30,7 +30,6 @@ import java.util.concurrent.TimeUnit;
 @RunWith(SpringRunner.class)
 @SpringBootTest(
         classes = TestLamassuApplication.class,
-        properties = "scheduling.enabled=false",
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
 public abstract class AbstractIntegrationTestBase {
@@ -106,8 +105,7 @@ public abstract class AbstractIntegrationTestBase {
     public void heartbeat() throws InterruptedException {
         if (!clusterSingletonService.isLeader()) {
             clusterSingletonService.heartbeat();
-            // How can we wait until we know cache has been populated?
-            waiter.await(1000, TimeUnit.MILLISECONDS);
+            clusterSingletonService.update();
         }
     }
 

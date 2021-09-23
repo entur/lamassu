@@ -1,9 +1,8 @@
 package org.entur.lamassu.controller;
 
-import org.entur.lamassu.cache.GBFSFeedCache;
+import org.entur.gbfs.v2_2.gbfs.GBFSFeedName;
+import org.entur.lamassu.cache.GBFSFeedCacheV2;
 import org.entur.lamassu.model.discovery.SystemDiscovery;
-import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
-import org.entur.lamassu.model.gbfs.v2_1.GBFSFeedName;
 import org.entur.lamassu.service.FeedProviderService;
 import org.entur.lamassu.service.SystemDiscoveryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +17,11 @@ import java.util.NoSuchElementException;
 @RestController
 public class GBFSFeedController {
     private final SystemDiscoveryService systemDiscoveryService;
-    private final GBFSFeedCache feedCache;
+    private final GBFSFeedCacheV2 feedCache;
     private final FeedProviderService feedProviderService;
 
     @Autowired
-    public GBFSFeedController(SystemDiscoveryService systemDiscoveryService, GBFSFeedCache feedCache, FeedProviderService feedProviderService) {
+    public GBFSFeedController(SystemDiscoveryService systemDiscoveryService, GBFSFeedCacheV2 feedCache, FeedProviderService feedProviderService) {
         this.systemDiscoveryService = systemDiscoveryService;
         this.feedCache = feedCache;
         this.feedProviderService = feedProviderService;
@@ -34,9 +33,9 @@ public class GBFSFeedController {
     }
 
     @GetMapping(value = {"/gbfs/{systemId}/{feed}", "/gbfs/{systemId}/{feed}.json"})
-    public GBFSBase getGbfsFeedForProvider(@PathVariable String systemId, @PathVariable String feed) {
+    public Object getGbfsFeedForProvider(@PathVariable String systemId, @PathVariable String feed) {
         try {
-            var feedName = GBFSFeedName.valueOf(feed.toUpperCase());
+            var feedName = GBFSFeedName.fromValue(feed);
             var feedProvider = feedProviderService.getFeedProviderBySystemId(systemId);
 
             if (feedProvider == null) {

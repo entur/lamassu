@@ -61,6 +61,17 @@ public class ClusterSingletonService {
         }
     }
 
+    /*
+        @Value("${org.entur.lamassu.feedupdateinterval:30}")
+    private int feedUpdateInterval;
+     */
+    @Scheduled(fixedRate = 10000)
+    public void update() {
+        if (isLeader()) {
+            feedUpdateScheduler.update();
+        }
+    }
+
     @Scheduled(fixedRate = 60000)
     public void removeOrphans() {
         if (isLeader()) {

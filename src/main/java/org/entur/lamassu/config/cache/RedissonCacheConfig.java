@@ -30,6 +30,7 @@ import javax.cache.expiry.ExpiryPolicy;
 @Configuration
 public class RedissonCacheConfig {
     public static final String GBFS_FEED_CACHE_KEY = "gbfsCache";
+    public static final String GBFS_FEED_CACHE_V2_KEY = "gbfsV2Cache";
     public static final String VEHICLE_CACHE_KEY = "vehicleCache";
     public static final String VEHICLE_TYPE_CACHE_KEY = "vehicleTypeCache";
     public static final String PRICING_PLAN_CACHE_KEY = "pricingPlanCache";
@@ -86,6 +87,15 @@ public class RedissonCacheConfig {
         var redissonCacheConfig = RedissonConfiguration.fromConfig(redissonConfig, cacheConfig);
         var manager = Caching.getCachingProvider().getCacheManager();
         return manager.createCache(GBFS_FEED_CACHE_KEY, redissonCacheConfig);
+    }
+
+    @Bean
+    public Cache<String, Object> feedCacheV2(Config redissonConfig) {
+        var cacheConfig = new MutableConfiguration<String, Object>();
+        cacheConfig.setExpiryPolicyFactory((Factory<ExpiryPolicy>) () -> new CustomExpiryPolicy(Duration.ONE_DAY, null, Duration.ONE_DAY));
+        var redissonCacheConfig = RedissonConfiguration.fromConfig(redissonConfig, cacheConfig);
+        var manager = Caching.getCachingProvider().getCacheManager();
+        return manager.createCache(GBFS_FEED_CACHE_V2_KEY, redissonCacheConfig);
     }
 
     @Bean

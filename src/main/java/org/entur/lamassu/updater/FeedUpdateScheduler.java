@@ -1,81 +1,80 @@
 package org.entur.lamassu.updater;
 
+import org.entur.gbfs.GbfsDelivery;
+import org.entur.gbfs.GbfsSubscriptionManager;
+import org.entur.gbfs.GbfsSubscriptionOptions;
+import org.entur.gbfs.v2_2.gbfs.GBFSFeedName;
+import org.entur.lamassu.cache.GBFSFeedCacheV2;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
-import org.quartz.Job;
-import org.quartz.JobBuilder;
-import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.SimpleScheduleBuilder;
-import org.quartz.Trigger;
-import org.quartz.TriggerBuilder;
+import org.entur.lamassu.model.provider.FeedProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class FeedUpdateScheduler {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final Scheduler feedUpdateQuartzScheduler;
-
     private final FeedProviderConfig feedProviderConfig;
+    private final GBFSFeedCacheV2 feedCache;
 
-    @Value("${org.entur.lamassu.feedupdateinterval:30}")
-    private int feedUpdateInterval;
+    private final static GbfsSubscriptionManager subscriptionManager = new GbfsSubscriptionManager();
+    private final static List<String> subscriptions = new ArrayList<>();
 
     @Autowired
-    public FeedUpdateScheduler(Scheduler feedUpdateQuartzScheduler, FeedProviderConfig feedProviderConfig) {
-        this.feedUpdateQuartzScheduler = feedUpdateQuartzScheduler;
+    public FeedUpdateScheduler(FeedProviderConfig feedProviderConfig, GBFSFeedCacheV2 feedCache) {
         this.feedProviderConfig = feedProviderConfig;
+        this.feedCache = feedCache;
     }
 
     public void start() {
-        feedProviderConfig.getProviders().parallelStream().forEach(feedProvider ->  {
-            var jobData = new JobDataMap();
-            jobData.put("feedProvider", feedProvider);
-            var jobDetail = buildJobDetail(FetchDiscoveryFeedJob.class, feedProvider.getSystemId(), jobData);
-            var trigger = buildJobTrigger(jobDetail, getFeedUpdateScheduleBuilder());
-            try {
-                feedUpdateQuartzScheduler.scheduleJob(jobDetail, trigger);
-            } catch (SchedulerException e) {
-                logger.warn("Failed to schedule fetch discovery feed for {}", feedProvider.getSystemId(), e);
-            }
-            logger.debug("Scheduled fetch discovery feed for {}", feedProvider.getSystemId());
+        feedProviderConfig.getProviders().parallelStream().forEach(feedProvider -> {
+            var options = new GbfsSubscriptionOptions();
+            options.setDiscoveryURI(URI.create(feedProvider.getUrl()));
+            options.setLanguageCode(feedProvider.getLanguage());
+
+            subscriptions.add(
+                    subscriptionManager.subscribe(options, delivery -> updateFeedCaches(feedProvider, delivery))
+            );
         });
     }
 
-    public void stop() {
-        try {
-            feedUpdateQuartzScheduler.clear();
-            logger.info("Cleared feed update scheduler");
-        } catch (SchedulerException e) {
-            logger.warn("Failed to clear feed update scheduler", e);
+    private void updateFeedCaches(FeedProvider feedProvider, GbfsDelivery delivery) {
+
+        // TODO: discovery feed needs to be mapped
+        updateFeedCache(feedProvider, GBFSFeedName.GBFS, delivery.getDiscovery());
+
+        updateFeedCache(feedProvider, GBFSFeedName.GBFSVersions, delivery.getVersion());
+        updateFeedCache(feedProvider, GBFSFeedName.SystemInformation,delivery.getSystemInformation());
+        updateFeedCache(feedProvider, GBFSFeedName.SystemAlerts, delivery.getSystemAlerts());
+        updateFeedCache(feedProvider, GBFSFeedName.SystemCalendar, delivery.getSystemCalendar());
+        updateFeedCache(feedProvider, GBFSFeedName.SystemRegions, delivery.getSystemRegions());
+        updateFeedCache(feedProvider, GBFSFeedName.SystemPricingPlans, delivery.getSystemPricingPlans());
+        updateFeedCache(feedProvider, GBFSFeedName.SystemHours, delivery.getSystemHours());
+        updateFeedCache(feedProvider, GBFSFeedName.VehicleTypes, delivery.getVehicleTypes());
+        updateFeedCache(feedProvider, GBFSFeedName.GeofencingZones, delivery.getGeofencingZones());
+        updateFeedCache(feedProvider, GBFSFeedName.StationInformation, delivery.getStationInformation());
+        updateFeedCache(feedProvider, GBFSFeedName.StationStatus, delivery.getStationStatus());
+        updateFeedCache(feedProvider, GBFSFeedName.FreeBikeStatus, delivery.getFreeBikeStatus());
+    }
+
+    private void updateFeedCache(FeedProvider feedProvider, GBFSFeedName feedName, Object feed) {
+        if (feed != null) {
+            logger.debug("updating feed {} for provider {} data {}", feedName, feedProvider.getSystemId(), feed);
+            feedCache.update(feedName, feedProvider, feed);
         }
     }
 
-    private JobDetail buildJobDetail(Class<? extends Job> jobType, String description, JobDataMap jobData) {
-        return JobBuilder.newJob(jobType)
-                .withIdentity(description)
-                .setJobData(jobData)
-                .build();
+    public void update() {
+        subscriptionManager.update();
     }
 
-    private Trigger buildJobTrigger(JobDetail jobDetail, SimpleScheduleBuilder scheduleBuilder) {
-        return TriggerBuilder.newTrigger()
-                .forJob(jobDetail)
-                .startNow()
-                .withSchedule(scheduleBuilder)
-                .build();
-    }
-
-    private SimpleScheduleBuilder getFeedUpdateScheduleBuilder() {
-        return SimpleScheduleBuilder.simpleSchedule()
-                .withIntervalInSeconds(feedUpdateInterval)
-                .repeatForever()
-                .withMisfireHandlingInstructionFireNow();
+    public void stop() {
+        subscriptions.forEach(subscriptionManager::unsubscribe);
     }
 }
