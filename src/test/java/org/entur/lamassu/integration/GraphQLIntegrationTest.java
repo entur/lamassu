@@ -52,6 +52,6 @@ public class GraphQLIntegrationTest extends AbstractIntegrationTestBase {
     public void testGeofencingZones() throws IOException {
         GraphQLResponse response = graphQLTestTemplate.postForResource("geofencing_zones_query.graphql");
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("testatlantis", response.get("$.data.geofencingZones[0].system_id"));
+        assertEquals("testatlantis", response.get("$.data.geofencingZones[0].systemId"));
     }
  }
