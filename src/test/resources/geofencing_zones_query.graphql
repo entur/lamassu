@@ -1,0 +1,19 @@
+{
+    geofencingZones(systemIds: ["testatlantis"]) {
+        systemId
+        geojson {
+            features {
+                geometry { coordinates }
+                properties {
+                    start
+                    end
+                    name
+                    rules {
+                        rideAllowed
+                        rideThroughAllowed
+                    }
+                }
+            }
+        }
+    }
+}
