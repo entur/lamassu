@@ -30,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 @RunWith(SpringRunner.class)
 @SpringBootTest(
         classes = TestLamassuApplication.class,
+        properties = "scheduling.enabled=false",
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
 public abstract class AbstractIntegrationTestBase {
