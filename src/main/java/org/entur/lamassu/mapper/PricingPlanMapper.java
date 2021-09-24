@@ -42,14 +42,7 @@ public class PricingPlanMapper {
         }
 
         return pricingSegments.stream()
-                .map(pricingSegment -> {
-                    var mapped = new PricingSegment();
-                    mapped.setStart(pricingSegment.getStart() != null ? pricingSegment.getStart().intValue() : null);
-                    mapped.setRate(pricingSegment.getRate() != null ? pricingSegment.getRate().floatValue() : null);
-                    mapped.setInterval(pricingSegment.getInterval() != null ? pricingSegment.getInterval().intValue() : null);
-                    mapped.setEnd(pricingSegment.getEnd() != null ? pricingSegment.getEnd().intValue() : null);
-                    return mapped;
-                })
+                .map(pricingSegment -> getPricingSegment(pricingSegment.getStart(), pricingSegment.getRate(), pricingSegment.getInterval(), pricingSegment.getEnd()))
                 .collect(Collectors.toList());
     }
 
@@ -59,14 +52,16 @@ public class PricingPlanMapper {
         }
 
         return pricingSegments.stream()
-                .map(pricingSegment -> {
-                    var mapped = new PricingSegment();
-                    mapped.setStart(pricingSegment.getStart() != null ? pricingSegment.getStart().intValue() : null);
-                    mapped.setRate(pricingSegment.getRate() != null ? pricingSegment.getRate().floatValue() : null);
-                    mapped.setInterval(pricingSegment.getInterval() != null ? pricingSegment.getInterval().intValue() : null);
-                    mapped.setEnd(pricingSegment.getEnd() != null ? pricingSegment.getEnd().intValue() : null);
-                    return mapped;
-                })
+                .map(pricingSegment -> getPricingSegment(pricingSegment.getStart(), pricingSegment.getRate(), pricingSegment.getInterval(), pricingSegment.getEnd()))
                 .collect(Collectors.toList());
+    }
+
+    private PricingSegment getPricingSegment(Double start, Double rate, Double interval, Double end) {
+        var mapped = new PricingSegment();
+        mapped.setStart(start != null ? start.intValue() : null);
+        mapped.setRate(rate != null ? rate.floatValue() : null);
+        mapped.setInterval(interval != null ? interval.intValue() : null);
+        mapped.setEnd(end != null ? end.intValue() : null);
+        return mapped;
     }
 }
