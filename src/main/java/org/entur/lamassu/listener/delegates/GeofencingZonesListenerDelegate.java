@@ -18,11 +18,10 @@
 
 package org.entur.lamassu.listener.delegates;
 
+import org.entur.gbfs.v2_2.geofencing_zones.GBFSGeofencingZones;
 import org.entur.lamassu.cache.GeofencingZonesCache;
 import org.entur.lamassu.listener.CacheEntryListenerDelegate;
 import org.entur.lamassu.mapper.GeofencingZonesMapper;
-import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
-import org.entur.lamassu.model.gbfs.v2_1.GeofencingZones;
 import org.entur.lamassu.service.FeedProviderService;
 import org.springframework.stereotype.Component;
 
@@ -30,7 +29,7 @@ import javax.cache.event.CacheEntryEvent;
 import java.util.Map;
 
 @Component
-public class GeofencingZonesListenerDelegate implements CacheEntryListenerDelegate<GBFSBase, GeofencingZones> {
+public class GeofencingZonesListenerDelegate implements CacheEntryListenerDelegate<Object, GBFSGeofencingZones> {
 
     private final GeofencingZonesCache geofencingZonesCache;
     private final FeedProviderService feedProviderService;
@@ -43,33 +42,33 @@ public class GeofencingZonesListenerDelegate implements CacheEntryListenerDelega
     }
 
     @Override
-    public void onCreated(Iterable<CacheEntryEvent<? extends String, ? extends GBFSBase>> iterable) {
+    public void onCreated(Iterable<CacheEntryEvent<? extends String, ?>> iterable) {
         for (var event : iterable)  {
             addOrUpdateGeofencingZones(event);
         }
     }
 
     @Override
-    public void onUpdated(Iterable<CacheEntryEvent<? extends String, ? extends GBFSBase>> iterable) {
+    public void onUpdated(Iterable<CacheEntryEvent<? extends String, ?>> iterable) {
         for (var event : iterable)  {
             addOrUpdateGeofencingZones(event);
         }
     }
 
     @Override
-    public void onRemoved(Iterable<CacheEntryEvent<? extends String, ? extends GBFSBase>> iterable) {
+    public void onRemoved(Iterable<CacheEntryEvent<? extends String, ?>> iterable) {
         // noop
     }
 
     @Override
-    public void onExpired(Iterable<CacheEntryEvent<? extends String, ? extends GBFSBase>> iterable) {
+    public void onExpired(Iterable<CacheEntryEvent<? extends String, ?>> iterable) {
         // noop
     }
 
-    private void addOrUpdateGeofencingZones(CacheEntryEvent<? extends String, ? extends GBFSBase> event) {
+    private void addOrUpdateGeofencingZones(CacheEntryEvent<? extends String, ?> event) {
         var split = event.getKey().split("_");
         var feedProvider = feedProviderService.getFeedProviderBySystemId(split[split.length - 1]);
-        var feed = (GeofencingZones) event.getValue();
+        var feed = (GBFSGeofencingZones) event.getValue();
         var mapped = geofencingZonesMapper.map(feed.getData().getGeofencingZones(), feedProvider);
         geofencingZonesCache.updateAll(Map.of(mapped.getId(), mapped));
     }
