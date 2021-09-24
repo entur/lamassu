@@ -18,10 +18,9 @@
 
 package org.entur.lamassu.listener.listeners;
 
+import org.entur.gbfs.v2_2.station_status.GBFSStationStatus;
 import org.entur.lamassu.listener.CacheEntryListenerDelegate;
 import org.entur.lamassu.listener.CacheListener;
-import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
-import org.entur.lamassu.model.gbfs.v2_1.StationStatus;
 import org.springframework.stereotype.Component;
 
 import javax.cache.Cache;
@@ -29,15 +28,15 @@ import javax.cache.configuration.FactoryBuilder;
 import javax.cache.configuration.MutableCacheEntryListenerConfiguration;
 
 @Component
-public class StationStatusCacheListener extends AbstractCacheListener<GBFSBase, StationStatus> implements CacheListener<StationStatus> {
-    private MutableCacheEntryListenerConfiguration<String, GBFSBase> listenerConfiguration;
+public class StationStatusCacheListener extends AbstractCacheListener<Object, GBFSStationStatus> implements CacheListener<GBFSStationStatus> {
+    private MutableCacheEntryListenerConfiguration<String, Object> listenerConfiguration;
 
-    protected StationStatusCacheListener(Cache<String, GBFSBase> cache, CacheEntryListenerDelegate<GBFSBase, StationStatus> delegate) {
+    protected StationStatusCacheListener(Cache<String, Object> cache, CacheEntryListenerDelegate<Object, GBFSStationStatus> delegate) {
         super(cache, delegate);
     }
 
     @Override
-    protected MutableCacheEntryListenerConfiguration<String, GBFSBase> getListenerConfiguration(CacheEntryListenerDelegate<GBFSBase, StationStatus> delegate) {
+    protected MutableCacheEntryListenerConfiguration<String, Object> getListenerConfiguration(CacheEntryListenerDelegate<Object, GBFSStationStatus> delegate) {
         if (listenerConfiguration == null) {
             listenerConfiguration = new MutableCacheEntryListenerConfiguration<>(
                     FactoryBuilder.factoryOf(

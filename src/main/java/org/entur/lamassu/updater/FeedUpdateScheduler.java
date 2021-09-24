@@ -85,7 +85,7 @@ public class FeedUpdateScheduler {
 
     private void updateFeedCache(FeedProvider feedProvider, GBFSFeedName feedName, Object feed) {
         if (feed != null) {
-            logger.debug("updating feed {} for provider {}", feedName, feedProvider.getSystemId());
+            logger.info("updating feed {} for provider {}", feedName, feedProvider.getSystemId());
             logger.trace("updating feed {} for provider {} data {}", feedName, feedProvider.getSystemId(), feed);
             feedCache.update(feedName, feedProvider, feed);
         }

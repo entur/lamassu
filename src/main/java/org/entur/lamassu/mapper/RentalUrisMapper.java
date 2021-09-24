@@ -47,4 +47,16 @@ public class RentalUrisMapper {
         mapped.setWeb(rentalUris.getWeb());
         return mapped;
     }
+
+    public RentalUris mapRentalUris(org.entur.gbfs.v2_2.station_information.GBFSRentalUris rentalUris) {
+        if (rentalUris == null) {
+            return null;
+        }
+
+        var mapped = new RentalUris();
+        mapped.setAndroid(rentalUris.getAndroid());
+        mapped.setIos(rentalUris.getIos());
+        mapped.setWeb(rentalUris.getWeb());
+        return mapped;
+    }
 }
