@@ -60,8 +60,8 @@ public class GeofencingZonesMapper {
     private org.entur.lamassu.model.entities.GeofencingZones.Properties mapProperties(GBFSProperties properties) {
         var mapped = new org.entur.lamassu.model.entities.GeofencingZones.Properties();
         mapped.setName(properties.getName());
-        mapped.setStart(properties.getStart().longValue());
-        mapped.setEnd(properties.getEnd().longValue());
+        mapped.setStart(properties.getStart() != null ? properties.getStart().longValue() : null);
+        mapped.setEnd(properties.getEnd() != null ? properties.getEnd().longValue() : null);
         mapped.setRules(mapRules(properties.getRules()));
         return mapped;
     }
@@ -77,7 +77,7 @@ public class GeofencingZonesMapper {
         mapped.setVehicleTypeIds(rule.getVehicleTypeId());
         mapped.setRideAllowed(rule.getRideAllowed());
         mapped.setRideThroughAllowed(rule.getRideThroughAllowed());
-        mapped.setMaximumSpeedKph(rule.getMaximumSpeedKph().intValue());
+        mapped.setMaximumSpeedKph(rule.getMaximumSpeedKph() != null ? rule.getMaximumSpeedKph().intValue() : null);
         return mapped;
     }
 
