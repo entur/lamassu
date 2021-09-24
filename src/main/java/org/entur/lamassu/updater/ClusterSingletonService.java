@@ -61,11 +61,7 @@ public class ClusterSingletonService {
         }
     }
 
-    /*
-        @Value("${org.entur.lamassu.feedupdateinterval:30}")
-    private int feedUpdateInterval;
-     */
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(fixedRateString = "${org.entur.lamassu.feedupdateinterval:30000}")
     public void update() {
         if (isLeader()) {
             feedUpdateScheduler.update();
