@@ -1,5 +1,6 @@
 package org.entur.lamassu.mapper;
 
+import org.entur.gbfs.v2_2.vehicle_types.GBFSVehicleType;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PropulsionType;
 import org.entur.lamassu.model.entities.VehicleType;
@@ -18,6 +19,16 @@ public class VehicleTypeMapper {
     }
 
     public VehicleType mapVehicleType(VehicleTypes.VehicleType vehicleType, String language) {
+        var mapped = new VehicleType();
+        mapped.setId(vehicleType.getVehicleTypeId());
+        mapped.setFormFactor(FormFactor.valueOf(vehicleType.getFormFactor().name()));
+        mapped.setPropulsionType(PropulsionType.valueOf(vehicleType.getPropulsionType().name()));
+        mapped.setMaxRangeMeters(vehicleType.getMaxRangeMeters().doubleValue());
+        mapped.setName(translationMapper.mapSingleTranslation(language, vehicleType.getName()));
+        return mapped;
+    }
+
+    public VehicleType mapVehicleType(GBFSVehicleType vehicleType, String language) {
         var mapped = new VehicleType();
         mapped.setId(vehicleType.getVehicleTypeId());
         mapped.setFormFactor(FormFactor.valueOf(vehicleType.getFormFactor().name()));

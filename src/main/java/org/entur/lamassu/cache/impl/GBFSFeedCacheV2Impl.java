@@ -31,7 +31,7 @@ public class GBFSFeedCacheV2Impl implements GBFSFeedCacheV2 {
         try {
             return cache.getAsync(key).get(5, TimeUnit.SECONDS);
         } catch (ExecutionException | TimeoutException e) {
-            logger.warn("Unable to fetch feed from cache within 1 second", e);
+            logger.warn("Unable to fetch feed from cache within 5 second", e);
         } catch (InterruptedException e) {
             logger.warn("Interrupted while fetching feed from cache", e);
             Thread.currentThread().interrupt();
@@ -49,7 +49,7 @@ public class GBFSFeedCacheV2Impl implements GBFSFeedCacheV2 {
         try {
             cache.putAsync(key, feed).get(5, TimeUnit.SECONDS);
         } catch (ExecutionException | TimeoutException e) {
-            logger.warn("Unable to update feed cache within 1 second", e);
+            logger.warn("Unable to update feed cache within 5 second", e);
         } catch (InterruptedException e) {
             logger.warn("Interrupted while updating feed cache", e);
             Thread.currentThread().interrupt();

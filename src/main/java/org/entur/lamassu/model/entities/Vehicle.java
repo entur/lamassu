@@ -8,7 +8,7 @@ public class Vehicle implements LocationEntity {
     private Double lon;
     private Boolean isReserved;
     private Boolean isDisabled;
-    private Float currentRangeMeters;
+    private Double currentRangeMeters;
     private VehicleType vehicleType;
     private PricingPlan pricingPlan;
     private System system;
@@ -54,11 +54,11 @@ public class Vehicle implements LocationEntity {
         isDisabled = disabled;
     }
 
-    public Float getCurrentRangeMeters() {
+    public Double getCurrentRangeMeters() {
         return currentRangeMeters;
     }
 
-    public void setCurrentRangeMeters(Float currentRangeMeters) {
+    public void setCurrentRangeMeters(Double currentRangeMeters) {
         this.currentRangeMeters = currentRangeMeters;
     }
 
