@@ -6,12 +6,15 @@ import org.entur.gbfs.GbfsSubscriptionOptions;
 import org.entur.gbfs.v2_2.gbfs.GBFSFeedName;
 import org.entur.lamassu.cache.GBFSFeedCacheV2;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
+import org.entur.lamassu.mapper.DiscoveryFeedMapper;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,10 +29,20 @@ public class FeedUpdateScheduler {
     private final static GbfsSubscriptionManager subscriptionManager = new GbfsSubscriptionManager();
     private final static List<String> subscriptions = new ArrayList<>();
 
+    @Value("${org.entur.lamassu.baseUrl}")
+    private String feedBaseUrl;
+    private DiscoveryFeedMapper discoveryFeedMapper;
+
     @Autowired
     public FeedUpdateScheduler(FeedProviderConfig feedProviderConfig, GBFSFeedCacheV2 feedCache) {
         this.feedProviderConfig = feedProviderConfig;
         this.feedCache = feedCache;
+
+    }
+
+    @PostConstruct
+    public void init() {
+        this.discoveryFeedMapper = new DiscoveryFeedMapper(feedBaseUrl);
     }
 
     public void start() {
@@ -47,7 +60,7 @@ public class FeedUpdateScheduler {
     private void updateFeedCaches(FeedProvider feedProvider, GbfsDelivery delivery) {
 
         // TODO: discovery feed needs to be mapped
-        updateFeedCache(feedProvider, GBFSFeedName.GBFS, delivery.getDiscovery());
+        updateFeedCache(feedProvider, GBFSFeedName.GBFS, discoveryFeedMapper.mapDiscoveryFeed(delivery.getDiscovery(), feedProvider));
 
         updateFeedCache(feedProvider, GBFSFeedName.GBFSVersions, delivery.getVersion());
         updateFeedCache(feedProvider, GBFSFeedName.SystemInformation,delivery.getSystemInformation());
@@ -65,7 +78,8 @@ public class FeedUpdateScheduler {
 
     private void updateFeedCache(FeedProvider feedProvider, GBFSFeedName feedName, Object feed) {
         if (feed != null) {
-            logger.debug("updating feed {} for provider {} data {}", feedName, feedProvider.getSystemId(), feed);
+            logger.debug("updating feed {} for provider {}", feedName, feedProvider.getSystemId());
+            logger.trace("updating feed {} for provider {} data {}", feedName, feedProvider.getSystemId(), feed);
             feedCache.update(feedName, feedProvider, feed);
         }
     }
