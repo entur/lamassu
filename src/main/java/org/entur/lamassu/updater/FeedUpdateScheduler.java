@@ -58,8 +58,6 @@ public class FeedUpdateScheduler {
     }
 
     private void updateFeedCaches(FeedProvider feedProvider, GbfsDelivery delivery) {
-
-        // TODO: discovery feed needs to be mapped
         updateFeedCache(feedProvider, GBFSFeedName.GBFS, discoveryFeedMapper.mapDiscoveryFeed(delivery.getDiscovery(), feedProvider));
 
         updateFeedCache(feedProvider, GBFSFeedName.GBFSVersions, delivery.getVersion());
