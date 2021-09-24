@@ -18,6 +18,7 @@ import javax.annotation.PostConstruct;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ForkJoinPool;
 
 @Component
 public class FeedUpdateScheduler {
@@ -26,40 +27,48 @@ public class FeedUpdateScheduler {
     private final FeedProviderConfig feedProviderConfig;
     private final GBFSFeedCacheV2 feedCache;
 
-    private final static GbfsSubscriptionManager subscriptionManager = new GbfsSubscriptionManager();
-    private final static List<String> subscriptions = new ArrayList<>();
+    private GbfsSubscriptionManager subscriptionManager;
+    private final List<String> subscriptions = new ArrayList<>();
 
     @Value("${org.entur.lamassu.baseUrl}")
     private String feedBaseUrl;
     private DiscoveryFeedMapper discoveryFeedMapper;
 
+    private static final int NUM_CORES = Runtime.getRuntime().availableProcessors();
+
+    private ForkJoinPool updaterThreadPool;
+
     @Autowired
     public FeedUpdateScheduler(FeedProviderConfig feedProviderConfig, GBFSFeedCacheV2 feedCache) {
         this.feedProviderConfig = feedProviderConfig;
         this.feedCache = feedCache;
-
     }
 
     @PostConstruct
     public void init() {
         this.discoveryFeedMapper = new DiscoveryFeedMapper(feedBaseUrl);
+
     }
 
     public void start() {
-        feedProviderConfig.getProviders().parallelStream().forEach(feedProvider -> {
-            var options = new GbfsSubscriptionOptions();
-            options.setDiscoveryURI(URI.create(feedProvider.getUrl()));
-            options.setLanguageCode(feedProvider.getLanguage());
+        this.updaterThreadPool = new ForkJoinPool(NUM_CORES * 2);
+        this.subscriptionManager = new GbfsSubscriptionManager(this.updaterThreadPool);
 
-            subscriptions.add(
-                    subscriptionManager.subscribe(options, delivery -> updateFeedCaches(feedProvider, delivery))
-            );
+        this.updaterThreadPool.submit(() -> {
+            feedProviderConfig.getProviders().parallelStream().forEach(feedProvider -> {
+                var options = new GbfsSubscriptionOptions();
+                options.setDiscoveryURI(URI.create(feedProvider.getUrl()));
+                options.setLanguageCode(feedProvider.getLanguage());
+
+                subscriptions.add(
+                        subscriptionManager.subscribe(options, delivery -> updateFeedCaches(feedProvider, delivery))
+                );
+            });
         });
     }
 
     private void updateFeedCaches(FeedProvider feedProvider, GbfsDelivery delivery) {
         updateFeedCache(feedProvider, GBFSFeedName.GBFS, discoveryFeedMapper.mapDiscoveryFeed(delivery.getDiscovery(), feedProvider));
-
         updateFeedCache(feedProvider, GBFSFeedName.GBFSVersions, delivery.getVersion());
         updateFeedCache(feedProvider, GBFSFeedName.SystemInformation,delivery.getSystemInformation());
         updateFeedCache(feedProvider, GBFSFeedName.SystemAlerts, delivery.getSystemAlerts());
@@ -88,5 +97,6 @@ public class FeedUpdateScheduler {
 
     public void stop() {
         subscriptions.forEach(subscriptionManager::unsubscribe);
+        updaterThreadPool.shutdown();
     }
 }

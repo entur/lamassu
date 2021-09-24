@@ -106,7 +106,9 @@ public abstract class AbstractIntegrationTestBase {
     public void heartbeat() throws InterruptedException {
         if (!clusterSingletonService.isLeader()) {
             clusterSingletonService.heartbeat();
+            Thread.sleep(1000);
             clusterSingletonService.update();
+            Thread.sleep(1000);
         }
     }
 
