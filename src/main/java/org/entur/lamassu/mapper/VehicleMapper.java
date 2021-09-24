@@ -5,7 +5,6 @@ import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.System;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.entities.VehicleType;
-import org.entur.lamassu.model.gbfs.v2_1.FreeBikeStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

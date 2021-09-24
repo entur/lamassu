@@ -5,7 +5,6 @@ import org.entur.gbfs.v2_2.free_bike_status.GBFSFreeBikeStatus;
 import org.entur.gbfs.v2_2.gbfs.GBFSFeedName;
 import org.entur.gbfs.v2_2.system_information.GBFSSystemInformation;
 import org.entur.gbfs.v2_2.system_pricing_plans.GBFSSystemPricingPlans;
-import org.entur.gbfs.v2_2.vehicle_types.GBFSVehicleType;
 import org.entur.gbfs.v2_2.vehicle_types.GBFSVehicleTypes;
 import org.entur.lamassu.cache.GBFSFeedCacheV2;
 import org.entur.lamassu.cache.VehicleCache;

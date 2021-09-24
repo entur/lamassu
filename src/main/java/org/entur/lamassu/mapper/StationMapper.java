@@ -26,9 +26,6 @@ import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.System;
 import org.entur.lamassu.model.entities.VehicleType;
 import org.entur.lamassu.model.entities.VehicleTypeAvailability;
-import org.entur.lamassu.model.gbfs.v2_1.StationInformation;
-import org.entur.lamassu.model.gbfs.v2_1.StationStatus;
-import org.entur.lamassu.model.gbfs.v2_1.VehicleTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

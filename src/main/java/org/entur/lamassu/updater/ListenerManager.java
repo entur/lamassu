@@ -4,9 +4,7 @@ import org.entur.gbfs.v2_2.free_bike_status.GBFSFreeBikeStatus;
 import org.entur.gbfs.v2_2.station_status.GBFSStationStatus;
 import org.entur.lamassu.listener.CacheListener;
 import org.entur.lamassu.model.entities.Vehicle;
-import org.entur.lamassu.model.gbfs.v2_1.FreeBikeStatus;
 import org.entur.lamassu.model.gbfs.v2_1.GeofencingZones;
-import org.entur.lamassu.model.gbfs.v2_1.StationStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
