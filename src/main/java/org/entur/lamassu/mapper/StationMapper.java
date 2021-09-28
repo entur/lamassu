@@ -18,14 +18,14 @@
 
 package org.entur.lamassu.mapper;
 
+import org.entur.gbfs.v2_2.station_information.GBFSStation;
+import org.entur.gbfs.v2_2.station_status.GBFSVehicleTypesAvailable;
+import org.entur.gbfs.v2_2.vehicle_types.GBFSVehicleTypes;
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.System;
 import org.entur.lamassu.model.entities.VehicleType;
 import org.entur.lamassu.model.entities.VehicleTypeAvailability;
-import org.entur.lamassu.model.gbfs.v2_1.StationInformation;
-import org.entur.lamassu.model.gbfs.v2_1.StationStatus;
-import org.entur.lamassu.model.gbfs.v2_1.VehicleTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -45,28 +45,28 @@ public class StationMapper {
         this.vehicleTypeMapper = vehicleTypeMapper;
     }
 
-    public Station mapStation(System system, List<PricingPlan> pricingPlans, StationInformation.Station stationInformation, StationStatus.Station stationStatus, VehicleTypes vehicleTypesFeed, String language) {
+    public Station mapStation(System system, List<PricingPlan> pricingPlans, GBFSStation stationInformation, org.entur.gbfs.v2_2.station_status.GBFSStation stationStatus, GBFSVehicleTypes vehicleTypesFeed, String language) {
         var station = new Station();
         station.setId(stationStatus.getStationId());
         station.setLat(stationInformation.getLat());
         station.setLon(stationInformation.getLon());
         station.setName(translationMapper.mapSingleTranslation(language, stationInformation.getName()));
         station.setAddress(stationInformation.getAddress());
-        station.setCapacity(stationInformation.getCapacity());
+        station.setCapacity(stationInformation.getCapacity() != null ? stationInformation.getCapacity().intValue() : null);
         station.setRentalUris(rentalUrisMapper.mapRentalUris(stationInformation.getRentalUris()));
-        station.setNumBikesAvailable(stationStatus.getNumBikesAvailable());
+        station.setNumBikesAvailable(stationStatus.getNumBikesAvailable() != null ? stationStatus.getNumBikesAvailable().intValue() : null);
         station.setVehicleTypesAvailable(mapVehicleTypesAvailable(vehicleTypesFeed, stationStatus.getVehicleTypesAvailable(), language));
-        station.setNumDocksAvailable(stationStatus.getNumDocksAvailable());
-        station.setInstalled(stationStatus.getInstalled());
-        station.setRenting(stationStatus.getRenting());
-        station.setReturning(stationStatus.getReturning());
-        station.setLastReported(stationStatus.getLastReported());
+        station.setNumDocksAvailable(stationStatus.getNumDocksAvailable() != null ? stationStatus.getNumDocksAvailable().intValue() : null);
+        station.setInstalled(stationStatus.getIsInstalled());
+        station.setRenting(stationStatus.getIsRenting());
+        station.setReturning(stationStatus.getIsReturning());
+        station.setLastReported(stationStatus.getLastReported().longValue());
         station.setSystem(system);
         station.setPricingPlans(pricingPlans);
         return station;
     }
 
-    private List<VehicleTypeAvailability> mapVehicleTypesAvailable(VehicleTypes vehicleTypesFeed, List<StationStatus.VehicleTypeAvailability> vehicleTypesAvailable, String language) {
+    private List<VehicleTypeAvailability> mapVehicleTypesAvailable(GBFSVehicleTypes vehicleTypesFeed, List<GBFSVehicleTypesAvailable> vehicleTypesAvailable, String language) {
         var mappedVehicleTypes = vehicleTypesFeed.getData().getVehicleTypes().stream()
                 .map(vehicleType -> vehicleTypeMapper.mapVehicleType(vehicleType, language))
                 .collect(Collectors.toMap(VehicleType::getId, vehicleType -> vehicleType));
@@ -76,10 +76,10 @@ public class StationMapper {
                 .collect(Collectors.toList());
     }
 
-    private VehicleTypeAvailability mapVehicleTypeAvailability(VehicleType vehicleType, StationStatus.VehicleTypeAvailability vehicleTypeAvailability) {
+    private VehicleTypeAvailability mapVehicleTypeAvailability(VehicleType vehicleType, GBFSVehicleTypesAvailable vehicleTypeAvailability) {
         var mapped = new VehicleTypeAvailability();
         mapped.setVehicleType(vehicleType);
-        mapped.setCount(vehicleTypeAvailability.getCount());
+        mapped.setCount(vehicleTypeAvailability.getCount().intValue());
         return mapped;
     }
 }

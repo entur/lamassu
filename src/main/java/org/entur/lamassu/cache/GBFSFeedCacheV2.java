@@ -16,23 +16,12 @@
  *
  */
 
-package org.entur.lamassu.util;
+package org.entur.lamassu.cache;
 
+import org.entur.gbfs.v2_2.gbfs.GBFSFeedName;
 import org.entur.lamassu.model.provider.FeedProvider;
 
-import java.net.URI;
-
-public class FeedUrlUtil {
-    private FeedUrlUtil() {}
-
-    public static URI mapFeedUrl(String baseUrl, org.entur.gbfs.v2_2.gbfs.GBFSFeedName feedName, FeedProvider feedProvider) {
-        var systemId= feedProvider.getSystemId();
-        var feedUrl = addToPath(baseUrl, "gbfs");
-        feedUrl = addToPath(feedUrl, systemId);
-        return URI.create(addToPath(feedUrl, feedName.value()).toLowerCase());
-    }
-
-    private static String addToPath(String base, String toAdd) {
-        return String.format("%s/%s", base, toAdd);
-    }
+public interface GBFSFeedCacheV2 {
+    Object find(GBFSFeedName feedName, FeedProvider feedProvider);
+    void update(GBFSFeedName feedName, FeedProvider feedProvider, Object feed);
 }

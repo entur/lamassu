@@ -18,12 +18,25 @@
 
 package org.entur.lamassu.mapper;
 
+import org.entur.gbfs.v2_2.free_bike_status.GBFSRentalUris;
 import org.entur.lamassu.model.entities.RentalUris;
 import org.springframework.stereotype.Component;
 
 @Component
 public class RentalUrisMapper {
-    public RentalUris mapRentalUris(org.entur.lamassu.model.gbfs.v2_1.RentalUris rentalUris) {
+    public RentalUris mapRentalUris(GBFSRentalUris rentalUris) {
+        if (rentalUris == null) {
+            return null;
+        }
+
+        var mapped = new RentalUris();
+        mapped.setAndroid(rentalUris.getAndroid());
+        mapped.setIos(rentalUris.getIos());
+        mapped.setWeb(rentalUris.getWeb());
+        return mapped;
+    }
+
+    public RentalUris mapRentalUris(org.entur.gbfs.v2_2.station_information.GBFSRentalUris rentalUris) {
         if (rentalUris == null) {
             return null;
         }

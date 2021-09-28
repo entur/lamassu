@@ -106,8 +106,9 @@ public abstract class AbstractIntegrationTestBase {
     public void heartbeat() throws InterruptedException {
         if (!clusterSingletonService.isLeader()) {
             clusterSingletonService.heartbeat();
-            // How can we wait until we know cache has been populated?
-            waiter.await(1000, TimeUnit.MILLISECONDS);
+            Thread.sleep(1000);
+            clusterSingletonService.update();
+            Thread.sleep(1000);
         }
     }
 

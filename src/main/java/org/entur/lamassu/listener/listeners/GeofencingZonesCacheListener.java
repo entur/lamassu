@@ -18,10 +18,9 @@
 
 package org.entur.lamassu.listener.listeners;
 
+import org.entur.gbfs.v2_2.geofencing_zones.GBFSGeofencingZones;
 import org.entur.lamassu.listener.CacheEntryListenerDelegate;
 import org.entur.lamassu.listener.CacheListener;
-import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
-import org.entur.lamassu.model.gbfs.v2_1.GeofencingZones;
 import org.springframework.stereotype.Component;
 
 import javax.cache.Cache;
@@ -29,15 +28,15 @@ import javax.cache.configuration.FactoryBuilder;
 import javax.cache.configuration.MutableCacheEntryListenerConfiguration;
 
 @Component
-public class GeofencingZonesCacheListener extends AbstractCacheListener<GBFSBase, GeofencingZones> implements CacheListener<GeofencingZones> {
-    private MutableCacheEntryListenerConfiguration<String, GBFSBase> listenerConfiguration;
+public class GeofencingZonesCacheListener extends AbstractCacheListener<Object, GBFSGeofencingZones> implements CacheListener<GBFSGeofencingZones> {
+    private MutableCacheEntryListenerConfiguration<String, Object> listenerConfiguration;
 
-    protected GeofencingZonesCacheListener(Cache<String, GBFSBase> cache, CacheEntryListenerDelegate<GBFSBase, GeofencingZones> delegate) {
+    protected GeofencingZonesCacheListener(Cache<String, Object> cache, CacheEntryListenerDelegate<Object, GBFSGeofencingZones> delegate) {
         super(cache, delegate);
     }
 
     @Override
-    protected MutableCacheEntryListenerConfiguration<String, GBFSBase> getListenerConfiguration(CacheEntryListenerDelegate<GBFSBase, GeofencingZones> delegate) {
+    protected MutableCacheEntryListenerConfiguration<String, Object> getListenerConfiguration(CacheEntryListenerDelegate<Object, GBFSGeofencingZones> delegate) {
         if (listenerConfiguration == null) {
             listenerConfiguration = new MutableCacheEntryListenerConfiguration<>(
                     FactoryBuilder.factoryOf(

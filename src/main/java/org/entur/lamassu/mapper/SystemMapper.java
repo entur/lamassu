@@ -1,11 +1,14 @@
 package org.entur.lamassu.mapper;
 
+import org.entur.gbfs.v2_2.system_information.GBFSAndroid;
+import org.entur.gbfs.v2_2.system_information.GBFSData;
+import org.entur.gbfs.v2_2.system_information.GBFSIos;
+import org.entur.gbfs.v2_2.system_information.GBFSRentalApps;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.model.entities.Operator;
 import org.entur.lamassu.model.entities.RentalApp;
 import org.entur.lamassu.model.entities.RentalApps;
 import org.entur.lamassu.model.entities.System;
-import org.entur.lamassu.model.gbfs.v2_1.SystemInformation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +22,19 @@ public class SystemMapper {
         this.translationMapper = translationMapper;
     }
 
-    public System mapSystem(SystemInformation.Data systemInformation, FeedProvider feedProvider) {
+    private Operator mapOperator(String operatorName, FeedProvider feedProvider) {
+        var operator = new Operator();
+        operator.setId(feedProvider.getOperatorId());
+        operator.setName(
+                translationMapper.mapSingleTranslation(
+                        feedProvider.getLanguage(),
+                        operatorName != null ? operatorName : feedProvider.getOperatorName()
+                )
+        );
+        return operator;
+    }
+
+    public System mapSystem(GBFSData systemInformation, FeedProvider feedProvider) {
         var system =  new System();
         system.setId(systemInformation.getSystemId());
         system.setLanguage(systemInformation.getLanguage());
@@ -38,7 +53,7 @@ public class SystemMapper {
         return system;
     }
 
-    private RentalApps mapRentalApps(SystemInformation.RentalApps sourceRentalApps) {
+    private RentalApps mapRentalApps(GBFSRentalApps sourceRentalApps) {
         if (sourceRentalApps == null) {
             return null;
         }
@@ -56,22 +71,17 @@ public class SystemMapper {
         return rentalApps;
     }
 
-    private RentalApp mapRentalApp(SystemInformation.RentalApp sourceRentalApp) {
+    private RentalApp mapRentalApp(GBFSAndroid sourceRentalApp) {
         var rentalApp = new RentalApp();
-        rentalApp.setStoreUri(sourceRentalApp.getStoreURI());
-        rentalApp.setDiscoveryUri(sourceRentalApp.getDiscoveryURI());
+        rentalApp.setStoreUri(sourceRentalApp.getStoreUri());
+        rentalApp.setDiscoveryUri(sourceRentalApp.getDiscoveryUri());
         return rentalApp;
     }
 
-    private Operator mapOperator(String operatorName, FeedProvider feedProvider) {
-        var operator = new Operator();
-        operator.setId(feedProvider.getOperatorId());
-        operator.setName(
-                translationMapper.mapSingleTranslation(
-                        feedProvider.getLanguage(),
-                        operatorName != null ? operatorName : feedProvider.getOperatorName()
-                )
-        );
-        return operator;
+    private RentalApp mapRentalApp(GBFSIos sourceRentalApp) {
+        var rentalApp = new RentalApp();
+        rentalApp.setStoreUri(sourceRentalApp.getStoreUri());
+        rentalApp.setDiscoveryUri(sourceRentalApp.getDiscoveryUri());
+        return rentalApp;
     }
 }

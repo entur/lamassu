@@ -18,16 +18,15 @@
 
 package org.entur.lamassu.listener.listeners;
 
-import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
-import org.entur.lamassu.model.gbfs.v2_1.StationStatus;
+import org.entur.gbfs.v2_2.station_status.GBFSStationStatus;
 
 import javax.cache.event.CacheEntryEvent;
 import javax.cache.event.CacheEntryEventFilter;
 import javax.cache.event.CacheEntryListenerException;
 
-public class StationStatusEventFilter implements CacheEntryEventFilter<String, GBFSBase> {
+public class StationStatusEventFilter implements CacheEntryEventFilter<String, Object> {
     @Override
-    public boolean evaluate(CacheEntryEvent<? extends String, ? extends GBFSBase> cacheEntryEvent) throws CacheEntryListenerException {
-        return cacheEntryEvent.getValue() instanceof StationStatus;
+    public boolean evaluate(CacheEntryEvent<? extends String, ?> cacheEntryEvent) throws CacheEntryListenerException {
+        return cacheEntryEvent.getValue() instanceof GBFSStationStatus;
     }
 }

@@ -18,7 +18,15 @@
 
 package org.entur.lamassu.listener.delegates;
 
-import org.entur.lamassu.cache.GBFSFeedCache;
+import org.entur.gbfs.v2_2.gbfs.GBFSFeedName;
+import org.entur.gbfs.v2_2.station_information.GBFSData;
+import org.entur.gbfs.v2_2.station_information.GBFSStationInformation;
+import org.entur.gbfs.v2_2.station_status.GBFSStation;
+import org.entur.gbfs.v2_2.station_status.GBFSStationStatus;
+import org.entur.gbfs.v2_2.system_information.GBFSSystemInformation;
+import org.entur.gbfs.v2_2.system_pricing_plans.GBFSSystemPricingPlans;
+import org.entur.gbfs.v2_2.vehicle_types.GBFSVehicleTypes;
+import org.entur.lamassu.cache.GBFSFeedCacheV2;
 import org.entur.lamassu.cache.StationCache;
 import org.entur.lamassu.cache.StationSpatialIndex;
 import org.entur.lamassu.listener.CacheEntryListenerDelegate;
@@ -28,13 +36,6 @@ import org.entur.lamassu.mapper.SystemMapper;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.Station;
-import org.entur.lamassu.model.gbfs.v2_1.GBFSBase;
-import org.entur.lamassu.model.gbfs.v2_1.GBFSFeedName;
-import org.entur.lamassu.model.gbfs.v2_1.StationInformation;
-import org.entur.lamassu.model.gbfs.v2_1.StationStatus;
-import org.entur.lamassu.model.gbfs.v2_1.SystemInformation;
-import org.entur.lamassu.model.gbfs.v2_1.SystemPricingPlans;
-import org.entur.lamassu.model.gbfs.v2_1.VehicleTypes;
 import org.entur.lamassu.service.FeedProviderService;
 import org.entur.lamassu.util.SpatialIndexIdUtil;
 import org.slf4j.Logger;
@@ -51,8 +52,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
-public class StationStatusListenerDelegate implements CacheEntryListenerDelegate<GBFSBase, StationStatus> {
-    private final GBFSFeedCache feedCache;
+public class StationStatusListenerDelegate implements CacheEntryListenerDelegate<Object, GBFSStationStatus> {
+    private final GBFSFeedCacheV2 feedCache;
     private final StationCache stationCache;
     private final FeedProviderService feedProviderService;
     private final StationSpatialIndex spatialIndex;
@@ -63,7 +64,7 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
 
     @Autowired
     public StationStatusListenerDelegate(
-            GBFSFeedCache feedCache,
+            GBFSFeedCacheV2 feedCache,
             StationCache stationCache,
             FeedProviderService feedProviderService,
             StationSpatialIndex spatialIndex,
@@ -81,39 +82,39 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
     }
 
     @Override
-    public void onCreated(Iterable<CacheEntryEvent<? extends String, ? extends GBFSBase>> iterable) {
+    public void onCreated(Iterable<CacheEntryEvent<? extends String, ?>> iterable) {
         for (var event : iterable)  {
             addOrUpdateStation(event);
         }
     }
 
     @Override
-    public void onUpdated(Iterable<CacheEntryEvent<? extends String, ? extends GBFSBase>> iterable) {
+    public void onUpdated(Iterable<CacheEntryEvent<? extends String, ?>> iterable) {
         for (var event : iterable)  {
             addOrUpdateStation(event);
         }
     }
 
     @Override
-    public void onRemoved(Iterable<CacheEntryEvent<? extends String, ? extends GBFSBase>> iterable) {
+    public void onRemoved(Iterable<CacheEntryEvent<? extends String, ?>> iterable) {
         // noop
     }
 
     @Override
-    public void onExpired(Iterable<CacheEntryEvent<? extends String, ? extends GBFSBase>> iterable) {
+    public void onExpired(Iterable<CacheEntryEvent<? extends String, ?>> iterable) {
         // noop
     }
 
-    private void addOrUpdateStation(CacheEntryEvent<? extends String, ? extends GBFSBase> event) {
+    private void addOrUpdateStation(CacheEntryEvent<? extends String, ?> event) {
         var split = event.getKey().split("_");
         var feedProvider = feedProviderService.getFeedProviderBySystemId(split[split.length - 1]);
 
-        var systemInformationFeed = (SystemInformation) feedCache.find(GBFSFeedName.SYSTEM_INFORMATION, feedProvider);
-        var pricingPlansFeed = (SystemPricingPlans) feedCache.find(GBFSFeedName.SYSTEM_PRICING_PLANS, feedProvider);
-        var vehicleTypesFeed = (VehicleTypes) feedCache.find(GBFSFeedName.VEHICLE_TYPES, feedProvider);
+        var systemInformationFeed = (GBFSSystemInformation) feedCache.find(GBFSFeedName.SystemInformation, feedProvider);
+        var pricingPlansFeed = (GBFSSystemPricingPlans) feedCache.find(GBFSFeedName.SystemPricingPlans, feedProvider);
+        var vehicleTypesFeed = (GBFSVehicleTypes) feedCache.find(GBFSFeedName.VehicleTypes, feedProvider);
 
-        var stationInformationFeed = (StationInformation) feedCache.find(GBFSFeedName.STATION_INFORMATION, feedProvider);
-        var stationStatusFeed = (StationStatus) event.getValue();
+        var stationInformationFeed = (GBFSStationInformation) feedCache.find(GBFSFeedName.StationInformation, feedProvider);
+        var stationStatusFeed = (GBFSStationStatus) event.getValue();
 
         if (stationInformationFeed.getData() == null) {
             logger.warn("stationInformationFeed has no data! provider={} feed={}", feedProvider, stationInformationFeed);
@@ -131,16 +132,16 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
         }
 
         var stationIds = stationStatusFeed.getData().getStations().stream()
-                .map(StationStatus.Station::getStationId)
+                .map(GBFSStation::getStationId)
                 .collect(Collectors.toSet());
 
         Set<String> stationIdsToRemove = null;
 
         if (event.isOldValueAvailable()) {
-            var oldStationStatusFeed = (StationStatus) event.getOldValue();
+            var oldStationStatusFeed = (GBFSStationStatus) event.getOldValue();
             if (oldStationStatusFeed.getData() != null) {
                 stationIdsToRemove = oldStationStatusFeed.getData().getStations().stream()
-                        .map(StationStatus.Station::getStationId).collect(Collectors.toSet());
+                        .map(GBFSStation::getStationId).collect(Collectors.toSet());
                 stationIdsToRemove.removeAll(stationIds);
                 logger.debug("Found {} stationIds to remove from old station_status feed", stationIdsToRemove.size());
 
@@ -172,10 +173,10 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
         }
 
         var stationInfo = Optional.ofNullable(stationInformationFeed)
-                .map(StationInformation::getData)
-                .map(StationInformation.Data::getStations)
+                .map(GBFSStationInformation::getData)
+                .map(GBFSData::getStations)
                 .orElse(List.of())
-                .stream().collect(Collectors.toMap(StationInformation.Station::getStationId, s -> s));
+                .stream().collect(Collectors.toMap(org.entur.gbfs.v2_2.station_information.GBFSStation::getStationId, s -> s));
 
         var stations = stationStatusFeed.getData().getStations().stream()
                 .filter(s -> {
@@ -186,7 +187,7 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
                     return true;
                 })
                 // Filter out virtual stations until we have a use case for this, and graphql API supports filtering on it
-                .filter(s -> !Optional.ofNullable(stationInfo.get(s.getStationId()).getVirtualStation()).orElse(false))
+                .filter(s -> !Optional.ofNullable(stationInfo.get(s.getStationId()).getIsVirtualStation()).orElse(false))
                 .map(station -> stationMapper.mapStation(
                         system,
                         pricingPlans,
@@ -233,7 +234,7 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
         }
     }
 
-    private List<PricingPlan> getPricingPlans(FeedProvider feedProvider, SystemPricingPlans pricingPlansFeed) {
+    private List<PricingPlan> getPricingPlans(FeedProvider feedProvider, GBFSSystemPricingPlans pricingPlansFeed) {
         if (pricingPlansFeed == null) {
             logger.warn("Missing pricing plans feed for provider {}", feedProvider);
             return List.of();
@@ -249,9 +250,9 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
                 .collect(Collectors.toList());
     }
 
-    private org.entur.lamassu.model.entities.System getSystem(FeedProvider feedProvider, SystemInformation systemInformationFeed) {
+    private org.entur.lamassu.model.entities.System getSystem(FeedProvider feedProvider, GBFSSystemInformation systemInformationFeed) {
         if (systemInformationFeed == null) {
-            logger.warn("Missing system information feed for provider={}", feedProvider);
+            logger.warn("Missing system information feed for provider {}", feedProvider);
             return null;
         }
 

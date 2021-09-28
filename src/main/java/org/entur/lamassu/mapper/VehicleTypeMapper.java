@@ -1,9 +1,9 @@
 package org.entur.lamassu.mapper;
 
+import org.entur.gbfs.v2_2.vehicle_types.GBFSVehicleType;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PropulsionType;
 import org.entur.lamassu.model.entities.VehicleType;
-import org.entur.lamassu.model.gbfs.v2_1.VehicleTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +17,7 @@ public class VehicleTypeMapper {
         this.translationMapper = translationMapper;
     }
 
-    public VehicleType mapVehicleType(VehicleTypes.VehicleType vehicleType, String language) {
+    public VehicleType mapVehicleType(GBFSVehicleType vehicleType, String language) {
         var mapped = new VehicleType();
         mapped.setId(vehicleType.getVehicleTypeId());
         mapped.setFormFactor(FormFactor.valueOf(vehicleType.getFormFactor().name()));

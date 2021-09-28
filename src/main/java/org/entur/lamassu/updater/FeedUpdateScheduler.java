@@ -1,81 +1,48 @@
 package org.entur.lamassu.updater;
 
+import org.entur.gbfs.GbfsSubscriptionManager;
+import org.entur.lamassu.cache.GBFSFeedCacheV2;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
-import org.quartz.Job;
-import org.quartz.JobBuilder;
-import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.SimpleScheduleBuilder;
-import org.quartz.Trigger;
-import org.quartz.TriggerBuilder;
+import org.entur.lamassu.mapper.DiscoveryFeedMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.ForkJoinPool;
+
 @Component
 public class FeedUpdateScheduler {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final Scheduler feedUpdateQuartzScheduler;
-
     private final FeedProviderConfig feedProviderConfig;
+    private final GBFSFeedCacheV2 feedCache;
+    private GbfsSubscriptionManager subscriptionManager;
 
-    @Value("${org.entur.lamassu.feedupdateinterval:30}")
-    private int feedUpdateInterval;
+    @Value("${org.entur.lamassu.baseUrl}")
+    private String feedBaseUrl;
+
+    private static final int NUM_CORES = Runtime.getRuntime().availableProcessors();
+
+    private ForkJoinPool updaterThreadPool;
 
     @Autowired
-    public FeedUpdateScheduler(Scheduler feedUpdateQuartzScheduler, FeedProviderConfig feedProviderConfig) {
-        this.feedUpdateQuartzScheduler = feedUpdateQuartzScheduler;
+    public FeedUpdateScheduler(FeedProviderConfig feedProviderConfig, GBFSFeedCacheV2 feedCache) {
         this.feedProviderConfig = feedProviderConfig;
+        this.feedCache = feedCache;
+    }
+    public void start() {
+        this.updaterThreadPool = new ForkJoinPool(NUM_CORES * 2);
+        this.subscriptionManager = new GbfsSubscriptionManager(this.updaterThreadPool);
+        this.updaterThreadPool.submit(new FeedUpdater(feedProviderConfig, feedCache, subscriptionManager, new DiscoveryFeedMapper(feedBaseUrl)));
     }
 
-    public void start() {
-        feedProviderConfig.getProviders().parallelStream().forEach(feedProvider ->  {
-            var jobData = new JobDataMap();
-            jobData.put("feedProvider", feedProvider);
-            var jobDetail = buildJobDetail(FetchDiscoveryFeedJob.class, feedProvider.getSystemId(), jobData);
-            var trigger = buildJobTrigger(jobDetail, getFeedUpdateScheduleBuilder());
-            try {
-                feedUpdateQuartzScheduler.scheduleJob(jobDetail, trigger);
-            } catch (SchedulerException e) {
-                logger.warn("Failed to schedule fetch discovery feed for {}", feedProvider.getSystemId(), e);
-            }
-            logger.debug("Scheduled fetch discovery feed for {}", feedProvider.getSystemId());
-        });
+    public void update() {
+        subscriptionManager.update();
     }
 
     public void stop() {
-        try {
-            feedUpdateQuartzScheduler.clear();
-            logger.info("Cleared feed update scheduler");
-        } catch (SchedulerException e) {
-            logger.warn("Failed to clear feed update scheduler", e);
-        }
-    }
-
-    private JobDetail buildJobDetail(Class<? extends Job> jobType, String description, JobDataMap jobData) {
-        return JobBuilder.newJob(jobType)
-                .withIdentity(description)
-                .setJobData(jobData)
-                .build();
-    }
-
-    private Trigger buildJobTrigger(JobDetail jobDetail, SimpleScheduleBuilder scheduleBuilder) {
-        return TriggerBuilder.newTrigger()
-                .forJob(jobDetail)
-                .startNow()
-                .withSchedule(scheduleBuilder)
-                .build();
-    }
-
-    private SimpleScheduleBuilder getFeedUpdateScheduleBuilder() {
-        return SimpleScheduleBuilder.simpleSchedule()
-                .withIntervalInSeconds(feedUpdateInterval)
-                .repeatForever()
-                .withMisfireHandlingInstructionFireNow();
+        updaterThreadPool.shutdown();
     }
 }
