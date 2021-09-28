@@ -125,12 +125,6 @@ lamassu:
       codespace: YDR
       url: https://api.dev.entur.io/mobility/v1/bikes/v2_2_proxy/drammenbysykkel/gbfs.json
       language: nb
-    - systemId: entur-car-sharing-poc
-      operatorId: ENT:Operator:Entur
-      operatorName: Entur Car Sharing POC
-      codespace: ENT
-      url: https://storage.googleapis.com/ror-mobility-car-sharing-poc/gbfs.json
-      language: en
     - systemId: tierasane
       operatorId: YTI:Operator:Tier
       operatorName: Tier
