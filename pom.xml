@@ -20,13 +20,14 @@
         <okhttp.version>4.9.1</okhttp.version>
         <kryo.version>5.2.0</kryo.version>
         <jackson.version>2.12.5</jackson.version>
+        <gbfs-loader-java.version>1.0.0</gbfs-loader-java.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.entur.gbfs</groupId>
             <artifactId>gbfs-loader-java</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${gbfs-loader-java.version}</version>
         </dependency>
         <dependency>
             <groupId>org.entur.helpers</groupId>
