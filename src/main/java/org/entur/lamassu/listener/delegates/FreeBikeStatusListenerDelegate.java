@@ -127,7 +127,7 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
 
         if (vehicleIdsToRemove == null) {
             vehicleIdsToRemove = new HashSet<>(vehicleIds);
-            logger.info("Old free_bike_status feed was not available or had no data. As a workaround, removing all vehicles for this provider.");
+            logger.info("Old free_bike_status feed was not available or had no data. As a workaround, removing all vehicles for provider {}", feedProvider.getSystemId());
         }
 
         var currentVehicles = vehicleCache.getAllAsMap(

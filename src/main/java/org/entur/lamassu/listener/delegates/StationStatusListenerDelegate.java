@@ -153,7 +153,7 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
 
         if (stationIdsToRemove == null) {
             stationIdsToRemove = new HashSet<>(stationIds);
-            logger.info("Old station_status feed was not available or had no data. As a workaround, removing all stations for this provider.");
+            logger.info("Old station_status feed was not available or had no data. As a workaround, removing all stations for provider {}", feedProvider.getSystemId());
         }
 
         var originalStations = stationCache.getAllAsMap(stationIds);
