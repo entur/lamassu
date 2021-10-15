@@ -43,12 +43,4 @@ public class LamassuSecurityConfigurerAdapter extends WebSecurityConfigurerAdapt
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-    @Bean
-    public CorsFilter corsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration().applyPermitDefaultValues();
-        source.registerCorsConfiguration("/**", config);
-        return new CorsFilter(source);
-    }
 }
