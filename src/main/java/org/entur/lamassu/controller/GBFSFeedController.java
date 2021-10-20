@@ -62,7 +62,7 @@ public class GBFSFeedController {
                     var system = new System();
                     system.setId(s.getId());
                     system.setUrl(
-                            s.getUrl().replace(baseUrl, internalLoadBalancer)
+                            s.getUrl().replace(baseUrl + "/gbfs", internalLoadBalancer + "/gbfs-internal")
                     );
                     return system;
                 }).collect(Collectors.toList())
@@ -95,9 +95,12 @@ public class GBFSFeedController {
 
     @GetMapping(value = {"/gbfs-internal/{systemId}/{feed}", "/gbfs/{systemId}/{feed}.json"})
     public Object getInternalGbfsFeedForProvider(@PathVariable String systemId, @PathVariable String feed) {
+        var feedName = GBFSFeedName.fromValue(feed);
         var feedProvider = feedProviderService.getFeedProviderBySystemId(systemId);
         var data = getGbfsFeedForProvider(systemId, feed);
-        modifyDiscoveryUrls(feedProvider, (GBFS) data);
+        if (feedName.equals(GBFSFeedName.GBFS)) {
+            modifyDiscoveryUrls(feedProvider, (GBFS) data);
+        }
         return data;
     }
 
@@ -112,7 +115,7 @@ public class GBFSFeedController {
                                 var gbfsFeed = new GBFSFeed();
                                 gbfsFeed.setName(f.getName());
                                 gbfsFeed.setUrl(
-                                        URI.create(f.getUrl().toString().replace(baseUrl, internalLoadBalancer))
+                                        URI.create(f.getUrl().toString().replace(baseUrl + "/gbfs", internalLoadBalancer + "/gbfs-internal"))
                                 );
                                 return gbfsFeed;
                             }).collect(Collectors.toList())
