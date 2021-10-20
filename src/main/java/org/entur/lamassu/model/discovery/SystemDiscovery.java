@@ -10,4 +10,7 @@ public class SystemDiscovery {
         this.systems = systems;
     }
 
+    public List<System> getSystems() {
+        return systems;
+    }
 }

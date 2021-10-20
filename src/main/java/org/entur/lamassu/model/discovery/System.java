@@ -18,17 +18,38 @@
 
 package org.entur.lamassu.model.discovery;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.entur.lamassu.model.provider.FeedProvider;
 
 public class System {
     @JsonProperty("id") private String id;
     @JsonProperty("url") private String url;
 
+    @JsonIgnore
+    private FeedProvider feedProvider;
+
     public void setId(String id) {
         this.id = id;
     }
 
+    public String getId() {
+        return id;
+    }
+
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public FeedProvider getFeedProvider() {
+        return feedProvider;
+    }
+
+    public void setFeedProvider(FeedProvider feedProvider) {
+        this.feedProvider = feedProvider;
     }
 }
