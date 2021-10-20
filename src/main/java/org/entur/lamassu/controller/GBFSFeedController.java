@@ -52,12 +52,12 @@ public class GBFSFeedController {
     @GetMapping("/gbfs-internal")
     public SystemDiscovery getInternalFeedProviderDiscovery() {
         var data = getFeedProviderDiscovery();
-        modifySystemDiscoveryUrls(data);
-        return data;
+        return modifySystemDiscoveryUrls(data);
     }
 
-    private void modifySystemDiscoveryUrls(SystemDiscovery data) {
-        data.setSystems(
+    private SystemDiscovery modifySystemDiscoveryUrls(SystemDiscovery data) {
+        var systemDiscovery = new SystemDiscovery();
+        systemDiscovery.setSystems(
                 data.getSystems().stream().map(s -> {
                     var system = new System();
                     system.setId(s.getId());
@@ -67,6 +67,7 @@ public class GBFSFeedController {
                     return system;
                 }).collect(Collectors.toList())
         );
+        return systemDiscovery;
     }
 
     @GetMapping(value = {"/gbfs/{systemId}/{feed}", "/gbfs/{systemId}/{feed}.json"})
@@ -99,15 +100,16 @@ public class GBFSFeedController {
         var feedProvider = feedProviderService.getFeedProviderBySystemId(systemId);
         var data = getGbfsFeedForProvider(systemId, feed);
         if (feedName.equals(GBFSFeedName.GBFS)) {
-            modifyDiscoveryUrls(feedProvider, (GBFS) data);
+            return modifyDiscoveryUrls(feedProvider, (GBFS) data);
+        } else {
+            return data;
         }
-        return data;
     }
 
-    private void modifyDiscoveryUrls(FeedProvider feedProvider, GBFS data) {
-        var gbfs = data;
+    private GBFS modifyDiscoveryUrls(FeedProvider feedProvider, GBFS data) {
+        var gbfs = new GBFS();
         gbfs.setFeedsData(
-                gbfs.getFeedsData().entrySet().stream().map(e -> {
+                data.getFeedsData().entrySet().stream().map(e -> {
                     var gbfsFeeds = e.getValue();
                     var mappedGbfsFeeds = new GBFSFeeds();
                     mappedGbfsFeeds.setFeeds(
@@ -123,5 +125,6 @@ public class GBFSFeedController {
                     return mappedGbfsFeeds;
                 }).collect(Collectors.toMap(e -> feedProvider.getLanguage(), e -> e))
         );
+        return gbfs;
     }
 }
