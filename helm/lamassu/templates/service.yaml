@@ -15,3 +15,24 @@ spec:
     app: {{ template "app.name" . }}
   sessionAffinity: None
   type: ClusterIP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    networking.gke.io/load-balancer-type: "Internal"
+    networking.gke.io/internal-load-balancer-allow-global-access: "true"
+  labels:
+    {{- include "common.labels" . | indent 4 }}
+  name: {{ template "app.name" . }}-internal
+  namespace: {{ .Release.Namespace }}
+spec:
+  ports:
+    - port: {{ .Values.service.http.externalPort }}
+      protocol: TCP
+      targetPort: {{ .Values.service.http.internalPort }}
+  selector:
+    app: {{ template "app.name" . }}
+  sessionAffinity: None
+  type: LoadBalancer
