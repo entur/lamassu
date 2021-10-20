@@ -8,6 +8,7 @@ configMap:
 ingress:
   enabled: true
   loadBalancerIP: 35.205.170.68
+  frontendLoadBalancerIP: 35.205.134.173
   domainName: .dev.entur.io
 
 lamassu:
