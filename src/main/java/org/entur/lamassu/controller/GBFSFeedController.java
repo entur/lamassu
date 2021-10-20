@@ -7,6 +7,7 @@ import org.entur.gbfs.v2_2.gbfs.GBFSFeeds;
 import org.entur.lamassu.cache.GBFSFeedCacheV2;
 import org.entur.lamassu.model.discovery.System;
 import org.entur.lamassu.model.discovery.SystemDiscovery;
+import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.service.FeedProviderService;
 import org.entur.lamassu.service.SystemDiscoveryService;
 import org.entur.lamassu.util.FeedUrlUtil;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.URI;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
@@ -28,6 +30,9 @@ public class GBFSFeedController {
     private final SystemDiscoveryService systemDiscoveryService;
     private final GBFSFeedCacheV2 feedCache;
     private final FeedProviderService feedProviderService;
+
+    @Value("${org.entur.lamassu.baseUrl}")
+    private String baseUrl;
 
     @Value("${org.entur.lamassu.internalLoadBalancer}")
     private String internalLoadBalancer;
@@ -40,13 +45,14 @@ public class GBFSFeedController {
     }
 
     @GetMapping("/gbfs")
-    public SystemDiscovery getFeedProviderDiscovery(HttpServletRequest request) {
-        var data = systemDiscoveryService.getSystemDiscovery();
+    public SystemDiscovery getFeedProviderDiscovery() {
+        return systemDiscoveryService.getSystemDiscovery();
+    }
 
-        if (internalLoadBalancer.contains(request.getLocalAddr())) {
-            modifySystemDiscoveryUrls(data);
-        }
-
+    @GetMapping("/gbfs-internal")
+    public SystemDiscovery getInternalFeedProviderDiscovery() {
+        var data = getFeedProviderDiscovery();
+        modifySystemDiscoveryUrls(data);
         return data;
     }
 
@@ -56,16 +62,15 @@ public class GBFSFeedController {
                     var system = new System();
                     system.setId(s.getId());
                     system.setUrl(
-                            FeedUrlUtil.mapFeedUrl( internalLoadBalancer, GBFSFeedName.GBFS, s.getFeedProvider()).toString()
+                            s.getUrl().replace(baseUrl, internalLoadBalancer)
                     );
-                    system.setFeedProvider(s.getFeedProvider());
                     return system;
                 }).collect(Collectors.toList())
         );
     }
 
     @GetMapping(value = {"/gbfs/{systemId}/{feed}", "/gbfs/{systemId}/{feed}.json"})
-    public Object getGbfsFeedForProvider(HttpServletRequest request, @PathVariable String systemId, @PathVariable String feed) {
+    public Object getGbfsFeedForProvider(@PathVariable String systemId, @PathVariable String feed) {
         try {
             var feedName = GBFSFeedName.fromValue(feed);
             var feedProvider = feedProviderService.getFeedProviderBySystemId(systemId);
@@ -80,10 +85,6 @@ public class GBFSFeedController {
                 throw new NoSuchElementException();
             }
 
-            if (internalLoadBalancer.contains(request.getLocalAddr()) && feedName.equals(GBFSFeedName.GBFS)) {
-                modifyDiscoveryUrls(feedProvider, (GBFS) data);
-            }
-
             return data;
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -92,7 +93,15 @@ public class GBFSFeedController {
         }
     }
 
-    private void modifyDiscoveryUrls(org.entur.lamassu.model.provider.FeedProvider feedProvider, GBFS data) {
+    @GetMapping(value = {"/gbfs-internal/{systemId}/{feed}", "/gbfs/{systemId}/{feed}.json"})
+    public Object getInternalGbfsFeedForProvider(@PathVariable String systemId, @PathVariable String feed) {
+        var feedProvider = feedProviderService.getFeedProviderBySystemId(systemId);
+        var data = getGbfsFeedForProvider(systemId, feed);
+        modifyDiscoveryUrls(feedProvider, (GBFS) data);
+        return data;
+    }
+
+    private void modifyDiscoveryUrls(FeedProvider feedProvider, GBFS data) {
         var gbfs = data;
         gbfs.setFeedsData(
                 gbfs.getFeedsData().entrySet().stream().map(e -> {
@@ -103,7 +112,7 @@ public class GBFSFeedController {
                                 var gbfsFeed = new GBFSFeed();
                                 gbfsFeed.setName(f.getName());
                                 gbfsFeed.setUrl(
-                                        FeedUrlUtil.mapFeedUrl(internalLoadBalancer, f.getName(), feedProvider)
+                                        URI.create(f.getUrl().toString().replace(baseUrl, internalLoadBalancer))
                                 );
                                 return gbfsFeed;
                             }).collect(Collectors.toList())
