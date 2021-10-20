@@ -3,7 +3,7 @@ env: dev
 configMap:
   logLevel: DEBUG
   baseUrl: https://api.dev.entur.io/mobility/v2
-  internalLoadBalancer: https://mobility-v2-temp.dev.entur.org
+  internalLoadBalancer: https://mobility-v2-temp.dev.entur.io
 
 ingress:
   enabled: true
