@@ -28,6 +28,7 @@ metadata:
   name: {{ template "app.name" . }}-internal
   namespace: {{ .Release.Namespace }}
 spec:
+  loadBalancerIP: {{ .Values.service.internal.loadBalancerIP }}
   ports:
     - port: {{ .Values.service.http.externalPort }}
       protocol: TCP

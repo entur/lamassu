@@ -5,6 +5,10 @@ configMap:
   baseUrl: https://api.dev.entur.io/mobility/v2
   internalLoadBalancer: http://10.101.0.27
 
+service:
+  internal:
+    loadBalancerIP: 10.101.0.27
+
 ingress:
   enabled: true
   loadBalancerIP: 35.205.170.68

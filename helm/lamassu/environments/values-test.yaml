@@ -5,6 +5,10 @@ configMap:
   baseUrl: https://api.staging.entur.io/mobility/v2
   internalLoadBalancer: http://10.100.10.10
 
+service:
+  internal:
+    loadBalancerIP: 10.100.10.10
+
 ingress:
   enabled: true
   loadBalancerIP: 130.211.80.129
