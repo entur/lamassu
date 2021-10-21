@@ -5,7 +5,7 @@ replicas: 2
 configMap:
   logLevel: INFO
   baseUrl: https://api.entur.io/mobility/v2
-  internalLoadBalancer: http://127.0.0.1
+  internalLoadBalancer: http://10.99.0.21
 
 ingress:
   enabled: true
