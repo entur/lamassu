@@ -17,25 +17,4 @@ spec:
         - backend:
             serviceName: {{ template "app.name" . }}
             servicePort: {{ .Values.service.http.externalPort }}
-
----
-
-apiVersion: networking.k8s.io/v1beta1
-kind: Ingress
-metadata:
-  labels:
-    {{- include "common.labels" . | indent 4 }}
-  annotations:
-    kubernetes.io/ingress.class: traefik
-    external-dns.alpha.kubernetes.io/target: {{ .Values.ingress.frontendLoadBalancerIP }}
-  name: mobility-v2-temp
-  namespace: {{ .Release.Namespace }}
-spec:
-  rules:
-    - host: mobility-v2-temp{{ .Values.ingress.domainName }}
-      http:
-        paths:
-          - backend:
-              serviceName: {{ template "app.name" . }}
-              servicePort: {{ .Values.service.http.externalPort }}
   {{- end }}
