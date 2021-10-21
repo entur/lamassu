@@ -46,3 +46,21 @@ variable "redis_prevent_destroy" {
 }
 
 variable "ror-lamassu-admin-password" {}
+
+variable "vpc_project" {
+  description = "The project that contains VPC"
+}
+
+variable "vpc_subnet" {
+  description = "The VPC subnet"
+  default     = "default-subnetwork"
+}
+
+variable "internal_service_ip" {
+  description = "Cluster internal IP to reserve"
+}
+
+variable "internal_service_label" {
+  description = "Label for cluster internal IP reservation"
+  default     = "lamassu-internal-service"
+}

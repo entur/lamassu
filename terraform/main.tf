@@ -52,3 +52,13 @@ module "redis" {
   reserved_ip_range = var.redis_reserved_ip_range
   prevent_destroy = var.redis_prevent_destroy
 }
+
+# Reserve IP for cluster-internal service
+resource "google_compute_address" "internal_service_address" {
+  project      = var.vpc_project
+  name         = var.internal_service_label
+  subnetwork   = var.vpc_subnet
+  address_type = "INTERNAL"
+  address      = var.internal_service_ip
+  region       = var.gcp_region
+}
