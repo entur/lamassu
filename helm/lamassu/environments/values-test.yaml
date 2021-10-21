@@ -3,6 +3,7 @@ env: staging
 configMap:
   logLevel: INFO
   baseUrl: https://api.staging.entur.io/mobility/v2
+  internalLoadBalancer: http://127.0.0.1
 
 ingress:
   enabled: true
