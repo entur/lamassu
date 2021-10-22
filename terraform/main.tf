@@ -62,3 +62,13 @@ resource "google_compute_address" "internal_service_address" {
   address      = var.internal_service_ip
   region       = var.gcp_region
 }
+
+# Reserve IP for cluster-internal service for lahmu
+resource "google_compute_address" "internal_service_address_lahmu" {
+  project      = var.vpc_project
+  name         = var.internal_service_label_lahmu
+  subnetwork   = var.vpc_subnet
+  address_type = "INTERNAL"
+  address      = var.internal_service_ip_lahmu
+  region       = var.gcp_region
+}

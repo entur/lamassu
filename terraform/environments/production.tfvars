@@ -6,3 +6,4 @@ redis_prevent_destroy = true
 
 vpc_project     = "entur-1287"
 internal_service_ip = "10.99.0.21"
+internal_service_ip_lahmu = "10.99.0.127"

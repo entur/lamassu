@@ -64,3 +64,12 @@ variable "internal_service_label" {
   description = "Label for cluster internal IP reservation"
   default     = "lamassu-internal-service"
 }
+
+variable "internal_service_ip_lahmu" {
+  description = "Cluster internal IP to reserve"
+}
+
+variable "internal_service_label_lahmu" {
+  description = "Label for cluster internal IP reservation"
+  default     = "lahmu-internal-service"
+}
