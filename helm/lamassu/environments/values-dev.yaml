@@ -204,7 +204,7 @@ lamassu:
       language: nb
     - systemId: moveaboutno
       operatorId: YMO:Operator:Moveabout
-      operatorName: Moveabout
+      operatorName: Move About NO
       codespace: YMO
       url: https://staging.miveo.se/api/gbfs/moveabout_no/gbfs.json
       language: nb
