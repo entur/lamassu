@@ -202,3 +202,9 @@ lamassu:
       codespace: YTI
       url: https://api.staging.entur.io/mobility/v1/gbfs-v2_2/tiertrondheim/gbfs.json
       language: nb
+    - systemId: moveaboutno
+      operatorId: YMO:Operator:Moveabout
+      operatorName: Move About NO
+      codespace: YMO
+      url: https://api.moveabout.no/api/gbfs/moveabout_no/gbfs.json
+      language: nb
