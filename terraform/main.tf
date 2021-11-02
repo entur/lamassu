@@ -3,7 +3,7 @@ terraform {
 }
 
 provider "google" {
-  version = "~> 2.19"
+  version = "~> 4.0"
   region  = var.gcp_region
 }
 
