@@ -43,9 +43,3 @@ GraphQL endpoint targeted at end-user clients. Documentation can be explored at 
 Requires a locally running redis instance. E.g.:
 
     docker run -p 127.0.0.1:6379:6379 -d redis redis-server
-
-### Deployment
-
-Deployed with helm+harness+terraform.
-
-Accessible via Entur API (e.g. `https://api(-env).entur.io/mobility/v2/`).
