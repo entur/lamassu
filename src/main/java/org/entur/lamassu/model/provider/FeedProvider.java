@@ -36,6 +36,11 @@
 
 package org.entur.lamassu.model.provider;
 
+import org.entur.gbfs.v2_2.system_pricing_plans.GBFSSystemPricingPlans;
+import org.entur.gbfs.v2_2.vehicle_types.GBFSVehicleType;
+
+import java.util.List;
+
 public class FeedProvider {
 
     private String systemId;
@@ -44,6 +49,9 @@ public class FeedProvider {
     private String codespace;
     private String url;
     private String language;
+
+    private List<GBFSVehicleType> vehicleTypes;
+    private List<GBFSSystemPricingPlans> pricingPlans;
 
     public String getSystemId() {
         return systemId;
@@ -93,6 +101,22 @@ public class FeedProvider {
         this.language = language;
     }
 
+    public List<GBFSVehicleType> getVehicleTypes() {
+        return vehicleTypes;
+    }
+
+    public void setVehicleTypes(List<GBFSVehicleType> vehicleTypes) {
+        this.vehicleTypes = vehicleTypes;
+    }
+
+    public List<GBFSSystemPricingPlans> getPricingPlans() {
+        return pricingPlans;
+    }
+
+    public void setPricingPlans(List<GBFSSystemPricingPlans> pricingPlans) {
+        this.pricingPlans = pricingPlans;
+    }
+
     @Override
     public String toString() {
         return "FeedProvider{" +
@@ -102,6 +126,8 @@ public class FeedProvider {
                 ", codespace='" + codespace + '\'' +
                 ", url='" + url + '\'' +
                 ", language='" + language + '\'' +
+                ", vehicleTypes=" + vehicleTypes +
+                ", pricingPlans=" + pricingPlans +
                 '}';
     }
 }
