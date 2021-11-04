@@ -37,7 +37,7 @@ aliases:
     command: |
       echo 'export CIRCLE_SHA1="$CIRCLE_SHA1"' >> $BASH_ENV
       echo 'export CIRCLE_PROJECT_REPONAME="$CIRCLE_PROJECT_REPONAME"' >> $BASH_ENV
-      /tools/trigger_build_v2.sh "entur/anshar-deployment-config.git" "master" "$(git log -1 --pretty=%B)"
+      /tools/trigger_build_v2.sh "entur/lamassu-deployment-config.git" "master" "$(git log -1 --pretty=%B)"
 
 jobs:
   test:
@@ -71,7 +71,7 @@ jobs:
           key: dep-cache-{{ checksum "pom.xml" }}
       # Cannot use -o because of snapshot dependencies.
       - run: mvn deploy -s /tools/m2/settings.xml -DskipTests
-      #- run: *post_build
+      - run: *post_build
 
 workflows:
   version: 2.1
