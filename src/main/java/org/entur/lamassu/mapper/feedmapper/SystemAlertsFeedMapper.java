@@ -49,11 +49,15 @@ public class SystemAlertsFeedMapper implements FeedMapper<GBFSSystemAlerts> {
     private GBFSData mapData(GBFSData data, String codespace) {
         var mappedData = new GBFSData();
         mappedData.setAlerts(
-                data.getAlerts().stream().map(
-                        alert -> mapAlert(alert, codespace)
-                ).collect(Collectors.toList())
+                mapAlerts(data.getAlerts(), codespace)
         );
         return mappedData;
+    }
+
+    private List<GBFSAlert> mapAlerts(List<GBFSAlert> alerts, String codespace) {
+        return alerts.stream().map(
+                alert -> mapAlert(alert, codespace)
+        ).collect(Collectors.toList());
     }
 
     private GBFSAlert mapAlert(GBFSAlert alert, String codespace) {
@@ -66,20 +70,8 @@ public class SystemAlertsFeedMapper implements FeedMapper<GBFSSystemAlerts> {
         mappedAlert.setDescription(alert.getDescription());
         mappedAlert.setStationIds(IdMappers.mapIds(codespace, STATION_ID_TYPE, alert.getStationIds()).orElse(null));
         mappedAlert.setSummary(alert.getSummary());
-        mappedAlert.setTimes(mapTimes(alert.getTimes()).orElse(null));
+        mappedAlert.setTimes(alert.getTimes());
         mappedAlert.setType(alert.getType());
         return mappedAlert;
-    }
-
-    private Optional<List<GBFSTime>> mapTimes(List<GBFSTime> times) {
-        return Optional.ofNullable(times)
-                .map(t -> t.stream().map(this::mapTime).collect(Collectors.toList()));
-    }
-
-    private GBFSTime mapTime(GBFSTime time) {
-        var mappedTime = new GBFSTime();
-        mappedTime.setStart(time.getStart());
-        mappedTime.setEnd(time.getEnd());
-        return mappedTime;
     }
 }

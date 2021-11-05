@@ -29,7 +29,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
-public class SystemRegionsMapper implements FeedMapper<GBFSSystemRegions> {
+public class SystemRegionsFeedMapper implements FeedMapper<GBFSSystemRegions> {
     @Override
     public GBFSSystemRegions map(GBFSSystemRegions source, FeedProvider feedProvider) {
         var mapped = new GBFSSystemRegions();
@@ -42,14 +42,14 @@ public class SystemRegionsMapper implements FeedMapper<GBFSSystemRegions> {
 
     private GBFSData mapData(GBFSData data, String codespace) {
         var mapped = new GBFSData();
-        mapped.setRegions(mapRegions(data.getRegions(), codespace).orElse(null));
+        mapped.setRegions(mapRegions(data.getRegions(), codespace));
         return mapped;
     }
 
-    private Optional<List<GBFSRegion>> mapRegions(List<GBFSRegion> regions, String codespace) {
-        return Optional.ofNullable(regions)
-                .map(r -> r.stream().map(region -> mapRegion(region, codespace)).collect(Collectors.toList())
-        );
+    private List<GBFSRegion> mapRegions(List<GBFSRegion> regions, String codespace) {
+        return regions.stream()
+                .map(region -> mapRegion(region, codespace))
+                .collect(Collectors.toList());
     }
 
     private GBFSRegion mapRegion(GBFSRegion region, String codespace) {

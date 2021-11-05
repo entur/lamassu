@@ -29,6 +29,7 @@ public class IdMappers {
     public static final String STATION_ID_TYPE = "Station";
     public static final String REGION_ID_TYPE = "Region";
     public static final String ALERT_ID_TYPE = "Alert";
+    public static final String PRICING_PLAN_ID_TYPE = "PricingPlan";
 
     private IdMappers() {}
 
