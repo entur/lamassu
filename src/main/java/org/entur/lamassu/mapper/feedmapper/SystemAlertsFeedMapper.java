@@ -21,12 +21,10 @@ package org.entur.lamassu.mapper.feedmapper;
 import org.entur.gbfs.v2_2.system_alerts.GBFSAlert;
 import org.entur.gbfs.v2_2.system_alerts.GBFSData;
 import org.entur.gbfs.v2_2.system_alerts.GBFSSystemAlerts;
-import org.entur.gbfs.v2_2.system_alerts.GBFSTime;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.entur.lamassu.mapper.feedmapper.IdMappers.ALERT_ID_TYPE;

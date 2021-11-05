@@ -24,6 +24,7 @@ import org.entur.gbfs.GbfsSubscriptionOptions;
 import org.entur.gbfs.v2_2.gbfs.GBFS;
 import org.entur.gbfs.v2_2.gbfs.GBFSFeedName;
 import org.entur.gbfs.v2_2.system_alerts.GBFSSystemAlerts;
+import org.entur.gbfs.v2_2.system_pricing_plans.GBFSSystemPricingPlans;
 import org.entur.gbfs.v2_2.system_regions.GBFSSystemRegions;
 import org.entur.lamassu.cache.GBFSFeedCacheV2;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
@@ -46,6 +47,7 @@ public class FeedUpdater {
     private final FeedMapper<GBFS> discoveryFeedMapper;
     private final FeedMapper<GBFSSystemAlerts> systemAlertsFeedMapper;
     private final FeedMapper<GBFSSystemRegions> systemRegionsFeedMapper;
+    private final FeedMapper<GBFSSystemPricingPlans> systemPricingPlansFeedMapper;
 
     private static final int NUM_CORES = Runtime.getRuntime().availableProcessors();
 
@@ -58,13 +60,15 @@ public class FeedUpdater {
             GBFSFeedCacheV2 feedCache,
             FeedMapper<GBFS> discoveryFeedMapper,
             FeedMapper<GBFSSystemAlerts> systemAlertsFeedMapper,
-            FeedMapper<GBFSSystemRegions> systemRegionsFeedMapper
+            FeedMapper<GBFSSystemRegions> systemRegionsFeedMapper,
+            FeedMapper<GBFSSystemPricingPlans> systemPricingPlansFeedMapper
     ) {
         this.feedProviderConfig = feedProviderConfig;
         this.feedCache = feedCache;
         this.discoveryFeedMapper = discoveryFeedMapper;
         this.systemAlertsFeedMapper = systemAlertsFeedMapper;
         this.systemRegionsFeedMapper = systemRegionsFeedMapper;
+        this.systemPricingPlansFeedMapper = systemPricingPlansFeedMapper;
     }
 
     public void start() {
@@ -99,7 +103,7 @@ public class FeedUpdater {
         updateFeedCache(feedProvider, GBFSFeedName.SystemAlerts, systemAlertsFeedMapper.map(delivery.getSystemAlerts(), feedProvider));
         updateFeedCache(feedProvider, GBFSFeedName.SystemCalendar, delivery.getSystemCalendar());
         updateFeedCache(feedProvider, GBFSFeedName.SystemRegions, systemRegionsFeedMapper.map(delivery.getSystemRegions(), feedProvider));
-        updateFeedCache(feedProvider, GBFSFeedName.SystemPricingPlans, delivery.getSystemPricingPlans());
+        updateFeedCache(feedProvider, GBFSFeedName.SystemPricingPlans, systemPricingPlansFeedMapper.map(delivery.getSystemPricingPlans(), feedProvider));
         updateFeedCache(feedProvider, GBFSFeedName.SystemHours, delivery.getSystemHours());
         updateFeedCache(feedProvider, GBFSFeedName.VehicleTypes, delivery.getVehicleTypes());
         updateFeedCache(feedProvider, GBFSFeedName.GeofencingZones, delivery.getGeofencingZones());

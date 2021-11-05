@@ -5,7 +5,7 @@
   "data": {
     "plans": [
       {
-        "plan_id": "TST:PricingPlan:Basic",
+        "plan_id": "Basic",
         "name": "Basic",
         "currency": "NOK",
         "price": 0.0,

@@ -22,13 +22,14 @@ import org.entur.gbfs.v2_2.system_pricing_plans.GBFSData;
 import org.entur.gbfs.v2_2.system_pricing_plans.GBFSPlan;
 import org.entur.gbfs.v2_2.system_pricing_plans.GBFSSystemPricingPlans;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.entur.lamassu.mapper.feedmapper.IdMappers.PRICING_PLAN_ID_TYPE;
 
+@Component
 public class SystemPricingPlansFeedMapper implements FeedMapper<GBFSSystemPricingPlans> {
     @Override
     public GBFSSystemPricingPlans map(GBFSSystemPricingPlans source, FeedProvider feedProvider) {
