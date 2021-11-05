@@ -21,40 +21,67 @@ package org.entur.lamassu.updater;
 import org.entur.gbfs.GbfsDelivery;
 import org.entur.gbfs.GbfsSubscriptionManager;
 import org.entur.gbfs.GbfsSubscriptionOptions;
+import org.entur.gbfs.v2_2.gbfs.GBFS;
 import org.entur.gbfs.v2_2.gbfs.GBFSFeedName;
+import org.entur.gbfs.v2_2.system_alerts.GBFSSystemAlerts;
 import org.entur.lamassu.cache.GBFSFeedCacheV2;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.mapper.feedmapper.DiscoveryFeedMapper;
+import org.entur.lamassu.mapper.feedmapper.FeedMapper;
 import org.entur.lamassu.mapper.feedmapper.SystemAlertsFeedMapper;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.net.URI;
+import java.util.concurrent.ForkJoinPool;
 
-public class FeedUpdater implements Runnable {
+@Component
+public class FeedUpdater {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final FeedProviderConfig feedProviderConfig;
     private final GBFSFeedCacheV2 feedCache;
-    private final GbfsSubscriptionManager subscriptionManager;
-    private final DiscoveryFeedMapper discoveryFeedMapper;
-    private final SystemAlertsFeedMapper systemAlertsFeedMapper = new SystemAlertsFeedMapper();
+    private final FeedMapper<GBFS> discoveryFeedMapper;
+    private final FeedMapper<GBFSSystemAlerts> systemAlertsFeedMapper;
 
+    private static final int NUM_CORES = Runtime.getRuntime().availableProcessors();
+
+    private GbfsSubscriptionManager subscriptionManager;
+    private ForkJoinPool updaterThreadPool;
+
+    @Autowired
     public FeedUpdater(
             FeedProviderConfig feedProviderConfig,
             GBFSFeedCacheV2 feedCache,
-            GbfsSubscriptionManager subscriptionManager,
-            DiscoveryFeedMapper discoveryFeedMapper
+            FeedMapper<GBFS> discoveryFeedMapper,
+            FeedMapper<GBFSSystemAlerts> systemAlertsFeedMapper
+
     ) {
         this.feedProviderConfig = feedProviderConfig;
         this.feedCache = feedCache;
-        this.subscriptionManager = subscriptionManager;
         this.discoveryFeedMapper = discoveryFeedMapper;
+        this.systemAlertsFeedMapper = systemAlertsFeedMapper;
     }
 
-    @Override
-    public void run() {
+    public void start() {
+        updaterThreadPool = new ForkJoinPool(NUM_CORES * 2);
+        subscriptionManager = new GbfsSubscriptionManager(updaterThreadPool);
+        updaterThreadPool.submit(this::createSubscriptions);
+    }
+
+    public void update() {
+        subscriptionManager.update();
+    }
+
+    public void stop() {
+        updaterThreadPool.shutdown();
+    }
+
+    private void createSubscriptions() {
         feedProviderConfig.getProviders().parallelStream().forEach(this::createSubscription);
     }
 
@@ -66,10 +93,10 @@ public class FeedUpdater implements Runnable {
     }
 
     private void updateFeedCaches(FeedProvider feedProvider, GbfsDelivery delivery) {
-        updateFeedCache(feedProvider, GBFSFeedName.GBFS, discoveryFeedMapper.mapDiscoveryFeed(delivery.getDiscovery(), feedProvider));
+        updateFeedCache(feedProvider, GBFSFeedName.GBFS, discoveryFeedMapper.map(delivery.getDiscovery(), feedProvider));
         updateFeedCache(feedProvider, GBFSFeedName.GBFSVersions, delivery.getVersion());
         updateFeedCache(feedProvider, GBFSFeedName.SystemInformation,delivery.getSystemInformation());
-        updateFeedCache(feedProvider, GBFSFeedName.SystemAlerts, systemAlertsFeedMapper.mapSystemAlerts(delivery.getSystemAlerts(), feedProvider.getCodespace()));
+        updateFeedCache(feedProvider, GBFSFeedName.SystemAlerts, systemAlertsFeedMapper.map(delivery.getSystemAlerts(), feedProvider));
         updateFeedCache(feedProvider, GBFSFeedName.SystemCalendar, delivery.getSystemCalendar());
         updateFeedCache(feedProvider, GBFSFeedName.SystemRegions, delivery.getSystemRegions());
         updateFeedCache(feedProvider, GBFSFeedName.SystemPricingPlans, delivery.getSystemPricingPlans());

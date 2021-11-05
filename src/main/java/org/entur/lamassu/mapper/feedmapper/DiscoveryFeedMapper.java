@@ -25,21 +25,22 @@ import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.util.FeedUrlUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class DiscoveryFeedMapper {
-    private final String baseUrl;
+@Component
+public class DiscoveryFeedMapper implements FeedMapper<GBFS> {
+    @Value("${org.entur.lamassu.baseUrl}")
+    private String baseUrl;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public DiscoveryFeedMapper(String baseUrl) {
-        this.baseUrl = baseUrl;
-    }
-
-    public GBFS mapDiscoveryFeed(GBFS source, FeedProvider feedProvider) {
+    public GBFS map(GBFS source, FeedProvider feedProvider) {
         if (source.getFeedsData() == null) {
             logger.warn("Missing discovery data for provider={} feed={}", feedProvider, source);
             return null;
