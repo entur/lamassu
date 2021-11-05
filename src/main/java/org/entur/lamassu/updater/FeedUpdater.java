@@ -26,14 +26,11 @@ import org.entur.gbfs.v2_2.gbfs.GBFSFeedName;
 import org.entur.gbfs.v2_2.system_alerts.GBFSSystemAlerts;
 import org.entur.lamassu.cache.GBFSFeedCacheV2;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
-import org.entur.lamassu.mapper.feedmapper.DiscoveryFeedMapper;
 import org.entur.lamassu.mapper.feedmapper.FeedMapper;
-import org.entur.lamassu.mapper.feedmapper.SystemAlertsFeedMapper;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
