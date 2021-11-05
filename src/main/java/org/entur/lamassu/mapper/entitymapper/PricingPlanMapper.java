@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -49,29 +50,25 @@ public class PricingPlanMapper {
         mapped.setPrice(plan.getPrice().floatValue());
         mapped.setTaxable(plan.getIsTaxable());
         mapped.setSurgePricing(plan.getSurgePricing());
-        mapped.setPerKmPricing(mapPerKmPricing(plan.getPerKmPricing()));
-        mapped.setPerMinPricing(mapPerMinPricing(plan.getPerMinPricing()));
+        mapped.setPerKmPricing(mapPerKmPricing(plan.getPerKmPricing()).orElse(null));
+        mapped.setPerMinPricing(mapPerMinPricing(plan.getPerMinPricing()).orElse(null));
         return mapped;
     }
 
-    private List<PricingSegment> mapPerKmPricing(List<GBFSPerKmPricing> pricingSegments) {
-        if (pricingSegments == null) {
-            return null;
-        }
-
-        return pricingSegments.stream()
-                .map(pricingSegment -> getPricingSegment(pricingSegment.getStart(), pricingSegment.getRate(), pricingSegment.getInterval(), pricingSegment.getEnd()))
-                .collect(Collectors.toList());
+    private Optional<List<PricingSegment>> mapPerKmPricing(List<GBFSPerKmPricing> pricingSegments) {
+        return Optional.ofNullable(pricingSegments)
+                .map(p -> p.stream()
+                        .map(pricingSegment -> getPricingSegment(pricingSegment.getStart(), pricingSegment.getRate(), pricingSegment.getInterval(), pricingSegment.getEnd()))
+                        .collect(Collectors.toList())
+                );
     }
 
-    private List<PricingSegment> mapPerMinPricing(List<GBFSPerMinPricing> pricingSegments) {
-        if (pricingSegments == null) {
-            return null;
-        }
-
-        return pricingSegments.stream()
-                .map(pricingSegment -> getPricingSegment(pricingSegment.getStart(), pricingSegment.getRate(), pricingSegment.getInterval(), pricingSegment.getEnd()))
-                .collect(Collectors.toList());
+    private Optional<List<PricingSegment>> mapPerMinPricing(List<GBFSPerMinPricing> pricingSegments) {
+        return Optional.ofNullable(pricingSegments)
+                .map(p -> p.stream()
+                        .map(pricingSegment -> getPricingSegment(pricingSegment.getStart(), pricingSegment.getRate(), pricingSegment.getInterval(), pricingSegment.getEnd()))
+                        .collect(Collectors.toList())
+                );
     }
 
     private PricingSegment getPricingSegment(Double start, Double rate, Double interval, Double end) {

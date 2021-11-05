@@ -26,6 +26,7 @@ import org.entur.lamassu.model.provider.FeedProvider;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.entur.lamassu.mapper.feedmapper.IdMappers.ALERT_ID_TYPE;
@@ -65,17 +66,14 @@ public class SystemAlertsFeedMapper implements FeedMapper<GBFSSystemAlerts> {
         mappedAlert.setDescription(alert.getDescription());
         mappedAlert.setStationIds(IdMappers.mapIds(codespace, STATION_ID_TYPE, alert.getStationIds()));
         mappedAlert.setSummary(alert.getSummary());
-        mappedAlert.setTimes(mapTimes(alert.getTimes()));
+        mappedAlert.setTimes(mapTimes(alert.getTimes()).orElse(null));
         mappedAlert.setType(alert.getType());
         return mappedAlert;
     }
 
-    private List<GBFSTime> mapTimes(List<GBFSTime> times) {
-        if (times == null) {
-            return null;
-        }
-
-        return times.stream().map(this::mapTime).collect(Collectors.toList());
+    private Optional<List<GBFSTime>> mapTimes(List<GBFSTime> times) {
+        return Optional.ofNullable(times)
+                .map(t -> t.stream().map(this::mapTime).collect(Collectors.toList()));
     }
 
     private GBFSTime mapTime(GBFSTime time) {

@@ -47,12 +47,8 @@ public class SystemRegionsMapper implements FeedMapper<GBFSSystemRegions> {
     }
 
     private Optional<List<GBFSRegion>> mapRegions(List<GBFSRegion> regions, String codespace) {
-        if (regions == null) {
-            return Optional.empty();
-        }
-
-        return Optional.of(
-                regions.stream().map(region -> mapRegion(region, codespace)).collect(Collectors.toList())
+        return Optional.ofNullable(regions)
+                .map(r -> r.stream().map(region -> mapRegion(region, codespace)).collect(Collectors.toList())
         );
     }
 
