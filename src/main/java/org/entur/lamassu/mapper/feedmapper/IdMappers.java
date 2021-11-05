@@ -29,6 +29,8 @@ public class IdMappers {
     public static final String REGION_ID_TYPE = "Region";
     public static final String ALERT_ID_TYPE = "Alert";
 
+    private IdMappers() {}
+
     public static String mapId(String codespace, String type, String value) {
         var predicate = NetexIdPredicateBuilder.newInstance()
                 .withCodespace(codespace)
