@@ -25,6 +25,7 @@ import org.entur.gbfs.v2_2.gbfs.GBFSFeedName;
 import org.entur.lamassu.cache.GBFSFeedCacheV2;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.mapper.feedmapper.DiscoveryFeedMapper;
+import org.entur.lamassu.mapper.feedmapper.SystemAlertsFeedMapper;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,7 @@ public class FeedUpdater implements Runnable {
     private final GBFSFeedCacheV2 feedCache;
     private final GbfsSubscriptionManager subscriptionManager;
     private final DiscoveryFeedMapper discoveryFeedMapper;
+    private final SystemAlertsFeedMapper systemAlertsFeedMapper = new SystemAlertsFeedMapper();
 
     public FeedUpdater(
             FeedProviderConfig feedProviderConfig,
@@ -67,7 +69,7 @@ public class FeedUpdater implements Runnable {
         updateFeedCache(feedProvider, GBFSFeedName.GBFS, discoveryFeedMapper.mapDiscoveryFeed(delivery.getDiscovery(), feedProvider));
         updateFeedCache(feedProvider, GBFSFeedName.GBFSVersions, delivery.getVersion());
         updateFeedCache(feedProvider, GBFSFeedName.SystemInformation,delivery.getSystemInformation());
-        updateFeedCache(feedProvider, GBFSFeedName.SystemAlerts, delivery.getSystemAlerts());
+        updateFeedCache(feedProvider, GBFSFeedName.SystemAlerts, systemAlertsFeedMapper.mapSystemAlerts(delivery.getSystemAlerts(), feedProvider));
         updateFeedCache(feedProvider, GBFSFeedName.SystemCalendar, delivery.getSystemCalendar());
         updateFeedCache(feedProvider, GBFSFeedName.SystemRegions, delivery.getSystemRegions());
         updateFeedCache(feedProvider, GBFSFeedName.SystemPricingPlans, delivery.getSystemPricingPlans());

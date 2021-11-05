@@ -116,7 +116,9 @@ public class GBFSRestIntegrationTest extends AbstractIntegrationTestBase {
         mockMvc.perform(get("/gbfs/testatlantis/system_alerts")
                 .contentType("application/json"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.alerts[0].alert_id").value("TST:Alert:1"));
+                .andExpect(jsonPath("$.data.alerts[0].alert_id").value("TST:Alert:1"))
+                .andExpect(jsonPath("$.data.alerts[0].station_ids[0]").value("TST:Station:1"))
+                .andExpect(jsonPath("$.data.alerts[0].region_ids[0]").value("TST:Region:1"));
     }
 
     @Test

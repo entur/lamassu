@@ -5,7 +5,7 @@
   "data": {
     "alerts": [
       {
-        "alert_id": "TST:Alert:1",
+        "alert_id": "1",
         "type": "STATION_CLOSURE",
         "times": [
           {
@@ -13,7 +13,8 @@
             "end": 1434054987
           }
         ],
-        "station_ids": ["TST:Station:1"],
+        "station_ids": ["1"],
+        "region_ids": ["1"],
         "summary": "Closed for maintenance",
         "description": "Station is closed to install more docks.",
         "last_updated": 1434054678
