@@ -62,9 +62,9 @@ public class SystemAlertsFeedMapper implements FeedMapper<GBFSSystemAlerts> {
         mappedAlert.setLastUpdated(alert.getLastUpdated());
         mappedAlert.setUrl(alert.getUrl());
         mappedAlert.setDescription(alert.getDescription());
-        mappedAlert.setRegionIds(IdMappers.mapIds(codespace, REGION_ID_TYPE, alert.getRegionIds()));
+        mappedAlert.setRegionIds(IdMappers.mapIds(codespace, REGION_ID_TYPE, alert.getRegionIds()).orElse(null));
         mappedAlert.setDescription(alert.getDescription());
-        mappedAlert.setStationIds(IdMappers.mapIds(codespace, STATION_ID_TYPE, alert.getStationIds()));
+        mappedAlert.setStationIds(IdMappers.mapIds(codespace, STATION_ID_TYPE, alert.getStationIds()).orElse(null));
         mappedAlert.setSummary(alert.getSummary());
         mappedAlert.setTimes(mapTimes(alert.getTimes()).orElse(null));
         mappedAlert.setType(alert.getType());

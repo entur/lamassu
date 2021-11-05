@@ -22,6 +22,7 @@ import no.entur.abt.netex.id.NetexIdBuilder;
 import no.entur.abt.netex.id.predicate.NetexIdPredicateBuilder;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class IdMappers {
@@ -47,13 +48,12 @@ public class IdMappers {
         }
     }
 
-    public static List<String> mapIds(String codespace, String type, List<String> values) {
-        if (values == null) {
-            return null;
-        }
-
-        return values.stream()
-                .map(id -> mapId(codespace, type, id))
-                .collect(Collectors.toList());
+    public static Optional<List<String>> mapIds(String codespace, String type, List<String> values) {
+        return Optional.ofNullable(values)
+                .map(
+                        v -> v.stream()
+                                .map(id -> mapId(codespace, type, id))
+                                .collect(Collectors.toList())
+                );
     }
 }
