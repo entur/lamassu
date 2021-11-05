@@ -21,8 +21,15 @@ package org.entur.lamassu.mapper.feedmapper;
 import no.entur.abt.netex.id.NetexIdBuilder;
 import no.entur.abt.netex.id.predicate.NetexIdPredicateBuilder;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class IdMappers {
-    private static String mapId(String codespace, String type, String value) {
+    public static final String STATION_ID_TYPE = "Station";
+    public static final String REGION_ID_TYPE = "Region";
+    public static final String ALERT_ID_TYPE = "Alert";
+
+    public static String mapId(String codespace, String type, String value) {
         var predicate = NetexIdPredicateBuilder.newInstance()
                 .withCodespace(codespace)
                 .withType(type)
@@ -38,15 +45,13 @@ public class IdMappers {
         }
     }
 
-    public static String mapAlertId(String codespace, String value) {
-        return mapId(codespace, "Alert", value);
-    }
+    public static List<String> mapIds(String codespace, String type, List<String> values) {
+        if (values == null) {
+            return null;
+        }
 
-    public static String mapRegionId(String codespace, String value) {
-        return mapId(codespace, "Region", value);
-    }
-
-    public static String mapStationId(String codespace, String value) {
-        return mapId(codespace, "Station", value);
+        return values.stream()
+                .map(id -> mapId(codespace, type, id))
+                .collect(Collectors.toList());
     }
 }

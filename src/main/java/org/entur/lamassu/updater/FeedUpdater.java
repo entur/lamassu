@@ -69,7 +69,7 @@ public class FeedUpdater implements Runnable {
         updateFeedCache(feedProvider, GBFSFeedName.GBFS, discoveryFeedMapper.mapDiscoveryFeed(delivery.getDiscovery(), feedProvider));
         updateFeedCache(feedProvider, GBFSFeedName.GBFSVersions, delivery.getVersion());
         updateFeedCache(feedProvider, GBFSFeedName.SystemInformation,delivery.getSystemInformation());
-        updateFeedCache(feedProvider, GBFSFeedName.SystemAlerts, systemAlertsFeedMapper.mapSystemAlerts(delivery.getSystemAlerts(), feedProvider));
+        updateFeedCache(feedProvider, GBFSFeedName.SystemAlerts, systemAlertsFeedMapper.mapSystemAlerts(delivery.getSystemAlerts(), feedProvider.getCodespace()));
         updateFeedCache(feedProvider, GBFSFeedName.SystemCalendar, delivery.getSystemCalendar());
         updateFeedCache(feedProvider, GBFSFeedName.SystemRegions, delivery.getSystemRegions());
         updateFeedCache(feedProvider, GBFSFeedName.SystemPricingPlans, delivery.getSystemPricingPlans());
