@@ -3,7 +3,7 @@ package org.entur.lamassu.updater;
 import org.entur.gbfs.GbfsSubscriptionManager;
 import org.entur.lamassu.cache.GBFSFeedCacheV2;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
-import org.entur.lamassu.mapper.DiscoveryFeedMapper;
+import org.entur.lamassu.mapper.feedmapper.DiscoveryFeedMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

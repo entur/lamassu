@@ -1,6 +1,6 @@
 package org.entur.lamassu.service.impl;
 
-import org.entur.lamassu.mapper.SystemDiscoveryMapper;
+import org.entur.lamassu.mapper.entitymapper.SystemDiscoveryMapper;
 import org.entur.lamassu.model.discovery.SystemDiscovery;
 import org.entur.lamassu.service.FeedProviderService;
 import org.entur.lamassu.service.SystemDiscoveryService;
