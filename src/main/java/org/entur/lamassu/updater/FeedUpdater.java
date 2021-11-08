@@ -24,6 +24,7 @@ import org.entur.gbfs.GbfsSubscriptionOptions;
 import org.entur.gbfs.v2_2.gbfs.GBFS;
 import org.entur.gbfs.v2_2.gbfs.GBFSFeedName;
 import org.entur.gbfs.v2_2.station_information.GBFSStationInformation;
+import org.entur.gbfs.v2_2.station_status.GBFSStationStatus;
 import org.entur.gbfs.v2_2.system_alerts.GBFSSystemAlerts;
 import org.entur.gbfs.v2_2.system_pricing_plans.GBFSSystemPricingPlans;
 import org.entur.gbfs.v2_2.system_regions.GBFSSystemRegions;
@@ -52,6 +53,7 @@ public class FeedUpdater {
     private final FeedMapper<GBFSSystemPricingPlans> systemPricingPlansFeedMapper;
     private final FeedMapper<GBFSVehicleTypes> vehicleTypesFeedMapper;
     private final FeedMapper<GBFSStationInformation> stationInformationFeedMapper;
+    private final FeedMapper<GBFSStationStatus> stationStatusFeedMapper;
 
     private static final int NUM_CORES = Runtime.getRuntime().availableProcessors();
 
@@ -67,7 +69,8 @@ public class FeedUpdater {
             FeedMapper<GBFSSystemRegions> systemRegionsFeedMapper,
             FeedMapper<GBFSSystemPricingPlans> systemPricingPlansFeedMapper,
             FeedMapper<GBFSVehicleTypes> vehicleTypesFeedMapper,
-            FeedMapper<GBFSStationInformation> stationInformationFeedMapper
+            FeedMapper<GBFSStationInformation> stationInformationFeedMapper,
+            FeedMapper<GBFSStationStatus> stationStatusFeedMapper
     ) {
         this.feedProviderConfig = feedProviderConfig;
         this.feedCache = feedCache;
@@ -77,6 +80,7 @@ public class FeedUpdater {
         this.systemPricingPlansFeedMapper = systemPricingPlansFeedMapper;
         this.vehicleTypesFeedMapper = vehicleTypesFeedMapper;
         this.stationInformationFeedMapper = stationInformationFeedMapper;
+        this.stationStatusFeedMapper = stationStatusFeedMapper;
     }
 
     public void start() {
@@ -116,7 +120,7 @@ public class FeedUpdater {
         updateFeedCache(feedProvider, GBFSFeedName.VehicleTypes, vehicleTypesFeedMapper.map(delivery.getVehicleTypes(), feedProvider));
         updateFeedCache(feedProvider, GBFSFeedName.GeofencingZones, delivery.getGeofencingZones());
         updateFeedCache(feedProvider, GBFSFeedName.StationInformation, stationInformationFeedMapper.map(delivery.getStationInformation(), feedProvider));
-        updateFeedCache(feedProvider, GBFSFeedName.StationStatus, delivery.getStationStatus());
+        updateFeedCache(feedProvider, GBFSFeedName.StationStatus, stationStatusFeedMapper.map(delivery.getStationStatus(), feedProvider));
         updateFeedCache(feedProvider, GBFSFeedName.FreeBikeStatus, delivery.getFreeBikeStatus());
     }
 
