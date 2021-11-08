@@ -60,7 +60,9 @@ public class GBFSRestIntegrationTest extends AbstractIntegrationTestBase {
         mockMvc.perform(get("/gbfs/testatlantis/free_bike_status")
                 .contentType("application/json"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.bikes[0].bike_id").value("TST:Scooter:1234"));
+                .andExpect(jsonPath("$.data.bikes[0].bike_id").value("TST:Vehicle:1234"))
+                .andExpect(jsonPath("$.data.bikes[0].vehicle_type_id").value("TST:VehicleType:Scooter"))
+                .andExpect(jsonPath("$.data.bikes[0].pricing_plan_id").value("TST:PricingPlan:Basic"));
     }
 
     @Test

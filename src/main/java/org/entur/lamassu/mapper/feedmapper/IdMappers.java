@@ -31,6 +31,7 @@ public class IdMappers {
     public static final String ALERT_ID_TYPE = "Alert";
     public static final String PRICING_PLAN_ID_TYPE = "PricingPlan";
     public static final String VEHICLE_TYPE_ID_TYPE = "VehicleType";
+    public static final String BIKE_ID_TYPE = "Vehicle";
 
     private IdMappers() {}
 
