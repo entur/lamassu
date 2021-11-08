@@ -33,6 +33,10 @@ import static org.entur.lamassu.mapper.feedmapper.IdMappers.PRICING_PLAN_ID_TYPE
 public class SystemPricingPlansFeedMapper implements FeedMapper<GBFSSystemPricingPlans> {
     @Override
     public GBFSSystemPricingPlans map(GBFSSystemPricingPlans source, FeedProvider feedProvider) {
+        if (source == null) {
+            return null;
+        }
+
         var mapped = new GBFSSystemPricingPlans();
         mapped.setVersion(source.getVersion());
         mapped.setTtl(source.getTtl());

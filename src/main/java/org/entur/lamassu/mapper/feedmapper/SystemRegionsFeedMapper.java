@@ -31,6 +31,10 @@ import java.util.stream.Collectors;
 public class SystemRegionsFeedMapper implements FeedMapper<GBFSSystemRegions> {
     @Override
     public GBFSSystemRegions map(GBFSSystemRegions source, FeedProvider feedProvider) {
+        if (source == null) {
+            return null;
+        }
+
         var mapped = new GBFSSystemRegions();
         mapped.setVersion(source.getVersion());
         mapped.setTtl(source.getTtl());

@@ -35,6 +35,9 @@ import static org.entur.lamassu.mapper.feedmapper.IdMappers.STATION_ID_TYPE;
 public class SystemAlertsFeedMapper implements FeedMapper<GBFSSystemAlerts> {
 
     public GBFSSystemAlerts map(GBFSSystemAlerts systemAlerts, FeedProvider feedProvider) {
+        if (systemAlerts == null) {
+            return null;
+        }
         var codespace = feedProvider.getCodespace();
         var mappedSystemAlerts = new GBFSSystemAlerts();
         mappedSystemAlerts.setVersion(systemAlerts.getVersion());

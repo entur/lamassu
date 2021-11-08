@@ -33,6 +33,10 @@ import static org.entur.lamassu.mapper.feedmapper.IdMappers.VEHICLE_TYPE_ID_TYPE
 public class VehicleTypesFeedMapper implements FeedMapper<GBFSVehicleTypes> {
     @Override
     public GBFSVehicleTypes map(GBFSVehicleTypes source, FeedProvider feedProvider) {
+        if (source == null) {
+            return null;
+        }
+
         var mapped = new GBFSVehicleTypes();
         mapped.setVersion(source.getVersion());
         mapped.setTtl(source.getTtl());

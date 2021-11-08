@@ -34,6 +34,10 @@ import java.util.stream.Collectors;
 public class StationStatusFeedMapper implements FeedMapper<GBFSStationStatus> {
     @Override
     public GBFSStationStatus map(GBFSStationStatus source, FeedProvider feedProvider) {
+        if (source == null) {
+            return null;
+        }
+
         var mapped = new GBFSStationStatus();
         mapped.setVersion(source.getVersion());
         mapped.setLastUpdated(source.getLastUpdated());

@@ -33,6 +33,10 @@ import java.util.stream.Collectors;
 public class StationInformationFeedMapper implements FeedMapper<GBFSStationInformation> {
     @Override
     public GBFSStationInformation map(GBFSStationInformation source, FeedProvider feedProvider) {
+        if (source == null) {
+            return null;
+        }
+
         var mapped = new GBFSStationInformation();
         mapped.setVersion(source.getVersion());
         mapped.setLastUpdated(source.getLastUpdated());

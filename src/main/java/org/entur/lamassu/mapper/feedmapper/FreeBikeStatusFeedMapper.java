@@ -30,6 +30,10 @@ import java.util.stream.Collectors;
 public class FreeBikeStatusFeedMapper implements FeedMapper<GBFSFreeBikeStatus> {
     @Override
     public GBFSFreeBikeStatus map(GBFSFreeBikeStatus source, FeedProvider feedProvider) {
+        if (source == null) {
+            return null;
+        }
+
         var mapped = new GBFSFreeBikeStatus();
         mapped.setVersion(source.getVersion());
         mapped.setLastUpdated(source.getLastUpdated());
