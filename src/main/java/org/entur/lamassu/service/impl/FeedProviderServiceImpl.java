@@ -19,7 +19,7 @@
 package org.entur.lamassu.service.impl;
 
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
-import org.entur.lamassu.mapper.TranslationMapper;
+import org.entur.lamassu.mapper.entitymapper.TranslationMapper;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.model.entities.Operator;
 import org.entur.lamassu.service.FeedProviderService;

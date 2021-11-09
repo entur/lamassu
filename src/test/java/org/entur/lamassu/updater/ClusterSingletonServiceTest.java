@@ -13,7 +13,7 @@ import static org.mockito.Mockito.*;
 public class ClusterSingletonServiceTest {
 
     RLock mockedLock = mock(RLock.class);
-    FeedUpdateScheduler mockedFeedUpdateScheduler = mock(FeedUpdateScheduler.class);
+    FeedUpdater mockedFeedUpdater = mock(FeedUpdater.class);
     ListenerManager mockedListenerManager = mock(ListenerManager.class);
     GeoSearchService mockedGeoSearchService = mock(GeoSearchService.class);
 
@@ -26,7 +26,7 @@ public class ClusterSingletonServiceTest {
     public void testRenewLeadershipNoop() throws InterruptedException {
         var service = baseCase();
         service.heartbeat();
-        verifyNoMoreInteractions(mockedFeedUpdateScheduler);
+        verifyNoMoreInteractions(mockedFeedUpdater);
     }
 
     @Test
@@ -34,15 +34,15 @@ public class ClusterSingletonServiceTest {
         var service = baseCase();
         when(mockedLock.tryLock(anyLong(), anyLong(), any(TimeUnit.class))).thenReturn(false);
         service.heartbeat();
-        verify(mockedFeedUpdateScheduler).stop();
+        verify(mockedFeedUpdater).stop();
     }
 
     @Test(expected = InterruptedException.class)
     public void testBecomeLeaderThrowsInterruptStopsSchedulingAndRethrows() throws InterruptedException {
         when(mockedLock.tryLock(anyLong(), anyLong(), any(TimeUnit.class))).thenThrow(InterruptedException.class);
-        var service = new ClusterSingletonService(mockedLock, mockedFeedUpdateScheduler, mockedListenerManager, mockedGeoSearchService);
+        var service = new ClusterSingletonService(mockedLock, mockedFeedUpdater, mockedListenerManager, mockedGeoSearchService);
         service.heartbeat();
-        verify(mockedFeedUpdateScheduler).stop();
+        verify(mockedFeedUpdater).stop();
     }
 
     @Test(expected = InterruptedException.class)
@@ -50,14 +50,14 @@ public class ClusterSingletonServiceTest {
         var service = baseCase();
         when(mockedLock.tryLock(anyLong(), anyLong(), any(TimeUnit.class))).thenThrow(InterruptedException.class);
         service.heartbeat();
-        verify(mockedFeedUpdateScheduler).stop();
+        verify(mockedFeedUpdater).stop();
     }
 
     private ClusterSingletonService baseCase() throws InterruptedException {
         when(mockedLock.tryLock(anyLong(), anyLong(), any(TimeUnit.class))).thenReturn(true);
-        var service = new ClusterSingletonService(mockedLock, mockedFeedUpdateScheduler, mockedListenerManager, mockedGeoSearchService);
+        var service = new ClusterSingletonService(mockedLock, mockedFeedUpdater, mockedListenerManager, mockedGeoSearchService);
         service.heartbeat();
-        verify(mockedFeedUpdateScheduler).start();
+        verify(mockedFeedUpdater).start();
         return service;
     }
 }

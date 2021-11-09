@@ -5,7 +5,7 @@
   "data": {
     "vehicle_types": [
       {
-        "vehicle_type_id": "TST:VehicleType:Scooter",
+        "vehicle_type_id": "Scooter",
         "form_factor": "scooter",
         "propulsion_type": "electric",
         "max_range_meters": 0.0

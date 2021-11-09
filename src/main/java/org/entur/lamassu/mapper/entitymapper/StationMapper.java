@@ -16,7 +16,7 @@
  *
  */
 
-package org.entur.lamassu.mapper;
+package org.entur.lamassu.mapper.entitymapper;
 
 import org.entur.gbfs.v2_2.station_information.GBFSStation;
 import org.entur.gbfs.v2_2.station_status.GBFSVehicleTypesAvailable;

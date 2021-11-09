@@ -24,6 +24,7 @@
         <kryo.version>5.2.0</kryo.version>
         <jackson.version>2.13.0</jackson.version>
         <gbfs-loader-java.version>1.0.1</gbfs-loader-java.version>
+        <netex-utils.version>1.19</netex-utils.version>
     </properties>
 
     <distributionManagement>
@@ -154,6 +155,11 @@
             <groupId>com.esotericsoftware</groupId>
             <artifactId>kryo</artifactId>
             <version>${kryo.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>no.entur.abt</groupId>
+            <artifactId>netex-utils</artifactId>
+            <version>${netex-utils.version}</version>
         </dependency>
     </dependencies>
 

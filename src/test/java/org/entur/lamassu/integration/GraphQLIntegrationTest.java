@@ -21,7 +21,7 @@ public class GraphQLIntegrationTest extends AbstractIntegrationTestBase {
     public void testVehiclesQuery() throws IOException {
         GraphQLResponse response = graphQLTestTemplate.postForResource("vehicles_query_with_disabled.graphql");
         assertEquals(HttpStatus.OK,response.getStatusCode());
-        assertEquals("TST:Scooter:1234", response.get("$.data.vehicles[0].id"));
+        assertEquals("TST:Vehicle:1234", response.get("$.data.vehicles[0].id"));
         assertEquals("Test", response.get("$.data.vehicles[0].system.name.translation[0].value"));
     }
 

@@ -16,24 +16,10 @@
  *
  */
 
-package org.entur.lamassu.mapper;
+package org.entur.lamassu.mapper.feedmapper;
 
-import org.entur.gbfs.v2_2.gbfs.GBFSFeedName;
 import org.entur.lamassu.model.provider.FeedProvider;
-import org.entur.lamassu.model.discovery.System;
-import org.entur.lamassu.util.FeedUrlUtil;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
-@Component
-public class SystemDiscoveryMapper {
-    @Value("${org.entur.lamassu.baseUrl}")
-    private String baseUrl;
-
-    public System mapSystemDiscovery(FeedProvider feedProvider) {
-        var mapped = new System();
-        mapped.setId(feedProvider.getSystemId());
-        mapped.setUrl(FeedUrlUtil.mapFeedUrl(baseUrl, GBFSFeedName.GBFS, feedProvider).toString());
-        return mapped;
-    }
+public interface FeedMapper<T> {
+    T map(T source, FeedProvider feedProvider);
 }

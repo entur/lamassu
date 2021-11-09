@@ -16,7 +16,7 @@
  *
  */
 
-package org.entur.lamassu.mapper;
+package org.entur.lamassu.mapper.entitymapper;
 
 import org.entur.gbfs.v2_2.free_bike_status.GBFSRentalUris;
 import org.entur.lamassu.model.entities.RentalUris;

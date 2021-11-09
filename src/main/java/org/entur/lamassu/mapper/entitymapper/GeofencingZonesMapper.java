@@ -16,7 +16,7 @@
  *
  */
 
-package org.entur.lamassu.mapper;
+package org.entur.lamassu.mapper.entitymapper;
 
 import org.entur.gbfs.v2_2.geofencing_zones.GBFSFeature;
 import org.entur.gbfs.v2_2.geofencing_zones.GBFSGeofencingZones__1;

@@ -5,7 +5,7 @@
   "data": {
     "stations": [
       {
-        "station_id": "TST:Station:1",
+        "station_id": "1",
         "name": "Cool bikes",
         "lat": 12.34,
         "lon": 45.67,

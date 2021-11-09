@@ -21,7 +21,7 @@ package org.entur.lamassu.listener.delegates;
 import org.entur.gbfs.v2_2.geofencing_zones.GBFSGeofencingZones;
 import org.entur.lamassu.cache.GeofencingZonesCache;
 import org.entur.lamassu.listener.CacheEntryListenerDelegate;
-import org.entur.lamassu.mapper.GeofencingZonesMapper;
+import org.entur.lamassu.mapper.entitymapper.GeofencingZonesMapper;
 import org.entur.lamassu.service.FeedProviderService;
 import org.springframework.stereotype.Component;
 

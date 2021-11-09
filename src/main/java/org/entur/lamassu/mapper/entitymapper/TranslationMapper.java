@@ -16,7 +16,7 @@
  *
  */
 
-package org.entur.lamassu.mapper;
+package org.entur.lamassu.mapper.entitymapper;
 
 import org.entur.lamassu.model.entities.TranslatedString;
 import org.entur.lamassu.model.entities.Translation;

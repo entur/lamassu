@@ -14,15 +14,15 @@ import java.util.concurrent.TimeUnit;
 public class ClusterSingletonService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final RLock feedUpdateSchedulerLock;
-    private final FeedUpdateScheduler feedUpdateScheduler;
+    private final FeedUpdater feedUpdater;
     private final ListenerManager listenerManager;
     private final GeoSearchService geoSearchService;
 
     private boolean isLeader = false;
 
-    public ClusterSingletonService(RLock feedUpdateSchedulerLock, @Autowired FeedUpdateScheduler feedUpdateScheduler, @Autowired ListenerManager listenerManager, @Autowired GeoSearchService geoSearchService) {
+    public ClusterSingletonService(RLock feedUpdateSchedulerLock, @Autowired FeedUpdater feedUpdater, @Autowired ListenerManager listenerManager, @Autowired GeoSearchService geoSearchService) {
         this.feedUpdateSchedulerLock = feedUpdateSchedulerLock;
-        this.feedUpdateScheduler = feedUpdateScheduler;
+        this.feedUpdater = feedUpdater;
         this.listenerManager = listenerManager;
         this.geoSearchService = geoSearchService;
     }
@@ -45,7 +45,7 @@ public class ClusterSingletonService {
             } else {
                 logger.info("Lost leadership");
                 isLeader = false;
-                feedUpdateScheduler.stop();
+                feedUpdater.stop();
                 listenerManager.stop();
             }
         } else {
@@ -53,7 +53,7 @@ public class ClusterSingletonService {
             if (tryToBecomeLeader()) {
                 logger.info("I became the leader");
                 isLeader = true;
-                feedUpdateScheduler.start();
+                feedUpdater.start();
                 listenerManager.start();
             } else {
                 logger.debug("Sorry, someone else is the leader, try again soon");
@@ -64,7 +64,7 @@ public class ClusterSingletonService {
     @Scheduled(fixedRateString = "${org.entur.lamassu.feedupdateinterval:30000}")
     public void update() {
         if (isLeader()) {
-            feedUpdateScheduler.update();
+            feedUpdater.update();
         }
     }
 
@@ -87,7 +87,7 @@ public class ClusterSingletonService {
             return feedUpdateSchedulerLock.tryLock(1, 60, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             isLeader = false;
-            feedUpdateScheduler.stop();
+            feedUpdater.stop();
             listenerManager.stop();
             throw e;
         }
