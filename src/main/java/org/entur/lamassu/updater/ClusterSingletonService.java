@@ -72,7 +72,7 @@ public class ClusterSingletonService {
     public void removeOrphans() {
         if (isLeader()) {
             var removedOrphans = geoSearchService.removeVehicleSpatialIndexOrphans();
-            if (removedOrphans.size() > 0) {
+            if (!removedOrphans.isEmpty()) {
                 logger.info("Removed {} orphans in vehicle spatial index", removedOrphans.size());
             }
         }

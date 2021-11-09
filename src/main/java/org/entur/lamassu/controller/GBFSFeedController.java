@@ -10,17 +10,14 @@ import org.entur.lamassu.model.discovery.SystemDiscovery;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.service.FeedProviderService;
 import org.entur.lamassu.service.SystemDiscoveryService;
-import org.entur.lamassu.util.FeedUrlUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -109,8 +106,7 @@ public class GBFSFeedController {
     private GBFS modifyDiscoveryUrls(FeedProvider feedProvider, GBFS data) {
         var gbfs = new GBFS();
         gbfs.setFeedsData(
-                data.getFeedsData().entrySet().stream().map(e -> {
-                    var gbfsFeeds = e.getValue();
+                data.getFeedsData().values().stream().map(gbfsFeeds -> {
                     var mappedGbfsFeeds = new GBFSFeeds();
                     mappedGbfsFeeds.setFeeds(
                             gbfsFeeds.getFeeds().stream().map(f -> {
