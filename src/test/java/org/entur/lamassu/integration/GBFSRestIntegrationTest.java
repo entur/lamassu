@@ -1,5 +1,6 @@
 package org.entur.lamassu.integration;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -31,7 +32,7 @@ public class GBFSRestIntegrationTest extends AbstractIntegrationTestBase {
                 .andExpect(jsonPath("$.last_updated").value(1606727710));
     }
 
-    @Test
+    @Test @Ignore("gbfs_versions intentionally not mapped")
     public void testGBFSVersions() throws Exception {
         mockMvc.perform(get("/gbfs/testatlantis/gbfs_versions")
                 .contentType("application/json"))
