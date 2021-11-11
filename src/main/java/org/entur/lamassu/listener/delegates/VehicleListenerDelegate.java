@@ -69,9 +69,13 @@ public class VehicleListenerDelegate implements CacheEntryListenerDelegate<Vehic
         for (CacheEntryEvent<? extends String, ? extends Vehicle> entry : iterable) {
             var split = entry.getKey().split("_");
             var feedProvider = feedProviderService.getFeedProviderBySystemId(split[split.length - 1]);
-            var vehicle = entry.getValue();
-            var id = SpatialIndexIdUtil.createVehicleSpatialIndexId(vehicle, feedProvider);
-            ids.add(id);
+            if (feedProvider == null) {
+                logger.warn("Feed provider not found on expired vehicle={}. Probably means feed provider was removed.", entry.getValue())
+            } else {
+                var vehicle = entry.getValue();
+                var id = SpatialIndexIdUtil.createVehicleSpatialIndexId(vehicle, feedProvider);
+                ids.add(id);
+            }
         }
 
         spatialIndex.removeAll(ids);
