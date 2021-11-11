@@ -21,6 +21,7 @@ package org.entur.lamassu.model.provider;
 import org.entur.gbfs.authentication.BearerTokenRequestAuthenticator;
 import org.entur.gbfs.authentication.Oauth2ClientCredentialsGrantRequestAuthenticator;
 import org.entur.gbfs.authentication.RequestAuthenticator;
+import org.entur.lamassu.util.BoltRequestAuthenticator;
 
 import java.net.URI;
 import java.util.Map;

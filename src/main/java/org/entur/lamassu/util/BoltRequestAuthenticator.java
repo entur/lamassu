@@ -16,7 +16,7 @@
  *
  */
 
-package org.entur.lamassu.model.provider;
+package org.entur.lamassu.util;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
