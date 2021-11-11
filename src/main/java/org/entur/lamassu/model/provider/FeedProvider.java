@@ -31,6 +31,7 @@ public class FeedProvider {
     private String codespace;
     private String url;
     private String language;
+    private Authentication authentication;
 
     private List<GBFSVehicleType> vehicleTypes;
     private List<GBFSSystemPricingPlans> pricingPlans;
@@ -97,6 +98,14 @@ public class FeedProvider {
 
     public void setPricingPlans(List<GBFSSystemPricingPlans> pricingPlans) {
         this.pricingPlans = pricingPlans;
+    }
+
+    public Authentication getAuthentication() {
+        return authentication;
+    }
+
+    public void setAuthentication(Authentication authentication) {
+        this.authentication = authentication;
     }
 
     @Override
