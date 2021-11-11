@@ -6,3 +6,13 @@ lamassu:
       url: http://localhost:8888/gbfs
       codespace: TST
       language: en
+    - systemId: verysecretsystem
+      operatorId: SEC:Operator:verysecretcompany
+      operatorName: Very Secret Company
+      url: http://localhost:8888/gbfs
+      codespace: SEC
+      language: en
+      authentication:
+        scheme: BEARER_TOKEN
+        properties:
+          accessToken: not_a_very_secure_token
