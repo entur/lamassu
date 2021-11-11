@@ -32,7 +32,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 
 @WireMockTest
-public class BoltRequestAuthenticatorTest {
+class BoltRequestAuthenticatorTest {
 
     @Test
     void testBoltRequestAuthenticator(WireMockRuntimeInfo runtimeInfo) {

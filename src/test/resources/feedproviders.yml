@@ -6,3 +6,7 @@ lamassu:
       url: http://localhost:8888/gbfs
       codespace: TST
       language: en
+      authentication:
+        scheme: BearerToken
+        properties:
+          accessToken: fake_token
