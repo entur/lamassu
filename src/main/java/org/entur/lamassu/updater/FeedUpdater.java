@@ -114,7 +114,11 @@ public class FeedUpdater {
 
     private void updateFeedCaches(FeedProvider feedProvider, GbfsDelivery delivery) {
         updateFeedCache(feedProvider, GBFSFeedName.GBFS, discoveryFeedMapper.map(delivery.getDiscovery(), feedProvider));
-        updateFeedCache(feedProvider, GBFSFeedName.GBFSVersions, delivery.getVersion());
+
+        // Lamassu currently only support producing a single version of GBFS, therefore
+        // mapping of the versions file, if it exists, is intentionally skipped.
+        //updateFeedCache(feedProvider, GBFSFeedName.GBFSVersions, delivery.getVersion()); //NOSONAR
+
         updateFeedCache(feedProvider, GBFSFeedName.SystemInformation,delivery.getSystemInformation());
         updateFeedCache(feedProvider, GBFSFeedName.SystemAlerts, systemAlertsFeedMapper.map(delivery.getSystemAlerts(), feedProvider));
         updateFeedCache(feedProvider, GBFSFeedName.SystemCalendar, delivery.getSystemCalendar());
