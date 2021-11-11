@@ -37,6 +37,9 @@ public class DiscoveryFeedMapper implements FeedMapper<GBFS> {
     @Value("${org.entur.lamassu.baseUrl}")
     private String baseUrl;
 
+    @Value("${org.entur.lamassu.targetLanguageCode:nb}")
+    private String targetLanguageCode;
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public GBFS map(GBFS source, FeedProvider feedProvider) {
@@ -52,17 +55,17 @@ public class DiscoveryFeedMapper implements FeedMapper<GBFS> {
         mapped.setTtl(source.getTtl());
         mapped.setVersion(source.getVersion());
 
-        String languageKey;
+        String sourceLanguageCode;
         if (source.getFeedsData().containsKey(feedProvider.getLanguage())) {
-            languageKey = feedProvider.getLanguage();
+            sourceLanguageCode = feedProvider.getLanguage();
         } else {
-            languageKey = source.getFeedsData().keySet().iterator().next();
-            logger.warn("Language key not found in discovery feed for provider {} - using {} instead", feedProvider, languageKey);
+            sourceLanguageCode = source.getFeedsData().keySet().iterator().next();
+            logger.warn("Configured language code not found in discovery feed for provider {} - using {} instead", feedProvider, sourceLanguageCode);
         }
 
         mappedData.setFeeds(
                 source.getFeedsData()
-                    .get(languageKey)
+                    .get(sourceLanguageCode)
                     .getFeeds()
                     .stream()
                     .map(feed -> {
@@ -72,7 +75,7 @@ public class DiscoveryFeedMapper implements FeedMapper<GBFS> {
                         return mappedFeed;
                     }).collect(Collectors.toList())
         );
-        dataWrapper.put(feedProvider.getLanguage(), mappedData);
+        dataWrapper.put(targetLanguageCode, mappedData);
         mapped.setFeedsData(dataWrapper);
         return mapped;
     }
