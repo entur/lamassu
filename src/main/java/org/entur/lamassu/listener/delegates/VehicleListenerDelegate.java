@@ -70,7 +70,7 @@ public class VehicleListenerDelegate implements CacheEntryListenerDelegate<Vehic
             var split = entry.getKey().split("_");
             var feedProvider = feedProviderService.getFeedProviderBySystemId(split[split.length - 1]);
             if (feedProvider == null) {
-                logger.warn("Feed provider not found on expired vehicle={}. Probably means feed provider was removed.", entry.getValue())
+                logger.warn("Feed provider not found on expired vehicle={}. Probably means feed provider was removed.", entry.getValue());
             } else {
                 var vehicle = entry.getValue();
                 var id = SpatialIndexIdUtil.createVehicleSpatialIndexId(vehicle, feedProvider);
