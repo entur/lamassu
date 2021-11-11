@@ -19,7 +19,7 @@
 package org.entur.lamassu.model.provider;
 
 public enum AuthenticationScheme {
-    Oauth2ClientCredentialsGrant,
-    BearerToken,
-    Bolt
+    OAUTH2_CLIENT_CREDENTIALS_GRANT,
+    BEARER_TOKEN,
+    BOLT
 }

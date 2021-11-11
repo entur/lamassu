@@ -30,17 +30,17 @@ public class Authentication {
     private Map<String, String> properties;
 
     public RequestAuthenticator getRequestAuthenticator() {
-        if (scheme == AuthenticationScheme.Oauth2ClientCredentialsGrant) {
+        if (scheme == AuthenticationScheme.OAUTH2_CLIENT_CREDENTIALS_GRANT) {
             return new Oauth2ClientCredentialsGrantRequestAuthenticator(
                     URI.create(properties.get("tokenUrl")),
                     properties.get("clientId"),
                     properties.get("clientPassword")
             );
-        } else if (scheme == AuthenticationScheme.BearerToken) {
+        } else if (scheme == AuthenticationScheme.BEARER_TOKEN) {
             return new BearerTokenRequestAuthenticator(
                     properties.get("accessToken")
             );
-        } else if (scheme == AuthenticationScheme.Bolt) {
+        } else if (scheme == AuthenticationScheme.BOLT) {
             return new BoltRequestAuthenticator(
                     properties.get("url"),
                     properties.get("userName"),
