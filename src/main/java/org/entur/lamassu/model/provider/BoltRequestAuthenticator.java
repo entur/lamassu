@@ -69,8 +69,8 @@ public class BoltRequestAuthenticator implements RequestAuthenticator {
             String responseJson = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
             JSONObject jsonObject = new JSONObject(responseJson);
             map.put("Authorization", "Bearer " + jsonObject.get("access_token"));
-        } catch (IOException | JSONException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            throw new RequestAuthenticationException(e.getCause());
         }
     }
 }
