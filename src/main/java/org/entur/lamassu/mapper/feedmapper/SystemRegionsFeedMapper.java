@@ -22,6 +22,7 @@ import org.entur.gbfs.v2_2.system_regions.GBFSData;
 import org.entur.gbfs.v2_2.system_regions.GBFSRegion;
 import org.entur.gbfs.v2_2.system_regions.GBFSSystemRegions;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -29,6 +30,9 @@ import java.util.stream.Collectors;
 
 @Component
 public class SystemRegionsFeedMapper implements FeedMapper<GBFSSystemRegions> {
+    @Value("${org.entur.lamassu.targetGbfsVersion:2.2}")
+    private String targetGbfsVersion;
+
     @Override
     public GBFSSystemRegions map(GBFSSystemRegions source, FeedProvider feedProvider) {
         if (source == null) {
@@ -36,7 +40,7 @@ public class SystemRegionsFeedMapper implements FeedMapper<GBFSSystemRegions> {
         }
 
         var mapped = new GBFSSystemRegions();
-        mapped.setVersion(source.getVersion());
+        mapped.setVersion(GBFSSystemRegions.Version.fromValue(targetGbfsVersion));
         mapped.setTtl(source.getTtl());
         mapped.setLastUpdated(source.getLastUpdated());
         mapped.setData(mapData(source.getData(), feedProvider.getCodespace()));

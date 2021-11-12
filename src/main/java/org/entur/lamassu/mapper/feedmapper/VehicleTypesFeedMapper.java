@@ -22,6 +22,7 @@ import org.entur.gbfs.v2_2.vehicle_types.GBFSData;
 import org.entur.gbfs.v2_2.vehicle_types.GBFSVehicleType;
 import org.entur.gbfs.v2_2.vehicle_types.GBFSVehicleTypes;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -31,6 +32,9 @@ import static org.entur.lamassu.mapper.feedmapper.IdMappers.VEHICLE_TYPE_ID_TYPE
 
 @Component
 public class VehicleTypesFeedMapper implements FeedMapper<GBFSVehicleTypes> {
+    @Value("${org.entur.lamassu.targetGbfsVersion:2.2}")
+    private String targetGbfsVersion;
+
     @Override
     public GBFSVehicleTypes map(GBFSVehicleTypes source, FeedProvider feedProvider) {
         if (source == null) {
@@ -38,7 +42,7 @@ public class VehicleTypesFeedMapper implements FeedMapper<GBFSVehicleTypes> {
         }
 
         var mapped = new GBFSVehicleTypes();
-        mapped.setVersion(source.getVersion());
+        mapped.setVersion(GBFSVehicleTypes.Version.fromValue(targetGbfsVersion));
         mapped.setTtl(source.getTtl());
         mapped.setLastUpdated(source.getLastUpdated());
         mapped.setData(mapData(source.getData(), feedProvider.getCodespace()));

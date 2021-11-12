@@ -24,9 +24,13 @@ import org.entur.gbfs.GbfsSubscriptionOptions;
 import org.entur.gbfs.v2_2.free_bike_status.GBFSFreeBikeStatus;
 import org.entur.gbfs.v2_2.gbfs.GBFS;
 import org.entur.gbfs.v2_2.gbfs.GBFSFeedName;
+import org.entur.gbfs.v2_2.geofencing_zones.GBFSGeofencingZones;
 import org.entur.gbfs.v2_2.station_information.GBFSStationInformation;
 import org.entur.gbfs.v2_2.station_status.GBFSStationStatus;
 import org.entur.gbfs.v2_2.system_alerts.GBFSSystemAlerts;
+import org.entur.gbfs.v2_2.system_calendar.GBFSSystemCalendar;
+import org.entur.gbfs.v2_2.system_hours.GBFSSystemHours;
+import org.entur.gbfs.v2_2.system_information.GBFSSystemInformation;
 import org.entur.gbfs.v2_2.system_pricing_plans.GBFSSystemPricingPlans;
 import org.entur.gbfs.v2_2.system_regions.GBFSSystemRegions;
 import org.entur.gbfs.v2_2.vehicle_types.GBFSVehicleTypes;
@@ -49,10 +53,14 @@ public class FeedUpdater {
     private final FeedProviderConfig feedProviderConfig;
     private final GBFSFeedCacheV2 feedCache;
     private final FeedMapper<GBFS> discoveryFeedMapper;
+    private final FeedMapper<GBFSSystemInformation> systemInformationFeedMapper;
     private final FeedMapper<GBFSSystemAlerts> systemAlertsFeedMapper;
+    private final FeedMapper<GBFSSystemCalendar> systemCalendarFeedMapper;
     private final FeedMapper<GBFSSystemRegions> systemRegionsFeedMapper;
     private final FeedMapper<GBFSSystemPricingPlans> systemPricingPlansFeedMapper;
+    private final FeedMapper<GBFSSystemHours> systemHoursFeedMapper;
     private final FeedMapper<GBFSVehicleTypes> vehicleTypesFeedMapper;
+    private final FeedMapper<GBFSGeofencingZones> geofencingZonesFeedMapper;
     private final FeedMapper<GBFSStationInformation> stationInformationFeedMapper;
     private final FeedMapper<GBFSStationStatus> stationStatusFeedMapper;
     private final FeedMapper<GBFSFreeBikeStatus> freeBikeStatusFeedMapper;
@@ -67,10 +75,14 @@ public class FeedUpdater {
             FeedProviderConfig feedProviderConfig,
             GBFSFeedCacheV2 feedCache,
             FeedMapper<GBFS> discoveryFeedMapper,
+            FeedMapper<GBFSSystemInformation> systemInformationFeedMapper,
             FeedMapper<GBFSSystemAlerts> systemAlertsFeedMapper,
+            FeedMapper<GBFSSystemCalendar> systemCalendarFeedMapper,
             FeedMapper<GBFSSystemRegions> systemRegionsFeedMapper,
             FeedMapper<GBFSSystemPricingPlans> systemPricingPlansFeedMapper,
+            FeedMapper<GBFSSystemHours> systemHoursFeedMapper,
             FeedMapper<GBFSVehicleTypes> vehicleTypesFeedMapper,
+            FeedMapper<GBFSGeofencingZones> geofencingZonesFeedMapper,
             FeedMapper<GBFSStationInformation> stationInformationFeedMapper,
             FeedMapper<GBFSStationStatus> stationStatusFeedMapper,
             FeedMapper<GBFSFreeBikeStatus> freeBikeStatusFeedMapper
@@ -78,10 +90,14 @@ public class FeedUpdater {
         this.feedProviderConfig = feedProviderConfig;
         this.feedCache = feedCache;
         this.discoveryFeedMapper = discoveryFeedMapper;
+        this.systemInformationFeedMapper = systemInformationFeedMapper;
         this.systemAlertsFeedMapper = systemAlertsFeedMapper;
+        this.systemCalendarFeedMapper = systemCalendarFeedMapper;
         this.systemRegionsFeedMapper = systemRegionsFeedMapper;
         this.systemPricingPlansFeedMapper = systemPricingPlansFeedMapper;
+        this.systemHoursFeedMapper = systemHoursFeedMapper;
         this.vehicleTypesFeedMapper = vehicleTypesFeedMapper;
+        this.geofencingZonesFeedMapper = geofencingZonesFeedMapper;
         this.stationInformationFeedMapper = stationInformationFeedMapper;
         this.stationStatusFeedMapper = stationStatusFeedMapper;
         this.freeBikeStatusFeedMapper = freeBikeStatusFeedMapper;
@@ -122,14 +138,14 @@ public class FeedUpdater {
         // mapping of the versions file, if it exists, is intentionally skipped.
         //updateFeedCache(feedProvider, GBFSFeedName.GBFSVersions, delivery.getVersion()); //NOSONAR
 
-        updateFeedCache(feedProvider, GBFSFeedName.SystemInformation,delivery.getSystemInformation());
+        updateFeedCache(feedProvider, GBFSFeedName.SystemInformation, systemInformationFeedMapper.map(delivery.getSystemInformation(), feedProvider));
         updateFeedCache(feedProvider, GBFSFeedName.SystemAlerts, systemAlertsFeedMapper.map(delivery.getSystemAlerts(), feedProvider));
-        updateFeedCache(feedProvider, GBFSFeedName.SystemCalendar, delivery.getSystemCalendar());
+        updateFeedCache(feedProvider, GBFSFeedName.SystemCalendar, systemCalendarFeedMapper.map(delivery.getSystemCalendar(), feedProvider));
         updateFeedCache(feedProvider, GBFSFeedName.SystemRegions, systemRegionsFeedMapper.map(delivery.getSystemRegions(), feedProvider));
         updateFeedCache(feedProvider, GBFSFeedName.SystemPricingPlans, systemPricingPlansFeedMapper.map(delivery.getSystemPricingPlans(), feedProvider));
-        updateFeedCache(feedProvider, GBFSFeedName.SystemHours, delivery.getSystemHours());
+        updateFeedCache(feedProvider, GBFSFeedName.SystemHours, systemHoursFeedMapper.map(delivery.getSystemHours(), feedProvider));
         updateFeedCache(feedProvider, GBFSFeedName.VehicleTypes, vehicleTypesFeedMapper.map(delivery.getVehicleTypes(), feedProvider));
-        updateFeedCache(feedProvider, GBFSFeedName.GeofencingZones, delivery.getGeofencingZones());
+        updateFeedCache(feedProvider, GBFSFeedName.GeofencingZones, geofencingZonesFeedMapper.map(delivery.getGeofencingZones(), feedProvider));
         updateFeedCache(feedProvider, GBFSFeedName.StationInformation, stationInformationFeedMapper.map(delivery.getStationInformation(), feedProvider));
         updateFeedCache(feedProvider, GBFSFeedName.StationStatus, stationStatusFeedMapper.map(delivery.getStationStatus(), feedProvider));
         updateFeedCache(feedProvider, GBFSFeedName.FreeBikeStatus, freeBikeStatusFeedMapper.map(delivery.getFreeBikeStatus(), feedProvider));
