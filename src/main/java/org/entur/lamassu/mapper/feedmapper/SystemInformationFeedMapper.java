@@ -44,6 +44,10 @@ public class SystemInformationFeedMapper implements FeedMapper<GBFSSystemInforma
     }
 
     private GBFSData mapData(GBFSData source, FeedProvider feedProvider) {
+        if (source ==  null) {
+            return null;
+        }
+
         var mapped = new GBFSData();
         mapped.setSystemId(source.getSystemId());
         mapped.setLanguage(targetLanguageCode);

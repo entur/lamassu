@@ -30,6 +30,10 @@ public class GeofencingZonesFeedMapper implements FeedMapper<GBFSGeofencingZones
 
     @Override
     public GBFSGeofencingZones map(GBFSGeofencingZones source, FeedProvider feedProvider) {
+        if (source ==  null) {
+            return null;
+        }
+
         var mapped = new GBFSGeofencingZones();
         mapped.setVersion(GBFSGeofencingZones.Version.fromValue(targetGbfsVersion));
         mapped.setLastUpdated(source.getLastUpdated());

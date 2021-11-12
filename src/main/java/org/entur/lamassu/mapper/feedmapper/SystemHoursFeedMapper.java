@@ -30,6 +30,10 @@ public class SystemHoursFeedMapper implements FeedMapper<GBFSSystemHours> {
 
     @Override
     public GBFSSystemHours map(GBFSSystemHours source, FeedProvider feedProvider) {
+        if (source ==  null) {
+            return null;
+        }
+
         var mapped = new GBFSSystemHours();
         mapped.setVersion(GBFSSystemHours.Version.fromValue(targetGbfsVersion));
         mapped.setLastUpdated(source.getLastUpdated());
