@@ -21,6 +21,7 @@ package org.entur.lamassu.mapper.feedmapper;
 import org.entur.gbfs.v2_2.gbfs.GBFS;
 import org.entur.gbfs.v2_2.gbfs.GBFSFeed;
 import org.entur.gbfs.v2_2.gbfs.GBFSFeeds;
+import org.entur.gbfs.v2_2.gbfs.GBFSGbfs;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.util.FeedUrlUtil;
 import org.slf4j.Logger;
@@ -40,6 +41,9 @@ public class DiscoveryFeedMapper implements FeedMapper<GBFS> {
     @Value("${org.entur.lamassu.targetLanguageCode:nb}")
     private String targetLanguageCode;
 
+    @Value("${org.entur.lamassu.targetGbfsVersion:2.2}")
+    private String targetGbfsVersion;
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public GBFS map(GBFS source, FeedProvider feedProvider) {
@@ -53,7 +57,7 @@ public class DiscoveryFeedMapper implements FeedMapper<GBFS> {
         Map<String, GBFSFeeds> dataWrapper = new HashMap<>();
         mapped.setLastUpdated(source.getLastUpdated());
         mapped.setTtl(source.getTtl());
-        mapped.setVersion(source.getVersion());
+        mapped.setVersion(GBFSGbfs.Version.fromValue(targetGbfsVersion));
 
         String sourceLanguageCode;
         if (source.getFeedsData().containsKey(feedProvider.getLanguage())) {

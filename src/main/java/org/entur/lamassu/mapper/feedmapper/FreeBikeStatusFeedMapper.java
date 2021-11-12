@@ -22,12 +22,16 @@ import org.entur.gbfs.v2_2.free_bike_status.GBFSBike;
 import org.entur.gbfs.v2_2.free_bike_status.GBFSData;
 import org.entur.gbfs.v2_2.free_bike_status.GBFSFreeBikeStatus;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
 
 @Component
 public class FreeBikeStatusFeedMapper implements FeedMapper<GBFSFreeBikeStatus> {
+    @Value("${org.entur.lamassu.targetGbfsVersion:2.2}")
+    private String targetGbfsVersion;
+
     @Override
     public GBFSFreeBikeStatus map(GBFSFreeBikeStatus source, FeedProvider feedProvider) {
         if (source == null) {
@@ -35,7 +39,7 @@ public class FreeBikeStatusFeedMapper implements FeedMapper<GBFSFreeBikeStatus> 
         }
 
         var mapped = new GBFSFreeBikeStatus();
-        mapped.setVersion(source.getVersion());
+        mapped.setVersion(GBFSFreeBikeStatus.Version.fromValue(targetGbfsVersion));
         mapped.setLastUpdated(source.getLastUpdated());
         mapped.setTtl(source.getTtl());
         mapped.setData(mapData(source.getData(), feedProvider));

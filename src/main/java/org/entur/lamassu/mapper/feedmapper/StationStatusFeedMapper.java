@@ -24,6 +24,7 @@ import org.entur.gbfs.v2_2.station_status.GBFSStationStatus;
 import org.entur.gbfs.v2_2.station_status.GBFSVehicleDocksAvailable;
 import org.entur.gbfs.v2_2.station_status.GBFSVehicleTypesAvailable;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -32,6 +33,9 @@ import java.util.stream.Collectors;
 
 @Component
 public class StationStatusFeedMapper implements FeedMapper<GBFSStationStatus> {
+    @Value("${org.entur.lamassu.targetGbfsVersion:2.2}")
+    private String targetGbfsVersion;
+
     @Override
     public GBFSStationStatus map(GBFSStationStatus source, FeedProvider feedProvider) {
         if (source == null) {
@@ -39,7 +43,7 @@ public class StationStatusFeedMapper implements FeedMapper<GBFSStationStatus> {
         }
 
         var mapped = new GBFSStationStatus();
-        mapped.setVersion(source.getVersion());
+        mapped.setVersion(GBFSStationStatus.Version.fromValue(targetGbfsVersion));
         mapped.setLastUpdated(source.getLastUpdated());
         mapped.setTtl(source.getTtl());
         mapped.setData(mapData(source.getData(), feedProvider));

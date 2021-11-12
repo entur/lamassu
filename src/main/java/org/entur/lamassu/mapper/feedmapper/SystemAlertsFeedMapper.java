@@ -22,6 +22,7 @@ import org.entur.gbfs.v2_2.system_alerts.GBFSAlert;
 import org.entur.gbfs.v2_2.system_alerts.GBFSData;
 import org.entur.gbfs.v2_2.system_alerts.GBFSSystemAlerts;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -33,14 +34,17 @@ import static org.entur.lamassu.mapper.feedmapper.IdMappers.STATION_ID_TYPE;
 
 @Component
 public class SystemAlertsFeedMapper implements FeedMapper<GBFSSystemAlerts> {
+    @Value("${org.entur.lamassu.targetGbfsVersion:2.2}")
+    private String targetGbfsVersion;
 
     public GBFSSystemAlerts map(GBFSSystemAlerts systemAlerts, FeedProvider feedProvider) {
         if (systemAlerts == null) {
             return null;
         }
+
         var codespace = feedProvider.getCodespace();
         var mappedSystemAlerts = new GBFSSystemAlerts();
-        mappedSystemAlerts.setVersion(systemAlerts.getVersion());
+        mappedSystemAlerts.setVersion(GBFSSystemAlerts.Version.fromValue(targetGbfsVersion));
         mappedSystemAlerts.setLastUpdated(systemAlerts.getLastUpdated());
         mappedSystemAlerts.setTtl(systemAlerts.getTtl());
         mappedSystemAlerts.setData(mapData(systemAlerts.getData(), codespace));
