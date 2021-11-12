@@ -18,7 +18,7 @@
 
 package org.entur.lamassu.model.provider;
 
-import org.entur.gbfs.v2_2.system_pricing_plans.GBFSSystemPricingPlans;
+import org.entur.gbfs.v2_2.system_pricing_plans.GBFSPlan;
 import org.entur.gbfs.v2_2.vehicle_types.GBFSVehicleType;
 
 import java.util.List;
@@ -34,7 +34,7 @@ public class FeedProvider {
     private Authentication authentication;
 
     private List<GBFSVehicleType> vehicleTypes;
-    private List<GBFSSystemPricingPlans> pricingPlans;
+    private List<GBFSPlan> pricingPlans;
 
     public String getSystemId() {
         return systemId;
@@ -92,11 +92,11 @@ public class FeedProvider {
         this.vehicleTypes = vehicleTypes;
     }
 
-    public List<GBFSSystemPricingPlans> getPricingPlans() {
+    public List<GBFSPlan> getPricingPlans() {
         return pricingPlans;
     }
 
-    public void setPricingPlans(List<GBFSSystemPricingPlans> pricingPlans) {
+    public void setPricingPlans(List<GBFSPlan> pricingPlans) {
         this.pricingPlans = pricingPlans;
     }
 

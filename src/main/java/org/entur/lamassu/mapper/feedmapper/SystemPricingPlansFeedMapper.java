@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.entur.lamassu.mapper.feedmapper.IdMappers.PRICING_PLAN_ID_TYPE;
@@ -45,27 +46,28 @@ public class SystemPricingPlansFeedMapper implements FeedMapper<GBFSSystemPricin
         mapped.setVersion(GBFSSystemPricingPlans.Version.fromValue(targetGbfsVersion));
         mapped.setTtl(source.getTtl());
         mapped.setLastUpdated(source.getLastUpdated());
-        mapped.setData(mapData(source.getData(), feedProvider.getCodespace()));
+        mapped.setData(mapData(source.getData(), feedProvider));
         return mapped;
     }
 
-    private GBFSData mapData(GBFSData data, String codespace) {
+    private GBFSData mapData(GBFSData data, FeedProvider feedProvider) {
         var mapped = new GBFSData();
-        mapped.setPlans(mapPlans(data.getPlans(), codespace));
+        var plans = mapPlans(data.getPlans(), feedProvider);
+        mapped.setPlans(plans);
         return mapped;
     }
 
-    private List<GBFSPlan> mapPlans(List<GBFSPlan> plans, String codespace) {
+    private List<GBFSPlan> mapPlans(List<GBFSPlan> plans, FeedProvider feedProvider) {
         return plans.stream()
-                .map(plan -> mapPlan(plan, codespace))
+                .map(plan -> mapPlan(plan, feedProvider))
                 .collect(Collectors.toList());
     }
 
-    private GBFSPlan mapPlan(GBFSPlan plan, String codespace) {
+    private GBFSPlan mapPlan(GBFSPlan plan, FeedProvider feedProvider) {
         var mapped = new GBFSPlan();
-        mapped.setPlanId(IdMappers.mapId(codespace, PRICING_PLAN_ID_TYPE, plan.getPlanId()));
+        mapped.setPlanId(IdMappers.mapId(feedProvider.getCodespace(), PRICING_PLAN_ID_TYPE, plan.getPlanId()));
         mapped.setName(plan.getName());
-        mapped.setDescription(plan.getDescription());
+        mapped.setDescription(mapDescription(plan.getDescription(), plan.getPlanId(), feedProvider));
         mapped.setCurrency(plan.getCurrency());
         mapped.setIsTaxable(plan.getIsTaxable());
         mapped.setPrice(plan.getPrice());
@@ -74,5 +76,17 @@ public class SystemPricingPlansFeedMapper implements FeedMapper<GBFSSystemPricin
         mapped.setPerKmPricing(plan.getPerKmPricing());
         mapped.setPerMinPricing(plan.getPerMinPricing());
         return mapped;
+    }
+
+    private String mapDescription(String description, String planId,  FeedProvider feedProvider) {
+        var configuredPlan = Optional.ofNullable(feedProvider.getPricingPlans()).flatMap(plans -> plans.stream()
+                .filter(plan -> plan.getPlanId().equals(planId))
+                .findFirst());
+
+        if (configuredPlan.isPresent()) {
+            return configuredPlan.get().getDescription();
+        } else {
+            return description;
+        }
     }
 }
