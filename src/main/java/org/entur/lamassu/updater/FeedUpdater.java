@@ -128,27 +128,45 @@ public class FeedUpdater {
         if (feedProvider.getAuthentication() != null) {
             options.setRequestAuthenticator(feedProvider.getAuthentication().getRequestAuthenticator());
         }
-        subscriptionManager.subscribe(options, delivery -> updateFeedCaches(feedProvider, delivery));
+        subscriptionManager.subscribe(options, delivery -> receiveUpdate(feedProvider, delivery));
+    }
+
+    private void receiveUpdate(FeedProvider feedProvider, GbfsDelivery delivery) {
+        updateFeedCaches(feedProvider, mapDelivery(feedProvider, delivery));
+    }
+
+    // Lamassu currently only support producing a single version of GBFS, therefore
+    // mapping of the versions file, if it exists, is intentionally skipped.
+    GbfsDelivery mapDelivery(FeedProvider feedProvider, GbfsDelivery delivery) {
+        var mapped = new GbfsDelivery();
+        mapped.setDiscovery(discoveryFeedMapper.map(delivery.getDiscovery(), feedProvider));
+        mapped.setSystemInformation(systemInformationFeedMapper.map(delivery.getSystemInformation(), feedProvider));
+        mapped.setSystemAlerts(systemAlertsFeedMapper.map(delivery.getSystemAlerts(), feedProvider));
+        mapped.setSystemCalendar(systemCalendarFeedMapper.map(delivery.getSystemCalendar(), feedProvider));
+        mapped.setSystemRegions(systemRegionsFeedMapper.map(delivery.getSystemRegions(), feedProvider));
+        mapped.setSystemPricingPlans(systemPricingPlansFeedMapper.map(delivery.getSystemPricingPlans(), feedProvider));
+        mapped.setSystemHours(systemHoursFeedMapper.map(delivery.getSystemHours(), feedProvider));
+        mapped.setVehicleTypes(vehicleTypesFeedMapper.map(delivery.getVehicleTypes(), feedProvider));
+        mapped.setGeofencingZones(geofencingZonesFeedMapper.map(delivery.getGeofencingZones(), feedProvider));
+        mapped.setStationInformation(stationInformationFeedMapper.map(delivery.getStationInformation(), feedProvider));
+        mapped.setStationStatus(stationStatusFeedMapper.map(delivery.getStationStatus(), feedProvider));
+        mapped.setFreeBikeStatus(freeBikeStatusFeedMapper.map(delivery.getFreeBikeStatus(), feedProvider));
+        return mapped;
     }
 
     private void updateFeedCaches(FeedProvider feedProvider, GbfsDelivery delivery) {
-        updateFeedCache(feedProvider, GBFSFeedName.GBFS, discoveryFeedMapper.map(delivery.getDiscovery(), feedProvider));
-
-        // Lamassu currently only support producing a single version of GBFS, therefore
-        // mapping of the versions file, if it exists, is intentionally skipped.
-        //updateFeedCache(feedProvider, GBFSFeedName.GBFSVersions, delivery.getVersion()); //NOSONAR
-
-        updateFeedCache(feedProvider, GBFSFeedName.SystemInformation, systemInformationFeedMapper.map(delivery.getSystemInformation(), feedProvider));
-        updateFeedCache(feedProvider, GBFSFeedName.SystemAlerts, systemAlertsFeedMapper.map(delivery.getSystemAlerts(), feedProvider));
-        updateFeedCache(feedProvider, GBFSFeedName.SystemCalendar, systemCalendarFeedMapper.map(delivery.getSystemCalendar(), feedProvider));
-        updateFeedCache(feedProvider, GBFSFeedName.SystemRegions, systemRegionsFeedMapper.map(delivery.getSystemRegions(), feedProvider));
-        updateFeedCache(feedProvider, GBFSFeedName.SystemPricingPlans, systemPricingPlansFeedMapper.map(delivery.getSystemPricingPlans(), feedProvider));
-        updateFeedCache(feedProvider, GBFSFeedName.SystemHours, systemHoursFeedMapper.map(delivery.getSystemHours(), feedProvider));
-        updateFeedCache(feedProvider, GBFSFeedName.VehicleTypes, vehicleTypesFeedMapper.map(delivery.getVehicleTypes(), feedProvider));
-        updateFeedCache(feedProvider, GBFSFeedName.GeofencingZones, geofencingZonesFeedMapper.map(delivery.getGeofencingZones(), feedProvider));
-        updateFeedCache(feedProvider, GBFSFeedName.StationInformation, stationInformationFeedMapper.map(delivery.getStationInformation(), feedProvider));
-        updateFeedCache(feedProvider, GBFSFeedName.StationStatus, stationStatusFeedMapper.map(delivery.getStationStatus(), feedProvider));
-        updateFeedCache(feedProvider, GBFSFeedName.FreeBikeStatus, freeBikeStatusFeedMapper.map(delivery.getFreeBikeStatus(), feedProvider));
+        updateFeedCache(feedProvider, GBFSFeedName.GBFS, delivery.getDiscovery());
+        updateFeedCache(feedProvider, GBFSFeedName.SystemInformation, delivery.getSystemInformation());
+        updateFeedCache(feedProvider, GBFSFeedName.SystemAlerts, delivery.getSystemAlerts());
+        updateFeedCache(feedProvider, GBFSFeedName.SystemCalendar, delivery.getSystemCalendar());
+        updateFeedCache(feedProvider, GBFSFeedName.SystemRegions, delivery.getSystemRegions());
+        updateFeedCache(feedProvider, GBFSFeedName.SystemPricingPlans, delivery.getSystemPricingPlans());
+        updateFeedCache(feedProvider, GBFSFeedName.SystemHours, delivery.getSystemHours());
+        updateFeedCache(feedProvider, GBFSFeedName.VehicleTypes, delivery.getVehicleTypes());
+        updateFeedCache(feedProvider, GBFSFeedName.GeofencingZones, delivery.getGeofencingZones());
+        updateFeedCache(feedProvider, GBFSFeedName.StationInformation, delivery.getStationInformation());
+        updateFeedCache(feedProvider, GBFSFeedName.StationStatus, delivery.getStationStatus());
+        updateFeedCache(feedProvider, GBFSFeedName.FreeBikeStatus, delivery.getFreeBikeStatus());
     }
 
     private void updateFeedCache(FeedProvider feedProvider, GBFSFeedName feedName, Object feed) {
