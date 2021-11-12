@@ -23,7 +23,7 @@
         <okhttp.version>4.9.2</okhttp.version>
         <kryo.version>5.2.0</kryo.version>
         <jackson.version>2.13.0</jackson.version>
-        <gbfs-loader-java.version>1.0.1</gbfs-loader-java.version>
+        <gbfs-loader-java.version>1.1.0</gbfs-loader-java.version>
         <netex-utils.version>1.19</netex-utils.version>
     </properties>
 
@@ -120,6 +120,20 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.esotericsoftware</groupId>
+            <artifactId>kryo</artifactId>
+            <version>${kryo.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>no.entur.abt</groupId>
+            <artifactId>netex-utils</artifactId>
+            <version>${netex-utils.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
@@ -148,18 +162,10 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.esotericsoftware</groupId>
-            <artifactId>kryo</artifactId>
-            <version>${kryo.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>no.entur.abt</groupId>
-            <artifactId>netex-utils</artifactId>
-            <version>${netex-utils.version}</version>
+            <groupId>com.github.tomakehurst</groupId>
+            <artifactId>wiremock-jre8</artifactId>
+            <version>2.31.0</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

@@ -109,6 +109,9 @@ public class FeedUpdater {
         var options = new GbfsSubscriptionOptions();
         options.setDiscoveryURI(URI.create(feedProvider.getUrl()));
         options.setLanguageCode(feedProvider.getLanguage());
+        if (feedProvider.getAuthentication() != null) {
+            options.setRequestAuthenticator(feedProvider.getAuthentication().getRequestAuthenticator());
+        }
         subscriptionManager.subscribe(options, delivery -> updateFeedCaches(feedProvider, delivery));
     }
 
