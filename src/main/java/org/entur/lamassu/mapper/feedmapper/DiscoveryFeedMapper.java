@@ -79,38 +79,18 @@ public class DiscoveryFeedMapper implements FeedMapper<GBFS> {
                     return mappedFeed;
                 }).collect(Collectors.toList());
 
-        if (feedProvider.getVehicleTypes() != null) {
+        if (feedProvider.getVehicleTypes() != null && feeds.stream().noneMatch(f -> f.getName().equals(GBFSFeedName.VehicleTypes))) {
             var vehicleTypesFeed = new GBFSFeed();
             vehicleTypesFeed.setName(GBFSFeedName.VehicleTypes);
             vehicleTypesFeed.setUrl(FeedUrlUtil.mapFeedUrl(baseUrl, GBFSFeedName.VehicleTypes, feedProvider));
-            if (feeds.stream().anyMatch(f -> f.getName().equals(GBFSFeedName.VehicleTypes))) {
-                feeds = feeds.stream().map(f -> {
-                    if (f.getName().equals(GBFSFeedName.VehicleTypes)) {
-                        return vehicleTypesFeed;
-                    } else {
-                        return f;
-                    }
-                }).collect(Collectors.toList());
-            } else {
-                feeds.add(vehicleTypesFeed);
-            }
+            feeds.add(vehicleTypesFeed);
         }
 
-        if (feedProvider.getPricingPlans() != null) {
+        if (feedProvider.getPricingPlans() != null && feeds.stream().noneMatch(f -> f.getName().equals(GBFSFeedName.SystemPricingPlans))) {
             var pricingPlansFeed = new GBFSFeed();
             pricingPlansFeed.setName(GBFSFeedName.SystemPricingPlans);
             pricingPlansFeed.setUrl(FeedUrlUtil.mapFeedUrl(baseUrl, GBFSFeedName.SystemPricingPlans, feedProvider));
-            if (feeds.stream().anyMatch(f -> f.getName().equals(GBFSFeedName.SystemPricingPlans))) {
-                feeds = feeds.stream().map(f -> {
-                    if (f.getName().equals(GBFSFeedName.SystemPricingPlans)) {
-                        return pricingPlansFeed;
-                    } else {
-                        return f;
-                    }
-                }).collect(Collectors.toList());
-            } else {
-                feeds.add(pricingPlansFeed);
-            }
+            feeds.add(pricingPlansFeed);
         }
 
         mappedData.setFeeds(feeds);
