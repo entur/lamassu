@@ -20,6 +20,7 @@ package org.entur.lamassu.mapper.feedmapper;
 
 import org.entur.gbfs.v2_2.gbfs.GBFS;
 import org.entur.gbfs.v2_2.gbfs.GBFSFeed;
+import org.entur.gbfs.v2_2.gbfs.GBFSFeedName;
 import org.entur.gbfs.v2_2.gbfs.GBFSFeeds;
 import org.entur.gbfs.v2_2.gbfs.GBFSGbfs;
 import org.entur.lamassu.model.provider.FeedProvider;
@@ -67,18 +68,52 @@ public class DiscoveryFeedMapper implements FeedMapper<GBFS> {
             logger.warn("Configured language code not found in discovery feed for provider {} - using {} instead", feedProvider, sourceLanguageCode);
         }
 
-        mappedData.setFeeds(
-                source.getFeedsData()
-                    .get(sourceLanguageCode)
-                    .getFeeds()
-                    .stream()
-                    .map(feed -> {
-                        var mappedFeed = new GBFSFeed();
-                        mappedFeed.setName(feed.getName());
-                        mappedFeed.setUrl(FeedUrlUtil.mapFeedUrl(baseUrl, feed.getName(), feedProvider));
-                        return mappedFeed;
-                    }).collect(Collectors.toList())
-        );
+        var feeds = source.getFeedsData()
+                .get(sourceLanguageCode)
+                .getFeeds()
+                .stream()
+                .map(feed -> {
+                    var mappedFeed = new GBFSFeed();
+                    mappedFeed.setName(feed.getName());
+                    mappedFeed.setUrl(FeedUrlUtil.mapFeedUrl(baseUrl, feed.getName(), feedProvider));
+                    return mappedFeed;
+                }).collect(Collectors.toList());
+
+        if (feedProvider.getVehicleTypes() != null) {
+            var vehicleTypesFeed = new GBFSFeed();
+            vehicleTypesFeed.setName(GBFSFeedName.VehicleTypes);
+            vehicleTypesFeed.setUrl(FeedUrlUtil.mapFeedUrl(baseUrl, GBFSFeedName.VehicleTypes, feedProvider));
+            if (feeds.stream().anyMatch(f -> f.getName().equals(GBFSFeedName.VehicleTypes))) {
+                feeds = feeds.stream().map(f -> {
+                    if (f.getName().equals(GBFSFeedName.VehicleTypes)) {
+                        return vehicleTypesFeed;
+                    } else {
+                        return f;
+                    }
+                }).collect(Collectors.toList());
+            } else {
+                feeds.add(vehicleTypesFeed);
+            }
+        }
+
+        if (feedProvider.getPricingPlans() != null) {
+            var pricingPlansFeed = new GBFSFeed();
+            pricingPlansFeed.setName(GBFSFeedName.SystemPricingPlans);
+            pricingPlansFeed.setUrl(FeedUrlUtil.mapFeedUrl(baseUrl, GBFSFeedName.SystemPricingPlans, feedProvider));
+            if (feeds.stream().anyMatch(f -> f.getName().equals(GBFSFeedName.SystemPricingPlans))) {
+                feeds = feeds.stream().map(f -> {
+                    if (f.getName().equals(GBFSFeedName.SystemPricingPlans)) {
+                        return pricingPlansFeed;
+                    } else {
+                        return f;
+                    }
+                }).collect(Collectors.toList());
+            } else {
+                feeds.add(pricingPlansFeed);
+            }
+        }
+
+        mappedData.setFeeds(feeds);
         dataWrapper.put(targetLanguageCode, mappedData);
         mapped.setFeedsData(dataWrapper);
         return mapped;

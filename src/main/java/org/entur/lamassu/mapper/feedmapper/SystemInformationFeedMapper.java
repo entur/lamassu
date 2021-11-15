@@ -49,7 +49,7 @@ public class SystemInformationFeedMapper implements FeedMapper<GBFSSystemInforma
         }
 
         var mapped = new GBFSData();
-        mapped.setSystemId(source.getSystemId());
+        mapped.setSystemId(feedProvider.getSystemId());
         mapped.setLanguage(targetLanguageCode);
         mapped.setName(source.getName());
         mapped.setShortName(source.getShortName());
