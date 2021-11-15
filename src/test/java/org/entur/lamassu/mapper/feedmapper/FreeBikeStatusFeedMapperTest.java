@@ -18,10 +18,7 @@
 
 package org.entur.lamassu.mapper.feedmapper;
 
-import org.entur.gbfs.v2_2.gbfs.GBFS;
-import org.entur.gbfs.v2_2.gbfs.GBFSFeed;
-import org.entur.gbfs.v2_2.gbfs.GBFSFeedName;
-import org.entur.gbfs.v2_2.gbfs.GBFSFeeds;
+import org.entur.gbfs.v2_2.free_bike_status.GBFSBike;
 import org.entur.gbfs.v2_2.system_pricing_plans.GBFSPerMinPricing;
 import org.entur.gbfs.v2_2.system_pricing_plans.GBFSPlan;
 import org.entur.gbfs.v2_2.vehicle_types.GBFSVehicleType;
@@ -29,55 +26,26 @@ import org.entur.lamassu.model.provider.FeedProvider;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.util.ReflectionTestUtils;
 
-import java.net.URI;
 import java.util.List;
-import java.util.Map;
 
-class DiscoveryFeedMapperTest {
-    DiscoveryFeedMapper mapper;
+class FreeBikeStatusFeedMapperTest {
+    FreeBikeStatusFeedMapper mapper;
 
     @BeforeEach
     void prepare() {
-        mapper = new DiscoveryFeedMapper();
-        ReflectionTestUtils.setField(mapper, "targetGbfsVersion", "2.2");
-        ReflectionTestUtils.setField(mapper, "targetLanguageCode", "nb");
+        mapper = new FreeBikeStatusFeedMapper();
     }
 
     @Test
-    void testMapFeedWhenSourceFeedsDataIsNullReturnsNull() {
-        var gbfs = new GBFS();
-        gbfs.setFeedsData(null);
-        Assertions.assertNull(mapper.map(gbfs, getTestProvider()));
-    }
-
-    @Test
-    void testMapFeedWithLanguageCodeFallback() {
+    void testMissingCurrentRangeMeters() {
         var feedProvider = getTestProvider();
-        var gbfs = new GBFS();
-        var feeds = new GBFSFeeds();
-        var feed = new GBFSFeed();
-        feed.setName(GBFSFeedName.GBFS);
-        feed.setUrl(URI.create("http://test.com/gbfs"));
-        feeds.setFeeds(List.of(
-                feed
-        ));
-
-        gbfs.setFeedsData(Map.of(
-                "sv", feeds
-        ));
-
-        var mapped = mapper.map(gbfs, feedProvider);
-
-        Assertions.assertEquals(
-                GBFSFeedName.GBFS,
-                mapped.getFeedsData().get("nb").getFeeds().get(0).getName()
-        );
+        var mapped = mapper.mapBike(new GBFSBike(), feedProvider);
+        Assertions.assertNotNull(mapped.getCurrentRangeMeters());
     }
 
     @Test
-    void testMapFeedWithCustomData() {
+    void testCustomData() {
         var feedProvider = getTestProvider();
         var vehicleType = new GBFSVehicleType();
         vehicleType.setVehicleTypeId("TestScooter");
@@ -101,27 +69,16 @@ class DiscoveryFeedMapperTest {
         plan.setPerMinPricing(List.of(perMinPricing));
         feedProvider.setPricingPlans(List.of(plan));
 
-        var gbfs = new GBFS();
-        var feeds = new GBFSFeeds();
-        var feed = new GBFSFeed();
-        feed.setName(GBFSFeedName.GBFS);
-        feed.setUrl(URI.create("http://test.com/gbfs"));
-        feeds.setFeeds(List.of(
-                feed
-        ));
+        var mapped = mapper.mapBike(new GBFSBike(), feedProvider);
 
-        gbfs.setFeedsData(Map.of(
-                "en", feeds
-        ));
-
-        var mapped = mapper.map(gbfs, feedProvider);
-
-        Assertions.assertTrue(
-                mapped.getFeedsData().get("nb").getFeeds().stream().anyMatch(f -> f.getName().equals(GBFSFeedName.VehicleTypes))
+        Assertions.assertEquals(
+                "TST:VehicleType:TestScooter",
+                mapped.getVehicleTypeId()
         );
 
-        Assertions.assertTrue(
-                mapped.getFeedsData().get("nb").getFeeds().stream().anyMatch(f -> f.getName().equals(GBFSFeedName.SystemPricingPlans))
+        Assertions.assertEquals(
+                "TST:PricingPlan:TestPlan",
+                mapped.getPricingPlanId()
         );
     }
 

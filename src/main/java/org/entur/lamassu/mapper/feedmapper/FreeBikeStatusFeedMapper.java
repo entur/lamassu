@@ -56,7 +56,7 @@ public class FreeBikeStatusFeedMapper implements FeedMapper<GBFSFreeBikeStatus> 
         return mapped;
     }
 
-    private GBFSBike mapBike(GBFSBike bike, FeedProvider feedProvider) {
+    protected GBFSBike mapBike(GBFSBike bike, FeedProvider feedProvider) {
         var mapped = new GBFSBike();
         mapped.setBikeId(IdMappers.mapId(feedProvider.getCodespace(), IdMappers.BIKE_ID_TYPE, bike.getBikeId()));
         mapped.setLat(bike.getLat());
