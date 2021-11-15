@@ -36,6 +36,10 @@ public class VehicleTypesFeedMapper implements FeedMapper<GBFSVehicleTypes> {
     @Value("${org.entur.lamassu.targetGbfsVersion:2.2}")
     private String targetGbfsVersion;
 
+    protected VehicleTypesFeedMapper(String targetGbfsVersion) {
+        this.targetGbfsVersion = targetGbfsVersion;
+    }
+
     @Override
     public GBFSVehicleTypes map(GBFSVehicleTypes source, FeedProvider feedProvider) {
         if (feedProvider.getVehicleTypes() != null) {
