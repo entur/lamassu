@@ -77,7 +77,12 @@ public class DiscoveryFeedMapper implements FeedMapper<GBFS> {
                     mappedFeed.setName(feed.getName());
                     mappedFeed.setUrl(FeedUrlUtil.mapFeedUrl(baseUrl, feed.getName(), feedProvider));
                     return mappedFeed;
-                }).collect(Collectors.toList());
+                })
+
+                // Lamassu currently only support producing a single version of GBFS, therefore
+                // the versions file, if it exists, is intentionally skipped.
+                .filter(f -> !f.getName().equals(GBFSFeedName.GBFSVersions))
+                .collect(Collectors.toList());
 
         if (feedProvider.getVehicleTypes() != null && feeds.stream().noneMatch(f -> f.getName().equals(GBFSFeedName.VehicleTypes))) {
             var vehicleTypesFeed = new GBFSFeed();
