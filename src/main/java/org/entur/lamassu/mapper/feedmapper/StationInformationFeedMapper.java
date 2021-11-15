@@ -110,7 +110,7 @@ public class StationInformationFeedMapper implements FeedMapper<GBFSStationInfor
     }
 
     private String mapRegionId(String codespace, String regionId) {
-        if (regionId == null || regionId.isBlank()) {
+        if (regionId == null) {
             return null;
         }
 

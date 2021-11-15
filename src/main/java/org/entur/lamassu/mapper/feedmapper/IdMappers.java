@@ -36,6 +36,12 @@ public class IdMappers {
     private IdMappers() {}
 
     public static String mapId(String codespace, String type, String value) {
+
+        // Values that should not be mapped
+        if (value == null || value.isBlank()) {
+            return value;
+        }
+
         var predicate = NetexIdPredicateBuilder.newInstance()
                 .withCodespace(codespace)
                 .withType(type)
