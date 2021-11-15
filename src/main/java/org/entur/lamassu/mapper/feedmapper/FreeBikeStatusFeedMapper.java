@@ -56,7 +56,7 @@ public class FreeBikeStatusFeedMapper implements FeedMapper<GBFSFreeBikeStatus> 
         return mapped;
     }
 
-    private GBFSBike mapBike(GBFSBike bike, FeedProvider feedProvider) {
+    protected GBFSBike mapBike(GBFSBike bike, FeedProvider feedProvider) {
         var mapped = new GBFSBike();
         mapped.setBikeId(IdMappers.mapId(feedProvider.getCodespace(), IdMappers.BIKE_ID_TYPE, bike.getBikeId()));
         mapped.setLat(bike.getLat());
@@ -66,13 +66,21 @@ public class FreeBikeStatusFeedMapper implements FeedMapper<GBFSFreeBikeStatus> 
         mapped.setRentalUris(bike.getRentalUris());
         mapped.setVehicleTypeId(mapVehicleTypeId(bike.getVehicleTypeId(), feedProvider));
         mapped.setLastReported(bike.getLastReported());
-        mapped.setCurrentRangeMeters(bike.getCurrentRangeMeters());
+        mapped.setCurrentRangeMeters(bike.getCurrentRangeMeters() != null ? bike.getCurrentRangeMeters() : 0);
         mapped.setStationId(mapStationId(bike.getStationId(), feedProvider));
         mapped.setPricingPlanId(mapPricingPlanId(bike.getPricingPlanId(), feedProvider));
         return mapped;
     }
 
     private String mapVehicleTypeId(String vehicleTypeId, FeedProvider feedProvider) {
+        if (feedProvider.getVehicleTypes() != null) {
+            return IdMappers.mapId(
+                    feedProvider.getCodespace(),
+                    IdMappers.VEHICLE_TYPE_ID_TYPE,
+                    feedProvider.getVehicleTypes().get(0).getVehicleTypeId()
+            );
+        }
+
         if (vehicleTypeId == null) {
             return null;
         }
@@ -89,6 +97,14 @@ public class FreeBikeStatusFeedMapper implements FeedMapper<GBFSFreeBikeStatus> 
     }
 
     private String mapPricingPlanId(String pricingPlanId, FeedProvider feedProvider) {
+        if (feedProvider.getPricingPlans() != null) {
+            return IdMappers.mapId(
+                    feedProvider.getCodespace(),
+                    IdMappers.PRICING_PLAN_ID_TYPE,
+                    feedProvider.getPricingPlans().get(0).getPlanId()
+            );
+        }
+
         if (pricingPlanId == null) {
             return null;
         }

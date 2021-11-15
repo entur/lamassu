@@ -25,6 +25,7 @@ import org.entur.lamassu.model.provider.FeedProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,6 +38,10 @@ public class VehicleTypesFeedMapper implements FeedMapper<GBFSVehicleTypes> {
 
     @Override
     public GBFSVehicleTypes map(GBFSVehicleTypes source, FeedProvider feedProvider) {
+        if (feedProvider.getVehicleTypes() != null) {
+            return customVehicleTypes(feedProvider);
+        }
+
         if (source == null) {
             return null;
         }
@@ -47,6 +52,17 @@ public class VehicleTypesFeedMapper implements FeedMapper<GBFSVehicleTypes> {
         mapped.setLastUpdated(source.getLastUpdated());
         mapped.setData(mapData(source.getData(), feedProvider.getCodespace()));
         return mapped;
+    }
+
+    private GBFSVehicleTypes customVehicleTypes(FeedProvider feedProvider) {
+        var custom = new GBFSVehicleTypes();
+        custom.setVersion(GBFSVehicleTypes.Version.fromValue(targetGbfsVersion));
+        custom.setLastUpdated((int) System.currentTimeMillis() / 1000);
+        custom.setTtl((int)Duration.ofDays(1).toSeconds());
+        var data = new GBFSData();
+        data.setVehicleTypes(feedProvider.getVehicleTypes());
+        custom.setData(mapData(data, feedProvider.getCodespace()));
+        return custom;
     }
 
     private GBFSData mapData(GBFSData data, String codespace) {
