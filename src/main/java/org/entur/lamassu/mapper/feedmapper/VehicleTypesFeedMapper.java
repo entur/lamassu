@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,8 +58,8 @@ public class VehicleTypesFeedMapper implements FeedMapper<GBFSVehicleTypes> {
     private GBFSVehicleTypes customVehicleTypes(FeedProvider feedProvider) {
         var custom = new GBFSVehicleTypes();
         custom.setVersion(GBFSVehicleTypes.Version.fromValue(targetGbfsVersion));
-        custom.setLastUpdated((int) System.currentTimeMillis() / 1000);
-        custom.setTtl((int)Duration.ofDays(1).toSeconds());
+        custom.setLastUpdated((int) Instant.now().getEpochSecond());
+        custom.setTtl((int)Duration.ofMinutes(5).toSeconds());
         var data = new GBFSData();
         data.setVehicleTypes(feedProvider.getVehicleTypes());
         custom.setData(mapData(data, feedProvider.getCodespace()));

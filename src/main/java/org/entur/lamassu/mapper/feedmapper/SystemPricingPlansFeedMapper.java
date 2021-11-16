@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,8 +58,8 @@ public class SystemPricingPlansFeedMapper implements FeedMapper<GBFSSystemPricin
     private GBFSSystemPricingPlans customPricingPlans(FeedProvider feedProvider) {
         var custom = new GBFSSystemPricingPlans();
         custom.setVersion(GBFSSystemPricingPlans.Version.fromValue(targetGbfsVersion));
-        custom.setTtl((int)Duration.ofDays(1).toSeconds());
-        custom.setLastUpdated((int)System.currentTimeMillis() / 1000);
+        custom.setLastUpdated((int) Instant.now().getEpochSecond());
+        custom.setTtl((int)Duration.ofMinutes(5).toSeconds());
         var data = new GBFSData();
         data.setPlans(feedProvider.getPricingPlans());
         custom.setData(mapData(data, feedProvider));
