@@ -19,17 +19,20 @@
 package org.entur.lamassu.mapper.entitymapper;
 
 import org.entur.gbfs.v2_2.station_information.GBFSStation;
+import org.entur.gbfs.v2_2.station_status.GBFSVehicleDocksAvailable;
 import org.entur.gbfs.v2_2.station_status.GBFSVehicleTypesAvailable;
 import org.entur.gbfs.v2_2.vehicle_types.GBFSVehicleTypes;
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.System;
+import org.entur.lamassu.model.entities.VehicleDocksAvailability;
 import org.entur.lamassu.model.entities.VehicleType;
 import org.entur.lamassu.model.entities.VehicleTypeAvailability;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
@@ -56,6 +59,7 @@ public class StationMapper {
         station.setRentalUris(rentalUrisMapper.mapRentalUris(stationInformation.getRentalUris()));
         station.setNumBikesAvailable(stationStatus.getNumBikesAvailable() != null ? stationStatus.getNumBikesAvailable().intValue() : null);
         station.setVehicleTypesAvailable(mapVehicleTypesAvailable(vehicleTypesFeed, stationStatus.getVehicleTypesAvailable(), language));
+        station.setVehicleDocksAvailable(mapVehicleDocksAvailable(vehicleTypesFeed, stationStatus.getVehicleDocksAvailable(), language));
         station.setNumDocksAvailable(stationStatus.getNumDocksAvailable() != null ? stationStatus.getNumDocksAvailable().intValue() : null);
         station.setInstalled(stationStatus.getIsInstalled());
         station.setRenting(stationStatus.getIsRenting());
@@ -80,6 +84,27 @@ public class StationMapper {
         var mapped = new VehicleTypeAvailability();
         mapped.setVehicleType(vehicleType);
         mapped.setCount(vehicleTypeAvailability.getCount().intValue());
+        return mapped;
+    }
+
+    private List<VehicleDocksAvailability> mapVehicleDocksAvailable(GBFSVehicleTypes vehicleTypesFeed, List<GBFSVehicleDocksAvailable> vehicleDocksAvailable, String language) {
+        var mappedVehicleTypes = vehicleTypesFeed.getData().getVehicleTypes().stream()
+                .map(vehicleType -> vehicleTypeMapper.mapVehicleType(vehicleType, language))
+                .collect(Collectors.toMap(VehicleType::getId, vehicleType -> vehicleType));
+
+        return vehicleDocksAvailable.stream()
+                .map(vehicleDocksAvailability -> mapVehicleDocksAvailability(mappedVehicleTypes, vehicleDocksAvailability))
+                .collect(Collectors.toList());
+    }
+
+    private VehicleDocksAvailability mapVehicleDocksAvailability(Map<String, VehicleType> mappedVehicleTypes, GBFSVehicleDocksAvailable vehicleDocksAvailability) {
+        var vehicleTypes = vehicleDocksAvailability.getVehicleTypeIds().stream()
+                .map(mappedVehicleTypes::get)
+                .collect(Collectors.toList());
+
+        var mapped = new VehicleDocksAvailability();
+        mapped.setVehicleTypes(vehicleTypes);
+        mapped.setCount(vehicleDocksAvailability.getCount().intValue());
         return mapped;
     }
 }

@@ -46,6 +46,7 @@ public class GraphQLIntegrationTest extends AbstractIntegrationTestBase {
         GraphQLResponse response = graphQLTestTemplate.postForResource("stations_by_id_query.graphql");
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("TST:Station:1", response.get("$.data.stationsById[0].id"));
+        assertEquals("2", response.get("$.data.stationsById[0].vehicleDocksAvailable[0].count"));
     }
 
     @Test

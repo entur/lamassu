@@ -21,6 +21,13 @@
             }
             count
         }
+        vehicleDocksAvailable {
+            vehicleTypes {
+                formFactor
+                propulsionType
+            }
+            count
+        }
         numDocksAvailable
         isInstalled
         isRenting

@@ -103,6 +103,7 @@ type Station {
     rentalUris: RentalUris
     numBikesAvailable: Int!
     vehicleTypesAvailable: [VehicleTypeAvailability]
+    vehicleDocksAvailable: [VehicleDocksAvailability]
     numDocksAvailable: Int
     isInstalled: Boolean!
     isRenting: Boolean!
@@ -155,6 +156,11 @@ type Operator {
 
 type VehicleTypeAvailability {
     vehicleType: VehicleType!
+    count: Int!
+}
+
+type VehicleDocksAvailability {
+    vehicleTypes: [VehicleType]!
     count: Int!
 }
 
