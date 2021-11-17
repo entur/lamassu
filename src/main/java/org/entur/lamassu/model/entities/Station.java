@@ -24,15 +24,27 @@ import java.util.Objects;
 public class Station implements LocationEntity {
     private String id;
     private TranslatedString name;
+    private TranslatedString shortName;
     private Double lat;
     private Double lon;
     private String address;
+    private String crossStreet;
+    private Region region;
+    private String postCode;
+    private List<RentalMethod> rentalMethods;
+    private Boolean isVirtualStation;
+    private MultiPolygon stationArea;
     private Integer capacity;
+    private List<VehicleTypeCapacity> vehicleCapacity;
+    private List<VehicleTypeCapacity> vehicleTypeCapacity;
+    private Boolean isValetStation;
     private RentalUris rentalUris;
     private Integer numBikesAvailable;
     private List<VehicleTypeAvailability> vehicleTypesAvailable;
-    private List<VehicleDocksAvailability> vehicleDocksAvailable;
+    private Integer numBikesDisabled;
     private Integer numDocksAvailable;
+    private List<VehicleDocksAvailability> vehicleDocksAvailable;
+    private Integer numDocksDisabled;
     private Boolean isInstalled;
     private Boolean isRenting;
     private Boolean isReturning;
@@ -57,6 +69,15 @@ public class Station implements LocationEntity {
         this.name = name;
     }
 
+    public TranslatedString getShortName() {
+        return shortName;
+    }
+
+    public void setShortName(TranslatedString shortName) {
+        this.shortName = shortName;
+    }
+
+    @Override
     public Double getLat() {
         return lat;
     }
@@ -65,6 +86,7 @@ public class Station implements LocationEntity {
         this.lat = lat;
     }
 
+    @Override
     public Double getLon() {
         return lon;
     }
@@ -81,6 +103,54 @@ public class Station implements LocationEntity {
         this.address = address;
     }
 
+    public String getCrossStreet() {
+        return crossStreet;
+    }
+
+    public void setCrossStreet(String crossStreet) {
+        this.crossStreet = crossStreet;
+    }
+
+    public Region getRegion() {
+        return region;
+    }
+
+    public void setRegion(Region region) {
+        this.region = region;
+    }
+
+    public String getPostCode() {
+        return postCode;
+    }
+
+    public void setPostCode(String postCode) {
+        this.postCode = postCode;
+    }
+
+    public List<RentalMethod> getRentalMethods() {
+        return rentalMethods;
+    }
+
+    public void setRentalMethods(List<RentalMethod> rentalMethods) {
+        this.rentalMethods = rentalMethods;
+    }
+
+    public Boolean getVirtualStation() {
+        return isVirtualStation;
+    }
+
+    public void setVirtualStation(Boolean virtualStation) {
+        isVirtualStation = virtualStation;
+    }
+
+    public MultiPolygon getStationArea() {
+        return stationArea;
+    }
+
+    public void setStationArea(MultiPolygon stationArea) {
+        this.stationArea = stationArea;
+    }
+
     public Integer getCapacity() {
         return capacity;
     }
@@ -89,9 +159,37 @@ public class Station implements LocationEntity {
         this.capacity = capacity;
     }
 
-    public RentalUris getRentalUris() { return rentalUris; }
+    public List<VehicleTypeCapacity> getVehicleCapacity() {
+        return vehicleCapacity;
+    }
 
-    public void setRentalUris(RentalUris rentalUris) { this.rentalUris = rentalUris; }
+    public void setVehicleCapacity(List<VehicleTypeCapacity> vehicleCapacity) {
+        this.vehicleCapacity = vehicleCapacity;
+    }
+
+    public List<VehicleTypeCapacity> getVehicleTypeCapacity() {
+        return vehicleTypeCapacity;
+    }
+
+    public void setVehicleTypeCapacity(List<VehicleTypeCapacity> vehicleTypeCapacity) {
+        this.vehicleTypeCapacity = vehicleTypeCapacity;
+    }
+
+    public Boolean getValetStation() {
+        return isValetStation;
+    }
+
+    public void setValetStation(Boolean valetStation) {
+        isValetStation = valetStation;
+    }
+
+    public RentalUris getRentalUris() {
+        return rentalUris;
+    }
+
+    public void setRentalUris(RentalUris rentalUris) {
+        this.rentalUris = rentalUris;
+    }
 
     public Integer getNumBikesAvailable() {
         return numBikesAvailable;
@@ -109,12 +207,12 @@ public class Station implements LocationEntity {
         this.vehicleTypesAvailable = vehicleTypesAvailable;
     }
 
-    public List<VehicleDocksAvailability> getVehicleDocksAvailable() {
-        return vehicleDocksAvailable;
+    public Integer getNumBikesDisabled() {
+        return numBikesDisabled;
     }
 
-    public void setVehicleDocksAvailable(List<VehicleDocksAvailability> vehicleDocksAvailable) {
-        this.vehicleDocksAvailable = vehicleDocksAvailable;
+    public void setNumBikesDisabled(Integer numBikesDisabled) {
+        this.numBikesDisabled = numBikesDisabled;
     }
 
     public Integer getNumDocksAvailable() {
@@ -123,6 +221,22 @@ public class Station implements LocationEntity {
 
     public void setNumDocksAvailable(Integer numDocksAvailable) {
         this.numDocksAvailable = numDocksAvailable;
+    }
+
+    public List<VehicleDocksAvailability> getVehicleDocksAvailable() {
+        return vehicleDocksAvailable;
+    }
+
+    public void setVehicleDocksAvailable(List<VehicleDocksAvailability> vehicleDocksAvailable) {
+        this.vehicleDocksAvailable = vehicleDocksAvailable;
+    }
+
+    public Integer getNumDocksDisabled() {
+        return numDocksDisabled;
+    }
+
+    public void setNumDocksDisabled(Integer numDocksDisabled) {
+        this.numDocksDisabled = numDocksDisabled;
     }
 
     public Boolean getInstalled() {
@@ -178,15 +292,27 @@ public class Station implements LocationEntity {
         return "Station{" +
                 "id='" + id + '\'' +
                 ", name=" + name +
+                ", shortName=" + shortName +
                 ", lat=" + lat +
                 ", lon=" + lon +
                 ", address='" + address + '\'' +
+                ", crossStreet='" + crossStreet + '\'' +
+                ", region=" + region +
+                ", postCode='" + postCode + '\'' +
+                ", rentalMethods=" + rentalMethods +
+                ", isVirtualStation=" + isVirtualStation +
+                ", stationArea=" + stationArea +
                 ", capacity=" + capacity +
+                ", vehicleCapacity=" + vehicleCapacity +
+                ", vehicleTypeCapacity=" + vehicleTypeCapacity +
+                ", isValetStation=" + isValetStation +
                 ", rentalUris=" + rentalUris +
                 ", numBikesAvailable=" + numBikesAvailable +
                 ", vehicleTypesAvailable=" + vehicleTypesAvailable +
-                ", vehicleDocksAvailable=" + vehicleDocksAvailable +
+                ", numBikesDisabled=" + numBikesDisabled +
                 ", numDocksAvailable=" + numDocksAvailable +
+                ", vehicleDocksAvailable=" + vehicleDocksAvailable +
+                ", numDocksDisabled=" + numDocksDisabled +
                 ", isInstalled=" + isInstalled +
                 ", isRenting=" + isRenting +
                 ", isReturning=" + isReturning +
@@ -208,4 +334,5 @@ public class Station implements LocationEntity {
     public int hashCode() {
         return Objects.hash(id);
     }
+
 }

@@ -23,6 +23,7 @@ import org.entur.gbfs.v2_2.geofencing_zones.GBFSGeofencingZones__1;
 import org.entur.gbfs.v2_2.geofencing_zones.GBFSGeometry;
 import org.entur.gbfs.v2_2.geofencing_zones.GBFSProperties;
 import org.entur.gbfs.v2_2.geofencing_zones.GBFSRule;
+import org.entur.lamassu.model.entities.MultiPolygon;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.springframework.stereotype.Component;
 
@@ -81,8 +82,8 @@ public class GeofencingZonesMapper {
         return mapped;
     }
 
-    private org.entur.lamassu.model.entities.GeofencingZones.MultiPolygon mapGeometry(GBFSGeometry geometry) {
-        var mapped = new org.entur.lamassu.model.entities.GeofencingZones.MultiPolygon();
+    private MultiPolygon mapGeometry(GBFSGeometry geometry) {
+        var mapped = new MultiPolygon();
         mapped.setCoordinates(geometry.getCoordinates());
         return mapped;
     }

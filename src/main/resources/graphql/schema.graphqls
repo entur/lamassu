@@ -96,15 +96,27 @@ type RentalUris {
 type Station {
     id: ID!
     name: TranslatedString!
+    shortName: TranslatedString
     lat: Float!
     lon: Float!
     address: String
+    crossStreet: String
+    region: Region
+    postCode: String
+    rentalMethods: [RentalMethod]
+    isVirtualStation: Boolean
+    stationArea: MultiPolygon
     capacity: Int
+    vehicleCapacity: [VehicleTypeCapacity]
+    vehicleTypeCapacity: [VehicleTypeCapacity]
+    isValetStation: Boolean
     rentalUris: RentalUris
     numBikesAvailable: Int!
     vehicleTypesAvailable: [VehicleTypeAvailability]
-    vehicleDocksAvailable: [VehicleDocksAvailability]
+    numBikesDisabled: Int
     numDocksAvailable: Int
+    vehicleDocksAvailable: [VehicleDocksAvailability]
+    numDocksDisabled: Int
     isInstalled: Boolean!
     isRenting: Boolean!
     isReturning: Boolean!
@@ -140,6 +152,17 @@ type RentalApp {
     discoveryUri: String
 }
 
+enum RentalMethod {
+    KEY
+    CREDITCARD
+    PAYPASS
+    APPLEPLAY
+    ANDROIDPAY
+    TRANSITCARD
+    ACCOUNTNUMBER
+    PHONE
+}
+
 type Translation {
     language: String!
     value: String!
@@ -152,6 +175,11 @@ type TranslatedString {
 type Operator {
     id: ID!
     name: TranslatedString!
+}
+
+type VehicleTypeCapacity {
+    vehicleType: VehicleType!
+    count: Int!
 }
 
 type VehicleTypeAvailability {
@@ -197,4 +225,9 @@ type GeofencingZoneRule {
     rideAllowed: Boolean!
     rideThroughAllowed: Boolean!
     maximumSpeedKph: Int
+}
+
+type Region {
+    id: ID!
+    name: String!
 }
