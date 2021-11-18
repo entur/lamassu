@@ -76,8 +76,8 @@ public class StationMapper {
         station.setVirtualStation(stationInformation.getIsVirtualStation());
         station.setStationArea(mapStationArea(stationInformation.getStationArea()));
         station.setCapacity(stationInformation.getCapacity() != null ? stationInformation.getCapacity().intValue() : null);
-        station.setVehicleCapacity(stationInformation.getVehicleCapacity() != null ? mapVehicleCapacities(stationInformation.getVehicleCapacity(), mapVehicleTypes(vehicleTypesFeed, language), language) : null);
-        station.setVehicleTypeCapacity(stationInformation.getVehicleTypeCapacity() != null ? mapVehicleCapacities(stationInformation.getVehicleTypeCapacity(), mapVehicleTypes(vehicleTypesFeed, language), language) : null);
+        station.setVehicleCapacity(stationInformation.getVehicleCapacity() != null ? mapVehicleCapacities(stationInformation.getVehicleCapacity(), mapVehicleTypes(vehicleTypesFeed, language)) : null);
+        station.setVehicleTypeCapacity(stationInformation.getVehicleTypeCapacity() != null ? mapVehicleTypeCapacities(stationInformation.getVehicleTypeCapacity(), mapVehicleTypes(vehicleTypesFeed, language)) : null);
         station.setValetStation(stationInformation.getIsValetStation());
         station.setRentalUris(rentalUrisMapper.mapRentalUris(stationInformation.getRentalUris()));
         station.setNumBikesAvailable(stationStatus.getNumBikesAvailable() != null ? stationStatus.getNumBikesAvailable().intValue() : null);
@@ -145,7 +145,7 @@ public class StationMapper {
                 }).collect(Collectors.toList());
     }
 
-    private List<VehicleTypeCapacity> mapVehicleCapacities(GBFSVehicleTypeCapacity vehicleCapacity, Map<String, VehicleType> vehicleTypes) {
+    private List<VehicleTypeCapacity> mapVehicleTypeCapacities(GBFSVehicleTypeCapacity vehicleCapacity, Map<String, VehicleType> vehicleTypes) {
         return vehicleCapacity.getAdditionalProperties().entrySet().stream()
                 .map(entry -> mapVehicleTypeCapacityFromMapEntry(entry, vehicleTypes))
                 .collect(Collectors.toList());
