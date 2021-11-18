@@ -19,20 +19,31 @@
 package org.entur.lamassu.mapper.entitymapper;
 
 import org.entur.gbfs.v2_2.station_information.GBFSStation;
+import org.entur.gbfs.v2_2.station_information.GBFSStationArea;
+import org.entur.gbfs.v2_2.station_information.GBFSVehicleCapacity;
+import org.entur.gbfs.v2_2.station_information.GBFSVehicleTypeCapacity;
 import org.entur.gbfs.v2_2.station_status.GBFSVehicleDocksAvailable;
 import org.entur.gbfs.v2_2.station_status.GBFSVehicleTypesAvailable;
+import org.entur.gbfs.v2_2.system_regions.GBFSSystemRegions;
 import org.entur.gbfs.v2_2.vehicle_types.GBFSVehicleTypes;
+import org.entur.lamassu.model.entities.MultiPolygon;
 import org.entur.lamassu.model.entities.PricingPlan;
+import org.entur.lamassu.model.entities.Region;
+import org.entur.lamassu.model.entities.RentalMethod;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.System;
 import org.entur.lamassu.model.entities.VehicleDocksAvailability;
 import org.entur.lamassu.model.entities.VehicleType;
 import org.entur.lamassu.model.entities.VehicleTypeAvailability;
+import org.entur.lamassu.model.entities.VehicleTypeCapacity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -41,6 +52,8 @@ public class StationMapper {
     private final RentalUrisMapper rentalUrisMapper;
     private final VehicleTypeMapper vehicleTypeMapper;
 
+    private static final Logger logger = LoggerFactory.getLogger(StationMapper.class);
+
     @Autowired
     public StationMapper(TranslationMapper translationMapper, RentalUrisMapper rentalUrisMapper, VehicleTypeMapper vehicleTypeMapper) {
         this.translationMapper = translationMapper;
@@ -48,26 +61,107 @@ public class StationMapper {
         this.vehicleTypeMapper = vehicleTypeMapper;
     }
 
-    public Station mapStation(System system, List<PricingPlan> pricingPlans, GBFSStation stationInformation, org.entur.gbfs.v2_2.station_status.GBFSStation stationStatus, GBFSVehicleTypes vehicleTypesFeed, String language) {
+    public Station mapStation(System system, List<PricingPlan> pricingPlans, GBFSStation stationInformation, org.entur.gbfs.v2_2.station_status.GBFSStation stationStatus, GBFSVehicleTypes vehicleTypesFeed, GBFSSystemRegions regions, String language) {
         var station = new Station();
         station.setId(stationStatus.getStationId());
+        station.setName(translationMapper.mapSingleTranslation(language, stationInformation.getName()));
+        station.setShortName(translationMapper.mapSingleTranslation(language, stationInformation.getShortName()));
         station.setLat(stationInformation.getLat());
         station.setLon(stationInformation.getLon());
-        station.setName(translationMapper.mapSingleTranslation(language, stationInformation.getName()));
         station.setAddress(stationInformation.getAddress());
+        station.setCrossStreet(stationInformation.getCrossStreet());
+        station.setRegion(mapRegion(regions, stationInformation.getRegionId(), language));
+        station.setPostCode(stationInformation.getPostCode());
+        station.setRentalMethods(mapRentalMethods(stationInformation.getRentalMethods()));
+        station.setVirtualStation(stationInformation.getIsVirtualStation());
+        station.setStationArea(mapStationArea(stationInformation.getStationArea()));
         station.setCapacity(stationInformation.getCapacity() != null ? stationInformation.getCapacity().intValue() : null);
+        station.setVehicleCapacity(stationInformation.getVehicleCapacity() != null ? mapVehicleCapacities(stationInformation.getVehicleCapacity(), mapVehicleTypes(vehicleTypesFeed, language)) : null);
+        station.setVehicleTypeCapacity(stationInformation.getVehicleTypeCapacity() != null ? mapVehicleTypeCapacities(stationInformation.getVehicleTypeCapacity(), mapVehicleTypes(vehicleTypesFeed, language)) : null);
+        station.setValetStation(stationInformation.getIsValetStation());
         station.setRentalUris(rentalUrisMapper.mapRentalUris(stationInformation.getRentalUris()));
         station.setNumBikesAvailable(stationStatus.getNumBikesAvailable() != null ? stationStatus.getNumBikesAvailable().intValue() : null);
         station.setVehicleTypesAvailable(mapVehicleTypesAvailable(vehicleTypesFeed, stationStatus.getVehicleTypesAvailable(), language));
-        station.setVehicleDocksAvailable(mapVehicleDocksAvailable(vehicleTypesFeed, stationStatus.getVehicleDocksAvailable(), language));
+        station.setNumBikesDisabled(stationStatus.getNumBikesDisabled() != null ? stationStatus.getNumBikesDisabled().intValue() : null);
         station.setNumDocksAvailable(stationStatus.getNumDocksAvailable() != null ? stationStatus.getNumDocksAvailable().intValue() : null);
+        station.setVehicleDocksAvailable(mapVehicleDocksAvailable(vehicleTypesFeed, stationStatus.getVehicleDocksAvailable(), language));
+        station.setNumDocksDisabled(station.getNumDocksDisabled());
         station.setInstalled(stationStatus.getIsInstalled());
         station.setRenting(stationStatus.getIsRenting());
         station.setReturning(stationStatus.getIsReturning());
-        station.setLastReported(stationStatus.getLastReported().longValue());
+        station.setLastReported(stationStatus.getLastReported() != null ? stationStatus.getLastReported().longValue() : null);
         station.setSystem(system);
         station.setPricingPlans(pricingPlans);
         return station;
+    }
+
+    private MultiPolygon mapStationArea(GBFSStationArea stationArea) {
+        if (stationArea == null) {
+            return null;
+        }
+
+        var multiPolygon = new MultiPolygon();
+        multiPolygon.setCoordinates(stationArea.getCoordinates());
+        return multiPolygon;
+    }
+
+    private List<RentalMethod> mapRentalMethods(List<org.entur.gbfs.v2_2.station_information.RentalMethod> rentalMethods) {
+        return Optional.ofNullable(rentalMethods)
+                .map(values -> values.stream()
+                        .map(rentalMethod -> RentalMethod.valueOf(rentalMethod.name().toUpperCase()))
+                        .collect(Collectors.toList())
+                ).orElse(null);
+    }
+
+    private Region mapRegion(GBFSSystemRegions regions, String regionId, String language) {
+        if (regionId == null) {
+            return null;
+        }
+
+        var sourceRegion = Optional.ofNullable(regions)
+                .flatMap(r -> r.getData().getRegions().stream()
+                        .filter(region -> region.getRegionId().equals(regionId))
+                        .findFirst()
+                );
+
+        if (sourceRegion.isPresent()) {
+            var region = new Region();
+            region.setId(regionId);
+            region.setName(translationMapper.mapSingleTranslation(language, sourceRegion.get().getName()));
+            return region;
+        } else {
+            logger.warn("Could not map regionId to a region from system_regions feed {}", regionId);
+            return null;
+        }
+    }
+
+    private List<VehicleTypeCapacity> mapVehicleCapacities(GBFSVehicleCapacity vehicleCapacity, Map<String, VehicleType> vehicleTypes) {
+        return vehicleCapacity.getAdditionalProperties().entrySet().stream()
+                .map(entry -> {
+                    var mapped = new VehicleTypeCapacity();
+                    mapped.setVehicleType(vehicleTypes.get(entry.getKey()));
+                    mapped.setCount(entry.getValue().intValue());
+                    return mapped;
+                }).collect(Collectors.toList());
+    }
+
+    private List<VehicleTypeCapacity> mapVehicleTypeCapacities(GBFSVehicleTypeCapacity vehicleCapacity, Map<String, VehicleType> vehicleTypes) {
+        return vehicleCapacity.getAdditionalProperties().entrySet().stream()
+                .map(entry -> mapVehicleTypeCapacityFromMapEntry(entry, vehicleTypes))
+                .collect(Collectors.toList());
+    }
+
+    private VehicleTypeCapacity mapVehicleTypeCapacityFromMapEntry(Map.Entry<String, Double> entry, Map<String, VehicleType> vehicleTypes) {
+        var mapped = new VehicleTypeCapacity();
+        mapped.setVehicleType(vehicleTypes.get(entry.getKey()));
+        mapped.setCount(entry.getValue().intValue());
+        return mapped;
+    }
+
+    private Map<String, VehicleType> mapVehicleTypes(GBFSVehicleTypes vehicleTypesFeed, String language) {
+        return vehicleTypesFeed.getData().getVehicleTypes().stream()
+                .map(vehicleType -> vehicleTypeMapper.mapVehicleType(vehicleType, language))
+                .collect(Collectors.toMap(VehicleType::getId, vehicleType -> vehicleType));
     }
 
     private List<VehicleTypeAvailability> mapVehicleTypesAvailable(GBFSVehicleTypes vehicleTypesFeed, List<GBFSVehicleTypesAvailable> vehicleTypesAvailable, String language) {

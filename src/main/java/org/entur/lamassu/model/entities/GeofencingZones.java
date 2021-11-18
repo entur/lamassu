@@ -89,23 +89,6 @@ public class GeofencingZones implements Entity {
         }
     }
 
-    public static class MultiPolygon implements Serializable {
-        private String type = "MultiPolygon";
-        private List<List<List<List<Double>>>> coordinates;
-
-        public String getType() {
-            return type;
-        }
-
-        public List<List<List<List<Double>>>> getCoordinates() {
-            return coordinates;
-        }
-
-        public void setCoordinates(List<List<List<List<Double>>>> coordinates) {
-            this.coordinates = coordinates;
-        }
-    }
-
     public static class Properties implements Serializable {
         private String name;
         private Long start;

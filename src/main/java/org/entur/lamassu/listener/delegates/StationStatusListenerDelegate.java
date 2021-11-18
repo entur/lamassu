@@ -25,6 +25,7 @@ import org.entur.gbfs.v2_2.station_status.GBFSStation;
 import org.entur.gbfs.v2_2.station_status.GBFSStationStatus;
 import org.entur.gbfs.v2_2.system_information.GBFSSystemInformation;
 import org.entur.gbfs.v2_2.system_pricing_plans.GBFSSystemPricingPlans;
+import org.entur.gbfs.v2_2.system_regions.GBFSSystemRegions;
 import org.entur.gbfs.v2_2.vehicle_types.GBFSVehicleTypes;
 import org.entur.lamassu.cache.GBFSFeedCacheV2;
 import org.entur.lamassu.cache.StationCache;
@@ -112,6 +113,7 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
         var systemInformationFeed = (GBFSSystemInformation) feedCache.find(GBFSFeedName.SystemInformation, feedProvider);
         var pricingPlansFeed = (GBFSSystemPricingPlans) feedCache.find(GBFSFeedName.SystemPricingPlans, feedProvider);
         var vehicleTypesFeed = (GBFSVehicleTypes) feedCache.find(GBFSFeedName.VehicleTypes, feedProvider);
+        var systemRegionsFeed = (GBFSSystemRegions) feedCache.find(GBFSFeedName.SystemRegions, feedProvider);
 
         var stationInformationFeed = (GBFSStationInformation) feedCache.find(GBFSFeedName.StationInformation, feedProvider);
         var stationStatusFeed = (GBFSStationStatus) event.getValue();
@@ -194,6 +196,7 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
                         stationInfo.get(station.getStationId()),
                         station,
                         vehicleTypesFeed,
+                        systemRegionsFeed,
                         feedProvider.getLanguage())
                 ).collect(Collectors.toMap(Station::getId, s->s));
 

@@ -6,6 +6,7 @@
     "stations": [
       {
         "station_id": "1",
+        "region_id": "Sahara",
         "name": "Cool bikes",
         "lat": 12.34,
         "lon": 45.67,
@@ -18,7 +19,7 @@
         "name": "Cooler bikes",
         "lat": 11.34,
         "lon": 44.67,
-        "vehicle_type_capacity": {
+        "vehicle_capacity": {
           "TST:VehicleType:CityBike": 12
         },
         "rental_uris": {

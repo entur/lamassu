@@ -18,7 +18,6 @@
 
 package org.entur.lamassu.mapper.feedmapper;
 
-import org.entur.gbfs.v2_2.gbfs.GBFSGbfs;
 import org.entur.gbfs.v2_2.system_information.GBFSData;
 import org.entur.gbfs.v2_2.system_information.GBFSSystemInformation;
 import org.entur.lamassu.model.provider.FeedProvider;
