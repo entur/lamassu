@@ -24,10 +24,8 @@ import org.entur.gbfs.v2_2.station_information.GBFSVehicleCapacity;
 import org.entur.gbfs.v2_2.station_information.GBFSVehicleTypeCapacity;
 import org.entur.gbfs.v2_2.station_status.GBFSVehicleDocksAvailable;
 import org.entur.gbfs.v2_2.station_status.GBFSVehicleTypesAvailable;
-import org.entur.gbfs.v2_2.system_regions.GBFSRegion;
 import org.entur.gbfs.v2_2.system_regions.GBFSSystemRegions;
 import org.entur.gbfs.v2_2.vehicle_types.GBFSVehicleTypes;
-import org.entur.lamassu.mapper.feedmapper.IdMappers;
 import org.entur.lamassu.model.entities.MultiPolygon;
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.Region;
@@ -38,7 +36,6 @@ import org.entur.lamassu.model.entities.VehicleDocksAvailability;
 import org.entur.lamassu.model.entities.VehicleType;
 import org.entur.lamassu.model.entities.VehicleTypeAvailability;
 import org.entur.lamassu.model.entities.VehicleTypeCapacity;
-import org.entur.lamassu.model.provider.FeedProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +52,7 @@ public class StationMapper {
     private final RentalUrisMapper rentalUrisMapper;
     private final VehicleTypeMapper vehicleTypeMapper;
 
-    private final static Logger logger = LoggerFactory.getLogger(StationMapper.class);
+    private static final Logger logger = LoggerFactory.getLogger(StationMapper.class);
 
     @Autowired
     public StationMapper(TranslationMapper translationMapper, RentalUrisMapper rentalUrisMapper, VehicleTypeMapper vehicleTypeMapper) {
@@ -138,7 +135,7 @@ public class StationMapper {
         }
     }
 
-    private List<VehicleTypeCapacity> mapVehicleCapacities(GBFSVehicleCapacity vehicleCapacity, Map<String, VehicleType> vehicleTypes, String language) {
+    private List<VehicleTypeCapacity> mapVehicleCapacities(GBFSVehicleCapacity vehicleCapacity, Map<String, VehicleType> vehicleTypes) {
         return vehicleCapacity.getAdditionalProperties().entrySet().stream()
                 .map(entry -> {
                     var mapped = new VehicleTypeCapacity();
@@ -148,7 +145,7 @@ public class StationMapper {
                 }).collect(Collectors.toList());
     }
 
-    private List<VehicleTypeCapacity> mapVehicleCapacities(GBFSVehicleTypeCapacity vehicleCapacity, Map<String, VehicleType> vehicleTypes, String language) {
+    private List<VehicleTypeCapacity> mapVehicleCapacities(GBFSVehicleTypeCapacity vehicleCapacity, Map<String, VehicleType> vehicleTypes) {
         return vehicleCapacity.getAdditionalProperties().entrySet().stream()
                 .map(entry -> mapVehicleTypeCapacityFromMapEntry(entry, vehicleTypes))
                 .collect(Collectors.toList());
