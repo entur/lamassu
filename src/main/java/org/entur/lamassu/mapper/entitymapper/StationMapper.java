@@ -81,10 +81,10 @@ public class StationMapper {
         station.setValetStation(stationInformation.getIsValetStation());
         station.setRentalUris(rentalUrisMapper.mapRentalUris(stationInformation.getRentalUris()));
         station.setNumBikesAvailable(stationStatus.getNumBikesAvailable() != null ? stationStatus.getNumBikesAvailable().intValue() : null);
-        station.setVehicleTypesAvailable(mapVehicleTypesAvailable(vehicleTypesFeed, stationStatus.getVehicleTypesAvailable(), language));
+        station.setVehicleTypesAvailable(stationStatus.getVehicleTypesAvailable() != null ? mapVehicleTypesAvailable(vehicleTypesFeed, stationStatus.getVehicleTypesAvailable(), language) : null);
         station.setNumBikesDisabled(stationStatus.getNumBikesDisabled() != null ? stationStatus.getNumBikesDisabled().intValue() : null);
         station.setNumDocksAvailable(stationStatus.getNumDocksAvailable() != null ? stationStatus.getNumDocksAvailable().intValue() : null);
-        station.setVehicleDocksAvailable(mapVehicleDocksAvailable(vehicleTypesFeed, stationStatus.getVehicleDocksAvailable(), language));
+        station.setVehicleDocksAvailable(stationStatus.getVehicleDocksAvailable() != null ? mapVehicleDocksAvailable(vehicleTypesFeed, stationStatus.getVehicleDocksAvailable(), language) : null);
         station.setNumDocksDisabled(station.getNumDocksDisabled());
         station.setInstalled(stationStatus.getIsInstalled());
         station.setRenting(stationStatus.getIsRenting());
