@@ -16,24 +16,6 @@
  *
  */
 
-/*
- *
- *
- *  * Licensed under the EUPL, Version 1.2 or – as soon they will be approved by
- *  * the European Commission - subsequent versions of the EUPL (the "Licence");
- *  * You may not use this work except in compliance with the Licence.
- *  * You may obtain a copy of the Licence at:
- *  *
- *  *   https://joinup.ec.europa.eu/software/page/eupl
- *  *
- *  * Unless required by applicable law or agreed to in writing, software
- *  * distributed under the Licence is distributed on an "AS IS" basis,
- *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  * See the Licence for the specific language governing permissions and
- *  * limitations under the Licence.
- *
- */
-
 package org.entur.lamassu.updater.entityupdater;
 
 import org.entur.gbfs.v2_2.free_bike_status.GBFSBike;
@@ -41,7 +23,6 @@ import org.entur.gbfs.v2_2.free_bike_status.GBFSFreeBikeStatus;
 import org.entur.gbfs.v2_2.system_information.GBFSSystemInformation;
 import org.entur.gbfs.v2_2.system_pricing_plans.GBFSSystemPricingPlans;
 import org.entur.gbfs.v2_2.vehicle_types.GBFSVehicleTypes;
-import org.entur.lamassu.cache.GBFSFeedCacheV2;
 import org.entur.lamassu.cache.VehicleCache;
 import org.entur.lamassu.cache.VehicleSpatialIndex;
 import org.entur.lamassu.mapper.entitymapper.PricingPlanMapper;
@@ -52,7 +33,6 @@ import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.entities.VehicleType;
 import org.entur.lamassu.model.provider.FeedProvider;
-import org.entur.lamassu.service.FeedProviderService;
 import org.entur.lamassu.util.SpatialIndexIdUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
