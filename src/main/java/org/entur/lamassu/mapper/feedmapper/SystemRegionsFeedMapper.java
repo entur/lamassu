@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class SystemRegionsFeedMapper implements FeedMapper<GBFSSystemRegions> {
+public class SystemRegionsFeedMapper extends AbstractFeedMapper<GBFSSystemRegions> {
     @Value("${org.entur.lamassu.targetGbfsVersion:2.2}")
     private String targetGbfsVersion;
 

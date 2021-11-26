@@ -35,7 +35,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-public class DiscoveryFeedMapper implements FeedMapper<GBFS> {
+public class DiscoveryFeedMapper extends AbstractFeedMapper<GBFS> {
     @Value("${org.entur.lamassu.baseUrl}")
     private String baseUrl;
 
@@ -47,6 +47,7 @@ public class DiscoveryFeedMapper implements FeedMapper<GBFS> {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    @Override
     public GBFS map(GBFS source, FeedProvider feedProvider) {
         if (source.getFeedsData() == null) {
             logger.warn("Missing discovery data for provider={} feed={}", feedProvider, source);

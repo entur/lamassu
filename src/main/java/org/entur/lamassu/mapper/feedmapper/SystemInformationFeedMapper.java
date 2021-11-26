@@ -25,7 +25,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SystemInformationFeedMapper implements FeedMapper<GBFSSystemInformation> {
+public class SystemInformationFeedMapper extends AbstractFeedMapper<GBFSSystemInformation> {
     @Value("${org.entur.lamassu.targetGbfsVersion:2.2}")
     private String targetGbfsVersion;
 

@@ -36,6 +36,7 @@ import org.entur.gbfs.v2_2.system_regions.GBFSSystemRegions;
 import org.entur.gbfs.v2_2.vehicle_types.GBFSVehicleTypes;
 import org.entur.lamassu.cache.GBFSFeedCacheV2;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
+import org.entur.lamassu.mapper.feedmapper.VehicleTypeCapacityProducer;
 import org.entur.lamassu.mapper.feedmapper.FeedMapper;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.slf4j.Logger;
@@ -106,7 +107,7 @@ public class FeedUpdater {
     public void start() {
         updaterThreadPool = new ForkJoinPool(NUM_CORES * 2);
         subscriptionManager = new GbfsSubscriptionManager(updaterThreadPool);
-        updaterThreadPool.submit(this::createSubscriptions);
+        updaterThreadPool.execute(this::createSubscriptions);
     }
 
     public void update() {
@@ -149,7 +150,12 @@ public class FeedUpdater {
         mapped.setVehicleTypes(vehicleTypesFeedMapper.map(delivery.getVehicleTypes(), feedProvider));
         mapped.setGeofencingZones(geofencingZonesFeedMapper.map(delivery.getGeofencingZones(), feedProvider));
         mapped.setStationInformation(stationInformationFeedMapper.map(delivery.getStationInformation(), feedProvider));
-        mapped.setStationStatus(stationStatusFeedMapper.map(delivery.getStationStatus(), feedProvider));
+        mapped.setStationStatus(
+                stationStatusFeedMapper.map(
+                        delivery.getStationStatus(),
+                        feedProvider,
+                        stationStatus -> VehicleTypeCapacityProducer.addToStations(stationStatus, mapped.getVehicleTypes()))
+        );
         mapped.setFreeBikeStatus(freeBikeStatusFeedMapper.map(delivery.getFreeBikeStatus(), feedProvider));
         return mapped;
     }

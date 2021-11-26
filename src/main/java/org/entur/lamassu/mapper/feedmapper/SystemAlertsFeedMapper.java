@@ -33,7 +33,7 @@ import static org.entur.lamassu.mapper.feedmapper.IdMappers.REGION_ID_TYPE;
 import static org.entur.lamassu.mapper.feedmapper.IdMappers.STATION_ID_TYPE;
 
 @Component
-public class SystemAlertsFeedMapper implements FeedMapper<GBFSSystemAlerts> {
+public class SystemAlertsFeedMapper extends AbstractFeedMapper<GBFSSystemAlerts> {
     @Value("${org.entur.lamassu.targetGbfsVersion:2.2}")
     private String targetGbfsVersion;
 

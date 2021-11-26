@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class StationInformationFeedMapper implements FeedMapper<GBFSStationInformation> {
+public class StationInformationFeedMapper extends AbstractFeedMapper<GBFSStationInformation> {
     @Value("${org.entur.lamassu.targetGbfsVersion:2.2}")
     private String targetGbfsVersion;
 

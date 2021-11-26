@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class GeofencingZonesFeedMapper implements FeedMapper<GBFSGeofencingZones> {
+public class GeofencingZonesFeedMapper extends AbstractFeedMapper<GBFSGeofencingZones> {
     @Value("${org.entur.lamassu.targetGbfsVersion:2.2}")
     private String targetGbfsVersion;
 
