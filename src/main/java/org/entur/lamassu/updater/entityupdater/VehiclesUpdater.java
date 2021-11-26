@@ -94,19 +94,17 @@ public class VehiclesUpdater {
 
         Set<String> vehicleIdsToRemove = null;
 
-        if (oldFreeBikeStatusFeed != null) {
-            if (oldFreeBikeStatusFeed.getData() != null) {
-                vehicleIdsToRemove = oldFreeBikeStatusFeed.getData().getBikes().stream()
-                        .map(GBFSBike::getBikeId).collect(Collectors.toSet());
+        if (oldFreeBikeStatusFeed != null && oldFreeBikeStatusFeed.getData() != null) {
+            vehicleIdsToRemove = oldFreeBikeStatusFeed.getData().getBikes().stream()
+                    .map(GBFSBike::getBikeId).collect(Collectors.toSet());
 
-                // Find vehicle ids in old feed not present in new feed
-                vehicleIdsToRemove.removeAll(vehicleIds);
-                logger.debug("Found {} vehicleIds to remove from old free_bike_status feed: {}", vehicleIdsToRemove.size(), oldFreeBikeStatusFeed);
+            // Find vehicle ids in old feed not present in new feed
+            vehicleIdsToRemove.removeAll(vehicleIds);
+            logger.debug("Found {} vehicleIds to remove from old free_bike_status feed: {}", vehicleIdsToRemove.size(), oldFreeBikeStatusFeed);
 
-                // Add vehicle ids that are staged for removal to the set of vehicle ids that will be used to
-                // fetch current vehicles from cache
-                vehicleIds.addAll(vehicleIdsToRemove);
-            }
+            // Add vehicle ids that are staged for removal to the set of vehicle ids that will be used to
+            // fetch current vehicles from cache
+            vehicleIds.addAll(vehicleIdsToRemove);
         }
 
         if (vehicleIdsToRemove == null) {

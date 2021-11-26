@@ -106,17 +106,15 @@ public class StationsUpdater {
 
         Set<String> stationIdsToRemove = null;
 
-        if (oldStationStatusFeed != null) {
-            if (oldStationStatusFeed.getData() != null) {
-                stationIdsToRemove = oldStationStatusFeed.getData().getStations().stream()
-                        .map(GBFSStation::getStationId).collect(Collectors.toSet());
-                stationIdsToRemove.removeAll(stationIds);
-                logger.debug("Found {} stationIds to remove from old station_status feed", stationIdsToRemove.size());
+        if (oldStationStatusFeed != null && oldStationStatusFeed.getData() != null) {
+            stationIdsToRemove = oldStationStatusFeed.getData().getStations().stream()
+                    .map(GBFSStation::getStationId).collect(Collectors.toSet());
+            stationIdsToRemove.removeAll(stationIds);
+            logger.debug("Found {} stationIds to remove from old station_status feed", stationIdsToRemove.size());
 
-                // Add station ids that are staged for removal to the set of stations ids that will be used to
-                // fetch current stations from cache
-                stationIds.addAll(stationIdsToRemove);
-            }
+            // Add station ids that are staged for removal to the set of stations ids that will be used to
+            // fetch current stations from cache
+            stationIds.addAll(stationIdsToRemove);
         }
 
         if (stationIdsToRemove == null) {
