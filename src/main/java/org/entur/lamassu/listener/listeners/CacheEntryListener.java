@@ -10,16 +10,16 @@ import javax.cache.event.CacheEntryRemovedListener;
 import javax.cache.event.CacheEntryUpdatedListener;
 import java.io.Serializable;
 
-public class CacheEntryListener<T, S> implements
+public class CacheEntryListener<T> implements
         CacheEntryCreatedListener<String, T>,
         CacheEntryUpdatedListener<String, T>,
         CacheEntryRemovedListener<String, T>,
         CacheEntryExpiredListener<String, T>,
         Serializable {
 
-    private final transient CacheEntryListenerDelegate<T, S> delegate;
+    private final transient CacheEntryListenerDelegate<T> delegate;
 
-    public CacheEntryListener(CacheEntryListenerDelegate<T, S> delegate) {
+    public CacheEntryListener(CacheEntryListenerDelegate<T> delegate) {
         this.delegate = delegate;
     }
 

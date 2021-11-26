@@ -33,7 +33,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Component
-public class VehicleListenerDelegate implements CacheEntryListenerDelegate<Vehicle, Vehicle> {
+public class VehicleListenerDelegate implements CacheEntryListenerDelegate<Vehicle> {
     private final FeedProviderService feedProviderService;
     private final VehicleSpatialIndex spatialIndex;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

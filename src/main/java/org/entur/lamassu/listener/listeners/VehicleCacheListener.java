@@ -29,16 +29,16 @@ import javax.cache.configuration.FactoryBuilder;
 import javax.cache.configuration.MutableCacheEntryListenerConfiguration;
 
 @Component
-public class VehicleCacheListener extends AbstractCacheListener<Vehicle, Vehicle> implements CacheListener<Vehicle> {
+public class VehicleCacheListener extends AbstractCacheListener<Vehicle> implements CacheListener {
     private MutableCacheEntryListenerConfiguration<String, Vehicle> listenerConfiguration;
 
     @Autowired
-    public VehicleCacheListener(Cache<String, Vehicle> cache, CacheEntryListenerDelegate<Vehicle, Vehicle> delegate) {
+    public VehicleCacheListener(Cache<String, Vehicle> cache, CacheEntryListenerDelegate<Vehicle> delegate) {
         super(cache, delegate);
     }
 
     @Override
-    protected MutableCacheEntryListenerConfiguration<String, Vehicle> getListenerConfiguration(CacheEntryListenerDelegate<Vehicle, Vehicle> delegate) {
+    protected MutableCacheEntryListenerConfiguration<String, Vehicle> getListenerConfiguration(CacheEntryListenerDelegate<Vehicle> delegate) {
         if (listenerConfiguration == null) {
             listenerConfiguration = new MutableCacheEntryListenerConfiguration<>(
                     FactoryBuilder.factoryOf(

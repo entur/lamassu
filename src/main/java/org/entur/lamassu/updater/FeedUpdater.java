@@ -26,8 +26,6 @@ import org.entur.lamassu.mapper.feedmapper.GbfsDeliveryMapper;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.updater.entityupdater.EntityCachesUpdater;
 import org.entur.lamassu.updater.feedcachesupdater.FeedCachesUpdater;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -36,8 +34,6 @@ import java.util.concurrent.ForkJoinPool;
 
 @Component
 public class FeedUpdater {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     private final FeedProviderConfig feedProviderConfig;
     private final GbfsDeliveryMapper gbfsDeliveryMapper;
     private final FeedCachesUpdater feedCachesUpdater;
