@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-class CustomVehicleTypeCapacityUtilTest {
+class VehicleTypeCapacityProducerTest {
     @Test
     void testAddCustomVehicleTypeCapacityToStations() {
         var stationStatus = new GBFSStationStatus()
@@ -48,7 +48,7 @@ class CustomVehicleTypeCapacityUtilTest {
                                 )
                         )
                 );
-        CustomVehicleTypeCapacityUtil.addCustomVehicleTypeCapacityToStations(
+        VehicleTypeCapacityProducer.addToStations(
                 stationStatus,
                 vehicleTypes
         );

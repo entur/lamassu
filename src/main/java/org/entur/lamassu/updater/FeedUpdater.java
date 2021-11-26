@@ -36,7 +36,7 @@ import org.entur.gbfs.v2_2.system_regions.GBFSSystemRegions;
 import org.entur.gbfs.v2_2.vehicle_types.GBFSVehicleTypes;
 import org.entur.lamassu.cache.GBFSFeedCacheV2;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
-import org.entur.lamassu.mapper.feedmapper.CustomVehicleTypeCapacityUtil;
+import org.entur.lamassu.mapper.feedmapper.VehicleTypeCapacityProducer;
 import org.entur.lamassu.mapper.feedmapper.FeedMapper;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.slf4j.Logger;
@@ -154,7 +154,7 @@ public class FeedUpdater {
                 stationStatusFeedMapper.map(
                         delivery.getStationStatus(),
                         feedProvider,
-                        stationStatus -> CustomVehicleTypeCapacityUtil.addCustomVehicleTypeCapacityToStations(stationStatus, mapped.getVehicleTypes()))
+                        stationStatus -> VehicleTypeCapacityProducer.addToStations(stationStatus, mapped.getVehicleTypes()))
         );
         mapped.setFreeBikeStatus(freeBikeStatusFeedMapper.map(delivery.getFreeBikeStatus(), feedProvider));
         return mapped;
