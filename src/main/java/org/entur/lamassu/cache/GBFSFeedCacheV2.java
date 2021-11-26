@@ -23,5 +23,6 @@ import org.entur.lamassu.model.provider.FeedProvider;
 
 public interface GBFSFeedCacheV2 {
     <T> T find(GBFSFeedName feedName, FeedProvider feedProvider);
-    <T> T update(GBFSFeedName feedName, FeedProvider feedProvider, T feed);
+    <T> void update(GBFSFeedName feedName, FeedProvider feedProvider, T feed);
+    <T> T getAndUpdate(GBFSFeedName feedName, FeedProvider feedProvider, T feed);
 }

@@ -41,7 +41,23 @@ public class GBFSFeedCacheV2Impl implements GBFSFeedCacheV2 {
     }
 
     @Override
-    public <T> T update(GBFSFeedName feedName, FeedProvider feedProvider, T feed) {
+    public <T> void update(GBFSFeedName feedName, FeedProvider feedProvider, T feed) {
+        String key = getKey(
+                feedName,
+                feedProvider.getSystemId()
+        );
+        try {
+            cache.putAsync(key, feed).get(5, TimeUnit.SECONDS);
+        } catch (ExecutionException | TimeoutException e) {
+            logger.warn("Unable to update feed cache within 5 second", e);
+        } catch (InterruptedException e) {
+            logger.warn("Interrupted while updating feed cache", e);
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    @Override
+    public <T> T getAndUpdate(GBFSFeedName feedName, FeedProvider feedProvider, T feed) {
         String key = getKey(
                 feedName,
                 feedProvider.getSystemId()

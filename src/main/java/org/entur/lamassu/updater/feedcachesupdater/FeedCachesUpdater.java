@@ -50,19 +50,29 @@ public class FeedCachesUpdater {
         updateFeedCache(feedProvider, GBFSFeedName.VehicleTypes, delivery.getVehicleTypes());
         updateFeedCache(feedProvider, GBFSFeedName.GeofencingZones, delivery.getGeofencingZones());
         updateFeedCache(feedProvider, GBFSFeedName.StationInformation, delivery.getStationInformation());
-        var oldStationStatus = updateFeedCache(feedProvider, GBFSFeedName.StationStatus, delivery.getStationStatus());
-        var oldFreeBikeStatus = updateFeedCache(feedProvider, GBFSFeedName.FreeBikeStatus, delivery.getFreeBikeStatus());
+        var oldStationStatus = getAndUpdateFeedCache(feedProvider, GBFSFeedName.StationStatus, delivery.getStationStatus());
+        var oldFreeBikeStatus = getAndUpdateFeedCache(feedProvider, GBFSFeedName.FreeBikeStatus, delivery.getFreeBikeStatus());
         var oldDelivery = new GbfsDelivery();
         oldDelivery.setStationStatus(oldStationStatus);
         oldDelivery.setFreeBikeStatus(oldFreeBikeStatus);
         return oldDelivery;
     }
 
-    private <T> T updateFeedCache(FeedProvider feedProvider, GBFSFeedName feedName, T feed) {
+    private <T> void updateFeedCache(FeedProvider feedProvider, GBFSFeedName feedName, T feed) {
         if (feed != null) {
             logger.info("updating feed {} for provider {}", feedName, feedProvider.getSystemId());
             logger.trace("updating feed {} for provider {} data {}", feedName, feedProvider.getSystemId(), feed);
-            return feedCache.update(feedName, feedProvider, feed);
+            feedCache.update(feedName, feedProvider, feed);
+        } else {
+            logger.debug("no feed {} found for provider {}", feedName, feedProvider.getSystemId());
+        }
+    }
+
+    private <T> T getAndUpdateFeedCache(FeedProvider feedProvider, GBFSFeedName feedName, T feed) {
+        if (feed != null) {
+            logger.info("updating feed {} for provider {}", feedName, feedProvider.getSystemId());
+            logger.trace("updating feed {} for provider {} data {}", feedName, feedProvider.getSystemId(), feed);
+            return feedCache.getAndUpdate(feedName, feedProvider, feed);
         } else {
             logger.debug("no feed {} found for provider {}", feedName, feedProvider.getSystemId());
             return null;
