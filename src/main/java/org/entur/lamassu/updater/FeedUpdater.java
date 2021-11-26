@@ -37,6 +37,7 @@ import org.entur.gbfs.v2_2.system_regions.GBFSSystemRegions;
 import org.entur.gbfs.v2_2.vehicle_types.GBFSVehicleTypes;
 import org.entur.lamassu.cache.GBFSFeedCacheV2;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
+import org.entur.lamassu.mapper.feedmapper.CustomVehicleTypeCapacityUtil;
 import org.entur.lamassu.mapper.feedmapper.FeedMapper;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.slf4j.Logger;
@@ -155,27 +156,11 @@ public class FeedUpdater {
                 stationStatusFeedMapper.map(
                         delivery.getStationStatus(),
                         feedProvider,
-                        stationStatus -> addCustomVehicleTypeCapacityToStations(stationStatus, mapped.getVehicleTypes()))
+                        stationStatus -> CustomVehicleTypeCapacityUtil.addCustomVehicleTypeCapacityToStations(stationStatus, mapped.getVehicleTypes()))
         );
         mapped.setFreeBikeStatus(freeBikeStatusFeedMapper.map(delivery.getFreeBikeStatus(), feedProvider));
         return mapped;
     }
-
-    private void addCustomVehicleTypeCapacityToStations(GBFSStationStatus stationStatus, GBFSVehicleTypes vehicleTypes) {
-        if (vehicleTypes.getData().getVehicleTypes().size() == 1) {
-            var vehicleType = vehicleTypes.getData().getVehicleTypes().get(0);
-            stationStatus.getData().getStations().forEach(station -> {
-                if (station.getVehicleTypesAvailable() == null || station.getVehicleTypesAvailable().isEmpty()) {
-                    station.setVehicleTypesAvailable(List.of(
-                            new GBFSVehicleTypesAvailable()
-                                    .withVehicleTypeId(vehicleType.getVehicleTypeId())
-                                    .withCount(station.getNumBikesAvailable())
-                    ));
-                }
-            });
-        }
-    }
-
 
     private void updateFeedCaches(FeedProvider feedProvider, GbfsDelivery delivery) {
         updateFeedCache(feedProvider, GBFSFeedName.GBFS, delivery.getDiscovery());
