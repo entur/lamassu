@@ -27,7 +27,6 @@ import org.entur.gbfs.v2_2.gbfs.GBFSFeedName;
 import org.entur.gbfs.v2_2.geofencing_zones.GBFSGeofencingZones;
 import org.entur.gbfs.v2_2.station_information.GBFSStationInformation;
 import org.entur.gbfs.v2_2.station_status.GBFSStationStatus;
-import org.entur.gbfs.v2_2.station_status.GBFSVehicleTypesAvailable;
 import org.entur.gbfs.v2_2.system_alerts.GBFSSystemAlerts;
 import org.entur.gbfs.v2_2.system_calendar.GBFSSystemCalendar;
 import org.entur.gbfs.v2_2.system_hours.GBFSSystemHours;
@@ -46,7 +45,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
-import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 
 @Component

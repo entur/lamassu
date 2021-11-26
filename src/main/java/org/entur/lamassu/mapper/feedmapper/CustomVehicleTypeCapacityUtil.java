@@ -25,6 +25,8 @@ import org.entur.gbfs.v2_2.vehicle_types.GBFSVehicleTypes;
 import java.util.List;
 
 public class CustomVehicleTypeCapacityUtil {
+    private CustomVehicleTypeCapacityUtil() {}
+
     public static void addCustomVehicleTypeCapacityToStations(GBFSStationStatus stationStatus, GBFSVehicleTypes vehicleTypes) {
         if (vehicleTypes.getData().getVehicleTypes().size() == 1) {
             var vehicleType = vehicleTypes.getData().getVehicleTypes().get(0);
