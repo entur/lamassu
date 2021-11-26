@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 import static org.entur.lamassu.mapper.feedmapper.IdMappers.PRICING_PLAN_ID_TYPE;
 
 @Component
-public class SystemPricingPlansFeedMapper implements FeedMapper<GBFSSystemPricingPlans> {
+public class SystemPricingPlansFeedMapper extends AbstractFeedMapper<GBFSSystemPricingPlans> {
     @Value("${org.entur.lamassu.targetGbfsVersion:2.2}")
     private String targetGbfsVersion;
 

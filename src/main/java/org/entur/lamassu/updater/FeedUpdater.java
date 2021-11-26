@@ -27,6 +27,7 @@ import org.entur.gbfs.v2_2.gbfs.GBFSFeedName;
 import org.entur.gbfs.v2_2.geofencing_zones.GBFSGeofencingZones;
 import org.entur.gbfs.v2_2.station_information.GBFSStationInformation;
 import org.entur.gbfs.v2_2.station_status.GBFSStationStatus;
+import org.entur.gbfs.v2_2.station_status.GBFSVehicleTypesAvailable;
 import org.entur.gbfs.v2_2.system_alerts.GBFSSystemAlerts;
 import org.entur.gbfs.v2_2.system_calendar.GBFSSystemCalendar;
 import org.entur.gbfs.v2_2.system_hours.GBFSSystemHours;
@@ -44,6 +45,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
+import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 
 @Component
@@ -106,7 +108,7 @@ public class FeedUpdater {
     public void start() {
         updaterThreadPool = new ForkJoinPool(NUM_CORES * 2);
         subscriptionManager = new GbfsSubscriptionManager(updaterThreadPool);
-        updaterThreadPool.submit(this::createSubscriptions);
+        updaterThreadPool.execute(this::createSubscriptions);
     }
 
     public void update() {
@@ -149,10 +151,31 @@ public class FeedUpdater {
         mapped.setVehicleTypes(vehicleTypesFeedMapper.map(delivery.getVehicleTypes(), feedProvider));
         mapped.setGeofencingZones(geofencingZonesFeedMapper.map(delivery.getGeofencingZones(), feedProvider));
         mapped.setStationInformation(stationInformationFeedMapper.map(delivery.getStationInformation(), feedProvider));
-        mapped.setStationStatus(stationStatusFeedMapper.map(delivery.getStationStatus(), feedProvider));
+        mapped.setStationStatus(
+                stationStatusFeedMapper.map(
+                        delivery.getStationStatus(),
+                        feedProvider,
+                        stationStatus -> addCustomVehicleTypeCapacityToStations(stationStatus, mapped.getVehicleTypes()))
+        );
         mapped.setFreeBikeStatus(freeBikeStatusFeedMapper.map(delivery.getFreeBikeStatus(), feedProvider));
         return mapped;
     }
+
+    private void addCustomVehicleTypeCapacityToStations(GBFSStationStatus stationStatus, GBFSVehicleTypes vehicleTypes) {
+        if (vehicleTypes.getData().getVehicleTypes().size() == 1) {
+            var vehicleType = vehicleTypes.getData().getVehicleTypes().get(0);
+            stationStatus.getData().getStations().forEach(station -> {
+                if (station.getVehicleTypesAvailable() == null || station.getVehicleTypesAvailable().isEmpty()) {
+                    station.setVehicleTypesAvailable(List.of(
+                            new GBFSVehicleTypesAvailable()
+                                    .withVehicleTypeId(vehicleType.getVehicleTypeId())
+                                    .withCount(station.getNumBikesAvailable())
+                    ));
+                }
+            });
+        }
+    }
+
 
     private void updateFeedCaches(FeedProvider feedProvider, GbfsDelivery delivery) {
         updateFeedCache(feedProvider, GBFSFeedName.GBFS, delivery.getDiscovery());

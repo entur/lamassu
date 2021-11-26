@@ -28,7 +28,7 @@ import org.springframework.stereotype.Component;
 import java.util.stream.Collectors;
 
 @Component
-public class FreeBikeStatusFeedMapper implements FeedMapper<GBFSFreeBikeStatus> {
+public class FreeBikeStatusFeedMapper extends AbstractFeedMapper<GBFSFreeBikeStatus> {
     @Value("${org.entur.lamassu.targetGbfsVersion:2.2}")
     private String targetGbfsVersion;
 

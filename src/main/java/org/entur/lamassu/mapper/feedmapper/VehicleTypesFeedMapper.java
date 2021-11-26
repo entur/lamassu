@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 import static org.entur.lamassu.mapper.feedmapper.IdMappers.VEHICLE_TYPE_ID_TYPE;
 
 @Component
-public class VehicleTypesFeedMapper implements FeedMapper<GBFSVehicleTypes> {
+public class VehicleTypesFeedMapper extends AbstractFeedMapper<GBFSVehicleTypes> {
     @Value("${org.entur.lamassu.targetGbfsVersion:2.2}")
     private String targetGbfsVersion;
 
