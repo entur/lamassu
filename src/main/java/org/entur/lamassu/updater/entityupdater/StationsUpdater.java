@@ -16,9 +16,8 @@
  *
  */
 
-package org.entur.lamassu.listener.delegates;
+package org.entur.lamassu.updater.entityupdater;
 
-import org.entur.gbfs.v2_2.gbfs.GBFSFeedName;
 import org.entur.gbfs.v2_2.station_information.GBFSData;
 import org.entur.gbfs.v2_2.station_information.GBFSStationInformation;
 import org.entur.gbfs.v2_2.station_status.GBFSStation;
@@ -27,24 +26,20 @@ import org.entur.gbfs.v2_2.system_information.GBFSSystemInformation;
 import org.entur.gbfs.v2_2.system_pricing_plans.GBFSSystemPricingPlans;
 import org.entur.gbfs.v2_2.system_regions.GBFSSystemRegions;
 import org.entur.gbfs.v2_2.vehicle_types.GBFSVehicleTypes;
-import org.entur.lamassu.cache.GBFSFeedCacheV2;
 import org.entur.lamassu.cache.StationCache;
 import org.entur.lamassu.cache.StationSpatialIndex;
-import org.entur.lamassu.listener.CacheEntryListenerDelegate;
 import org.entur.lamassu.mapper.entitymapper.PricingPlanMapper;
 import org.entur.lamassu.mapper.entitymapper.StationMapper;
 import org.entur.lamassu.mapper.entitymapper.SystemMapper;
-import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.Station;
-import org.entur.lamassu.service.FeedProviderService;
+import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.util.SpatialIndexIdUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.cache.event.CacheEntryEvent;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -53,10 +48,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
-public class StationStatusListenerDelegate implements CacheEntryListenerDelegate<Object, GBFSStationStatus> {
-    private final GBFSFeedCacheV2 feedCache;
+public class StationsUpdater {
     private final StationCache stationCache;
-    private final FeedProviderService feedProviderService;
     private final StationSpatialIndex spatialIndex;
     private final SystemMapper systemMapper;
     private final PricingPlanMapper pricingPlanMapper;
@@ -64,59 +57,33 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public StationStatusListenerDelegate(
-            GBFSFeedCacheV2 feedCache,
+    public StationsUpdater(
             StationCache stationCache,
-            FeedProviderService feedProviderService,
             StationSpatialIndex spatialIndex,
             SystemMapper systemMapper,
             PricingPlanMapper pricingPlanMapper,
             StationMapper stationMapper
     ) {
-        this.feedCache = feedCache;
         this.stationCache = stationCache;
-        this.feedProviderService =  feedProviderService;
         this.spatialIndex = spatialIndex;
         this.systemMapper = systemMapper;
         this.pricingPlanMapper = pricingPlanMapper;
         this.stationMapper = stationMapper;
     }
 
-    @Override
-    public void onCreated(Iterable<CacheEntryEvent<? extends String, ?>> iterable) {
-        for (var event : iterable)  {
-            addOrUpdateStation(event);
+    public void addOrUpdateStation(
+            FeedProvider feedProvider,
+            GBFSStationStatus stationStatusFeed,
+            GBFSStationStatus oldStationStatusFeed,
+            GBFSStationInformation stationInformationFeed,
+            GBFSSystemInformation systemInformationFeed,
+            GBFSSystemPricingPlans pricingPlansFeed,
+            GBFSVehicleTypes vehicleTypesFeed,
+            GBFSSystemRegions systemRegionsFeed
+    ) {
+        if (stationStatusFeed == null) {
+            return;
         }
-    }
-
-    @Override
-    public void onUpdated(Iterable<CacheEntryEvent<? extends String, ?>> iterable) {
-        for (var event : iterable)  {
-            addOrUpdateStation(event);
-        }
-    }
-
-    @Override
-    public void onRemoved(Iterable<CacheEntryEvent<? extends String, ?>> iterable) {
-        // noop
-    }
-
-    @Override
-    public void onExpired(Iterable<CacheEntryEvent<? extends String, ?>> iterable) {
-        // noop
-    }
-
-    private void addOrUpdateStation(CacheEntryEvent<? extends String, ?> event) {
-        var split = event.getKey().split("_");
-        var feedProvider = feedProviderService.getFeedProviderBySystemId(split[split.length - 1]);
-
-        var systemInformationFeed = (GBFSSystemInformation) feedCache.find(GBFSFeedName.SystemInformation, feedProvider);
-        var pricingPlansFeed = (GBFSSystemPricingPlans) feedCache.find(GBFSFeedName.SystemPricingPlans, feedProvider);
-        var vehicleTypesFeed = (GBFSVehicleTypes) feedCache.find(GBFSFeedName.VehicleTypes, feedProvider);
-        var systemRegionsFeed = (GBFSSystemRegions) feedCache.find(GBFSFeedName.SystemRegions, feedProvider);
-
-        var stationInformationFeed = (GBFSStationInformation) feedCache.find(GBFSFeedName.StationInformation, feedProvider);
-        var stationStatusFeed = (GBFSStationStatus) event.getValue();
 
         if (stationInformationFeed.getData() == null) {
             logger.warn("stationInformationFeed has no data! provider={} feed={}", feedProvider, stationInformationFeed);
@@ -139,8 +106,7 @@ public class StationStatusListenerDelegate implements CacheEntryListenerDelegate
 
         Set<String> stationIdsToRemove = null;
 
-        if (event.isOldValueAvailable()) {
-            var oldStationStatusFeed = (GBFSStationStatus) event.getOldValue();
+        if (oldStationStatusFeed != null) {
             if (oldStationStatusFeed.getData() != null) {
                 stationIdsToRemove = oldStationStatusFeed.getData().getStations().stream()
                         .map(GBFSStation::getStationId).collect(Collectors.toSet());

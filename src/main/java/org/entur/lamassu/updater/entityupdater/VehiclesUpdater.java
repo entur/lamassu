@@ -1,15 +1,49 @@
-package org.entur.lamassu.listener.delegates;
+/*
+ *
+ *
+ *  * Licensed under the EUPL, Version 1.2 or – as soon they will be approved by
+ *  * the European Commission - subsequent versions of the EUPL (the "Licence");
+ *  * You may not use this work except in compliance with the Licence.
+ *  * You may obtain a copy of the Licence at:
+ *  *
+ *  *   https://joinup.ec.europa.eu/software/page/eupl
+ *  *
+ *  * Unless required by applicable law or agreed to in writing, software
+ *  * distributed under the Licence is distributed on an "AS IS" basis,
+ *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  * See the Licence for the specific language governing permissions and
+ *  * limitations under the Licence.
+ *
+ */
+
+/*
+ *
+ *
+ *  * Licensed under the EUPL, Version 1.2 or – as soon they will be approved by
+ *  * the European Commission - subsequent versions of the EUPL (the "Licence");
+ *  * You may not use this work except in compliance with the Licence.
+ *  * You may obtain a copy of the Licence at:
+ *  *
+ *  *   https://joinup.ec.europa.eu/software/page/eupl
+ *  *
+ *  * Unless required by applicable law or agreed to in writing, software
+ *  * distributed under the Licence is distributed on an "AS IS" basis,
+ *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  * See the Licence for the specific language governing permissions and
+ *  * limitations under the Licence.
+ *
+ */
+
+package org.entur.lamassu.updater.entityupdater;
 
 import org.entur.gbfs.v2_2.free_bike_status.GBFSBike;
 import org.entur.gbfs.v2_2.free_bike_status.GBFSFreeBikeStatus;
-import org.entur.gbfs.v2_2.gbfs.GBFSFeedName;
 import org.entur.gbfs.v2_2.system_information.GBFSSystemInformation;
 import org.entur.gbfs.v2_2.system_pricing_plans.GBFSSystemPricingPlans;
 import org.entur.gbfs.v2_2.vehicle_types.GBFSVehicleTypes;
 import org.entur.lamassu.cache.GBFSFeedCacheV2;
 import org.entur.lamassu.cache.VehicleCache;
 import org.entur.lamassu.cache.VehicleSpatialIndex;
-import org.entur.lamassu.listener.CacheEntryListenerDelegate;
 import org.entur.lamassu.mapper.entitymapper.PricingPlanMapper;
 import org.entur.lamassu.mapper.entitymapper.SystemMapper;
 import org.entur.lamassu.mapper.entitymapper.VehicleMapper;
@@ -25,17 +59,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.cache.event.CacheEntryEvent;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
-public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegate<Object, GBFSFreeBikeStatus> {
+public class VehiclesUpdater {
     private final VehicleCache vehicleCache;
-    private final GBFSFeedCacheV2 feedCache;
-    private final FeedProviderService feedProviderService;
     private final VehicleSpatialIndex spatialIndex;
     private final SystemMapper systemMapper;
     private final PricingPlanMapper pricingPlanMapper;
@@ -44,10 +75,8 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public FreeBikeStatusListenerDelegate(
+    public VehiclesUpdater(
             VehicleCache vehicleCache,
-            GBFSFeedCacheV2 feedCache,
-            FeedProviderService feedProviderService,
             VehicleSpatialIndex spatialIndex,
             VehicleMapper vehicleMapper,
             SystemMapper systemMapper,
@@ -55,8 +84,6 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
             VehicleTypeMapper vehicleTypeMapper
     ) {
         this.vehicleCache = vehicleCache;
-        this.feedCache = feedCache;
-        this.feedProviderService = feedProviderService;
         this.spatialIndex = spatialIndex;
         this.vehicleMapper = vehicleMapper;
         this.systemMapper = systemMapper;
@@ -64,38 +91,17 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
         this.vehicleTypeMapper = vehicleTypeMapper;
     }
 
-    @Override
-    public void onCreated(Iterable<CacheEntryEvent<? extends String, ?>> iterable) {
-        for (var event : iterable) {
-            addOrUpdateVehicles(event);
+    public void addOrUpdateVehicles(
+            FeedProvider feedProvider,
+            GBFSFreeBikeStatus freeBikeStatusFeed,
+            GBFSFreeBikeStatus oldFreeBikeStatusFeed,
+            GBFSSystemInformation systemInformationFeed,
+            GBFSSystemPricingPlans pricingPlansFeed,
+            GBFSVehicleTypes vehicleTypesFeed
+    ) {
+        if (freeBikeStatusFeed == null) {
+            return;
         }
-    }
-
-    @Override
-    public void onUpdated(Iterable<CacheEntryEvent<? extends String, ?>> iterable) {
-        for (var event : iterable) {
-            addOrUpdateVehicles(event);
-        }
-    }
-
-    @Override
-    public void onRemoved(Iterable<CacheEntryEvent<? extends String, ?>> iterable) {
-        // noop
-    }
-
-    @Override
-    public void onExpired(Iterable<CacheEntryEvent<? extends String, ?>> iterable) {
-        // noop
-    }
-
-    private void addOrUpdateVehicles(CacheEntryEvent<? extends String, ?> event) {
-        var split = event.getKey().split("_");
-        var feedProvider = feedProviderService.getFeedProviderBySystemId(split[split.length - 1]);
-        var freeBikeStatusFeed = (GBFSFreeBikeStatus) event.getValue();
-
-        var systemInformationFeed = (GBFSSystemInformation) feedCache.find(GBFSFeedName.SystemInformation, feedProvider);
-        var pricingPlansFeed = (GBFSSystemPricingPlans) feedCache.find(GBFSFeedName.SystemPricingPlans, feedProvider);
-        var vehicleTypesFeed = (GBFSVehicleTypes) feedCache.find(GBFSFeedName.VehicleTypes, feedProvider);
 
         if (freeBikeStatusFeed.getData() == null) {
             logger.warn("freeBikeStatusFeed has no data! provider={} feed={}", feedProvider, freeBikeStatusFeed);
@@ -108,9 +114,7 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
 
         Set<String> vehicleIdsToRemove = null;
 
-        if (event.isOldValueAvailable()) {
-            var oldFreeBikeStatusFeed = (GBFSFreeBikeStatus) event.getOldValue();
-
+        if (oldFreeBikeStatusFeed != null) {
             if (oldFreeBikeStatusFeed.getData() != null) {
                 vehicleIdsToRemove = oldFreeBikeStatusFeed.getData().getBikes().stream()
                         .map(GBFSBike::getBikeId).collect(Collectors.toSet());
@@ -211,7 +215,7 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
             spatialIndex.addAll(spatialIndexUpdateMap);
         }
     }
-    
+
     private Map<String, VehicleType> getVehicleTypes(FeedProvider feedProvider, GBFSVehicleTypes vehicleTypesFeed) {
         if (vehicleTypesFeed == null) {
             logger.warn("Missing vehicle types feed for provider {}", feedProvider);
@@ -262,5 +266,4 @@ public class FreeBikeStatusListenerDelegate implements CacheEntryListenerDelegat
     private String getVehicleCacheKey(String vehicleId, FeedProvider feedProvider) {
         return vehicleId + "_" + feedProvider.getSystemId();
     }
-
 }

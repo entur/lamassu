@@ -36,9 +36,15 @@ import org.entur.gbfs.v2_2.system_regions.GBFSSystemRegions;
 import org.entur.gbfs.v2_2.vehicle_types.GBFSVehicleTypes;
 import org.entur.lamassu.cache.GBFSFeedCacheV2;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
+import org.entur.lamassu.mapper.GbfsDeliveryMapper;
 import org.entur.lamassu.mapper.feedmapper.VehicleTypeCapacityProducer;
 import org.entur.lamassu.mapper.feedmapper.FeedMapper;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.entur.lamassu.updater.entityupdater.EntityCachesUpdater;
+import org.entur.lamassu.updater.entityupdater.GeofencingZonesUpdater;
+import org.entur.lamassu.updater.entityupdater.StationsUpdater;
+import org.entur.lamassu.updater.entityupdater.VehiclesUpdater;
+import org.entur.lamassu.updater.feedcachesupdater.FeedCachesUpdater;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,19 +58,9 @@ public class FeedUpdater {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final FeedProviderConfig feedProviderConfig;
-    private final GBFSFeedCacheV2 feedCache;
-    private final FeedMapper<GBFS> discoveryFeedMapper;
-    private final FeedMapper<GBFSSystemInformation> systemInformationFeedMapper;
-    private final FeedMapper<GBFSSystemAlerts> systemAlertsFeedMapper;
-    private final FeedMapper<GBFSSystemCalendar> systemCalendarFeedMapper;
-    private final FeedMapper<GBFSSystemRegions> systemRegionsFeedMapper;
-    private final FeedMapper<GBFSSystemPricingPlans> systemPricingPlansFeedMapper;
-    private final FeedMapper<GBFSSystemHours> systemHoursFeedMapper;
-    private final FeedMapper<GBFSVehicleTypes> vehicleTypesFeedMapper;
-    private final FeedMapper<GBFSGeofencingZones> geofencingZonesFeedMapper;
-    private final FeedMapper<GBFSStationInformation> stationInformationFeedMapper;
-    private final FeedMapper<GBFSStationStatus> stationStatusFeedMapper;
-    private final FeedMapper<GBFSFreeBikeStatus> freeBikeStatusFeedMapper;
+    private final GbfsDeliveryMapper gbfsDeliveryMapper;
+    private final FeedCachesUpdater feedCachesUpdater;
+    private final EntityCachesUpdater entityCachesUpdater;
 
     private static final int NUM_CORES = Runtime.getRuntime().availableProcessors();
 
@@ -74,34 +70,14 @@ public class FeedUpdater {
     @Autowired
     public FeedUpdater(
             FeedProviderConfig feedProviderConfig,
-            GBFSFeedCacheV2 feedCache,
-            FeedMapper<GBFS> discoveryFeedMapper,
-            FeedMapper<GBFSSystemInformation> systemInformationFeedMapper,
-            FeedMapper<GBFSSystemAlerts> systemAlertsFeedMapper,
-            FeedMapper<GBFSSystemCalendar> systemCalendarFeedMapper,
-            FeedMapper<GBFSSystemRegions> systemRegionsFeedMapper,
-            FeedMapper<GBFSSystemPricingPlans> systemPricingPlansFeedMapper,
-            FeedMapper<GBFSSystemHours> systemHoursFeedMapper,
-            FeedMapper<GBFSVehicleTypes> vehicleTypesFeedMapper,
-            FeedMapper<GBFSGeofencingZones> geofencingZonesFeedMapper,
-            FeedMapper<GBFSStationInformation> stationInformationFeedMapper,
-            FeedMapper<GBFSStationStatus> stationStatusFeedMapper,
-            FeedMapper<GBFSFreeBikeStatus> freeBikeStatusFeedMapper
+            GbfsDeliveryMapper gbfsDeliveryMapper,
+            FeedCachesUpdater feedCachesUpdater,
+            EntityCachesUpdater entityCachesUpdater
     ) {
         this.feedProviderConfig = feedProviderConfig;
-        this.feedCache = feedCache;
-        this.discoveryFeedMapper = discoveryFeedMapper;
-        this.systemInformationFeedMapper = systemInformationFeedMapper;
-        this.systemAlertsFeedMapper = systemAlertsFeedMapper;
-        this.systemCalendarFeedMapper = systemCalendarFeedMapper;
-        this.systemRegionsFeedMapper = systemRegionsFeedMapper;
-        this.systemPricingPlansFeedMapper = systemPricingPlansFeedMapper;
-        this.systemHoursFeedMapper = systemHoursFeedMapper;
-        this.vehicleTypesFeedMapper = vehicleTypesFeedMapper;
-        this.geofencingZonesFeedMapper = geofencingZonesFeedMapper;
-        this.stationInformationFeedMapper = stationInformationFeedMapper;
-        this.stationStatusFeedMapper = stationStatusFeedMapper;
-        this.freeBikeStatusFeedMapper = freeBikeStatusFeedMapper;
+        this.gbfsDeliveryMapper = gbfsDeliveryMapper;
+        this.feedCachesUpdater = feedCachesUpdater;
+        this.entityCachesUpdater = entityCachesUpdater;
     }
 
     public void start() {
@@ -133,57 +109,8 @@ public class FeedUpdater {
     }
 
     private void receiveUpdate(FeedProvider feedProvider, GbfsDelivery delivery) {
-        updateFeedCaches(feedProvider, mapDelivery(feedProvider, delivery));
+        var mappedDelivery = gbfsDeliveryMapper.mapGbfsDelivery(delivery, feedProvider);
+        var oldDelivery =  feedCachesUpdater.updateFeedCaches(feedProvider, mappedDelivery);
+        entityCachesUpdater.updateEntityCaches(feedProvider, mappedDelivery, oldDelivery);
     }
-
-    // Lamassu currently only support producing a single version of GBFS, therefore
-    // mapping of the versions file, if it exists, is intentionally skipped.
-    GbfsDelivery mapDelivery(FeedProvider feedProvider, GbfsDelivery delivery) {
-        var mapped = new GbfsDelivery();
-        mapped.setDiscovery(discoveryFeedMapper.map(delivery.getDiscovery(), feedProvider));
-        mapped.setSystemInformation(systemInformationFeedMapper.map(delivery.getSystemInformation(), feedProvider));
-        mapped.setSystemAlerts(systemAlertsFeedMapper.map(delivery.getSystemAlerts(), feedProvider));
-        mapped.setSystemCalendar(systemCalendarFeedMapper.map(delivery.getSystemCalendar(), feedProvider));
-        mapped.setSystemRegions(systemRegionsFeedMapper.map(delivery.getSystemRegions(), feedProvider));
-        mapped.setSystemPricingPlans(systemPricingPlansFeedMapper.map(delivery.getSystemPricingPlans(), feedProvider));
-        mapped.setSystemHours(systemHoursFeedMapper.map(delivery.getSystemHours(), feedProvider));
-        mapped.setVehicleTypes(vehicleTypesFeedMapper.map(delivery.getVehicleTypes(), feedProvider));
-        mapped.setGeofencingZones(geofencingZonesFeedMapper.map(delivery.getGeofencingZones(), feedProvider));
-        mapped.setStationInformation(stationInformationFeedMapper.map(delivery.getStationInformation(), feedProvider));
-        mapped.setStationStatus(
-                stationStatusFeedMapper.map(
-                        delivery.getStationStatus(),
-                        feedProvider,
-                        stationStatus -> VehicleTypeCapacityProducer.addToStations(stationStatus, mapped.getVehicleTypes()))
-        );
-        mapped.setFreeBikeStatus(freeBikeStatusFeedMapper.map(delivery.getFreeBikeStatus(), feedProvider));
-        return mapped;
-    }
-
-    private void updateFeedCaches(FeedProvider feedProvider, GbfsDelivery delivery) {
-        updateFeedCache(feedProvider, GBFSFeedName.GBFS, delivery.getDiscovery());
-        updateFeedCache(feedProvider, GBFSFeedName.SystemInformation, delivery.getSystemInformation());
-        updateFeedCache(feedProvider, GBFSFeedName.SystemAlerts, delivery.getSystemAlerts());
-        updateFeedCache(feedProvider, GBFSFeedName.SystemCalendar, delivery.getSystemCalendar());
-        updateFeedCache(feedProvider, GBFSFeedName.SystemRegions, delivery.getSystemRegions());
-        updateFeedCache(feedProvider, GBFSFeedName.SystemPricingPlans, delivery.getSystemPricingPlans());
-        updateFeedCache(feedProvider, GBFSFeedName.SystemHours, delivery.getSystemHours());
-        updateFeedCache(feedProvider, GBFSFeedName.VehicleTypes, delivery.getVehicleTypes());
-        updateFeedCache(feedProvider, GBFSFeedName.GeofencingZones, delivery.getGeofencingZones());
-        updateFeedCache(feedProvider, GBFSFeedName.StationInformation, delivery.getStationInformation());
-        updateFeedCache(feedProvider, GBFSFeedName.StationStatus, delivery.getStationStatus());
-        updateFeedCache(feedProvider, GBFSFeedName.FreeBikeStatus, delivery.getFreeBikeStatus());
-    }
-
-    private void updateFeedCache(FeedProvider feedProvider, GBFSFeedName feedName, Object feed) {
-        if (feed != null) {
-            logger.info("updating feed {} for provider {}", feedName, feedProvider.getSystemId());
-            logger.trace("updating feed {} for provider {} data {}", feedName, feedProvider.getSystemId(), feed);
-            feedCache.update(feedName, feedProvider, feed);
-        } else {
-            logger.debug("no feed {} found for provider {}", feedName, feedProvider.getSystemId());
-        }
-    }
-
-
 }
