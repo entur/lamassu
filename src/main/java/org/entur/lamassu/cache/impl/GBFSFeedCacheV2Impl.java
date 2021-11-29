@@ -26,22 +26,22 @@ public class GBFSFeedCacheV2Impl implements GBFSFeedCacheV2 {
     }
 
     @Override
-    public Object find(GBFSFeedName feedName, FeedProvider feedProvider) {
+    public <T> T find(GBFSFeedName feedName, FeedProvider feedProvider) {
         var key = getKey(feedName, feedProvider.getSystemId());
         try {
-            return cache.getAsync(key).get(5, TimeUnit.SECONDS);
+            @SuppressWarnings("unchecked") T feed = (T) cache.getAsync(key).get(5, TimeUnit.SECONDS);
+            return feed;
         } catch (ExecutionException | TimeoutException e) {
             logger.warn("Unable to fetch feed from cache within 5 second", e);
         } catch (InterruptedException e) {
             logger.warn("Interrupted while fetching feed from cache", e);
             Thread.currentThread().interrupt();
         }
-
         return null;
     }
 
     @Override
-    public void update(GBFSFeedName feedName, FeedProvider feedProvider, Object feed) {
+    public <T> void update(GBFSFeedName feedName, FeedProvider feedProvider, T feed) {
         String key = getKey(
                 feedName,
                 feedProvider.getSystemId()
@@ -54,6 +54,24 @@ public class GBFSFeedCacheV2Impl implements GBFSFeedCacheV2 {
             logger.warn("Interrupted while updating feed cache", e);
             Thread.currentThread().interrupt();
         }
+    }
+
+    @Override
+    public <T> T getAndUpdate(GBFSFeedName feedName, FeedProvider feedProvider, T feed) {
+        String key = getKey(
+                feedName,
+                feedProvider.getSystemId()
+        );
+        try {
+            @SuppressWarnings("unchecked") T old = (T) cache.getAndPutAsync(key, feed).get(5, TimeUnit.SECONDS);
+            return old;
+        } catch (ExecutionException | TimeoutException e) {
+            logger.warn("Unable to update feed cache within 5 second", e);
+        } catch (InterruptedException e) {
+            logger.warn("Interrupted while updating feed cache", e);
+            Thread.currentThread().interrupt();
+        }
+        return null;
     }
 
     private String getKey(GBFSFeedName feedName, String systemId) {

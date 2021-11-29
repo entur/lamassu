@@ -16,7 +16,7 @@
  *
  */
 
-package org.entur.lamassu.listener.delegates;
+package org.entur.lamassu.updater.entityupdater;
 
 import org.entur.gbfs.v2_2.free_bike_status.GBFSBike;
 import org.entur.lamassu.model.entities.PricingPlan;

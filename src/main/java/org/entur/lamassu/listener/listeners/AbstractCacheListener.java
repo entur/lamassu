@@ -5,12 +5,12 @@ import org.entur.lamassu.listener.CacheEntryListenerDelegate;
 import javax.cache.Cache;
 import javax.cache.configuration.MutableCacheEntryListenerConfiguration;
 
-public abstract class AbstractCacheListener<T, S> {
+public abstract class AbstractCacheListener<T> {
 
     private final Cache<String, T> cache;
-    private final CacheEntryListenerDelegate<T, S> delegate;
+    private final CacheEntryListenerDelegate<T> delegate;
 
-    protected AbstractCacheListener(Cache<String, T> cache, CacheEntryListenerDelegate<T, S> delegate) {
+    protected AbstractCacheListener(Cache<String, T> cache, CacheEntryListenerDelegate<T> delegate) {
         this.cache = cache;
         this.delegate = delegate;
     }
@@ -23,5 +23,5 @@ public abstract class AbstractCacheListener<T, S> {
         cache.deregisterCacheEntryListener(getListenerConfiguration(delegate));
     }
 
-    protected abstract MutableCacheEntryListenerConfiguration<String, T> getListenerConfiguration(CacheEntryListenerDelegate<T, S> delegate);
+    protected abstract MutableCacheEntryListenerConfiguration<String, T> getListenerConfiguration(CacheEntryListenerDelegate<T> delegate);
 }

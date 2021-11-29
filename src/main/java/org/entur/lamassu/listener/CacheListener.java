@@ -1,6 +1,6 @@
 package org.entur.lamassu.listener;
 
-public interface CacheListener<T> {
+public interface CacheListener {
     void startListening();
     void stopListening();
 }
