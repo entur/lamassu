@@ -25,7 +25,7 @@ import java.nio.file.Path;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-@ActiveProfiles("test")
+@ActiveProfiles({"test", "leader"})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @RunWith(SpringRunner.class)
 @SpringBootTest(
@@ -104,12 +104,9 @@ public abstract class AbstractIntegrationTestBase {
 
     @Before
     public void heartbeat() throws InterruptedException {
-        if (!clusterSingletonService.isLeader()) {
-            clusterSingletonService.heartbeat();
-            Thread.sleep(1000);
-            clusterSingletonService.update();
-            Thread.sleep(1000);
-        }
+        Thread.sleep(1000);
+        clusterSingletonService.update();
+        Thread.sleep(1000);
     }
 
     private static String getFileFromResource(String fileName) {

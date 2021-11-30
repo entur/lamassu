@@ -2,9 +2,11 @@ package org.entur.lamassu.updater;
 
 import org.entur.lamassu.listener.CacheListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Component
+@Profile("leader")
 public class ListenerManager {
     private final CacheListener vehicleCacheListener;
 
