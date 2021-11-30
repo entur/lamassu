@@ -1,15 +1,11 @@
 package org.entur.lamassu.config.cache;
 
 import org.entur.lamassu.model.entities.GeofencingZones;
-import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.Station;
-import org.entur.lamassu.model.entities.System;
-import org.entur.lamassu.model.entities.VehicleType;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.redisson.Redisson;
 import org.redisson.api.RBucket;
 import org.redisson.api.RGeo;
-import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.redisson.codec.Kryo5Codec;
 import org.redisson.config.Config;
