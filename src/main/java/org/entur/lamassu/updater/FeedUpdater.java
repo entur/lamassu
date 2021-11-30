@@ -26,18 +26,22 @@ import org.entur.lamassu.mapper.feedmapper.GbfsDeliveryMapper;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.updater.entityupdater.EntityCachesUpdater;
 import org.entur.lamassu.updater.feedcachesupdater.FeedCachesUpdater;
+import org.redisson.api.RBucket;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
 import java.util.concurrent.ForkJoinPool;
 
 @Component
+@Profile("leader")
 public class FeedUpdater {
     private final FeedProviderConfig feedProviderConfig;
     private final GbfsDeliveryMapper gbfsDeliveryMapper;
     private final FeedCachesUpdater feedCachesUpdater;
     private final EntityCachesUpdater entityCachesUpdater;
+    private final RBucket<Boolean> cacheReady;
 
     private static final int NUM_CORES = Runtime.getRuntime().availableProcessors();
 
@@ -49,12 +53,14 @@ public class FeedUpdater {
             FeedProviderConfig feedProviderConfig,
             GbfsDeliveryMapper gbfsDeliveryMapper,
             FeedCachesUpdater feedCachesUpdater,
-            EntityCachesUpdater entityCachesUpdater
+            EntityCachesUpdater entityCachesUpdater,
+            RBucket<Boolean> cacheReady
     ) {
         this.feedProviderConfig = feedProviderConfig;
         this.gbfsDeliveryMapper = gbfsDeliveryMapper;
         this.feedCachesUpdater = feedCachesUpdater;
         this.entityCachesUpdater = entityCachesUpdater;
+        this.cacheReady = cacheReady;
     }
 
     public void start() {
@@ -89,5 +95,6 @@ public class FeedUpdater {
         var mappedDelivery = gbfsDeliveryMapper.mapGbfsDelivery(delivery, feedProvider);
         var oldDelivery =  feedCachesUpdater.updateFeedCaches(feedProvider, mappedDelivery);
         entityCachesUpdater.updateEntityCaches(feedProvider, mappedDelivery, oldDelivery);
+        cacheReady.set(true);
     }
 }
