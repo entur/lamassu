@@ -30,9 +30,6 @@ import javax.cache.expiry.ExpiryPolicy;
 public class RedissonCacheConfig {
     public static final String GBFS_FEED_CACHE_V2_KEY = "gbfsV2Cache";
     public static final String VEHICLE_CACHE_KEY = "vehicleCache";
-    public static final String VEHICLE_TYPE_CACHE_KEY = "vehicleTypeCache";
-    public static final String PRICING_PLAN_CACHE_KEY = "pricingPlanCache";
-    public static final String SYSTEM_CACHE_KEY = "systemCache";
     public static final String STATION_CACHE_KEY = "stationCache";
     public static final String GEOFENCING_ZONES_CACHE_KEY = "geofencingZonesCache";
     public static final String VEHICLE_SPATIAL_INDEX_KEY = "vehicleSpatialIndex";
@@ -94,33 +91,6 @@ public class RedissonCacheConfig {
         var redissonCacheConfig = RedissonConfiguration.fromConfig(redissonConfig, cacheConfig);
         var manager = Caching.getCachingProvider().getCacheManager();
         return manager.createCache(VEHICLE_CACHE_KEY, redissonCacheConfig);
-    }
-
-    @Bean
-    public Cache<String, VehicleType> vehicleTypeCache(Config redissonConfig) {
-        var cacheConfig = new MutableConfiguration<String, VehicleType>();
-        cacheConfig.setExpiryPolicyFactory((Factory<ExpiryPolicy>) () -> new CustomExpiryPolicy(Duration.ONE_DAY, null, Duration.ONE_DAY));
-        var redissonCacheConfig = RedissonConfiguration.fromConfig(redissonConfig, cacheConfig);
-        var manager = Caching.getCachingProvider().getCacheManager();
-        return manager.createCache(VEHICLE_TYPE_CACHE_KEY, redissonCacheConfig);
-    }
-
-    @Bean
-    public Cache<String, PricingPlan> pricingPlanCache(Config redissonConfig) {
-        var cacheConfig = new MutableConfiguration<String, PricingPlan>();
-        cacheConfig.setExpiryPolicyFactory((Factory<ExpiryPolicy>) () -> new CustomExpiryPolicy(Duration.ONE_DAY, null, Duration.ONE_DAY));
-        var redissonCacheConfig = RedissonConfiguration.fromConfig(redissonConfig, cacheConfig);
-        var manager = Caching.getCachingProvider().getCacheManager();
-        return manager.createCache(PRICING_PLAN_CACHE_KEY, redissonCacheConfig);
-    }
-
-    @Bean
-    public Cache<String, System> systemCache(Config redissonConfig) {
-        var cacheConfig = new MutableConfiguration<String, System>();
-        cacheConfig.setExpiryPolicyFactory((Factory<ExpiryPolicy>) () -> new CustomExpiryPolicy(Duration.ONE_DAY, null, Duration.ONE_DAY));
-        var redissonCacheConfig = RedissonConfiguration.fromConfig(redissonConfig, cacheConfig);
-        var manager = Caching.getCachingProvider().getCacheManager();
-        return manager.createCache(SYSTEM_CACHE_KEY, redissonCacheConfig);
     }
 
     @Bean
