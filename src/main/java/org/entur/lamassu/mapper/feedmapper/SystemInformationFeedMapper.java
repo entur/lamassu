@@ -52,7 +52,7 @@ public class SystemInformationFeedMapper extends AbstractFeedMapper<GBFSSystemIn
         mapped.setLanguage(targetLanguageCode);
         mapped.setName(source.getName());
         mapped.setShortName(source.getShortName());
-        mapped.setOperator(source.getOperator() != null ? source.getOperator() : feedProvider.getOperatorName());
+        mapped.setOperator(source.getOperator() != null && !source.getOperator().isBlank() ? source.getOperator() : feedProvider.getOperatorName());
         mapped.setUrl(source.getUrl());
         mapped.setPurchaseUrl(source.getPurchaseUrl());
         mapped.setStartDate(source.getStartDate());
