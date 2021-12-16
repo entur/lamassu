@@ -18,6 +18,8 @@
 
 package org.entur.lamassu.util;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -27,7 +29,6 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.entur.gbfs.authentication.RequestAuthenticationException;
 import org.entur.gbfs.authentication.RequestAuthenticator;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
@@ -37,6 +38,8 @@ public class BoltRequestAuthenticator implements RequestAuthenticator {
     private final String url;
     private final String userName;
     private final String userPass;
+
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     private final HttpClient client = HttpClientBuilder.create()
             .setDefaultSocketConfig(SocketConfig.custom().setSoTimeout(5000).build())
@@ -64,8 +67,8 @@ public class BoltRequestAuthenticator implements RequestAuthenticator {
             httpPost.setHeader("Content-type", "application/json");
             HttpResponse response = client.execute(httpPost);
             String responseJson = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
-            JSONObject jsonObject = new JSONObject(responseJson);
-            map.put("Authorization", "Bearer " + jsonObject.get("access_token"));
+            JsonNode jsonObject = objectMapper.readTree(responseJson);
+            map.put("Authorization", "Bearer " + jsonObject.get("access_token").asText());
         } catch (Exception e) {
             throw new RequestAuthenticationException(e.getCause());
         }
