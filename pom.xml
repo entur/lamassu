@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.rutebanken.superpom</groupId>
         <artifactId>superpom</artifactId>
-        <version>1.0.31</version>
+        <version>1.0.18</version>
     </parent>
     <groupId>org.entur</groupId>
     <artifactId>lamassu</artifactId>
@@ -17,7 +17,7 @@
 
     <properties>
         <graphql-starter.version>11.1.0</graphql-starter.version>
-        <entur.helpers.version>1.0.62</entur.helpers.version>
+        <entur.helpers.version>1.0.36</entur.helpers.version>
         <redisson.version>3.16.4</redisson.version>
         <embedded-redis.version>0.8.1</embedded-redis.version>
         <okhttp.version>4.9.2</okhttp.version>
