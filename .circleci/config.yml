@@ -45,12 +45,12 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dep-cache-{{ checksum "pom.xml" }}
+          key: dep-cache-{{ checksum "pom.xml" }}-clear
       - run: mvn org.apache.maven.plugins:maven-dependency-plugin:3.1.0:go-offline -s /tools/m2/settings.xml
       - save_cache:
           paths:
             - ~/.m2
-          key: dep-cache-{{ checksum "pom.xml" }}
+          key: dep-cache-{{ checksum "pom.xml" }}-clear
       - run: mvn test -s /tools/m2/settings.xml
       - run: *sonar-scan
       - run: *save-test-results
@@ -63,12 +63,12 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dep-cache-{{ checksum "pom.xml" }}
+          key: dep-cache-{{ checksum "pom.xml" }}-clear
       - run: mvn org.apache.maven.plugins:maven-dependency-plugin:3.1.0:go-offline -s /tools/m2/settings.xml
       - save_cache:
           paths:
             - ~/.m2
-          key: dep-cache-{{ checksum "pom.xml" }}
+          key: dep-cache-{{ checksum "pom.xml" }}-clear
       # Cannot use -o because of snapshot dependencies.
       - run: mvn deploy -s /tools/m2/settings.xml -DskipTests
       - run: *post_build
