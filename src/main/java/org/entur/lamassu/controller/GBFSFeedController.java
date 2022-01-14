@@ -91,7 +91,7 @@ public class GBFSFeedController {
         }
     }
 
-    @GetMapping(value = {"/gbfs-internal/{systemId}/{feed}", "/gbfs/{systemId}/{feed}.json"})
+    @GetMapping(value = {"/gbfs-internal/{systemId}/{feed}", "/gbfs-internal/{systemId}/{feed}.json"})
     public Object getInternalGbfsFeedForProvider(@PathVariable String systemId, @PathVariable String feed) {
         var feedName = GBFSFeedName.fromValue(feed);
         var feedProvider = feedProviderService.getFeedProviderBySystemId(systemId);
