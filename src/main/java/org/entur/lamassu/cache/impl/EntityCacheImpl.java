@@ -83,10 +83,10 @@ abstract class EntityCacheImpl<T extends Entity> implements EntityCache<T> {
         try {
             return cache.containsKeyAsync(key).get();
         } catch (InterruptedException e) {
-            logger.warn("Interrupted while checking if cache has key");
+            logger.warn("Interrupted while checking if cache has key", e);
             Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
-            logger.warn("Unable to check if cache has key");
+            logger.warn("Unable to check if cache has key", e);
         }
         return false;
     }
