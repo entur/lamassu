@@ -120,7 +120,7 @@ public class VehiclesUpdater {
 
         var vehicleTypes = getVehicleTypes(feedProvider, vehicleTypesFeed);
 
-        if (vehicleTypes.isEmpty()) {
+        if (vehicleTypes.isEmpty() && !vehicleIds.isEmpty()) {
             logger.warn("no vehicle types provider={} feed={}", feedProvider, vehicleTypesFeed);
             return;
         }
