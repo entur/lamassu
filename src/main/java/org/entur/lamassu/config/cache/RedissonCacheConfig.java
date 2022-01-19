@@ -4,8 +4,10 @@ import org.entur.lamassu.model.entities.GeofencingZones;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.redisson.Redisson;
+import org.redisson.api.LocalCachedMapOptions;
 import org.redisson.api.RBucket;
 import org.redisson.api.RGeo;
+import org.redisson.api.RLocalCachedMap;
 import org.redisson.api.RedissonClient;
 import org.redisson.codec.Kryo5Codec;
 import org.redisson.config.Config;
@@ -23,10 +25,11 @@ import javax.cache.configuration.Factory;
 import javax.cache.configuration.MutableConfiguration;
 import javax.cache.expiry.Duration;
 import javax.cache.expiry.ExpiryPolicy;
+import java.util.concurrent.TimeUnit;
 
 @Configuration
 public class RedissonCacheConfig {
-    public static final String GBFS_FEED_CACHE_V2_KEY = "gbfsV2Cache";
+    public static final String GBFS_FEED_CACHE_KEY = "gbfsFeedCache";
     public static final String VEHICLE_CACHE_KEY = "vehicleCache";
     public static final String STATION_CACHE_KEY = "stationCache";
     public static final String GEOFENCING_ZONES_CACHE_KEY = "geofencingZonesCache";
@@ -72,12 +75,13 @@ public class RedissonCacheConfig {
     }
 
     @Bean
-    public Cache<String, Object> feedCacheV2(Config redissonConfig) {
-        var cacheConfig = new MutableConfiguration<String, Object>();
-        cacheConfig.setExpiryPolicyFactory((Factory<ExpiryPolicy>) () -> new CustomExpiryPolicy(Duration.ONE_DAY, null, Duration.ONE_DAY));
-        var redissonCacheConfig = RedissonConfiguration.fromConfig(redissonConfig, cacheConfig);
-        var manager = Caching.getCachingProvider().getCacheManager();
-        return manager.createCache(GBFS_FEED_CACHE_V2_KEY + "_" + serializationVersion, redissonCacheConfig);
+    public RLocalCachedMap<String, Object> feedCache(RedissonClient redissonClient) {
+        var options = LocalCachedMapOptions.<String, Object>defaults()
+                .cacheSize(0)
+                .syncStrategy(LocalCachedMapOptions.SyncStrategy.UPDATE)
+                .timeToLive(1, TimeUnit.DAYS);
+
+        return redissonClient.getLocalCachedMap(GBFS_FEED_CACHE_KEY + "_" + serializationVersion, options);
     }
 
     @Bean

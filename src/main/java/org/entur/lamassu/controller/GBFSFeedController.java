@@ -4,7 +4,7 @@ import org.entur.gbfs.v2_2.gbfs.GBFS;
 import org.entur.gbfs.v2_2.gbfs.GBFSFeed;
 import org.entur.gbfs.v2_2.gbfs.GBFSFeedName;
 import org.entur.gbfs.v2_2.gbfs.GBFSFeeds;
-import org.entur.lamassu.cache.GBFSFeedCacheV2;
+import org.entur.lamassu.cache.GBFSFeedCache;
 import org.entur.lamassu.model.discovery.System;
 import org.entur.lamassu.model.discovery.SystemDiscovery;
 import org.entur.lamassu.model.provider.FeedProvider;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @RestController
 public class GBFSFeedController {
     private final SystemDiscoveryService systemDiscoveryService;
-    private final GBFSFeedCacheV2 feedCache;
+    private final GBFSFeedCache feedCache;
     private final FeedProviderService feedProviderService;
 
     @Value("${org.entur.lamassu.baseUrl}")
@@ -35,7 +35,7 @@ public class GBFSFeedController {
     private String internalLoadBalancer;
 
     @Autowired
-    public GBFSFeedController(SystemDiscoveryService systemDiscoveryService, GBFSFeedCacheV2 feedCache, FeedProviderService feedProviderService) {
+    public GBFSFeedController(SystemDiscoveryService systemDiscoveryService, GBFSFeedCache feedCache, FeedProviderService feedProviderService) {
         this.systemDiscoveryService = systemDiscoveryService;
         this.feedCache = feedCache;
         this.feedProviderService = feedProviderService;

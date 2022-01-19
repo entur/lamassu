@@ -1,28 +1,45 @@
+/*
+ *
+ *
+ *  * Licensed under the EUPL, Version 1.2 or – as soon they will be approved by
+ *  * the European Commission - subsequent versions of the EUPL (the "Licence");
+ *  * You may not use this work except in compliance with the Licence.
+ *  * You may obtain a copy of the Licence at:
+ *  *
+ *  *   https://joinup.ec.europa.eu/software/page/eupl
+ *  *
+ *  * Unless required by applicable law or agreed to in writing, software
+ *  * distributed under the Licence is distributed on an "AS IS" basis,
+ *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  * See the Licence for the specific language governing permissions and
+ *  * limitations under the Licence.
+ *
+ */
+
 package org.entur.lamassu.cache.impl;
 
 import org.entur.gbfs.v2_2.gbfs.GBFSFeedName;
-import org.entur.lamassu.cache.GBFSFeedCacheV2;
+import org.entur.lamassu.cache.GBFSFeedCache;
 import org.entur.lamassu.model.provider.FeedProvider;
-import org.redisson.api.CacheAsync;
+import org.redisson.api.RLocalCachedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.cache.Cache;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 @Component
-public class GBFSFeedCacheV2Impl implements GBFSFeedCacheV2 {
-    private CacheAsync<String, Object> cache;
+public class GBFSFeedCacheImpl implements GBFSFeedCache {
+    private RLocalCachedMap<String, Object> cache;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public GBFSFeedCacheV2Impl(Cache<String, Object> cache) {
-        this.cache = cache.unwrap(CacheAsync.class);
+    public GBFSFeedCacheImpl(RLocalCachedMap<String, Object> feedCache) {
+        this.cache = feedCache;
     }
 
     @Override
@@ -63,7 +80,7 @@ public class GBFSFeedCacheV2Impl implements GBFSFeedCacheV2 {
                 feedProvider.getSystemId()
         );
         try {
-            @SuppressWarnings("unchecked") T old = (T) cache.getAndPutAsync(key, feed).get(5, TimeUnit.SECONDS);
+            @SuppressWarnings("unchecked") T old = (T) cache.putAsync(key, feed).get(5, TimeUnit.SECONDS);
             return old;
         } catch (ExecutionException | TimeoutException e) {
             logger.warn("Unable to update feed cache within 5 second", e);

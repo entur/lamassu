@@ -21,7 +21,7 @@ package org.entur.lamassu.cache;
 import org.entur.gbfs.v2_2.gbfs.GBFSFeedName;
 import org.entur.lamassu.model.provider.FeedProvider;
 
-public interface GBFSFeedCacheV2 {
+public interface GBFSFeedCache {
     <T> T find(GBFSFeedName feedName, FeedProvider feedProvider);
     <T> void update(GBFSFeedName feedName, FeedProvider feedProvider, T feed);
     <T> T getAndUpdate(GBFSFeedName feedName, FeedProvider feedProvider, T feed);

@@ -20,7 +20,7 @@ package org.entur.lamassu.updater.feedcachesupdater;
 
 import org.entur.gbfs.GbfsDelivery;
 import org.entur.gbfs.v2_2.gbfs.GBFSFeedName;
-import org.entur.lamassu.cache.GBFSFeedCacheV2;
+import org.entur.lamassu.cache.GBFSFeedCache;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,12 +29,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class FeedCachesUpdater {
-    private final GBFSFeedCacheV2 feedCache;
+    private final GBFSFeedCache feedCache;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public FeedCachesUpdater(
-            GBFSFeedCacheV2 feedCache
+            GBFSFeedCache feedCache
     ) {
         this.feedCache = feedCache;
     }
