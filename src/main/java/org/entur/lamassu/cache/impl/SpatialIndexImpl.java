@@ -48,6 +48,7 @@ public abstract class SpatialIndexImpl<T extends LocationEntity> implements Spat
         try {
             spatialIndex.addAsync(spatialIndexUpdateMap.entrySet().stream()
                     .filter(e -> e.getValue() != null)
+                    .filter(e -> e.getValue().getLat() != null && e.getValue().getLon() != null)
                     .map(this::map).toArray(GeoEntry[]::new));
         } catch (RedisException e) {
             logger.warn("Caught exception while adding entries to spatialIndex", e);
