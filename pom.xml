@@ -19,7 +19,7 @@
         <graphql-starter.version>11.1.0</graphql-starter.version>
         <entur.helpers.version>1.0.62</entur.helpers.version>
         <redisson.version>3.16.8</redisson.version>
-        <embedded-redis.version>0.8.1</embedded-redis.version>
+        <embedded-redis.version>0.8.2</embedded-redis.version>
         <okhttp.version>4.9.2</okhttp.version>
         <kryo.version>5.3.0</kryo.version>
         <jackson.version>2.13.2</jackson.version>
