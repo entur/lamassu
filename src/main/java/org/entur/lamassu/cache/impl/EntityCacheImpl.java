@@ -3,6 +3,7 @@ package org.entur.lamassu.cache.impl;
 import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.model.entities.Entity;
 import org.redisson.api.CacheAsync;
+import org.redisson.api.RLocalCachedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,14 +19,12 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 abstract class EntityCacheImpl<T extends Entity> implements EntityCache<T> {
-    private final CacheAsync<String, T> cache;
-    private final Cache<String, T> syncCache;
+    RLocalCachedMap<String, T> cache;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    protected EntityCacheImpl(Cache<String, T> cache) {
-        this.syncCache = cache;
-        this.cache = cache.unwrap(CacheAsync.class);
+    protected EntityCacheImpl(RLocalCachedMap<String, T> cache) {
+        this.cache = cache;
     }
 
     @Override
@@ -35,10 +34,7 @@ abstract class EntityCacheImpl<T extends Entity> implements EntityCache<T> {
 
     @Override
     public List<T> getAll() {
-        return StreamSupport
-                .stream(syncCache.spliterator(), false)
-                .map(Cache.Entry::getValue)
-                .collect(Collectors.toList());
+        return new ArrayList<>(cache.cachedValues());
     }
 
     @Override
@@ -75,7 +71,7 @@ abstract class EntityCacheImpl<T extends Entity> implements EntityCache<T> {
 
     @Override
     public void removeAll(Set<String> keys) {
-        cache.removeAllAsync(keys);
+        cache.fastRemoveAsync(String.valueOf(keys));
     }
 
     @Override

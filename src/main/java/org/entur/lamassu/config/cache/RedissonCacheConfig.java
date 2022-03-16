@@ -11,7 +11,6 @@ import org.redisson.api.RLocalCachedMap;
 import org.redisson.api.RedissonClient;
 import org.redisson.codec.Kryo5Codec;
 import org.redisson.config.Config;
-import org.redisson.jcache.configuration.RedissonConfiguration;
 import org.redisson.spring.data.connection.RedissonConnectionFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
@@ -19,12 +18,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
-import javax.cache.Cache;
-import javax.cache.Caching;
-import javax.cache.configuration.Factory;
-import javax.cache.configuration.MutableConfiguration;
-import javax.cache.expiry.Duration;
-import javax.cache.expiry.ExpiryPolicy;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
@@ -85,30 +78,33 @@ public class RedissonCacheConfig {
     }
 
     @Bean
-    public Cache<String, Vehicle> vehicleCache(Config redissonConfig) {
-        var cacheConfig = new MutableConfiguration<String, Vehicle>();
-        cacheConfig.setExpiryPolicyFactory((Factory<ExpiryPolicy>) () -> new CustomExpiryPolicy(Duration.FIVE_MINUTES, null, Duration.FIVE_MINUTES));
-        var redissonCacheConfig = RedissonConfiguration.fromConfig(redissonConfig, cacheConfig);
-        var manager = Caching.getCachingProvider().getCacheManager();
-        return manager.createCache(VEHICLE_CACHE_KEY + "_" + serializationVersion, redissonCacheConfig);
+    public RLocalCachedMap<String, Vehicle> vehicleCache(RedissonClient redissonClient) {
+        var options = LocalCachedMapOptions.<String, Vehicle>defaults()
+                .cacheSize(0)
+                .syncStrategy(LocalCachedMapOptions.SyncStrategy.UPDATE)
+                .timeToLive(5, TimeUnit.MINUTES);
+
+        return redissonClient.getLocalCachedMap(VEHICLE_CACHE_KEY + "_" + serializationVersion, options);
     }
 
     @Bean
-    public Cache<String, Station> stationCache(Config redissonConfig) {
-        var cacheConfig = new MutableConfiguration<String, Station>();
-        cacheConfig.setExpiryPolicyFactory((Factory<ExpiryPolicy>) () -> new CustomExpiryPolicy(Duration.ONE_DAY, null, Duration.ONE_DAY));
-        var redissonCacheConfig = RedissonConfiguration.fromConfig(redissonConfig, cacheConfig);
-        var manager = Caching.getCachingProvider().getCacheManager();
-        return manager.createCache(STATION_CACHE_KEY + "_" + serializationVersion, redissonCacheConfig);
+    public RLocalCachedMap<String, Station> stationCache(RedissonClient redissonClient) {
+        var options = LocalCachedMapOptions.<String, Station>defaults()
+                .cacheSize(0)
+                .syncStrategy(LocalCachedMapOptions.SyncStrategy.UPDATE)
+                .timeToLive(1, TimeUnit.DAYS);
+
+        return redissonClient.getLocalCachedMap(STATION_CACHE_KEY + "_" + serializationVersion, options);
     }
 
     @Bean
-    public Cache<String, GeofencingZones> geofencingZonesCache(Config redissonConfig) {
-        var cacheConfig = new MutableConfiguration<String, GeofencingZones>();
-        cacheConfig.setExpiryPolicyFactory((Factory<ExpiryPolicy>) () -> new CustomExpiryPolicy(Duration.ONE_DAY, null, Duration.ONE_DAY));
-        var redissonCacheConfig = RedissonConfiguration.fromConfig(redissonConfig, cacheConfig);
-        var manager = Caching.getCachingProvider().getCacheManager();
-        return manager.createCache(GEOFENCING_ZONES_CACHE_KEY + "_" + serializationVersion, redissonCacheConfig);
+    public RLocalCachedMap<String, GeofencingZones> geofencingZonesCache(RedissonClient redissonClient) {
+        var options = LocalCachedMapOptions.<String, GeofencingZones>defaults()
+                .cacheSize(0)
+                .syncStrategy(LocalCachedMapOptions.SyncStrategy.UPDATE)
+                .timeToLive(1, TimeUnit.DAYS);
+
+        return redissonClient.getLocalCachedMap(GEOFENCING_ZONES_CACHE_KEY + "_" + serializationVersion, options);
     }
 
     @Bean
