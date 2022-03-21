@@ -18,8 +18,8 @@
 
 package org.entur.lamassu.mapper.feedmapper;
 
-import org.entur.gbfs.v2_2.system_information.GBFSData;
-import org.entur.gbfs.v2_2.system_information.GBFSSystemInformation;
+import org.entur.gbfs.v2_3.system_information.GBFSData;
+import org.entur.gbfs.v2_3.system_information.GBFSSystemInformation;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -35,7 +35,7 @@ public class SystemInformationFeedMapper extends AbstractFeedMapper<GBFSSystemIn
     @Override
     public GBFSSystemInformation map(GBFSSystemInformation source, FeedProvider feedProvider) {
         var mapped = new GBFSSystemInformation();
-        mapped.setVersion(GBFSSystemInformation.Version.fromValue(targetGbfsVersion));
+        mapped.setVersion(targetGbfsVersion);
         mapped.setLastUpdated(source.getLastUpdated());
         mapped.setTtl(source.getTtl());
         mapped.setData(mapData(source.getData(), feedProvider));

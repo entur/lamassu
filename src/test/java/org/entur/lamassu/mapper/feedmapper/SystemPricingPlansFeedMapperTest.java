@@ -18,9 +18,9 @@
 
 package org.entur.lamassu.mapper.feedmapper;
 
-import org.entur.gbfs.v2_2.system_pricing_plans.GBFSPerMinPricing;
-import org.entur.gbfs.v2_2.system_pricing_plans.GBFSPlan;
-import org.entur.gbfs.v2_2.vehicle_types.GBFSVehicleType;
+import org.entur.gbfs.v2_3.system_pricing_plans.GBFSPerMinPricing;
+import org.entur.gbfs.v2_3.system_pricing_plans.GBFSPlan;
+import org.entur.gbfs.v2_3.vehicle_types.GBFSVehicleType;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -50,8 +50,8 @@ class SystemPricingPlansFeedMapperTest {
         plan.setCurrency("NOK");
         plan.setDescription("Describe your plan");
         var perMinPricing = new GBFSPerMinPricing();
-        perMinPricing.setStart(0.0);
-        perMinPricing.setInterval(1.0);
+        perMinPricing.setStart(0);
+        perMinPricing.setInterval(1);
         perMinPricing.setRate(5.0);
         plan.setPerMinPricing(List.of(perMinPricing));
         feedProvider.setPricingPlans(List.of(plan));

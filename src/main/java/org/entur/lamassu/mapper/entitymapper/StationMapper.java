@@ -18,14 +18,14 @@
 
 package org.entur.lamassu.mapper.entitymapper;
 
-import org.entur.gbfs.v2_2.station_information.GBFSStation;
-import org.entur.gbfs.v2_2.station_information.GBFSStationArea;
-import org.entur.gbfs.v2_2.station_information.GBFSVehicleCapacity;
-import org.entur.gbfs.v2_2.station_information.GBFSVehicleTypeCapacity;
-import org.entur.gbfs.v2_2.station_status.GBFSVehicleDocksAvailable;
-import org.entur.gbfs.v2_2.station_status.GBFSVehicleTypesAvailable;
-import org.entur.gbfs.v2_2.system_regions.GBFSSystemRegions;
-import org.entur.gbfs.v2_2.vehicle_types.GBFSVehicleTypes;
+import org.entur.gbfs.v2_3.station_information.GBFSStation;
+import org.entur.gbfs.v2_3.station_information.GBFSStationArea;
+import org.entur.gbfs.v2_3.station_information.GBFSVehicleCapacity;
+import org.entur.gbfs.v2_3.station_information.GBFSVehicleTypeCapacity;
+import org.entur.gbfs.v2_3.station_status.GBFSVehicleDocksAvailable;
+import org.entur.gbfs.v2_3.station_status.GBFSVehicleTypesAvailable;
+import org.entur.gbfs.v2_3.system_regions.GBFSSystemRegions;
+import org.entur.gbfs.v2_3.vehicle_types.GBFSVehicleTypes;
 import org.entur.lamassu.model.entities.MultiPolygon;
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.Region;
@@ -61,7 +61,7 @@ public class StationMapper {
         this.vehicleTypeMapper = vehicleTypeMapper;
     }
 
-    public Station mapStation(System system, List<PricingPlan> pricingPlans, GBFSStation stationInformation, org.entur.gbfs.v2_2.station_status.GBFSStation stationStatus, GBFSVehicleTypes vehicleTypesFeed, GBFSSystemRegions regions, String language) {
+    public Station mapStation(System system, List<PricingPlan> pricingPlans, GBFSStation stationInformation, org.entur.gbfs.v2_3.station_status.GBFSStation stationStatus, GBFSVehicleTypes vehicleTypesFeed, GBFSSystemRegions regions, String language) {
         var station = new Station();
         station.setId(stationStatus.getStationId());
         station.setName(translationMapper.mapSingleTranslation(language, stationInformation.getName()));
@@ -105,7 +105,7 @@ public class StationMapper {
         return multiPolygon;
     }
 
-    private List<RentalMethod> mapRentalMethods(List<org.entur.gbfs.v2_2.station_information.RentalMethod> rentalMethods) {
+    private List<RentalMethod> mapRentalMethods(List<org.entur.gbfs.v2_3.station_information.RentalMethod> rentalMethods) {
         return Optional.ofNullable(rentalMethods)
                 .map(values -> values.stream()
                         .map(rentalMethod -> RentalMethod.valueOf(rentalMethod.name().toUpperCase()))

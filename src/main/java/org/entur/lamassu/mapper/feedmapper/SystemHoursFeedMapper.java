@@ -18,7 +18,7 @@
 
 package org.entur.lamassu.mapper.feedmapper;
 
-import org.entur.gbfs.v2_2.system_hours.GBFSSystemHours;
+import org.entur.gbfs.v2_3.system_hours.GBFSSystemHours;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -35,7 +35,7 @@ public class SystemHoursFeedMapper extends AbstractFeedMapper<GBFSSystemHours> {
         }
 
         var mapped = new GBFSSystemHours();
-        mapped.setVersion(GBFSSystemHours.Version.fromValue(targetGbfsVersion));
+        mapped.setVersion(targetGbfsVersion);
         mapped.setLastUpdated(source.getLastUpdated());
         mapped.setTtl(source.getTtl());
         mapped.setData(source.getData());

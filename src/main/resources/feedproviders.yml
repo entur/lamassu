@@ -4,5 +4,5 @@ lamassu:
       operatorId: YTI:Operator:Tier
       operatorName: Tier
       codespace: YTI
-      url: https://api.staging.entur.io/mobility/v1/gbfs-v2_2/tierasane/gbfs.json
+      url: https://api.staging.entur.io/mobility/v1/gbfs-v2_3/tierasane/gbfs.json
       language: nb

@@ -18,7 +18,7 @@
 
 package org.entur.lamassu.mapper.entitymapper;
 
-import org.entur.gbfs.v2_2.free_bike_status.GBFSBike;
+import org.entur.gbfs.v2_3.free_bike_status.GBFSBike;
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.System;
 import org.entur.lamassu.model.entities.Vehicle;

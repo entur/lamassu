@@ -1,9 +1,9 @@
 package org.entur.lamassu.controller;
 
-import org.entur.gbfs.v2_2.gbfs.GBFS;
-import org.entur.gbfs.v2_2.gbfs.GBFSFeed;
-import org.entur.gbfs.v2_2.gbfs.GBFSFeedName;
-import org.entur.gbfs.v2_2.gbfs.GBFSFeeds;
+import org.entur.gbfs.v2_3.gbfs.GBFS;
+import org.entur.gbfs.v2_3.gbfs.GBFSFeed;
+import org.entur.gbfs.v2_3.gbfs.GBFSFeedName;
+import org.entur.gbfs.v2_3.gbfs.GBFSFeeds;
 import org.entur.lamassu.cache.GBFSFeedCache;
 import org.entur.lamassu.model.discovery.System;
 import org.entur.lamassu.model.discovery.SystemDiscovery;

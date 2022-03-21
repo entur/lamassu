@@ -18,9 +18,9 @@
 
 package org.entur.lamassu.mapper.entitymapper;
 
-import org.entur.gbfs.v2_2.system_pricing_plans.GBFSPerKmPricing;
-import org.entur.gbfs.v2_2.system_pricing_plans.GBFSPerMinPricing;
-import org.entur.gbfs.v2_2.system_pricing_plans.GBFSPlan;
+import org.entur.gbfs.v2_3.system_pricing_plans.GBFSPerKmPricing;
+import org.entur.gbfs.v2_3.system_pricing_plans.GBFSPerMinPricing;
+import org.entur.gbfs.v2_3.system_pricing_plans.GBFSPlan;
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.PricingSegment;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,12 +71,12 @@ public class PricingPlanMapper {
                 );
     }
 
-    private PricingSegment getPricingSegment(Double start, Double rate, Double interval, Double end) {
+    private PricingSegment getPricingSegment(Integer start, Double rate, Integer interval, Integer end) {
         var mapped = new PricingSegment();
-        mapped.setStart(start != null ? start.intValue() : null);
+        mapped.setStart(start);
         mapped.setRate(rate != null ? rate.floatValue() : null);
-        mapped.setInterval(interval != null ? interval.intValue() : null);
-        mapped.setEnd(end != null ? end.intValue() : null);
+        mapped.setInterval(interval);
+        mapped.setEnd(end);
         return mapped;
     }
 }

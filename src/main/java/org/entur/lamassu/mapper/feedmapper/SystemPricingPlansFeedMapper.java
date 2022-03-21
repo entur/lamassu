@@ -18,9 +18,9 @@
 
 package org.entur.lamassu.mapper.feedmapper;
 
-import org.entur.gbfs.v2_2.system_pricing_plans.GBFSData;
-import org.entur.gbfs.v2_2.system_pricing_plans.GBFSPlan;
-import org.entur.gbfs.v2_2.system_pricing_plans.GBFSSystemPricingPlans;
+import org.entur.gbfs.v2_3.system_pricing_plans.GBFSData;
+import org.entur.gbfs.v2_3.system_pricing_plans.GBFSPlan;
+import org.entur.gbfs.v2_3.system_pricing_plans.GBFSSystemPricingPlans;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -48,7 +48,7 @@ public class SystemPricingPlansFeedMapper extends AbstractFeedMapper<GBFSSystemP
         }
 
         var mapped = new GBFSSystemPricingPlans();
-        mapped.setVersion(GBFSSystemPricingPlans.Version.fromValue(targetGbfsVersion));
+        mapped.setVersion(targetGbfsVersion);
         mapped.setTtl(source.getTtl());
         mapped.setLastUpdated(source.getLastUpdated());
         mapped.setData(mapData(source.getData(), feedProvider));
@@ -57,7 +57,7 @@ public class SystemPricingPlansFeedMapper extends AbstractFeedMapper<GBFSSystemP
 
     private GBFSSystemPricingPlans customPricingPlans(FeedProvider feedProvider) {
         var custom = new GBFSSystemPricingPlans();
-        custom.setVersion(GBFSSystemPricingPlans.Version.fromValue(targetGbfsVersion));
+        custom.setVersion(targetGbfsVersion);
         custom.setLastUpdated((int) Instant.now().getEpochSecond());
         custom.setTtl((int)Duration.ofMinutes(5).toSeconds());
         var data = new GBFSData();

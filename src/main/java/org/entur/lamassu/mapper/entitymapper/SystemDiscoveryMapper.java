@@ -18,7 +18,7 @@
 
 package org.entur.lamassu.mapper.entitymapper;
 
-import org.entur.gbfs.v2_2.gbfs.GBFSFeedName;
+import org.entur.gbfs.v2_3.gbfs.GBFSFeedName;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.model.discovery.System;
 import org.entur.lamassu.util.FeedUrlUtil;

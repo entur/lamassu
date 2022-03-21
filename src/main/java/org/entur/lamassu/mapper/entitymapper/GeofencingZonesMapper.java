@@ -18,11 +18,11 @@
 
 package org.entur.lamassu.mapper.entitymapper;
 
-import org.entur.gbfs.v2_2.geofencing_zones.GBFSFeature;
-import org.entur.gbfs.v2_2.geofencing_zones.GBFSGeofencingZones__1;
-import org.entur.gbfs.v2_2.geofencing_zones.GBFSGeometry;
-import org.entur.gbfs.v2_2.geofencing_zones.GBFSProperties;
-import org.entur.gbfs.v2_2.geofencing_zones.GBFSRule;
+import org.entur.gbfs.v2_3.geofencing_zones.GBFSFeature;
+import org.entur.gbfs.v2_3.geofencing_zones.GBFSGeofencingZones__1;
+import org.entur.gbfs.v2_3.geofencing_zones.GBFSGeometry;
+import org.entur.gbfs.v2_3.geofencing_zones.GBFSProperties;
+import org.entur.gbfs.v2_3.geofencing_zones.GBFSRule;
 import org.entur.lamassu.model.entities.MultiPolygon;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.springframework.stereotype.Component;

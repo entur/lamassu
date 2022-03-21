@@ -18,11 +18,11 @@
 
 package org.entur.lamassu.updater.entityupdater;
 
-import org.entur.gbfs.v2_2.free_bike_status.GBFSBike;
-import org.entur.gbfs.v2_2.free_bike_status.GBFSFreeBikeStatus;
-import org.entur.gbfs.v2_2.system_information.GBFSSystemInformation;
-import org.entur.gbfs.v2_2.system_pricing_plans.GBFSSystemPricingPlans;
-import org.entur.gbfs.v2_2.vehicle_types.GBFSVehicleTypes;
+import org.entur.gbfs.v2_3.free_bike_status.GBFSBike;
+import org.entur.gbfs.v2_3.free_bike_status.GBFSFreeBikeStatus;
+import org.entur.gbfs.v2_3.system_information.GBFSSystemInformation;
+import org.entur.gbfs.v2_3.system_pricing_plans.GBFSSystemPricingPlans;
+import org.entur.gbfs.v2_3.vehicle_types.GBFSVehicleTypes;
 import org.entur.lamassu.cache.VehicleCache;
 import org.entur.lamassu.cache.VehicleSpatialIndex;
 import org.entur.lamassu.mapper.entitymapper.PricingPlanMapper;

@@ -25,7 +25,7 @@ import java.net.URI;
 public class FeedUrlUtil {
     private FeedUrlUtil() {}
 
-    public static URI mapFeedUrl(String baseUrl, org.entur.gbfs.v2_2.gbfs.GBFSFeedName feedName, FeedProvider feedProvider) {
+    public static URI mapFeedUrl(String baseUrl, org.entur.gbfs.v2_3.gbfs.GBFSFeedName feedName, FeedProvider feedProvider) {
         var systemId= feedProvider.getSystemId();
         var feedUrl = addToPath(baseUrl, "gbfs");
         feedUrl = addToPath(feedUrl, systemId);

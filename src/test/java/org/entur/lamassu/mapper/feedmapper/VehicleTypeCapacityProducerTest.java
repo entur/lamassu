@@ -18,10 +18,10 @@
 
 package org.entur.lamassu.mapper.feedmapper;
 
-import org.entur.gbfs.v2_2.station_status.GBFSStation;
-import org.entur.gbfs.v2_2.station_status.GBFSStationStatus;
-import org.entur.gbfs.v2_2.vehicle_types.GBFSVehicleType;
-import org.entur.gbfs.v2_2.vehicle_types.GBFSVehicleTypes;
+import org.entur.gbfs.v2_3.station_status.GBFSStation;
+import org.entur.gbfs.v2_3.station_status.GBFSStationStatus;
+import org.entur.gbfs.v2_3.vehicle_types.GBFSVehicleType;
+import org.entur.gbfs.v2_3.vehicle_types.GBFSVehicleTypes;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -32,16 +32,16 @@ class VehicleTypeCapacityProducerTest {
     void testAddCustomVehicleTypeCapacityToStations() {
         var stationStatus = new GBFSStationStatus()
                 .withData(
-                        new org.entur.gbfs.v2_2.station_status.GBFSData().withStations(
+                        new org.entur.gbfs.v2_3.station_status.GBFSData().withStations(
                                 List.of(
                                         new GBFSStation()
-                                                .withNumBikesAvailable(2.0)
+                                                .withNumBikesAvailable(2)
                                 )
                         )
                 );
         var vehicleTypes = new GBFSVehicleTypes()
                 .withData(
-                        new org.entur.gbfs.v2_2.vehicle_types.GBFSData().withVehicleTypes(
+                        new org.entur.gbfs.v2_3.vehicle_types.GBFSData().withVehicleTypes(
                                 List.of(
                                         new GBFSVehicleType()
                                                 .withVehicleTypeId("TST:VehicleType:1")
@@ -54,7 +54,7 @@ class VehicleTypeCapacityProducerTest {
         );
 
         Assertions.assertEquals(
-                2.0,
+                2,
                 stationStatus.getData().getStations().get(0).getVehicleTypesAvailable().get(0).getCount()
         );
     }

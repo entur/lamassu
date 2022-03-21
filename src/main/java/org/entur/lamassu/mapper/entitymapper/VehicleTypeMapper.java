@@ -18,7 +18,7 @@
 
 package org.entur.lamassu.mapper.entitymapper;
 
-import org.entur.gbfs.v2_2.vehicle_types.GBFSVehicleType;
+import org.entur.gbfs.v2_3.vehicle_types.GBFSVehicleType;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PropulsionType;
 import org.entur.lamassu.model.entities.VehicleType;

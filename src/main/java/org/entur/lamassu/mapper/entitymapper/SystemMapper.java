@@ -18,10 +18,10 @@
 
 package org.entur.lamassu.mapper.entitymapper;
 
-import org.entur.gbfs.v2_2.system_information.GBFSAndroid;
-import org.entur.gbfs.v2_2.system_information.GBFSData;
-import org.entur.gbfs.v2_2.system_information.GBFSIos;
-import org.entur.gbfs.v2_2.system_information.GBFSRentalApps;
+import org.entur.gbfs.v2_3.system_information.GBFSAndroid;
+import org.entur.gbfs.v2_3.system_information.GBFSData;
+import org.entur.gbfs.v2_3.system_information.GBFSIos;
+import org.entur.gbfs.v2_3.system_information.GBFSRentalApps;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.model.entities.Operator;
 import org.entur.lamassu.model.entities.RentalApp;

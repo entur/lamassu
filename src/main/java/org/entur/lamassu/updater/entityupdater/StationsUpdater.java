@@ -18,14 +18,14 @@
 
 package org.entur.lamassu.updater.entityupdater;
 
-import org.entur.gbfs.v2_2.station_information.GBFSData;
-import org.entur.gbfs.v2_2.station_information.GBFSStationInformation;
-import org.entur.gbfs.v2_2.station_status.GBFSStation;
-import org.entur.gbfs.v2_2.station_status.GBFSStationStatus;
-import org.entur.gbfs.v2_2.system_information.GBFSSystemInformation;
-import org.entur.gbfs.v2_2.system_pricing_plans.GBFSSystemPricingPlans;
-import org.entur.gbfs.v2_2.system_regions.GBFSSystemRegions;
-import org.entur.gbfs.v2_2.vehicle_types.GBFSVehicleTypes;
+import org.entur.gbfs.v2_3.station_information.GBFSData;
+import org.entur.gbfs.v2_3.station_information.GBFSStationInformation;
+import org.entur.gbfs.v2_3.station_status.GBFSStation;
+import org.entur.gbfs.v2_3.station_status.GBFSStationStatus;
+import org.entur.gbfs.v2_3.system_information.GBFSSystemInformation;
+import org.entur.gbfs.v2_3.system_pricing_plans.GBFSSystemPricingPlans;
+import org.entur.gbfs.v2_3.system_regions.GBFSSystemRegions;
+import org.entur.gbfs.v2_3.vehicle_types.GBFSVehicleTypes;
 import org.entur.lamassu.cache.StationCache;
 import org.entur.lamassu.cache.StationSpatialIndex;
 import org.entur.lamassu.mapper.entitymapper.PricingPlanMapper;
@@ -142,7 +142,7 @@ public class StationsUpdater {
                 .map(GBFSStationInformation::getData)
                 .map(GBFSData::getStations)
                 .orElse(List.of())
-                .stream().collect(Collectors.toMap(org.entur.gbfs.v2_2.station_information.GBFSStation::getStationId, s -> s));
+                .stream().collect(Collectors.toMap(org.entur.gbfs.v2_3.station_information.GBFSStation::getStationId, s -> s));
 
         var stations = stationStatusFeed.getData().getStations().stream()
                 .filter(s -> {

@@ -18,7 +18,7 @@
 
 package org.entur.lamassu.updater.entityupdater;
 
-import org.entur.gbfs.v2_2.geofencing_zones.GBFSGeofencingZones;
+import org.entur.gbfs.v2_3.geofencing_zones.GBFSGeofencingZones;
 import org.entur.lamassu.cache.GeofencingZonesCache;
 import org.entur.lamassu.mapper.entitymapper.GeofencingZonesMapper;
 import org.entur.lamassu.model.provider.FeedProvider;

@@ -18,9 +18,9 @@
 
 package org.entur.lamassu.mapper.feedmapper;
 
-import org.entur.gbfs.v2_2.vehicle_types.GBFSData;
-import org.entur.gbfs.v2_2.vehicle_types.GBFSVehicleType;
-import org.entur.gbfs.v2_2.vehicle_types.GBFSVehicleTypes;
+import org.entur.gbfs.v2_3.vehicle_types.GBFSData;
+import org.entur.gbfs.v2_3.vehicle_types.GBFSVehicleType;
+import org.entur.gbfs.v2_3.vehicle_types.GBFSVehicleTypes;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -48,7 +48,7 @@ public class VehicleTypesFeedMapper extends AbstractFeedMapper<GBFSVehicleTypes>
         }
 
         var mapped = new GBFSVehicleTypes();
-        mapped.setVersion(GBFSVehicleTypes.Version.fromValue(targetGbfsVersion));
+        mapped.setVersion(targetGbfsVersion);
         mapped.setTtl(source.getTtl());
         mapped.setLastUpdated(source.getLastUpdated());
         mapped.setData(mapData(source.getData(), feedProvider.getCodespace()));
@@ -57,7 +57,7 @@ public class VehicleTypesFeedMapper extends AbstractFeedMapper<GBFSVehicleTypes>
 
     private GBFSVehicleTypes customVehicleTypes(FeedProvider feedProvider) {
         var custom = new GBFSVehicleTypes();
-        custom.setVersion(GBFSVehicleTypes.Version.fromValue(targetGbfsVersion));
+        custom.setVersion(targetGbfsVersion);
         custom.setLastUpdated((int) Instant.now().getEpochSecond());
         custom.setTtl((int)Duration.ofMinutes(5).toSeconds());
         var data = new GBFSData();

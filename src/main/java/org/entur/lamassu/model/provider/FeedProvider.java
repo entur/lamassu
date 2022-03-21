@@ -18,8 +18,8 @@
 
 package org.entur.lamassu.model.provider;
 
-import org.entur.gbfs.v2_2.system_pricing_plans.GBFSPlan;
-import org.entur.gbfs.v2_2.vehicle_types.GBFSVehicleType;
+import org.entur.gbfs.v2_3.system_pricing_plans.GBFSPlan;
+import org.entur.gbfs.v2_3.vehicle_types.GBFSVehicleType;
 
 import java.util.List;
 

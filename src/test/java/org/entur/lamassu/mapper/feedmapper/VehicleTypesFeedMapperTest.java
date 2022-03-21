@@ -36,7 +36,7 @@
 
 package org.entur.lamassu.mapper.feedmapper;
 
-import org.entur.gbfs.v2_2.vehicle_types.GBFSVehicleType;
+import org.entur.gbfs.v2_3.vehicle_types.GBFSVehicleType;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

@@ -18,11 +18,11 @@
 
 package org.entur.lamassu.mapper.feedmapper;
 
-import org.entur.gbfs.v2_2.gbfs.GBFS;
-import org.entur.gbfs.v2_2.gbfs.GBFSFeed;
-import org.entur.gbfs.v2_2.gbfs.GBFSFeedName;
-import org.entur.gbfs.v2_2.gbfs.GBFSFeeds;
-import org.entur.gbfs.v2_2.gbfs.GBFSGbfs;
+import org.entur.gbfs.v2_3.gbfs.GBFS;
+import org.entur.gbfs.v2_3.gbfs.GBFSFeed;
+import org.entur.gbfs.v2_3.gbfs.GBFSFeedName;
+import org.entur.gbfs.v2_3.gbfs.GBFSFeeds;
+import org.entur.gbfs.v2_3.gbfs.GBFSGbfs;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.util.FeedUrlUtil;
 import org.slf4j.Logger;
@@ -59,7 +59,7 @@ public class DiscoveryFeedMapper extends AbstractFeedMapper<GBFS> {
         Map<String, GBFSFeeds> dataWrapper = new HashMap<>();
         mapped.setLastUpdated(source.getLastUpdated());
         mapped.setTtl(source.getTtl());
-        mapped.setVersion(GBFSGbfs.Version.fromValue(targetGbfsVersion));
+        mapped.setVersion(targetGbfsVersion);
 
         String sourceLanguageCode;
         if (source.getFeedsData().containsKey(feedProvider.getLanguage())) {

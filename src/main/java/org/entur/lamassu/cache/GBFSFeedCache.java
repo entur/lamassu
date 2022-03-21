@@ -18,7 +18,7 @@
 
 package org.entur.lamassu.cache;
 
-import org.entur.gbfs.v2_2.gbfs.GBFSFeedName;
+import org.entur.gbfs.v2_3.gbfs.GBFSFeedName;
 import org.entur.lamassu.model.provider.FeedProvider;
 
 public interface GBFSFeedCache {

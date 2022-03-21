@@ -18,7 +18,7 @@
 
 package org.entur.lamassu.mapper.feedmapper;
 
-import org.entur.gbfs.v2_2.system_calendar.GBFSSystemCalendar;
+import org.entur.gbfs.v2_3.system_calendar.GBFSSystemCalendar;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -35,7 +35,7 @@ public class SystemCalendarFeedMapper extends AbstractFeedMapper<GBFSSystemCalen
         }
 
         var mapped = new GBFSSystemCalendar();
-        mapped.setVersion(GBFSSystemCalendar.Version.fromValue(targetGbfsVersion));
+        mapped.setVersion(targetGbfsVersion);
         mapped.setLastUpdated(source.getLastUpdated());
         mapped.setTtl(source.getTtl());
         mapped.setData(source.getData());
