@@ -90,6 +90,7 @@ public class GeofencingZonesFeedMapper extends AbstractFeedMapper<GBFSGeofencing
         mapped.setRideAllowed(rule.getRideAllowed());
         mapped.setMaximumSpeedKph(rule.getMaximumSpeedKph());
         mapped.setRideThroughAllowed(rule.getRideThroughAllowed());
+        mapped.setStationParking(rule.getStationParking());
         return mapped;
     }
 }

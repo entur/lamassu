@@ -67,8 +67,12 @@ public class FreeBikeStatusFeedMapper extends AbstractFeedMapper<GBFSFreeBikeSta
         mapped.setVehicleTypeId(mapVehicleTypeId(bike.getVehicleTypeId(), feedProvider));
         mapped.setLastReported(bike.getLastReported());
         mapped.setCurrentRangeMeters(bike.getCurrentRangeMeters() != null ? bike.getCurrentRangeMeters() : 0);
+        mapped.setCurrentFuelPercent(bike.getCurrentFuelPercent());
         mapped.setStationId(mapStationId(bike.getStationId(), feedProvider));
+        mapped.setHomeStationId(mapStationId(bike.getHomeStationId(), feedProvider));
         mapped.setPricingPlanId(mapPricingPlanId(bike.getPricingPlanId(), feedProvider));
+        mapped.setVehicleEquipment(bike.getVehicleEquipment());
+        mapped.setAvailableUntil(bike.getAvailableUntil());
         return mapped;
     }
 

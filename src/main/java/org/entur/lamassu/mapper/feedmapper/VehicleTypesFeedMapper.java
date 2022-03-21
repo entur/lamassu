@@ -81,10 +81,28 @@ public class VehicleTypesFeedMapper extends AbstractFeedMapper<GBFSVehicleTypes>
     private GBFSVehicleType mapVehicleType(GBFSVehicleType vehicleType, String codespace) {
         var mapped = new GBFSVehicleType();
         mapped.setVehicleTypeId(IdMappers.mapId(codespace, VEHICLE_TYPE_ID_TYPE, vehicleType.getVehicleTypeId()));
-        mapped.setName(vehicleType.getName());
-        mapped.setPropulsionType(vehicleType.getPropulsionType());
         mapped.setFormFactor(vehicleType.getFormFactor());
+        mapped.setRiderCapacity(vehicleType.getRiderCapacity());
+        mapped.setCargoVolumeCapacity(vehicleType.getCargoVolumeCapacity());
+        mapped.setCargoLoadCapacity(vehicleType.getCargoLoadCapacity());
+        mapped.setPropulsionType(vehicleType.getPropulsionType());
+        mapped.setEcoLabel(vehicleType.getEcoLabel());
         mapped.setMaxRangeMeters(vehicleType.getMaxRangeMeters());
+        mapped.setName(vehicleType.getName());
+        mapped.setVehicleAccessories(vehicleType.getVehicleAccessories());
+        mapped.setgCO2Km(vehicleType.getgCO2Km());
+        mapped.setVehicleImage(vehicleType.getVehicleImage());
+        mapped.setMake(vehicleType.getMake());
+        mapped.setModel(vehicleType.getModel());
+        mapped.setColor(vehicleType.getColor());
+        mapped.setWheelCount(vehicleType.getWheelCount());
+        mapped.setMaxPermittedSpeed(vehicleType.getMaxPermittedSpeed());
+        mapped.setRatedPower(vehicleType.getRatedPower());
+        mapped.setDefaultReserveTime(vehicleType.getDefaultReserveTime());
+        mapped.setReturnConstraint(vehicleType.getReturnConstraint());
+        mapped.setVehicleAssets(vehicleType.getVehicleAssets());
+        mapped.setDefaultPricingPlanId(vehicleType.getDefaultPricingPlanId());
+        mapped.setPricingPlanIds(vehicleType.getPricingPlanIds());
         return mapped;
     }
 }

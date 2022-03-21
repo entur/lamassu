@@ -18,6 +18,7 @@
 
 package org.entur.lamassu.mapper.feedmapper;
 
+import org.entur.gbfs.v2_3.system_information.GBFSBrandAssets;
 import org.entur.gbfs.v2_3.system_information.GBFSData;
 import org.entur.gbfs.v2_3.system_information.GBFSSystemInformation;
 import org.entur.lamassu.model.provider.FeedProvider;
@@ -61,6 +62,11 @@ public class SystemInformationFeedMapper extends AbstractFeedMapper<GBFSSystemIn
         mapped.setFeedContactEmail(source.getFeedContactEmail());
         mapped.setTimezone(source.getTimezone());
         mapped.setLicenseUrl(source.getLicenseUrl());
+        mapped.setBrandAssets(source.getBrandAssets());
+        mapped.setTermsUrl(source.getTermsUrl());
+        mapped.setTermsLastUpdated(source.getTermsLastUpdated());
+        mapped.setPrivacyUrl(source.getPrivacyUrl());
+        mapped.setPrivacyLastUpdated(source.getPrivacyLastUpdated());
         mapped.setRentalApps(source.getRentalApps());
         return mapped;
     }

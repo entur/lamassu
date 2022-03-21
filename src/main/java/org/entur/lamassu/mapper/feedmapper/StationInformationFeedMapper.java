@@ -75,10 +75,14 @@ public class StationInformationFeedMapper extends AbstractFeedMapper<GBFSStation
         mapped.setRentalMethods(gbfsStation.getRentalMethods());
         mapped.setIsVirtualStation(gbfsStation.getIsVirtualStation());
         mapped.setStationArea(gbfsStation.getStationArea());
+        mapped.setParkingType(gbfsStation.getParkingType());
+        mapped.setParkingHoop(gbfsStation.getParkingHoop());
+        mapped.setContactPhone(gbfsStation.getContactPhone());
         mapped.setCapacity(gbfsStation.getCapacity());
         mapped.setVehicleCapacity(mapVehicleCapacity(gbfsStation.getVehicleCapacity(), codespace));
         mapped.setVehicleTypeCapacity(mapVehicleTypeCapacity(gbfsStation.getVehicleTypeCapacity(), codespace));
         mapped.setIsValetStation(gbfsStation.getIsValetStation());
+        mapped.setIsChargingStation(gbfsStation.getIsChargingStation());
         mapped.setRentalUris(gbfsStation.getRentalUris());
         return mapped;
     }
