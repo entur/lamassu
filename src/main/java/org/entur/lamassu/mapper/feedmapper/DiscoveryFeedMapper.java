@@ -22,7 +22,6 @@ import org.entur.gbfs.v2_3.gbfs.GBFS;
 import org.entur.gbfs.v2_3.gbfs.GBFSFeed;
 import org.entur.gbfs.v2_3.gbfs.GBFSFeedName;
 import org.entur.gbfs.v2_3.gbfs.GBFSFeeds;
-import org.entur.gbfs.v2_3.gbfs.GBFSGbfs;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.util.FeedUrlUtil;
 import org.slf4j.Logger;
