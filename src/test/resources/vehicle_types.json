@@ -7,13 +7,35 @@
       {
         "vehicle_type_id": "Scooter",
         "form_factor": "scooter",
+        "make": "Ferrari",
+        "model": "Grand Rapido",
+        "color": "black",
+        "rider_capacity": 1,
+        "cargo_volume_capacity": 0,
+        "cargo_load_capacity": 0,
         "propulsion_type": "electric",
-        "max_range_meters": 0.0
+        "max_range_meters": 1000.0,
+        "g_CO2_km": 0,
+        "wheel_count": 2,
+        "max_permitted_speed": 25,
+        "rated_power": 500,
+        "return_constraint": "free_floating"
+
       },
       {
         "vehicle_type_id": "TST:VehicleType:CityBike",
         "form_factor": "bicycle",
-        "propulsion_type": "human"
+        "make": "Viking",
+        "model": "Rider",
+        "color": "blue",
+        "rider_capacity": 1,
+        "cargo_volume_capacity": 0,
+        "cargo_load_capacity": 5,
+        "propulsion_type": "human",
+        "vehicle_accessories": ["manual"],
+        "g_CO2_km": 0,
+        "wheel_count": 2,
+        "return_constraint": "any_station"
       }
     ]
   }

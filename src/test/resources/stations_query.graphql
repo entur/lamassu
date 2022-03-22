@@ -24,6 +24,19 @@
             vehicleType {
                 formFactor
                 propulsionType
+                gCO2km
+                maxPermittedSpeed
+                maxRangeMeters
+                wheelCount
+                returnConstraint
+                ratedPower
+                riderCapacity
+                cargoLoadCapacity
+                cargoVolumeCapacity
+                vehicleAccessories
+                make
+                model
+                color
             }
             count
         }

@@ -12,6 +12,7 @@
         "is_disabled": true,
         "vehicle_type_id": "Scooter",
         "current_range_meters": 1431.2,
+        "current_fuel_percent": 50.0,
         "pricing_plan_id": "Basic",
         "rental_uris": {
           "android": "test://rentme/1234",
