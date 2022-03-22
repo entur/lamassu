@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 public class VehicleSpatialIndexId extends AbstractSpatialIndexId {
     private static final Logger logger = LoggerFactory.getLogger(VehicleSpatialIndexId.class);
     private FormFactor formFactor;
-    private PropulsionType propulsionTypes;
+    private PropulsionType propulsionType;
     private boolean isReserved;
     private boolean isDisabled;
 
@@ -28,7 +28,7 @@ public class VehicleSpatialIndexId extends AbstractSpatialIndexId {
     public void parse(String[] parts) {
         super.parse(parts);
         setFormFactor(FormFactor.valueOf(parts[4]));
-        setPropulsionTypes(PropulsionType.valueOf(parts[5]));
+        setPropulsionType(PropulsionType.valueOf(parts[5]));
         setReserved(Boolean.parseBoolean(parts[6]));
         setDisabled(Boolean.parseBoolean(parts[7]));
     }
@@ -40,7 +40,7 @@ public class VehicleSpatialIndexId extends AbstractSpatialIndexId {
                 getSystemId() + SPATIAL_INDEX_ID_SEPARATOR +
                 getOperatorId() + SPATIAL_INDEX_ID_SEPARATOR +
                 getFormFactor() + SPATIAL_INDEX_ID_SEPARATOR +
-                getPropulsionTypes() + SPATIAL_INDEX_ID_SEPARATOR +
+                getPropulsionType() + SPATIAL_INDEX_ID_SEPARATOR +
                 getReserved() + SPATIAL_INDEX_ID_SEPARATOR +
                 getDisabled();
     }
@@ -55,12 +55,12 @@ public class VehicleSpatialIndexId extends AbstractSpatialIndexId {
         this.formFactor = formFactor;
     }
 
-    public PropulsionType getPropulsionTypes() {
-        return propulsionTypes;
+    public PropulsionType getPropulsionType() {
+        return propulsionType;
     }
 
-    public void setPropulsionTypes(PropulsionType propulsionTypes) {
-        this.propulsionTypes = propulsionTypes;
+    public void setPropulsionType(PropulsionType propulsionType) {
+        this.propulsionType = propulsionType;
     }
 
     public boolean getReserved() {

@@ -25,7 +25,7 @@ public class SpatialIndexIdFilter {
             return false;
         }
 
-        if (filters.getPropulsionTypes() != null && !filters.getPropulsionTypes().contains(parsedId.getPropulsionTypes())) {
+        if (filters.getPropulsionTypes() != null && !filters.getPropulsionTypes().contains(parsedId.getPropulsionType())) {
             return false;
         }
 
