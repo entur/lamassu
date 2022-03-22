@@ -39,6 +39,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -118,7 +119,15 @@ public class VehiclesUpdater {
                         .collect(Collectors.toSet())
         );
 
-        var vehicleTypes = getVehicleTypes(feedProvider, vehicleTypesFeed);
+
+        var pricingPlans = getPricingPlans(feedProvider, pricingPlansFeed);
+
+        if (pricingPlans.isEmpty()) {
+            logger.warn("no pricing plans provider={} feed={}", feedProvider, pricingPlansFeed);
+            return;
+        }
+
+        var vehicleTypes = getVehicleTypes(feedProvider, vehicleTypesFeed, pricingPlans);
 
         if (vehicleTypes.isEmpty() && !vehicleIds.isEmpty()) {
             logger.warn("no vehicle types provider={} feed={}", feedProvider, vehicleTypesFeed);
@@ -132,12 +141,6 @@ public class VehiclesUpdater {
             return;
         }
 
-        var pricingPlans = getPricingPlans(feedProvider, pricingPlansFeed);
-
-        if (pricingPlans.isEmpty()) {
-            logger.warn("no pricing plans provider={} feed={}", feedProvider, pricingPlansFeed);
-            return;
-        }
 
         var vehicles = freeBikeStatusFeed.getData().getBikes().stream()
                 .filter(new VehicleFilter(pricingPlans, vehicleTypes))
@@ -194,7 +197,7 @@ public class VehiclesUpdater {
         }
     }
 
-    private Map<String, VehicleType> getVehicleTypes(FeedProvider feedProvider, GBFSVehicleTypes vehicleTypesFeed) {
+    private Map<String, VehicleType> getVehicleTypes(FeedProvider feedProvider, GBFSVehicleTypes vehicleTypesFeed, Map<String, PricingPlan> pricingPlans) {
         if (vehicleTypesFeed == null) {
             logger.warn("Missing vehicle types feed for provider {}", feedProvider);
             return Map.of();
@@ -206,7 +209,7 @@ public class VehiclesUpdater {
         }
 
         return vehicleTypesFeed.getData().getVehicleTypes().stream()
-                .map(vehicleType -> vehicleTypeMapper.mapVehicleType(vehicleType, feedProvider.getLanguage()))
+                .map(vehicleType -> vehicleTypeMapper.mapVehicleType(vehicleType, new ArrayList<>(pricingPlans.values()), feedProvider.getLanguage()))
                 .collect(Collectors.toMap(VehicleType::getId, i -> i));
     }
 
