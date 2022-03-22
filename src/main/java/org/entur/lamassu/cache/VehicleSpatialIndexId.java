@@ -15,7 +15,7 @@ public class VehicleSpatialIndexId extends AbstractSpatialIndexId {
     public static VehicleSpatialIndexId fromString(String indexId) {
         try {
             var parsed = new VehicleSpatialIndexId();
-            var parts = indexId.split("_");
+            var parts = indexId.split(SPATIAL_INDEX_ID_SEPARATOR);
             parsed.parse(parts);
             return parsed;
         } catch (IndexOutOfBoundsException e) {
@@ -35,13 +35,13 @@ public class VehicleSpatialIndexId extends AbstractSpatialIndexId {
 
     @Override
     public String toString() {
-        return getId() + '_' +
-                getCodespace() + '_' +
-                getSystemId() + '_' +
-                getOperatorId() + '_' +
-                getFormFactor() + '_' +
-                getPropulsionTypes() + '_' +
-                getReserved() + '_' +
+        return getId() + SPATIAL_INDEX_ID_SEPARATOR +
+                getCodespace() + SPATIAL_INDEX_ID_SEPARATOR +
+                getSystemId() + SPATIAL_INDEX_ID_SEPARATOR +
+                getOperatorId() + SPATIAL_INDEX_ID_SEPARATOR +
+                getFormFactor() + SPATIAL_INDEX_ID_SEPARATOR +
+                getPropulsionTypes() + SPATIAL_INDEX_ID_SEPARATOR +
+                getReserved() + SPATIAL_INDEX_ID_SEPARATOR +
                 getDisabled();
     }
 

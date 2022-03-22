@@ -24,6 +24,8 @@ public abstract class AbstractSpatialIndexId {
     private String systemId;
     private String operatorId;
 
+    public static final String SPATIAL_INDEX_ID_SEPARATOR = "%";
+
     public void parse(String[] parts) {
         this.setId(parts[0]);
         this.setCodespace(parts[1]);

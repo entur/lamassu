@@ -27,7 +27,7 @@ public class StationSpatialIndexId extends AbstractSpatialIndexId {
     public static StationSpatialIndexId fromString(String indexId) {
         try {
             var parsed = new StationSpatialIndexId();
-            var parts = indexId.split("_");
+            var parts = indexId.split(SPATIAL_INDEX_ID_SEPARATOR);
             parsed.parse(parts);
             return parsed;
         } catch (IndexOutOfBoundsException e) {
@@ -38,9 +38,9 @@ public class StationSpatialIndexId extends AbstractSpatialIndexId {
 
     @Override
     public String toString() {
-        return getId() + '_' +
-                getCodespace() + '_' +
-                getSystemId() + '_' +
+        return getId() + SPATIAL_INDEX_ID_SEPARATOR +
+                getCodespace() + SPATIAL_INDEX_ID_SEPARATOR +
+                getSystemId() + SPATIAL_INDEX_ID_SEPARATOR +
                 getOperatorId();
     }
 }
