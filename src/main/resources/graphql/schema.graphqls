@@ -83,9 +83,12 @@ type VehicleType {
 
 enum FormFactor {
     BICYCLE
+    CARGO_BICYCLE
     CAR
     MOPED
     SCOOTER
+    SCOOTER_STANDING
+    SCOOTER_SEATED
     OTHER
 }
 
@@ -94,6 +97,10 @@ enum PropulsionType {
     ELECTRIC_ASSIST
     ELECTRIC
     COMBUSTION
+    COMBUSTION_DIESEL
+    HYBRID
+    PLUG_IN_HYBRID
+    HYDROGEN_FUEL_CELL
 }
 
 type EcoLabel {
