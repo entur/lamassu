@@ -190,7 +190,7 @@ public class StationMapper {
     private VehicleTypeAvailability mapVehicleTypeAvailability(VehicleType vehicleType, GBFSVehicleTypesAvailable vehicleTypeAvailability) {
         var mapped = new VehicleTypeAvailability();
         mapped.setVehicleType(vehicleType);
-        mapped.setCount(vehicleTypeAvailability.getCount().intValue());
+        mapped.setCount(vehicleTypeAvailability.getCount());
         return mapped;
     }
 
@@ -211,7 +211,7 @@ public class StationMapper {
 
         var mapped = new VehicleDocksAvailability();
         mapped.setVehicleTypes(vehicleTypes);
-        mapped.setCount(vehicleDocksAvailability.getCount().intValue());
+        mapped.setCount(vehicleDocksAvailability.getCount());
         return mapped;
     }
 }
