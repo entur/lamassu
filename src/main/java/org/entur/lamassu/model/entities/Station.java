@@ -34,10 +34,14 @@ public class Station implements LocationEntity {
     private List<RentalMethod> rentalMethods;
     private Boolean isVirtualStation;
     private MultiPolygon stationArea;
+    private ParkingType parkingType;
+    private Boolean parkingHoop;
+    private String contactPhone;
     private Integer capacity;
     private List<VehicleTypeCapacity> vehicleCapacity;
     private List<VehicleTypeCapacity> vehicleTypeCapacity;
     private Boolean isValetStation;
+    private Boolean isChargingStation;
     private RentalUris rentalUris;
     private Integer numBikesAvailable;
     private List<VehicleTypeAvailability> vehicleTypesAvailable;
@@ -151,6 +155,30 @@ public class Station implements LocationEntity {
         this.stationArea = stationArea;
     }
 
+    public ParkingType getParkingType() {
+        return parkingType;
+    }
+
+    public void setParkingType(ParkingType parkingType) {
+        this.parkingType = parkingType;
+    }
+
+    public Boolean getParkingHoop() {
+        return parkingHoop;
+    }
+
+    public void setParkingHoop(Boolean parkingHoop) {
+        this.parkingHoop = parkingHoop;
+    }
+
+    public String getContactPhone() {
+        return contactPhone;
+    }
+
+    public void setContactPhone(String contactPhone) {
+        this.contactPhone = contactPhone;
+    }
+
     public Integer getCapacity() {
         return capacity;
     }
@@ -181,6 +209,14 @@ public class Station implements LocationEntity {
 
     public void setValetStation(Boolean valetStation) {
         isValetStation = valetStation;
+    }
+
+    public Boolean getChargingStation() {
+        return isChargingStation;
+    }
+
+    public void setChargingStation(Boolean chargingStation) {
+        isChargingStation = chargingStation;
     }
 
     public RentalUris getRentalUris() {
@@ -302,10 +338,14 @@ public class Station implements LocationEntity {
                 ", rentalMethods=" + rentalMethods +
                 ", isVirtualStation=" + isVirtualStation +
                 ", stationArea=" + stationArea +
+                ", parkingType=" + parkingType +
+                ", parkingHoop=" + parkingHoop +
+                ", contactPhone='" + contactPhone + '\'' +
                 ", capacity=" + capacity +
                 ", vehicleCapacity=" + vehicleCapacity +
                 ", vehicleTypeCapacity=" + vehicleTypeCapacity +
                 ", isValetStation=" + isValetStation +
+                ", isChargingStation=" + isChargingStation +
                 ", rentalUris=" + rentalUris +
                 ", numBikesAvailable=" + numBikesAvailable +
                 ", vehicleTypesAvailable=" + vehicleTypesAvailable +

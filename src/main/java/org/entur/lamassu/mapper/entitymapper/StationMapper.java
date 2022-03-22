@@ -27,6 +27,7 @@ import org.entur.gbfs.v2_3.station_status.GBFSVehicleTypesAvailable;
 import org.entur.gbfs.v2_3.system_regions.GBFSSystemRegions;
 import org.entur.gbfs.v2_3.vehicle_types.GBFSVehicleTypes;
 import org.entur.lamassu.model.entities.MultiPolygon;
+import org.entur.lamassu.model.entities.ParkingType;
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.Region;
 import org.entur.lamassu.model.entities.RentalMethod;
@@ -75,10 +76,14 @@ public class StationMapper {
         station.setRentalMethods(mapRentalMethods(stationInformation.getRentalMethods()));
         station.setVirtualStation(stationInformation.getIsVirtualStation());
         station.setStationArea(mapStationArea(stationInformation.getStationArea()));
+        station.setParkingType(mapParkingType(stationInformation.getParkingType()));
+        station.setParkingHoop(stationInformation.getParkingHoop());
+        station.setContactPhone(stationInformation.getContactPhone());
         station.setCapacity(stationInformation.getCapacity() != null ? stationInformation.getCapacity().intValue() : null);
         station.setVehicleCapacity(stationInformation.getVehicleCapacity() != null ? mapVehicleCapacities(stationInformation.getVehicleCapacity(), mapVehicleTypes(vehicleTypesFeed, language)) : null);
         station.setVehicleTypeCapacity(stationInformation.getVehicleTypeCapacity() != null ? mapVehicleTypeCapacities(stationInformation.getVehicleTypeCapacity(), mapVehicleTypes(vehicleTypesFeed, language)) : null);
         station.setValetStation(stationInformation.getIsValetStation());
+        station.setChargingStation(stationInformation.getIsChargingStation());
         station.setRentalUris(rentalUrisMapper.mapRentalUris(stationInformation.getRentalUris()));
         station.setNumBikesAvailable(stationStatus.getNumBikesAvailable() != null ? stationStatus.getNumBikesAvailable().intValue() : null);
         station.setVehicleTypesAvailable(stationStatus.getVehicleTypesAvailable() != null ? mapVehicleTypesAvailable(vehicleTypesFeed, stationStatus.getVehicleTypesAvailable(), language) : null);
@@ -93,6 +98,14 @@ public class StationMapper {
         station.setSystem(system);
         station.setPricingPlans(pricingPlans);
         return station;
+    }
+
+    private ParkingType mapParkingType(GBFSStation.ParkingType parkingType) {
+        if (parkingType == null) {
+            return null;
+        }
+
+        return ParkingType.valueOf(parkingType.value().toUpperCase());
     }
 
     private MultiPolygon mapStationArea(GBFSStationArea stationArea) {

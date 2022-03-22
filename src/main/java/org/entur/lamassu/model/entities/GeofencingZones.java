@@ -133,6 +133,7 @@ public class GeofencingZones implements Entity {
         private Boolean rideAllowed;
         private Boolean rideThroughAllowed;
         private Integer maximumSpeedKph;
+        private Boolean stationParking;
 
         public List<String> getVehicleTypeIds() {
             return vehicleTypeIds;
@@ -164,6 +165,14 @@ public class GeofencingZones implements Entity {
 
         public void setMaximumSpeedKph(Integer maximumSpeedKph) {
             this.maximumSpeedKph = maximumSpeedKph;
+        }
+
+        public Boolean getStationParking() {
+            return stationParking;
+        }
+
+        public void setStationParking(Boolean stationParking) {
+            this.stationParking = stationParking;
         }
     }
 }

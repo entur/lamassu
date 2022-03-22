@@ -19,9 +19,11 @@
 package org.entur.lamassu.mapper.entitymapper;
 
 import org.entur.gbfs.v2_3.system_information.GBFSAndroid;
+import org.entur.gbfs.v2_3.system_information.GBFSBrandAssets;
 import org.entur.gbfs.v2_3.system_information.GBFSData;
 import org.entur.gbfs.v2_3.system_information.GBFSIos;
 import org.entur.gbfs.v2_3.system_information.GBFSRentalApps;
+import org.entur.lamassu.model.entities.BrandAssets;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.model.entities.Operator;
 import org.entur.lamassu.model.entities.RentalApp;
@@ -67,8 +69,28 @@ public class SystemMapper {
         system.setFeedContactEmail(system.getFeedContactEmail());
         system.setTimezone(systemInformation.getTimezone());
         system.setLicenseUrl(systemInformation.getLicenseUrl());
+        system.setBrandAssets(mapBrandAssets(systemInformation.getBrandAssets()));
+        system.setTermsUrl(systemInformation.getTermsUrl());
+        system.setTermsLastUpdated(systemInformation.getTermsLastUpdated());
+        system.setPrivacyUrl(systemInformation.getPrivacyUrl());
+        system.setPrivacyLastUpdated(systemInformation.getPrivacyLastUpdated());
         system.setRentalApps(mapRentalApps(systemInformation.getRentalApps()));
         return system;
+    }
+
+    private BrandAssets mapBrandAssets(GBFSBrandAssets brandAssets) {
+        if (brandAssets == null) {
+            return null;
+        }
+
+        var mapped = new BrandAssets();
+        mapped.setBrandImageUrl(brandAssets.getBrandImageUrl());
+        mapped.setBrandLastModified(brandAssets.getBrandLastModified());
+        mapped.setBrandTermsUrl(brandAssets.getBrandTermsUrl());
+        mapped.setBrandImageUrlDark(brandAssets.getBrandImageUrlDark());
+        mapped.setColor(brandAssets.getColor());
+
+        return mapped;
     }
 
     private RentalApps mapRentalApps(GBFSRentalApps sourceRentalApps) {

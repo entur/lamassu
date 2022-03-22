@@ -14,6 +14,11 @@ public class System implements Entity {
     String feedContactEmail;
     String timezone;
     String licenseUrl;
+    BrandAssets brandAssets;
+    String termsUrl;
+    String termsLastUpdated;
+    String privacyUrl;
+    String privacyLastUpdated;
     RentalApps rentalApps;
 
     @Override
@@ -121,6 +126,46 @@ public class System implements Entity {
         this.licenseUrl = licenseUrl;
     }
 
+    public BrandAssets getBrandAssets() {
+        return brandAssets;
+    }
+
+    public void setBrandAssets(BrandAssets brandAssets) {
+        this.brandAssets = brandAssets;
+    }
+
+    public String getTermsUrl() {
+        return termsUrl;
+    }
+
+    public void setTermsUrl(String termsUrl) {
+        this.termsUrl = termsUrl;
+    }
+
+    public String getTermsLastUpdated() {
+        return termsLastUpdated;
+    }
+
+    public void setTermsLastUpdated(String termsLastUpdated) {
+        this.termsLastUpdated = termsLastUpdated;
+    }
+
+    public String getPrivacyUrl() {
+        return privacyUrl;
+    }
+
+    public void setPrivacyUrl(String privacyUrl) {
+        this.privacyUrl = privacyUrl;
+    }
+
+    public String getPrivacyLastUpdated() {
+        return privacyLastUpdated;
+    }
+
+    public void setPrivacyLastUpdated(String privacyLastUpdated) {
+        this.privacyLastUpdated = privacyLastUpdated;
+    }
+
     public RentalApps getRentalApps() {
         return rentalApps;
     }
@@ -134,9 +179,9 @@ public class System implements Entity {
         return "System{" +
                 "id='" + id + '\'' +
                 ", language='" + language + '\'' +
-                ", name='" + name + '\'' +
-                ", shortName='" + shortName + '\'' +
-                ", operator='" + operator + '\'' +
+                ", name=" + name +
+                ", shortName=" + shortName +
+                ", operator=" + operator +
                 ", url='" + url + '\'' +
                 ", purchaseUrl='" + purchaseUrl + '\'' +
                 ", startDate='" + startDate + '\'' +
@@ -145,6 +190,11 @@ public class System implements Entity {
                 ", feedContactEmail='" + feedContactEmail + '\'' +
                 ", timezone='" + timezone + '\'' +
                 ", licenseUrl='" + licenseUrl + '\'' +
+                ", brandAssets=" + brandAssets +
+                ", termsUrl='" + termsUrl + '\'' +
+                ", termsLastUpdated='" + termsLastUpdated + '\'' +
+                ", privacyUrl='" + privacyUrl + '\'' +
+                ", privacyLastUpdated='" + privacyLastUpdated + '\'' +
                 ", rentalApps=" + rentalApps +
                 '}';
     }

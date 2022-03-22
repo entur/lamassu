@@ -38,18 +38,47 @@ type Vehicle {
     isReserved: Boolean!
     isDisabled: Boolean!
     currentRangeMeters: Float!
+    currentFuelPercent: Float
     vehicleType: VehicleType!
     pricingPlan: PricingPlan!
+    vehicleEquipment: [VehicleEquipment]
     rentalUris: RentalUris
     system: System!
+    availableUntil: String
+}
+
+enum VehicleEquipment {
+    CHILD_SEAT_A
+    CHILD_SEAT_B
+    CHILD_SEAT_C
+    WINTER_TIRES
+    SNOW_CHAINS
 }
 
 type VehicleType {
     id: ID!
     formFactor: FormFactor!
+    riderCapacity: Int
+    cargoVolumeCapacity: Int
+    cargoLoadCapacity: Int
     propulsionType: PropulsionType!
+    ecoLabel: [EcoLabel]
     maxRangeMeters: Float
     name: TranslatedString
+    vehicleAccessories: [VehicleAccessory]
+    gCO2km: Int
+    vehicleImage: String
+    make: String
+    model: String
+    color: String
+    wheelCount: Int
+    maxPermittedSpeed: Int
+    ratedPower: Int
+    defaultReserveTime: Int
+    returnConstraint: ReturnConstraint
+    vehicleAssets: VehicleAssets
+    defaultPricingPlan: PricingPlan
+    pricingPlans: [PricingPlan]
 }
 
 enum FormFactor {
@@ -65,6 +94,37 @@ enum PropulsionType {
     ELECTRIC_ASSIST
     ELECTRIC
     COMBUSTION
+}
+
+type EcoLabel {
+    countryCode: String!
+    ecoSticker: String!
+}
+
+enum VehicleAccessory {
+    AIR_CONDITIONING
+    AUTOMATIC
+    MANUAL
+    CONVERTIBLE
+    CRUISE_CONTROL
+    DOORS_2
+    DOORS_3
+    DOORS_4
+    DOORS_5
+    NAVIGATION
+}
+
+enum ReturnConstraint {
+    FREE_FLOATING
+    ROUNDTRIP_STATION
+    ANY_STATION
+    HYBRID
+}
+
+type VehicleAssets {
+    iconUrl: String!
+    iconUrlDark: String
+    iconLastModified: String!
 }
 
 type PricingPlan {
@@ -106,10 +166,14 @@ type Station {
     rentalMethods: [RentalMethod]
     isVirtualStation: Boolean
     stationArea: MultiPolygon
+    parkingType: ParkingType
+    parkingHoop: Boolean
+    contactPhone: String
     capacity: Int
     vehicleCapacity: [VehicleTypeCapacity]
     vehicleTypeCapacity: [VehicleTypeCapacity]
     isValetStation: Boolean
+    isChargingStation: Boolean
     rentalUris: RentalUris
     numBikesAvailable: Int!
     vehicleTypesAvailable: [VehicleTypeAvailability]
@@ -123,6 +187,14 @@ type Station {
     lastReported: Int!
     system: System!
     pricingPlans: [PricingPlan]!
+}
+
+enum ParkingType {
+    PARKING_LOT
+    STREET_PARKING
+    UNDERGROUND_PARKING
+    SIDEWALK_PARKING
+    OTHER
 }
 
 type System {
@@ -139,6 +211,11 @@ type System {
     feedContactEmail: String
     timezone: String!
     licenseUrl: String
+    brandAssets: BrandAssets
+    termsUrl: String
+    termsLastUpdated: String
+    privacyUrl: String
+    privacyLastUpdated: String
     rentalApps: RentalApps
 }
 
@@ -150,6 +227,14 @@ type RentalApps {
 type RentalApp {
     storeUri: String
     discoveryUri: String
+}
+
+type BrandAssets {
+    brandLastModified: String!
+    brandTermsUrl: String
+    brandImageUrl: String!
+    brandImageUrlDark: String
+    color: String
 }
 
 enum RentalMethod {
@@ -225,6 +310,7 @@ type GeofencingZoneRule {
     rideAllowed: Boolean!
     rideThroughAllowed: Boolean!
     maximumSpeedKph: Int
+    stationParking: Boolean
 }
 
 type Region {

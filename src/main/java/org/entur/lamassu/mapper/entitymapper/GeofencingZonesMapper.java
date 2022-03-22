@@ -79,6 +79,7 @@ public class GeofencingZonesMapper {
         mapped.setRideAllowed(rule.getRideAllowed());
         mapped.setRideThroughAllowed(rule.getRideThroughAllowed());
         mapped.setMaximumSpeedKph(rule.getMaximumSpeedKph() != null ? rule.getMaximumSpeedKph().intValue() : null);
+        mapped.setStationParking(rule.getStationParking());
         return mapped;
     }
 

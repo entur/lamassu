@@ -1,5 +1,6 @@
 package org.entur.lamassu.model.entities;
 
+import java.util.List;
 import java.util.Objects;
 
 public class Vehicle implements LocationEntity {
@@ -9,11 +10,15 @@ public class Vehicle implements LocationEntity {
     private Boolean isReserved;
     private Boolean isDisabled;
     private Double currentRangeMeters;
+    private Double currentFuelPercent;
     private VehicleType vehicleType;
+    private List<VehicleEquipment> vehicleEquipment;
+    private String availableUntil;
     private PricingPlan pricingPlan;
     private System system;
     private RentalUris rentalUris;
 
+    @Override
     public String getId() {
         return id;
     }
@@ -22,6 +27,7 @@ public class Vehicle implements LocationEntity {
         this.id = id;
     }
 
+    @Override
     public Double getLat() {
         return lat;
     }
@@ -30,6 +36,7 @@ public class Vehicle implements LocationEntity {
         this.lat = lat;
     }
 
+    @Override
     public Double getLon() {
         return lon;
     }
@@ -62,12 +69,36 @@ public class Vehicle implements LocationEntity {
         this.currentRangeMeters = currentRangeMeters;
     }
 
+    public Double getCurrentFuelPercent() {
+        return currentFuelPercent;
+    }
+
+    public void setCurrentFuelPercent(Double currentFuelPercent) {
+        this.currentFuelPercent = currentFuelPercent;
+    }
+
     public VehicleType getVehicleType() {
         return vehicleType;
     }
 
     public void setVehicleType(VehicleType vehicleType) {
         this.vehicleType = vehicleType;
+    }
+
+    public List<VehicleEquipment> getVehicleEquipment() {
+        return vehicleEquipment;
+    }
+
+    public void setVehicleEquipment(List<VehicleEquipment> vehicleEquipment) {
+        this.vehicleEquipment = vehicleEquipment;
+    }
+
+    public String getAvailableUntil() {
+        return availableUntil;
+    }
+
+    public void setAvailableUntil(String availableUntil) {
+        this.availableUntil = availableUntil;
     }
 
     public PricingPlan getPricingPlan() {
@@ -78,20 +109,20 @@ public class Vehicle implements LocationEntity {
         this.pricingPlan = pricingPlan;
     }
 
-    public RentalUris getRentalUris() {
-        return rentalUris;
-    }
-
-    public void setRentalUris(RentalUris rentalUris) {
-        this.rentalUris = rentalUris;
-    }
-
     public System getSystem() {
         return system;
     }
 
     public void setSystem(System system) {
         this.system = system;
+    }
+
+    public RentalUris getRentalUris() {
+        return rentalUris;
+    }
+
+    public void setRentalUris(RentalUris rentalUris) {
+        this.rentalUris = rentalUris;
     }
 
     @Override
@@ -103,7 +134,10 @@ public class Vehicle implements LocationEntity {
                 ", isReserved=" + isReserved +
                 ", isDisabled=" + isDisabled +
                 ", currentRangeMeters=" + currentRangeMeters +
+                ", currentFuelPercent=" + currentFuelPercent +
                 ", vehicleType=" + vehicleType +
+                ", vehicleEquipment=" + vehicleEquipment +
+                ", availableUntil='" + availableUntil + '\'' +
                 ", pricingPlan=" + pricingPlan +
                 ", system=" + system +
                 ", rentalUris=" + rentalUris +
