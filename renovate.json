@@ -1,0 +1,3 @@
+{
+  "extends": ["github>entur/ror-renovate-config"]
+}
