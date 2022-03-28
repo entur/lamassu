@@ -1,28 +1,15 @@
 version: 2.1
 
-executors:
-  cci-toolbox-java11:
-    docker:
-      - image: eu.gcr.io/entur-system-1287/circleci-toolbox-image-java11
-        auth:
-          username: _json_key
-          password: $DOCKER_PASSWORD
-    environment:
-      DEBIAN_FRONTEND: "noninteractive"
-      MAVEN_OPTS: -Xmx3G
-
 aliases:
-  - &save-test-results
-    name: Save test results
-    command: |
-      mkdir -p ~/reports/junit
-      find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/reports/junit/ \;
-      find . -type f -regex ".*/target/owasp-reports/.*" -exec cp {} ~/reports/owasp/ \;
-    when: always
+  - &jfrog-login
+      name: Rename jfrog environment variable for maven setting.xml
+      command: |
+        echo "export JFROG_USER=$ARTIFACTORY_USER"  >> $BASH_ENV
+        echo "export JFROG_PASS=$ARTIFACTORY_PASSWORD"  >> $BASH_ENV
   - &sonar-scan
     name: Sonar scan
     command: |
-      mvn -s /tools/m2/settings.xml \
+      mvn -s  .circleci/settings.xml \
         org.jacoco:jacoco-maven-plugin:prepare-agent verify \
         org.jacoco:jacoco-maven-plugin:report sonar:sonar \
         -Dmaven.main.skip \
@@ -35,45 +22,80 @@ aliases:
   - &post_build
     name: Trigger downstream builds
     command: |
+      wget https://raw.githubusercontent.com/entur/circleci-toolbox-image-java11/master/tools/trigger_build_v2.sh -O .circleci/trigger_build_v2.sh
       echo 'export CIRCLE_SHA1="$CIRCLE_SHA1"' >> $BASH_ENV
       echo 'export CIRCLE_PROJECT_REPONAME="$CIRCLE_PROJECT_REPONAME"' >> $BASH_ENV
-      /tools/trigger_build_v2.sh "entur/lamassu-deployment-config.git" "master" "$(git log -1 --pretty=%B)"
+       .circleci/trigger_build_v2.sh "entur/lamassu-deployment-config.git" "master" "$(git log -1 --pretty=%B)"
 
 jobs:
   test:
-    executor: cci-toolbox-java11
+    docker:
+      - image: cimg/openjdk:11.0
+        auth:
+          username: $DOCKERHUB_LOGIN
+          password: $DOCKERHUB_PASSWORD
+    environment:
+      MAVEN_OPTS: -Xmx3G
     steps:
       - checkout
       - restore_cache:
-          key: dep-cache-{{ checksum "pom.xml" }}-clear
-      - run: mvn org.apache.maven.plugins:maven-dependency-plugin:3.1.0:go-offline -s /tools/m2/settings.xml
+          keys:
+            - dep-cache-v2-{{ checksum "pom.xml" }}
+            - dep-cache-v2-
+      - run:
+          name: Download Maven settings
+          command: wget https://raw.githubusercontent.com/entur/circleci-toolbox-image-java11/master/tools/m2/settings.xml -O .circleci/settings.xml
+      - run: *jfrog-login
+      - run:
+          name: Refresh cache
+          command: mvn org.apache.maven.plugins:maven-dependency-plugin:3.1.0:go-offline -s .circleci/settings.xml
       - save_cache:
           paths:
             - ~/.m2
-          key: dep-cache-{{ checksum "pom.xml" }}-clear
-      - run: mvn test -s /tools/m2/settings.xml
+          key: dep-cache-v2-{{ checksum "pom.xml" }}
+      # Cannot use -o because of snapshot dependencies.
+      - run:
+          name: Run Maven verify
+          command: mvn verify -s .circleci/settings.xml
       - run: *sonar-scan
-      - run: *save-test-results
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/junit/
+            find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/junit/ \;
+            find . -type f -regex ".*/target/surefire-reports/.*dumpstream" -exec cp {} ~/junit/ \;
+            find . -type f -regex ".*/target/surefire-reports/.*log" -exec cp {} ~/junit/ \;
+          when: always
       - store_test_results:
-          path: ~/reports
+          path: ~/junit
       - store_artifacts:
-          path: ~/reports
+          path: ~/junit
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - target
+            - .circleci
   build:
     executor: cci-toolbox-java11
     steps:
       - checkout
       - restore_cache:
           keys:
-            - dep-cache-{{ checksum "pom.xml" }}
-            # fallback to the most recent cache if there is no exact match for this pom.xml
-            - dep-cache-
-      - run: mvn org.apache.maven.plugins:maven-dependency-plugin:3.1.0:go-offline -s /tools/m2/settings.xml
+            - dep-cache-v2-{{ checksum "pom.xml" }}
+            - dep-cache-v2-
+      - run:
+          name: Download Maven settings
+          command: wget https://raw.githubusercontent.com/entur/circleci-toolbox-image-java11/master/tools/m2/settings.xml -O .circleci/settings.xml
+      - run: *jfrog-login
+      - run:
+          name: Refresh cache
+          command: mvn org.apache.maven.plugins:maven-dependency-plugin:3.1.0:go-offline -s .circleci/settings.xml
       - save_cache:
           paths:
             - ~/.m2
-          key: dep-cache-{{ checksum "pom.xml" }}-clear
+          key: dep-cache-v2-{{ checksum "pom.xml" }}
       # Cannot use -o because of snapshot dependencies.
-      - run: mvn deploy -s /tools/m2/settings.xml -DskipTests
+      - run: mvn deploy -s .circleci/settings.xml -DskipTests
       - run: *post_build
 
 workflows:
@@ -82,10 +104,10 @@ workflows:
     jobs:
       - test:
           name: test-release
-          context: org-carbon
+          context: global
       - build:
           name: build-release
-          context: dev
+          context: global
           filters:
             branches:
               only:
