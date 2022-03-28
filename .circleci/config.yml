@@ -76,7 +76,13 @@ jobs:
             - target
             - .circleci
   build:
-    executor: cci-toolbox-java11
+    docker:
+      - image: cimg/openjdk:11.0
+        auth:
+          username: $DOCKERHUB_LOGIN
+          password: $DOCKERHUB_PASSWORD
+    environment:
+      MAVEN_OPTS: -Xmx3G
     steps:
       - checkout
       - restore_cache:
