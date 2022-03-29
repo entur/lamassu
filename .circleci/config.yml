@@ -23,6 +23,7 @@ aliases:
     name: Trigger downstream builds
     command: |
       wget https://raw.githubusercontent.com/entur/circleci-toolbox-image-java11/master/tools/trigger_build_v2.sh -O .circleci/trigger_build_v2.sh
+      chmod +x .circleci/trigger_build_v2.sh
       echo 'export CIRCLE_SHA1="$CIRCLE_SHA1"' >> $BASH_ENV
       echo 'export CIRCLE_PROJECT_REPONAME="$CIRCLE_PROJECT_REPONAME"' >> $BASH_ENV
        .circleci/trigger_build_v2.sh "entur/lamassu-deployment-config.git" "master" "$(git log -1 --pretty=%B)"
