@@ -21,8 +21,10 @@ package org.entur.lamassu.cache;
 import org.entur.gbfs.v2_3.gbfs.GBFSFeedName;
 import org.entur.lamassu.model.provider.FeedProvider;
 
+import java.util.concurrent.TimeUnit;
+
 public interface GBFSFeedCache {
     <T> T find(GBFSFeedName feedName, FeedProvider feedProvider);
-    <T> void update(GBFSFeedName feedName, FeedProvider feedProvider, T feed);
-    <T> T getAndUpdate(GBFSFeedName feedName, FeedProvider feedProvider, T feed);
+    <T> void update(GBFSFeedName feedName, FeedProvider feedProvider, T feed, int ttl, TimeUnit timeUnit);
+    <T> T getAndUpdate(GBFSFeedName feedName, FeedProvider feedProvider, T feed, int ttl, TimeUnit timeUnit);
 }

@@ -5,9 +5,11 @@ import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.redisson.Redisson;
 import org.redisson.api.LocalCachedMapOptions;
+import org.redisson.api.MapOptions;
 import org.redisson.api.RBucket;
 import org.redisson.api.RGeo;
 import org.redisson.api.RLocalCachedMap;
+import org.redisson.api.RMapCache;
 import org.redisson.api.RedissonClient;
 import org.redisson.codec.Kryo5Codec;
 import org.redisson.config.Config;
@@ -68,43 +70,23 @@ public class RedissonCacheConfig {
     }
 
     @Bean
-    public RLocalCachedMap<String, Object> feedCache(RedissonClient redissonClient) {
-        var options = LocalCachedMapOptions.<String, Object>defaults()
-                .cacheSize(0)
-                .syncStrategy(LocalCachedMapOptions.SyncStrategy.UPDATE)
-                .timeToLive(1, TimeUnit.DAYS);
-
-        return redissonClient.getLocalCachedMap(GBFS_FEED_CACHE_KEY + "_" + serializationVersion, options);
+    public RMapCache<String, Object> feedCache(RedissonClient redissonClient) {
+        return redissonClient.getMapCache(GBFS_FEED_CACHE_KEY + "_" + serializationVersion);
     }
 
     @Bean
-    public RLocalCachedMap<String, Vehicle> vehicleCache(RedissonClient redissonClient) {
-        var options = LocalCachedMapOptions.<String, Vehicle>defaults()
-                .cacheSize(0)
-                .syncStrategy(LocalCachedMapOptions.SyncStrategy.UPDATE)
-                .timeToLive(10, TimeUnit.SECONDS);
-
-        return redissonClient.getLocalCachedMap(VEHICLE_CACHE_KEY + "_" + serializationVersion, options);
+    public RMapCache<String, Vehicle> vehicleCache(RedissonClient redissonClient) {
+        return redissonClient.getMapCache(VEHICLE_CACHE_KEY + "_" + serializationVersion);
     }
 
     @Bean
-    public RLocalCachedMap<String, Station> stationCache(RedissonClient redissonClient) {
-        var options = LocalCachedMapOptions.<String, Station>defaults()
-                .cacheSize(0)
-                .syncStrategy(LocalCachedMapOptions.SyncStrategy.UPDATE)
-                .timeToLive(1, TimeUnit.DAYS);
-
-        return redissonClient.getLocalCachedMap(STATION_CACHE_KEY + "_" + serializationVersion, options);
+    public RMapCache<String, Station> stationCache(RedissonClient redissonClient) {
+        return redissonClient.getMapCache(STATION_CACHE_KEY + "_" + serializationVersion);
     }
 
     @Bean
-    public RLocalCachedMap<String, GeofencingZones> geofencingZonesCache(RedissonClient redissonClient) {
-        var options = LocalCachedMapOptions.<String, GeofencingZones>defaults()
-                .cacheSize(0)
-                .syncStrategy(LocalCachedMapOptions.SyncStrategy.UPDATE)
-                .timeToLive(1, TimeUnit.DAYS);
-
-        return redissonClient.getLocalCachedMap(GEOFENCING_ZONES_CACHE_KEY + "_" + serializationVersion, options);
+    public RMapCache<String, GeofencingZones> geofencingZonesCache(RedissonClient redissonClient) {
+        return redissonClient.getMapCache(GEOFENCING_ZONES_CACHE_KEY + "_" + serializationVersion);
     }
 
     @Bean

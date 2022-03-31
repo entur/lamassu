@@ -16,19 +16,13 @@
  *
  */
 
-package org.entur.lamassu.cache.impl;
+package org.entur.lamassu.util;
 
-import org.entur.lamassu.cache.GeofencingZonesCache;
-import org.entur.lamassu.model.entities.GeofencingZones;
-import org.redisson.api.RLocalCachedMap;
-import org.redisson.api.RMapCache;
-import org.springframework.stereotype.Component;
+import java.time.Instant;
 
-import javax.cache.Cache;
-
-@Component
-public class GeofencingZonesCacheImpl extends EntityCacheImpl<GeofencingZones> implements GeofencingZonesCache {
-    protected GeofencingZonesCacheImpl(RMapCache<String, GeofencingZones> cache) {
-        super(cache);
+public class CacheUtil {
+    public static int getTtl(int lastUpdated, int ttl, int minimumTtl) {
+        var now = (int) Instant.now().getEpochSecond();
+        return Math.max(lastUpdated + ttl - now, minimumTtl);
     }
 }

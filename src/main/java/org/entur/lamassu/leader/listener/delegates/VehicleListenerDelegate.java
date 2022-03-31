@@ -37,28 +37,32 @@
 package org.entur.lamassu.leader.listener.delegates;
 
 import org.entur.lamassu.cache.VehicleSpatialIndex;
+import org.entur.lamassu.cache.VehicleSpatialIndexId;
 import org.entur.lamassu.leader.listener.CacheEntryListenerDelegate;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.service.FeedProviderService;
 import org.entur.lamassu.util.SpatialIndexIdUtil;
 import org.redisson.api.RLocalCachedMap;
+import org.redisson.api.RMapCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class VehicleListenerDelegate implements CacheEntryListenerDelegate<Vehicle> {
-    private final RLocalCachedMap<String, Vehicle> cache;
+    private final RMapCache<String, Vehicle> cache;
     private final FeedProviderService feedProviderService;
     private final VehicleSpatialIndex spatialIndex;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public VehicleListenerDelegate(
-            RLocalCachedMap<String, Vehicle> cache,
+            RMapCache<String, Vehicle> cache,
             FeedProviderService feedProviderService,
             VehicleSpatialIndex spatialIndex
     ) {
@@ -75,8 +79,15 @@ public class VehicleListenerDelegate implements CacheEntryListenerDelegate<Vehic
             logger.warn("Feed provider not found on expired vehicle={}. Probably means feed provider was removed.", name);
         } else {
             var vehicle = cache.get(name);
-            var id = SpatialIndexIdUtil.createVehicleSpatialIndexId(vehicle, feedProvider);
-            spatialIndex.removeAll(Set.of(id));
+            var ids = spatialIndex.getAll()
+                    .stream()
+                    .map(VehicleSpatialIndexId::fromString)
+                    .filter(Objects::nonNull)
+                    .filter(id -> id.getId().equals(split[0]))
+                    .map(VehicleSpatialIndexId::toString)
+                    .collect(Collectors.toSet());
+
+            spatialIndex.removeAll(ids);
         }
     }
 }

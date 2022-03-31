@@ -22,6 +22,7 @@ import org.entur.gbfs.v2_3.gbfs.GBFSFeedName;
 import org.entur.lamassu.cache.GBFSFeedCache;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.redisson.api.RLocalCachedMap;
+import org.redisson.api.RMapCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,12 +34,12 @@ import java.util.concurrent.TimeoutException;
 
 @Component
 public class GBFSFeedCacheImpl implements GBFSFeedCache {
-    private RLocalCachedMap<String, Object> cache;
+    private final RMapCache<String, Object> cache;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public GBFSFeedCacheImpl(RLocalCachedMap<String, Object> feedCache) {
+    public GBFSFeedCacheImpl(RMapCache<String, Object> feedCache) {
         this.cache = feedCache;
     }
 
@@ -58,13 +59,13 @@ public class GBFSFeedCacheImpl implements GBFSFeedCache {
     }
 
     @Override
-    public <T> void update(GBFSFeedName feedName, FeedProvider feedProvider, T feed) {
+    public <T> void update(GBFSFeedName feedName, FeedProvider feedProvider, T feed, int ttl, TimeUnit timeUnit) {
         String key = getKey(
                 feedName,
                 feedProvider.getSystemId()
         );
         try {
-            cache.putAsync(key, feed).get(5, TimeUnit.SECONDS);
+            cache.putAsync(key, feed, ttl, timeUnit).get(5, TimeUnit.SECONDS);
         } catch (ExecutionException | TimeoutException e) {
             logger.warn("Unable to update feed cache within 5 second", e);
         } catch (InterruptedException e) {
@@ -74,13 +75,13 @@ public class GBFSFeedCacheImpl implements GBFSFeedCache {
     }
 
     @Override
-    public <T> T getAndUpdate(GBFSFeedName feedName, FeedProvider feedProvider, T feed) {
+    public <T> T getAndUpdate(GBFSFeedName feedName, FeedProvider feedProvider, T feed, int ttl, TimeUnit timeUnit) {
         String key = getKey(
                 feedName,
                 feedProvider.getSystemId()
         );
         try {
-            @SuppressWarnings("unchecked") T old = (T) cache.putAsync(key, feed).get(5, TimeUnit.SECONDS);
+            @SuppressWarnings("unchecked") T old = (T) cache.putAsync(key, feed, ttl, timeUnit).get(5, TimeUnit.SECONDS);
             return old;
         } catch (ExecutionException | TimeoutException e) {
             logger.warn("Unable to update feed cache within 5 second", e);

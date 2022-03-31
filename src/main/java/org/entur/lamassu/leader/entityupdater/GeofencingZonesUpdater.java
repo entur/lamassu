@@ -22,10 +22,13 @@ import org.entur.gbfs.v2_3.geofencing_zones.GBFSGeofencingZones;
 import org.entur.lamassu.cache.GeofencingZonesCache;
 import org.entur.lamassu.mapper.entitymapper.GeofencingZonesMapper;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.entur.lamassu.util.CacheUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class GeofencingZonesUpdater {
@@ -49,6 +52,9 @@ public class GeofencingZonesUpdater {
             return;
         }
         var mapped = geofencingZonesMapper.map(feed.getData().getGeofencingZones(), feedProvider);
-        geofencingZonesCache.updateAll(Map.of(mapped.getId(), mapped));
+        var lastUpdated = feed.getLastUpdated();
+        var ttl = feed.getTtl();
+
+        geofencingZonesCache.updateAll(Map.of(mapped.getId(), mapped), CacheUtil.getTtl(lastUpdated, ttl, 3600), TimeUnit.SECONDS);
     }
 }

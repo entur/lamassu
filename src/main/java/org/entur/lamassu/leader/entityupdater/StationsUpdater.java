@@ -34,6 +34,7 @@ import org.entur.lamassu.mapper.entitymapper.SystemMapper;
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.entur.lamassu.util.CacheUtil;
 import org.entur.lamassu.util.SpatialIndexIdUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +46,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Component
@@ -192,7 +194,9 @@ public class StationsUpdater {
 
         if (!stations.isEmpty()) {
             logger.debug("Adding/updating {} stations in station cache", stations.size());
-            stationCache.updateAll(stations);
+            var lastUpdated = stationStatusFeed.getLastUpdated();
+            var ttl = stationStatusFeed.getTtl();
+            stationCache.updateAll(stations, CacheUtil.getTtl(lastUpdated, ttl, 3600), TimeUnit.SECONDS);
         }
 
         if (!spatialIndexUpdateMap.isEmpty()) {

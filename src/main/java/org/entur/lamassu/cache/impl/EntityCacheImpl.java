@@ -2,12 +2,10 @@ package org.entur.lamassu.cache.impl;
 
 import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.model.entities.Entity;
-import org.redisson.api.CacheAsync;
-import org.redisson.api.RLocalCachedMap;
+import org.redisson.api.RMapCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.cache.Cache;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -15,15 +13,13 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 abstract class EntityCacheImpl<T extends Entity> implements EntityCache<T> {
-    RLocalCachedMap<String, T> cache;
+    RMapCache<String, T> cache;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    protected EntityCacheImpl(RLocalCachedMap<String, T> cache) {
+    protected EntityCacheImpl(RMapCache<String, T> cache) {
         this.cache = cache;
     }
 
@@ -34,7 +30,7 @@ abstract class EntityCacheImpl<T extends Entity> implements EntityCache<T> {
 
     @Override
     public List<T> getAll() {
-        return new ArrayList<>(cache.cachedValues());
+        return new ArrayList<>(cache.values());
     }
 
     @Override
@@ -65,8 +61,8 @@ abstract class EntityCacheImpl<T extends Entity> implements EntityCache<T> {
     }
 
     @Override
-    public void updateAll(Map<String, T> entities) {
-        cache.putAllAsync(entities);
+    public void updateAll(Map<String, T> entities, int ttl, TimeUnit timeUnit) {
+        cache.putAll(entities, ttl, timeUnit);
     }
 
     @Override

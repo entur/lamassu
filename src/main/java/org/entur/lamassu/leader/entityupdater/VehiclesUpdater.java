@@ -33,6 +33,7 @@ import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.entities.VehicleType;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.entur.lamassu.util.CacheUtil;
 import org.entur.lamassu.util.SpatialIndexIdUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +44,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Component
@@ -188,7 +190,9 @@ public class VehiclesUpdater {
 
         if (!vehicles.isEmpty()) {
             logger.debug("Adding/updating {} vehicles in vehicle cache", vehicles.size());
-            vehicleCache.updateAll(vehicles);
+            var lastUpdated = freeBikeStatusFeed.getLastUpdated();
+            var ttl = freeBikeStatusFeed.getTtl();
+            vehicleCache.updateAll(vehicles, CacheUtil.getTtl(lastUpdated, ttl, 60), TimeUnit.SECONDS);
         }
 
         if (!spatialIndexUpdateMap.isEmpty()) {
