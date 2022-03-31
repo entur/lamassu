@@ -47,9 +47,6 @@ public class GeofencingZonesUpdater {
             FeedProvider feedProvider,
             GBFSGeofencingZones feed
     ) {
-        if (feed == null) {
-            return;
-        }
         var mapped = geofencingZonesMapper.map(feed.getData().getGeofencingZones(), feedProvider);
         var lastUpdated = feed.getLastUpdated();
         var ttl = feed.getTtl();

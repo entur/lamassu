@@ -41,27 +41,59 @@ public class EntityCachesUpdater {
     }
 
     public void updateEntityCaches(FeedProvider feedProvider, GbfsDelivery delivery, GbfsDelivery oldDelivery) {
-        vehiclesUpdater.addOrUpdateVehicles(
-                feedProvider,
-                delivery.getFreeBikeStatus(),
-                oldDelivery.getFreeBikeStatus(),
-                delivery.getSystemInformation(),
-                delivery.getSystemPricingPlans(),
-                delivery.getVehicleTypes()
-        );
-        stationsUpdater.addOrUpdateStation(
-                feedProvider,
-                delivery.getStationStatus(),
-                oldDelivery.getStationStatus(),
-                delivery.getStationInformation(),
-                delivery.getSystemInformation(),
-                delivery.getSystemPricingPlans(),
-                delivery.getVehicleTypes(),
-                delivery.getSystemRegions()
-        );
-        geofencingZonesUpdater.addOrUpdateGeofencingZones(
-                feedProvider,
-                delivery.getGeofencingZones()
-        );
+        if (canUpdateVehicles(delivery)) {
+            vehiclesUpdater.addOrUpdateVehicles(
+                    feedProvider,
+                    delivery.getFreeBikeStatus(),
+                    oldDelivery.getFreeBikeStatus(),
+                    delivery.getSystemInformation(),
+                    delivery.getSystemPricingPlans(),
+                    delivery.getVehicleTypes()
+            );
+        }
+
+        if (canUpdateStations(delivery)) {
+            stationsUpdater.addOrUpdateStations(
+                    feedProvider,
+                    delivery.getStationStatus(),
+                    oldDelivery.getStationStatus(),
+                    delivery.getStationInformation(),
+                    delivery.getSystemInformation(),
+                    delivery.getSystemPricingPlans(),
+                    delivery.getVehicleTypes(),
+                    delivery.getSystemRegions()
+            );
+        }
+
+        if (delivery.getGeofencingZones() != null) {
+            geofencingZonesUpdater.addOrUpdateGeofencingZones(
+                    feedProvider,
+                    delivery.getGeofencingZones()
+            );
+        }
+    }
+
+    private boolean canUpdateVehicles(GbfsDelivery delivery) {
+        return delivery.getFreeBikeStatus() != null
+                && delivery.getFreeBikeStatus().getData() != null
+                && delivery.getSystemInformation() != null
+                && delivery.getSystemInformation().getData() != null
+                && delivery.getVehicleTypes() != null
+                && delivery.getVehicleTypes().getData() != null
+                && delivery.getSystemPricingPlans() != null
+                && delivery.getSystemPricingPlans().getData() != null;
+    }
+
+    private boolean canUpdateStations(GbfsDelivery delivery) {
+        return delivery.getStationStatus() != null
+                && delivery.getStationStatus().getData() != null
+                && delivery.getStationInformation() != null
+                && delivery.getStationInformation().getData() != null
+                && delivery.getSystemInformation() != null
+                && delivery.getSystemInformation().getData() != null
+                && delivery.getVehicleTypes() != null
+                && delivery.getVehicleTypes().getData() != null
+                && delivery.getSystemPricingPlans() != null
+                && delivery.getSystemPricingPlans().getData() != null;
     }
 }
