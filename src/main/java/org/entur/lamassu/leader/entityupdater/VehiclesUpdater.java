@@ -103,7 +103,7 @@ public class VehiclesUpdater {
 
             // Find vehicle ids in old feed not present in new feed
             vehicleIdsToRemove.removeAll(vehicleIds);
-            logger.debug("Found {} vehicleIds to remove from old free_bike_status feed: {}", vehicleIdsToRemove.size(), oldFreeBikeStatusFeed);
+            logger.trace("Found {} vehicleIds to remove from old free_bike_status feed: {}", vehicleIdsToRemove.size(), oldFreeBikeStatusFeed);
 
             // Add vehicle ids that are staged for removal to the set of vehicle ids that will be used to
             // fetch current vehicles from cache
@@ -112,7 +112,7 @@ public class VehiclesUpdater {
 
         if (vehicleIdsToRemove == null) {
             vehicleIdsToRemove = new HashSet<>(vehicleIds);
-            logger.info("Old free_bike_status feed was not available or had no data. As a workaround, removing all vehicles for provider {}", feedProvider.getSystemId());
+            logger.debug("Old free_bike_status feed was not available or had no data. As a workaround, removing all vehicles for provider {}", feedProvider.getSystemId());
         }
 
         var currentVehicles = vehicleCache.getAllAsMap(
@@ -192,7 +192,7 @@ public class VehiclesUpdater {
             logger.debug("Adding/updating {} vehicles in vehicle cache", vehicles.size());
             var lastUpdated = freeBikeStatusFeed.getLastUpdated();
             var ttl = freeBikeStatusFeed.getTtl();
-            vehicleCache.updateAll(vehicles, CacheUtil.getTtl(lastUpdated, ttl, 60), TimeUnit.SECONDS);
+            vehicleCache.updateAll(vehicles, CacheUtil.getTtl(lastUpdated, ttl, 300), TimeUnit.SECONDS);
         }
 
         if (!spatialIndexUpdateMap.isEmpty()) {

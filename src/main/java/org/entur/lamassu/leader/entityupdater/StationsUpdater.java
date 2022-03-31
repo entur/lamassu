@@ -121,7 +121,7 @@ public class StationsUpdater {
 
         if (stationIdsToRemove == null) {
             stationIdsToRemove = new HashSet<>(stationIds);
-            logger.info("Old station_status feed was not available or had no data. As a workaround, removing all stations for provider {}", feedProvider.getSystemId());
+            logger.debug("Old station_status feed was not available or had no data. As a workaround, removing all stations for provider {}", feedProvider.getSystemId());
         }
 
         var originalStations = stationCache.getAllAsMap(stationIds);
@@ -196,7 +196,7 @@ public class StationsUpdater {
             logger.debug("Adding/updating {} stations in station cache", stations.size());
             var lastUpdated = stationStatusFeed.getLastUpdated();
             var ttl = stationStatusFeed.getTtl();
-            stationCache.updateAll(stations, CacheUtil.getTtl(lastUpdated, ttl, 3600), TimeUnit.SECONDS);
+            stationCache.updateAll(stations, CacheUtil.getTtl(lastUpdated, ttl, 300), TimeUnit.SECONDS);
         }
 
         if (!spatialIndexUpdateMap.isEmpty()) {

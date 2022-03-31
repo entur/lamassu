@@ -28,8 +28,8 @@ public class LeaderSingletonService {
     @PostConstruct
     public void init() {
         logger.info("Initializing leader");
-        feedUpdater.start();
         listenerManager.start();
+        feedUpdater.start();
     }
 
     @PreDestroy

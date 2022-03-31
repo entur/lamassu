@@ -12,9 +12,7 @@ public interface EntityCache<T extends Entity> {
     List<T> getAll();
     Map<String, T> getAllAsMap(Set<String> keys);
     T get(String key);
-
     void updateAll(Map<String, T> entities, int ttl, TimeUnit timeUnit);
-
     void removeAll(Set<String> keys);
     boolean hasKey(String key);
 }

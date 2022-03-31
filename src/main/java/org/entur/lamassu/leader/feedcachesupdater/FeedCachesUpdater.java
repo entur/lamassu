@@ -64,7 +64,7 @@ public class FeedCachesUpdater {
 
     private <T> void updateFeedCache(FeedProvider feedProvider, GBFSFeedName feedName, T feed) {
         if (feed != null) {
-            logger.info("updating feed {} for provider {}", feedName, feedProvider.getSystemId());
+            logger.debug("updating feed {} for provider {}", feedName, feedProvider.getSystemId());
             logger.trace("updating feed {} for provider {} data {}", feedName, feedProvider.getSystemId(), feed);
             var ttl = getTtl(feedName.implementingClass(), feed, 3600);
             feedCache.update(feedName, feedProvider, feed, ttl, TimeUnit.SECONDS);
@@ -79,7 +79,7 @@ public class FeedCachesUpdater {
             Integer ttl = (Integer) implementingClass.getMethod("getTtl").invoke(feed);
             return CacheUtil.getTtl(lastUpdated, ttl, minimumTtl);
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-            // log this as warning
+            logger.warn("Unable to determine ttl for feed, using default - {}", feed);
             return minimumTtl;
         }
     }
@@ -87,7 +87,7 @@ public class FeedCachesUpdater {
 
     private <T> T getAndUpdateFeedCache(FeedProvider feedProvider, GBFSFeedName feedName, T feed) {
         if (feed != null) {
-            logger.info("updating feed {} for provider {}", feedName, feedProvider.getSystemId());
+            logger.debug("updating feed {} for provider {}", feedName, feedProvider.getSystemId());
             logger.trace("updating feed {} for provider {} data {}", feedName, feedProvider.getSystemId(), feed);
             var ttl = getTtl(feedName.implementingClass(), feed, 3600);
             return feedCache.getAndUpdate(feedName, feedProvider, feed, ttl, TimeUnit.SECONDS);

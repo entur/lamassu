@@ -18,7 +18,7 @@
 
 package org.entur.lamassu.leader.listener;
 
-import org.redisson.api.ExpiredObjectListener;
+import org.redisson.api.map.event.EntryExpiredListener;
 
-public interface CacheEntryListenerDelegate<T> extends ExpiredObjectListener {}
+public interface CacheEntryListenerDelegate<T> extends EntryExpiredListener<String, T> {}
 
