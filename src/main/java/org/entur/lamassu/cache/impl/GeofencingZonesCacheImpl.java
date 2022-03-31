@@ -20,11 +20,8 @@ package org.entur.lamassu.cache.impl;
 
 import org.entur.lamassu.cache.GeofencingZonesCache;
 import org.entur.lamassu.model.entities.GeofencingZones;
-import org.redisson.api.RLocalCachedMap;
 import org.redisson.api.RMapCache;
 import org.springframework.stereotype.Component;
-
-import javax.cache.Cache;
 
 @Component
 public class GeofencingZonesCacheImpl extends EntityCacheImpl<GeofencingZones> implements GeofencingZonesCache {

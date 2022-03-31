@@ -56,19 +56,19 @@ public class CacheUtilTest {
     }
 
     @Test
-    public void getTtlReturnsMinimumTtlWhenExpired() {
+    void getTtlReturnsMinimumTtlWhenExpired() {
         int expected = 3600;
         Assertions.assertEquals(expected, CacheUtil.getTtl(now - 3600, 10, expected));
     }
 
     @Test
-    public void getTtlReturnsMinimumTtlWhenLessThanMinimumTtl() {
+    void getTtlReturnsMinimumTtlWhenLessThanMinimumTtl() {
         int expected = 3600;
         Assertions.assertEquals(expected, CacheUtil.getTtl(now - 20, 10, expected));
     }
 
     @Test
-    public void getTtlReturnsCalculatedTtlWhenLargerThanMinimumTtl() {
+    void getTtlReturnsCalculatedTtlWhenLargerThanMinimumTtl() {
         Assertions.assertEquals(20, CacheUtil.getTtl(now - 10, 30, 10));
     }
 }

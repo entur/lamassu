@@ -4,11 +4,8 @@ import org.entur.lamassu.model.entities.GeofencingZones;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.redisson.Redisson;
-import org.redisson.api.LocalCachedMapOptions;
-import org.redisson.api.MapOptions;
 import org.redisson.api.RBucket;
 import org.redisson.api.RGeo;
-import org.redisson.api.RLocalCachedMap;
 import org.redisson.api.RMapCache;
 import org.redisson.api.RedissonClient;
 import org.redisson.codec.Kryo5Codec;
@@ -19,8 +16,6 @@ import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-
-import java.util.concurrent.TimeUnit;
 
 @Configuration
 public class RedissonCacheConfig {

@@ -20,11 +20,8 @@ package org.entur.lamassu.cache.impl;
 
 import org.entur.lamassu.cache.StationCache;
 import org.entur.lamassu.model.entities.Station;
-import org.redisson.api.RLocalCachedMap;
 import org.redisson.api.RMapCache;
 import org.springframework.stereotype.Component;
-
-import javax.cache.Cache;
 
 @Component
 public class StationCacheImpl extends EntityCacheImpl<Station> implements StationCache {

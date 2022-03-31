@@ -21,7 +21,6 @@ package org.entur.lamassu.cache.impl;
 import org.entur.gbfs.v2_3.gbfs.GBFSFeedName;
 import org.entur.lamassu.cache.GBFSFeedCache;
 import org.entur.lamassu.model.provider.FeedProvider;
-import org.redisson.api.RLocalCachedMap;
 import org.redisson.api.RMapCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

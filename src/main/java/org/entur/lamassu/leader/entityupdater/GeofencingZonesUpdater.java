@@ -26,7 +26,6 @@ import org.entur.lamassu.util.CacheUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
