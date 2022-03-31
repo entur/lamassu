@@ -36,7 +36,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Component
-public class VehicleListenerDelegate implements ExpiredObjectListener {
+public class VehicleListenerDelegate implements CacheEntryListenerDelegate<Vehicle> {
     private final RLocalCachedMap<String, Vehicle> cache;
     private final FeedProviderService feedProviderService;
     private final VehicleSpatialIndex spatialIndex;

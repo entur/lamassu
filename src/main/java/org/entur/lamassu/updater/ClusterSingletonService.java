@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 
 @Component
 @Profile("leader")
@@ -29,6 +30,13 @@ public class ClusterSingletonService {
         logger.info("Initializing leader");
         feedUpdater.start();
         listenerManager.start();
+    }
+
+    @PreDestroy
+    public void shutdown() {
+        logger.info("Shutting down leader");
+        feedUpdater.stop();
+        listenerManager.stop();
     }
 
     @Scheduled(fixedRateString = "${org.entur.lamassu.feedupdateinterval:30000}")

@@ -20,24 +20,19 @@ package org.entur.lamassu.listener.listeners;
 
 import org.entur.lamassu.listener.CacheEntryListenerDelegate;
 import org.entur.lamassu.listener.CacheListener;
-import org.entur.lamassu.listener.delegates.VehicleListenerDelegate;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.redisson.api.RLocalCachedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.cache.Cache;
-import javax.cache.configuration.FactoryBuilder;
-import javax.cache.configuration.MutableCacheEntryListenerConfiguration;
-
 @Component
 public class VehicleCacheListener implements CacheListener {
     private final RLocalCachedMap<String, Vehicle> cache;
-    private final VehicleListenerDelegate delegate;
+    private final CacheEntryListenerDelegate<Vehicle> delegate;
     private int delegateId;
 
     @Autowired
-    public VehicleCacheListener(RLocalCachedMap<String, Vehicle> cache, VehicleListenerDelegate delegate) {
+    public VehicleCacheListener(RLocalCachedMap<String, Vehicle> cache, CacheEntryListenerDelegate<Vehicle> delegate) {
         this.cache = cache;
         this.delegate = delegate;
     }

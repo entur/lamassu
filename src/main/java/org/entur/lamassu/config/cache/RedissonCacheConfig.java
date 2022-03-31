@@ -82,7 +82,7 @@ public class RedissonCacheConfig {
         var options = LocalCachedMapOptions.<String, Vehicle>defaults()
                 .cacheSize(0)
                 .syncStrategy(LocalCachedMapOptions.SyncStrategy.UPDATE)
-                .timeToLive(5, TimeUnit.MINUTES);
+                .timeToLive(10, TimeUnit.SECONDS);
 
         return redissonClient.getLocalCachedMap(VEHICLE_CACHE_KEY + "_" + serializationVersion, options);
     }
