@@ -18,6 +18,7 @@
 
 package org.entur.lamassu.leader.entityupdater;
 
+import org.entur.gbfs.GbfsDelivery;
 import org.entur.gbfs.v2_3.station_information.GBFSData;
 import org.entur.gbfs.v2_3.station_information.GBFSStationInformation;
 import org.entur.gbfs.v2_3.station_status.GBFSStation;
@@ -75,14 +76,17 @@ public class StationsUpdater {
 
     public void addOrUpdateStations(
             FeedProvider feedProvider,
-            GBFSStationStatus stationStatusFeed,
-            GBFSStationStatus oldStationStatusFeed,
-            GBFSStationInformation stationInformationFeed,
-            GBFSSystemInformation systemInformationFeed,
-            GBFSSystemPricingPlans pricingPlansFeed,
-            GBFSVehicleTypes vehicleTypesFeed,
-            GBFSSystemRegions systemRegionsFeed
+            GbfsDelivery delivery,
+            GbfsDelivery oldDelivery
     ) {
+        GBFSStationStatus stationStatusFeed = delivery.getStationStatus();
+        GBFSStationStatus oldStationStatusFeed = oldDelivery.getStationStatus();
+        GBFSStationInformation stationInformationFeed = delivery.getStationInformation();
+        GBFSSystemInformation systemInformationFeed = delivery.getSystemInformation();
+        GBFSSystemPricingPlans pricingPlansFeed = delivery.getSystemPricingPlans();
+        GBFSVehicleTypes vehicleTypesFeed = delivery.getVehicleTypes();
+        GBFSSystemRegions systemRegionsFeed = delivery.getSystemRegions();
+
         var stationIds = stationStatusFeed.getData().getStations().stream()
                 .map(GBFSStation::getStationId)
                 .collect(Collectors.toSet());

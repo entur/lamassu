@@ -34,7 +34,7 @@ import java.util.Set;
 
 import static org.mockito.Mockito.when;
 
-public class VehicleListenerDelegateTest {
+class VehicleListenerDelegateTest {
     VehicleSpatialIndex mockIndex = Mockito.mock(VehicleSpatialIndex.class);
     FeedProviderService mockFeedProviderService = Mockito.mock(FeedProviderService.class);
 

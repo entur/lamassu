@@ -31,7 +31,7 @@ import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
-public class CacheUtilTest {
+class CacheUtilTest {
 
     private MockedStatic<Clock> clockMock;
 

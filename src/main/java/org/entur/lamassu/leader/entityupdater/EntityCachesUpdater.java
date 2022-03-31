@@ -44,24 +44,16 @@ public class EntityCachesUpdater {
         if (canUpdateVehicles(delivery)) {
             vehiclesUpdater.addOrUpdateVehicles(
                     feedProvider,
-                    delivery.getFreeBikeStatus(),
-                    oldDelivery.getFreeBikeStatus(),
-                    delivery.getSystemInformation(),
-                    delivery.getSystemPricingPlans(),
-                    delivery.getVehicleTypes()
+                    delivery,
+                    oldDelivery
             );
         }
 
         if (canUpdateStations(delivery)) {
             stationsUpdater.addOrUpdateStations(
                     feedProvider,
-                    delivery.getStationStatus(),
-                    oldDelivery.getStationStatus(),
-                    delivery.getStationInformation(),
-                    delivery.getSystemInformation(),
-                    delivery.getSystemPricingPlans(),
-                    delivery.getVehicleTypes(),
-                    delivery.getSystemRegions()
+                    delivery,
+                    oldDelivery
             );
         }
 

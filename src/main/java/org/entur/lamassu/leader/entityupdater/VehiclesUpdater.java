@@ -18,6 +18,7 @@
 
 package org.entur.lamassu.leader.entityupdater;
 
+import org.entur.gbfs.GbfsDelivery;
 import org.entur.gbfs.v2_3.free_bike_status.GBFSBike;
 import org.entur.gbfs.v2_3.free_bike_status.GBFSFreeBikeStatus;
 import org.entur.gbfs.v2_3.system_information.GBFSSystemInformation;
@@ -76,12 +77,15 @@ public class VehiclesUpdater {
 
     public void addOrUpdateVehicles(
             FeedProvider feedProvider,
-            GBFSFreeBikeStatus freeBikeStatusFeed,
-            GBFSFreeBikeStatus oldFreeBikeStatusFeed,
-            GBFSSystemInformation systemInformationFeed,
-            GBFSSystemPricingPlans pricingPlansFeed,
-            GBFSVehicleTypes vehicleTypesFeed
+            GbfsDelivery delivery,
+            GbfsDelivery oldDelivery
     ) {
+        GBFSFreeBikeStatus freeBikeStatusFeed = delivery.getFreeBikeStatus();
+        GBFSFreeBikeStatus oldFreeBikeStatusFeed = oldDelivery.getFreeBikeStatus();
+        GBFSSystemInformation systemInformationFeed = delivery.getSystemInformation();
+        GBFSSystemPricingPlans pricingPlansFeed = delivery.getSystemPricingPlans();
+        GBFSVehicleTypes vehicleTypesFeed = delivery.getVehicleTypes();
+
         var vehicleIds = freeBikeStatusFeed.getData().getBikes().stream()
                 .map(GBFSBike::getBikeId)
                 .collect(Collectors.toSet());
