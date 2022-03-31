@@ -16,7 +16,7 @@
  *
  */
 
-package org.entur.lamassu.updater.feedcachesupdater;
+package org.entur.lamassu.leader.feedcachesupdater;
 
 import org.entur.gbfs.GbfsDelivery;
 import org.entur.gbfs.v2_3.gbfs.GBFSFeedName;

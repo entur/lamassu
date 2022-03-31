@@ -5,7 +5,7 @@ import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 import org.entur.lamassu.TestLamassuApplication;
-import org.entur.lamassu.updater.ClusterSingletonService;
+import org.entur.lamassu.leader.LeaderSingletonService;
 import org.jetbrains.annotations.NotNull;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -34,7 +34,7 @@ import java.util.concurrent.CountDownLatch;
 )
 public abstract class AbstractIntegrationTestBase {
     @Autowired
-    private ClusterSingletonService clusterSingletonService;
+    private LeaderSingletonService leaderSingletonService;
 
     private final CountDownLatch waiter = new CountDownLatch(1);
 
@@ -104,7 +104,7 @@ public abstract class AbstractIntegrationTestBase {
     @Before
     public void heartbeat() throws InterruptedException {
         Thread.sleep(1000);
-        clusterSingletonService.update();
+        leaderSingletonService.update();
         Thread.sleep(1000);
     }
 

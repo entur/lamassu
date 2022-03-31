@@ -16,7 +16,7 @@
  *
  */
 
-package org.entur.lamassu.updater.entityupdater;
+package org.entur.lamassu.leader.entityupdater;
 
 import org.entur.gbfs.v2_3.station_information.GBFSData;
 import org.entur.gbfs.v2_3.station_information.GBFSStationInformation;

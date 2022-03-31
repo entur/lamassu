@@ -16,7 +16,7 @@
  *
  */
 
-package org.entur.lamassu.updater.entityupdater;
+package org.entur.lamassu.leader.entityupdater;
 
 import org.entur.gbfs.v2_3.geofencing_zones.GBFSGeofencingZones;
 import org.entur.lamassu.cache.GeofencingZonesCache;

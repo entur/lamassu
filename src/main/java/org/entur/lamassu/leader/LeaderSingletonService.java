@@ -1,4 +1,4 @@
-package org.entur.lamassu.updater;
+package org.entur.lamassu.leader;
 
 import org.entur.lamassu.service.GeoSearchService;
 import org.slf4j.Logger;
@@ -13,13 +13,13 @@ import javax.annotation.PreDestroy;
 
 @Component
 @Profile("leader")
-public class ClusterSingletonService {
+public class LeaderSingletonService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final FeedUpdater feedUpdater;
     private final ListenerManager listenerManager;
     private final GeoSearchService geoSearchService;
 
-    public ClusterSingletonService(@Autowired FeedUpdater feedUpdater, @Autowired ListenerManager listenerManager, @Autowired GeoSearchService geoSearchService) {
+    public LeaderSingletonService(@Autowired FeedUpdater feedUpdater, @Autowired ListenerManager listenerManager, @Autowired GeoSearchService geoSearchService) {
         this.feedUpdater = feedUpdater;
         this.listenerManager = listenerManager;
         this.geoSearchService = geoSearchService;

@@ -16,7 +16,7 @@
  *
  */
 
-package org.entur.lamassu.updater.entityupdater;
+package org.entur.lamassu.leader.entityupdater;
 
 import org.entur.gbfs.GbfsDelivery;
 import org.entur.lamassu.model.provider.FeedProvider;
