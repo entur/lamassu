@@ -16,20 +16,19 @@
  *
  */
 
-package org.entur.lamassu.listener.delegates;
+package org.entur.lamassu.leader.listener.delegates;
 
 import org.entur.lamassu.cache.VehicleSpatialIndex;
-import org.entur.lamassu.listener.CacheEntryListenerDelegate;
+import org.entur.lamassu.leader.listener.CacheEntryListenerDelegate;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.service.FeedProviderService;
 import org.entur.lamassu.util.SpatialIndexIdUtil;
+import org.redisson.api.map.event.EntryEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.cache.event.CacheEntryEvent;
-import java.util.HashSet;
 import java.util.Set;
 
 @Component
@@ -48,37 +47,20 @@ public class VehicleListenerDelegate implements CacheEntryListenerDelegate<Vehic
     }
 
     @Override
-    public void onCreated(Iterable<CacheEntryEvent<? extends String, ? extends Vehicle>> iterable) {
-        // noop
-    }
-
-    @Override
-    public void onUpdated(Iterable<CacheEntryEvent<? extends String, ? extends Vehicle>> iterable) {
-        // noop
-    }
-
-    @Override
-    public void onRemoved(Iterable<CacheEntryEvent<? extends String, ? extends Vehicle>> iterable) {
-        // noop
-    }
-
-    @Override
-    public void onExpired(Iterable<CacheEntryEvent<? extends String, ? extends Vehicle>> iterable) {
-        var ids = new HashSet<String>(Set.of());
-
-        for (CacheEntryEvent<? extends String, ? extends Vehicle> entry : iterable) {
-            var split = entry.getKey().split("_");
-            var feedProvider = feedProviderService.getFeedProviderBySystemId(split[split.length - 1]);
-            if (feedProvider == null) {
-                logger.warn("Feed provider not found on expired vehicle={}. Probably means feed provider was removed.", entry.getValue());
-            } else {
-                var vehicle = entry.getValue();
-                var id = SpatialIndexIdUtil.createVehicleSpatialIndexId(vehicle, feedProvider);
-                ids.add(id);
-            }
+    public void onExpired(EntryEvent<String, Vehicle> event) {
+        logger.info("Expired event {}", event);
+        var name = event.getKey();
+        var vehicle= event.getValue();
+        var split = name.split("_");
+        var feedProvider = feedProviderService.getFeedProviderBySystemId(split[split.length - 1]);
+        if (feedProvider == null) {
+            logger.warn("Feed provider not found on expired vehicle={}. Probably means feed provider was removed.", name);
+        } else {
+            var id = SpatialIndexIdUtil.createVehicleSpatialIndexId(
+                    vehicle,
+                    feedProvider
+            );
+            spatialIndex.removeAll(Set.of(id));
         }
-
-        spatialIndex.removeAll(ids);
-        logger.info("Removed {} entries from spatial index", ids.size());
     }
 }

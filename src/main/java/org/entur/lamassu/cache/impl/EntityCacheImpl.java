@@ -2,11 +2,10 @@ package org.entur.lamassu.cache.impl;
 
 import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.model.entities.Entity;
-import org.redisson.api.CacheAsync;
+import org.redisson.api.RMapCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.cache.Cache;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -14,18 +13,14 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 abstract class EntityCacheImpl<T extends Entity> implements EntityCache<T> {
-    private final CacheAsync<String, T> cache;
-    private final Cache<String, T> syncCache;
+    RMapCache<String, T> cache;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    protected EntityCacheImpl(Cache<String, T> cache) {
-        this.syncCache = cache;
-        this.cache = cache.unwrap(CacheAsync.class);
+    protected EntityCacheImpl(RMapCache<String, T> cache) {
+        this.cache = cache;
     }
 
     @Override
@@ -35,10 +30,7 @@ abstract class EntityCacheImpl<T extends Entity> implements EntityCache<T> {
 
     @Override
     public List<T> getAll() {
-        return StreamSupport
-                .stream(syncCache.spliterator(), false)
-                .map(Cache.Entry::getValue)
-                .collect(Collectors.toList());
+        return new ArrayList<>(cache.values());
     }
 
     @Override
@@ -69,13 +61,13 @@ abstract class EntityCacheImpl<T extends Entity> implements EntityCache<T> {
     }
 
     @Override
-    public void updateAll(Map<String, T> entities) {
-        cache.putAllAsync(entities);
+    public void updateAll(Map<String, T> entities, int ttl, TimeUnit timeUnit) {
+        cache.putAll(entities, ttl, timeUnit);
     }
 
     @Override
     public void removeAll(Set<String> keys) {
-        cache.removeAllAsync(keys);
+        cache.fastRemoveAsync(String.valueOf(keys));
     }
 
     @Override

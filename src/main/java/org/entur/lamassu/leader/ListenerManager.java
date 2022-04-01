@@ -1,6 +1,6 @@
-package org.entur.lamassu.updater;
+package org.entur.lamassu.leader;
 
-import org.entur.lamassu.listener.CacheListener;
+import org.entur.lamassu.leader.listener.CacheListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;

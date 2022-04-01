@@ -16,8 +16,9 @@
  *
  */
 
-package org.entur.lamassu.updater.entityupdater;
+package org.entur.lamassu.leader.entityupdater;
 
+import org.entur.gbfs.GbfsDelivery;
 import org.entur.gbfs.v2_3.free_bike_status.GBFSBike;
 import org.entur.gbfs.v2_3.free_bike_status.GBFSFreeBikeStatus;
 import org.entur.gbfs.v2_3.system_information.GBFSSystemInformation;
@@ -33,6 +34,7 @@ import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.entities.VehicleType;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.entur.lamassu.util.CacheUtil;
 import org.entur.lamassu.util.SpatialIndexIdUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +45,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Component
@@ -74,20 +77,14 @@ public class VehiclesUpdater {
 
     public void addOrUpdateVehicles(
             FeedProvider feedProvider,
-            GBFSFreeBikeStatus freeBikeStatusFeed,
-            GBFSFreeBikeStatus oldFreeBikeStatusFeed,
-            GBFSSystemInformation systemInformationFeed,
-            GBFSSystemPricingPlans pricingPlansFeed,
-            GBFSVehicleTypes vehicleTypesFeed
+            GbfsDelivery delivery,
+            GbfsDelivery oldDelivery
     ) {
-        if (freeBikeStatusFeed == null) {
-            return;
-        }
-
-        if (freeBikeStatusFeed.getData() == null) {
-            logger.warn("freeBikeStatusFeed has no data! provider={} feed={}", feedProvider, freeBikeStatusFeed);
-            return;
-        }
+        GBFSFreeBikeStatus freeBikeStatusFeed = delivery.getFreeBikeStatus();
+        GBFSFreeBikeStatus oldFreeBikeStatusFeed = oldDelivery.getFreeBikeStatus();
+        GBFSSystemInformation systemInformationFeed = delivery.getSystemInformation();
+        GBFSSystemPricingPlans pricingPlansFeed = delivery.getSystemPricingPlans();
+        GBFSVehicleTypes vehicleTypesFeed = delivery.getVehicleTypes();
 
         var vehicleIds = freeBikeStatusFeed.getData().getBikes().stream()
                 .map(GBFSBike::getBikeId)
@@ -101,7 +98,7 @@ public class VehiclesUpdater {
 
             // Find vehicle ids in old feed not present in new feed
             vehicleIdsToRemove.removeAll(vehicleIds);
-            logger.debug("Found {} vehicleIds to remove from old free_bike_status feed: {}", vehicleIdsToRemove.size(), oldFreeBikeStatusFeed);
+            logger.trace("Found {} vehicleIds to remove from old free_bike_status feed: {}", vehicleIdsToRemove.size(), oldFreeBikeStatusFeed);
 
             // Add vehicle ids that are staged for removal to the set of vehicle ids that will be used to
             // fetch current vehicles from cache
@@ -110,7 +107,7 @@ public class VehiclesUpdater {
 
         if (vehicleIdsToRemove == null) {
             vehicleIdsToRemove = new HashSet<>(vehicleIds);
-            logger.info("Old free_bike_status feed was not available or had no data. As a workaround, removing all vehicles for provider {}", feedProvider.getSystemId());
+            logger.debug("Old free_bike_status feed was not available or had no data. As a workaround, removing all vehicles for provider {}", feedProvider.getSystemId());
         }
 
         var currentVehicles = vehicleCache.getAllAsMap(
@@ -119,28 +116,9 @@ public class VehiclesUpdater {
                         .collect(Collectors.toSet())
         );
 
-
         var pricingPlans = getPricingPlans(feedProvider, pricingPlansFeed);
-
-        if (pricingPlans.isEmpty()) {
-            logger.warn("no pricing plans provider={} feed={}", feedProvider, pricingPlansFeed);
-            return;
-        }
-
         var vehicleTypes = getVehicleTypes(feedProvider, vehicleTypesFeed, pricingPlans);
-
-        if (vehicleTypes.isEmpty() && !vehicleIds.isEmpty()) {
-            logger.warn("no vehicle types provider={} feed={}", feedProvider, vehicleTypesFeed);
-            return;
-        }
-
         var system = getSystem(feedProvider, systemInformationFeed);
-
-        if (system == null) {
-            logger.warn("no system information provider={} feed={}", feedProvider, systemInformationFeed);
-            return;
-        }
-
 
         var vehicles = freeBikeStatusFeed.getData().getBikes().stream()
                 .filter(new VehicleFilter(pricingPlans, vehicleTypes))
@@ -188,7 +166,9 @@ public class VehiclesUpdater {
 
         if (!vehicles.isEmpty()) {
             logger.debug("Adding/updating {} vehicles in vehicle cache", vehicles.size());
-            vehicleCache.updateAll(vehicles);
+            var lastUpdated = freeBikeStatusFeed.getLastUpdated();
+            var ttl = freeBikeStatusFeed.getTtl();
+            vehicleCache.updateAll(vehicles, CacheUtil.getTtl(lastUpdated, ttl, 300), TimeUnit.SECONDS);
         }
 
         if (!spatialIndexUpdateMap.isEmpty()) {
@@ -198,46 +178,16 @@ public class VehiclesUpdater {
     }
 
     private Map<String, VehicleType> getVehicleTypes(FeedProvider feedProvider, GBFSVehicleTypes vehicleTypesFeed, Map<String, PricingPlan> pricingPlans) {
-        if (vehicleTypesFeed == null) {
-            logger.warn("Missing vehicle types feed for provider {}", feedProvider);
-            return Map.of();
-        }
-
-        if (vehicleTypesFeed.getData() == null) {
-            logger.warn("Missing vehicle types data for provider={} feed={}", feedProvider, vehicleTypesFeed);
-            return Map.of();
-        }
-
         return vehicleTypesFeed.getData().getVehicleTypes().stream()
                 .map(vehicleType -> vehicleTypeMapper.mapVehicleType(vehicleType, new ArrayList<>(pricingPlans.values()), feedProvider.getLanguage()))
                 .collect(Collectors.toMap(VehicleType::getId, i -> i));
     }
 
     private org.entur.lamassu.model.entities.System getSystem(FeedProvider feedProvider, GBFSSystemInformation systemInformationFeed) {
-        if (systemInformationFeed == null) {
-            logger.warn("Missing system information feed for provider {}", feedProvider);
-            return null;
-        }
-
-        if (systemInformationFeed.getData() == null) {
-            logger.warn("Missing system information data for provider={} feed={}", feedProvider, systemInformationFeed);
-            return null;
-        }
-
         return systemMapper.mapSystem(systemInformationFeed.getData(), feedProvider);
     }
 
     private Map<String, PricingPlan> getPricingPlans(FeedProvider feedProvider, GBFSSystemPricingPlans pricingPlansFeed) {
-        if (pricingPlansFeed == null) {
-            logger.warn("Missing pricing plans feed for provider {}", feedProvider);
-            return Map.of();
-        }
-
-        if (pricingPlansFeed.getData() == null) {
-            logger.warn("Missing pricing plans data for provider={} feed={}", feedProvider, pricingPlansFeed);
-            return Map.of();
-        }
-
         return pricingPlansFeed.getData().getPlans().stream()
                 .map(pricingPlan -> pricingPlanMapper.mapPricingPlan(pricingPlan, feedProvider.getLanguage()))
                 .collect(Collectors.toMap(PricingPlan::getId, i -> i));

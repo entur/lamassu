@@ -16,16 +16,9 @@
  *
  */
 
-package org.entur.lamassu.cache.impl;
+package org.entur.lamassu.leader.listener;
 
-import org.entur.lamassu.cache.StationCache;
-import org.entur.lamassu.model.entities.Station;
-import org.redisson.api.RMapCache;
-import org.springframework.stereotype.Component;
-
-@Component
-public class StationCacheImpl extends EntityCacheImpl<Station> implements StationCache {
-    protected StationCacheImpl(RMapCache<String, Station> cache) {
-        super(cache);
-    }
+public interface CacheListener {
+    void startListening();
+    void stopListening();
 }

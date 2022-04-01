@@ -1,4 +1,4 @@
-package org.entur.lamassu.updater;
+package org.entur.lamassu.leader;
 
 import org.entur.lamassu.service.GeoSearchService;
 import org.slf4j.Logger;
@@ -9,16 +9,17 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 
 @Component
 @Profile("leader")
-public class ClusterSingletonService {
+public class LeaderSingletonService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final FeedUpdater feedUpdater;
     private final ListenerManager listenerManager;
     private final GeoSearchService geoSearchService;
 
-    public ClusterSingletonService(@Autowired FeedUpdater feedUpdater, @Autowired ListenerManager listenerManager, @Autowired GeoSearchService geoSearchService) {
+    public LeaderSingletonService(@Autowired FeedUpdater feedUpdater, @Autowired ListenerManager listenerManager, @Autowired GeoSearchService geoSearchService) {
         this.feedUpdater = feedUpdater;
         this.listenerManager = listenerManager;
         this.geoSearchService = geoSearchService;
@@ -27,8 +28,15 @@ public class ClusterSingletonService {
     @PostConstruct
     public void init() {
         logger.info("Initializing leader");
-        feedUpdater.start();
         listenerManager.start();
+        feedUpdater.start();
+    }
+
+    @PreDestroy
+    public void shutdown() {
+        logger.info("Shutting down leader");
+        feedUpdater.stop();
+        listenerManager.stop();
     }
 
     @Scheduled(fixedRateString = "${org.entur.lamassu.feedupdateinterval:30000}")

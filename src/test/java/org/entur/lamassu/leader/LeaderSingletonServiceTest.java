@@ -1,4 +1,4 @@
-package org.entur.lamassu.updater;
+package org.entur.lamassu.leader;
 
 import org.entur.lamassu.service.GeoSearchService;
 import org.junit.Test;
@@ -6,7 +6,7 @@ import org.junit.Test;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class ClusterSingletonServiceTest {
+public class LeaderSingletonServiceTest {
 
     FeedUpdater mockedFeedUpdater = mock(FeedUpdater.class);
     ListenerManager mockedListenerManager = mock(ListenerManager.class);
@@ -14,7 +14,7 @@ public class ClusterSingletonServiceTest {
 
     @Test
     public void testStartsScheduling() {
-        var service = new ClusterSingletonService(mockedFeedUpdater, mockedListenerManager, mockedGeoSearchService);
+        var service = new LeaderSingletonService(mockedFeedUpdater, mockedListenerManager, mockedGeoSearchService);
         service.init();
         verify(mockedFeedUpdater).start();
     }

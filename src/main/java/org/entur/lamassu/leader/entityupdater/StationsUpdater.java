@@ -16,8 +16,9 @@
  *
  */
 
-package org.entur.lamassu.updater.entityupdater;
+package org.entur.lamassu.leader.entityupdater;
 
+import org.entur.gbfs.GbfsDelivery;
 import org.entur.gbfs.v2_3.station_information.GBFSData;
 import org.entur.gbfs.v2_3.station_information.GBFSStationInformation;
 import org.entur.gbfs.v2_3.station_status.GBFSStation;
@@ -34,6 +35,7 @@ import org.entur.lamassu.mapper.entitymapper.SystemMapper;
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.entur.lamassu.util.CacheUtil;
 import org.entur.lamassu.util.SpatialIndexIdUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +47,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Component
@@ -71,34 +74,18 @@ public class StationsUpdater {
         this.stationMapper = stationMapper;
     }
 
-    public void addOrUpdateStation(
+    public void addOrUpdateStations(
             FeedProvider feedProvider,
-            GBFSStationStatus stationStatusFeed,
-            GBFSStationStatus oldStationStatusFeed,
-            GBFSStationInformation stationInformationFeed,
-            GBFSSystemInformation systemInformationFeed,
-            GBFSSystemPricingPlans pricingPlansFeed,
-            GBFSVehicleTypes vehicleTypesFeed,
-            GBFSSystemRegions systemRegionsFeed
+            GbfsDelivery delivery,
+            GbfsDelivery oldDelivery
     ) {
-        if (stationStatusFeed == null) {
-            return;
-        }
-
-        if (stationInformationFeed.getData() == null) {
-            logger.warn("stationInformationFeed has no data! provider={} feed={}", feedProvider, stationInformationFeed);
-            return;
-        }
-
-        if (stationStatusFeed.getData() == null) {
-            logger.warn("stationStatusFeed has no data! provider={} feed={}", feedProvider, stationStatusFeed);
-            return;
-        }
-
-        if (vehicleTypesFeed.getData() == null) {
-            logger.warn("vehicleTypesFeed has no data! provider={} feed={}", feedProvider, vehicleTypesFeed);
-            return;
-        }
+        GBFSStationStatus stationStatusFeed = delivery.getStationStatus();
+        GBFSStationStatus oldStationStatusFeed = oldDelivery.getStationStatus();
+        GBFSStationInformation stationInformationFeed = delivery.getStationInformation();
+        GBFSSystemInformation systemInformationFeed = delivery.getSystemInformation();
+        GBFSSystemPricingPlans pricingPlansFeed = delivery.getSystemPricingPlans();
+        GBFSVehicleTypes vehicleTypesFeed = delivery.getVehicleTypes();
+        GBFSSystemRegions systemRegionsFeed = delivery.getSystemRegions();
 
         var stationIds = stationStatusFeed.getData().getStations().stream()
                 .map(GBFSStation::getStationId)
@@ -119,24 +106,13 @@ public class StationsUpdater {
 
         if (stationIdsToRemove == null) {
             stationIdsToRemove = new HashSet<>(stationIds);
-            logger.info("Old station_status feed was not available or had no data. As a workaround, removing all stations for provider {}", feedProvider.getSystemId());
+            logger.debug("Old station_status feed was not available or had no data. As a workaround, removing all stations for provider {}", feedProvider.getSystemId());
         }
 
         var originalStations = stationCache.getAllAsMap(stationIds);
 
         var system = getSystem(feedProvider, systemInformationFeed);
-
-        if (system == null) {
-            logger.warn("no system information provider={} feed={}", feedProvider, systemInformationFeed);
-            return;
-        }
-
         var pricingPlans = getPricingPlans(feedProvider, pricingPlansFeed);
-
-        if (pricingPlans.isEmpty()) {
-            logger.warn("no pricing plans provider={} feed={}", feedProvider, pricingPlansFeed);
-            return;
-        }
 
         var stationInfo = Optional.ofNullable(stationInformationFeed)
                 .map(GBFSStationInformation::getData)
@@ -192,7 +168,9 @@ public class StationsUpdater {
 
         if (!stations.isEmpty()) {
             logger.debug("Adding/updating {} stations in station cache", stations.size());
-            stationCache.updateAll(stations);
+            var lastUpdated = stationStatusFeed.getLastUpdated();
+            var ttl = stationStatusFeed.getTtl();
+            stationCache.updateAll(stations, CacheUtil.getTtl(lastUpdated, ttl, 300), TimeUnit.SECONDS);
         }
 
         if (!spatialIndexUpdateMap.isEmpty()) {
@@ -202,32 +180,12 @@ public class StationsUpdater {
     }
 
     private List<PricingPlan> getPricingPlans(FeedProvider feedProvider, GBFSSystemPricingPlans pricingPlansFeed) {
-        if (pricingPlansFeed == null) {
-            logger.warn("Missing pricing plans feed for provider {}", feedProvider);
-            return List.of();
-        }
-
-        if (pricingPlansFeed.getData() == null) {
-            logger.warn("Missing pricing plans data for provider={} feed={}", feedProvider, pricingPlansFeed);
-            return List.of();
-        }
-
         return pricingPlansFeed.getData().getPlans().stream()
                 .map(pricingPlan -> pricingPlanMapper.mapPricingPlan(pricingPlan, feedProvider.getLanguage()))
                 .collect(Collectors.toList());
     }
 
     private org.entur.lamassu.model.entities.System getSystem(FeedProvider feedProvider, GBFSSystemInformation systemInformationFeed) {
-        if (systemInformationFeed == null) {
-            logger.warn("Missing system information feed for provider {}", feedProvider);
-            return null;
-        }
-
-        if (systemInformationFeed.getData() == null) {
-            logger.warn("Missing system information data for provider={} feed={}", feedProvider, systemInformationFeed);
-            return null;
-        }
-
         return systemMapper.mapSystem(systemInformationFeed.getData(), feedProvider);
     }
 }

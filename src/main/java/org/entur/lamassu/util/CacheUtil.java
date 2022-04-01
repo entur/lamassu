@@ -16,16 +16,15 @@
  *
  */
 
-package org.entur.lamassu.cache.impl;
+package org.entur.lamassu.util;
 
-import org.entur.lamassu.cache.StationCache;
-import org.entur.lamassu.model.entities.Station;
-import org.redisson.api.RMapCache;
-import org.springframework.stereotype.Component;
+import java.time.Instant;
 
-@Component
-public class StationCacheImpl extends EntityCacheImpl<Station> implements StationCache {
-    protected StationCacheImpl(RMapCache<String, Station> cache) {
-        super(cache);
+public class CacheUtil {
+    private CacheUtil() {}
+
+    public static int getTtl(int lastUpdated, int ttl, int minimumTtl) {
+        var now = (int) Instant.now().getEpochSecond();
+        return Math.max(lastUpdated + ttl - now, minimumTtl);
     }
 }

@@ -16,16 +16,20 @@
  *
  */
 
-package org.entur.lamassu.updater.feedcachesupdater;
+package org.entur.lamassu.leader.feedcachesupdater;
 
 import org.entur.gbfs.GbfsDelivery;
 import org.entur.gbfs.v2_3.gbfs.GBFSFeedName;
 import org.entur.lamassu.cache.GBFSFeedCache;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.entur.lamassu.util.CacheUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class FeedCachesUpdater {
@@ -60,19 +64,33 @@ public class FeedCachesUpdater {
 
     private <T> void updateFeedCache(FeedProvider feedProvider, GBFSFeedName feedName, T feed) {
         if (feed != null) {
-            logger.info("updating feed {} for provider {}", feedName, feedProvider.getSystemId());
+            logger.debug("updating feed {} for provider {}", feedName, feedProvider.getSystemId());
             logger.trace("updating feed {} for provider {} data {}", feedName, feedProvider.getSystemId(), feed);
-            feedCache.update(feedName, feedProvider, feed);
+            var ttl = getTtl(feedName.implementingClass(), feed, 3600);
+            feedCache.update(feedName, feedProvider, feed, ttl, TimeUnit.SECONDS);
         } else {
             logger.debug("no feed {} found for provider {}", feedName, feedProvider.getSystemId());
         }
     }
 
+    private <T> int getTtl(Class<?> implementingClass, T feed, int minimumTtl) {
+        try {
+            Integer lastUpdated = (Integer) implementingClass.getMethod("getLastUpdated").invoke(feed);
+            Integer ttl = (Integer) implementingClass.getMethod("getTtl").invoke(feed);
+            return CacheUtil.getTtl(lastUpdated, ttl, minimumTtl);
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            logger.warn("Unable to determine ttl for feed, using default - {}", feed);
+            return minimumTtl;
+        }
+    }
+
+
     private <T> T getAndUpdateFeedCache(FeedProvider feedProvider, GBFSFeedName feedName, T feed) {
         if (feed != null) {
-            logger.info("updating feed {} for provider {}", feedName, feedProvider.getSystemId());
+            logger.debug("updating feed {} for provider {}", feedName, feedProvider.getSystemId());
             logger.trace("updating feed {} for provider {} data {}", feedName, feedProvider.getSystemId(), feed);
-            return feedCache.getAndUpdate(feedName, feedProvider, feed);
+            var ttl = getTtl(feedName.implementingClass(), feed, 3600);
+            return feedCache.getAndUpdate(feedName, feedProvider, feed, ttl, TimeUnit.SECONDS);
         } else {
             logger.debug("no feed {} found for provider {}", feedName, feedProvider.getSystemId());
             return null;
