@@ -9,6 +9,13 @@
         id
         lat
         lon
+        currentRangeMeters
+        currentFuelPercent
+        availableUntil
+        rentalUris {
+            android
+            ios
+        }
         vehicleType {
             formFactor
             propulsionType
@@ -25,6 +32,15 @@
             make
             model
             color
+            ecoLabel {
+                countryCode
+                ecoSticker
+            }
+            vehicleAssets {
+                iconUrl
+                iconUrlDark
+                iconLastModified
+            }
         }
         pricingPlan {
             price
@@ -38,6 +54,15 @@
                     value
                 }
             }
+            operator {
+                id
+                name {
+                    translation {
+                        value
+                        language
+                    }
+                }
+            }
             rentalApps {
                 android {
                     storeUri
@@ -48,6 +73,13 @@
                     discoveryUri
                 }
             }
+            brandAssets {
+                brandImageUrl
+                brandImageUrlDark
+                brandLastModified
+                brandTermsUrl
+            }
         }
+
     }
 }

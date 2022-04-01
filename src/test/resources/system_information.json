@@ -17,6 +17,13 @@
         "store_uri": "https://apps.apple.com/app/apple-store/id123456789",
         "discovery_uri": "com.testrental.ios://"
       }
+    },
+    "brand_assets": {
+      "brand_last_modified": "2021-06-15",
+      "brand_image_url": "https://www.example.com/assets/brand_image.svg",
+      "brand_image_url_dark": "https://www.example.com/assets/brand_image_dark.svg",
+      "color": "#C2D32C",
+      "brand_terms_url": "https://www.example.com/assets/brand.pdf"
     }
   }
 }

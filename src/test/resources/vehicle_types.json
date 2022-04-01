@@ -19,8 +19,22 @@
         "wheel_count": 2,
         "max_permitted_speed": 25,
         "rated_power": 500,
-        "return_constraint": "free_floating"
-
+        "return_constraint": "free_floating",
+        "eco_label": [
+          {
+            "country_code": "FR",
+            "eco_sticker": "critair_1"
+          },
+          {
+            "country_code": "DE",
+            "eco_sticker": "euro_2"
+          }
+        ],
+        "vehicle_assets": {
+          "icon_url": "https://www.example.com/assets/icon_escooter.svg",
+          "icon_url_dark": "https://www.example.com/assets/icon_escooter_dark.svg",
+          "icon_last_modified": "2021-06-15"
+        }
       },
       {
         "vehicle_type_id": "TST:VehicleType:CityBike",
@@ -35,7 +49,17 @@
         "vehicle_accessories": ["manual"],
         "g_CO2_km": 0,
         "wheel_count": 2,
-        "return_constraint": "any_station"
+        "return_constraint": "any_station",
+        "eco_label": [
+          {
+            "country_code": "FR",
+            "eco_sticker": "critair_1"
+          },
+          {
+            "country_code": "DE",
+            "eco_sticker": "euro_2"
+          }
+        ]
       }
     ]
   }

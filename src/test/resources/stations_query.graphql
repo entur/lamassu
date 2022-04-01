@@ -12,6 +12,10 @@
                 value
             }
         }
+        region {
+            id
+            name
+        }
         lat
         lon
         address
@@ -37,6 +41,18 @@
                 make
                 model
                 color
+            }
+            count
+        }
+        vehicleTypeCapacity {
+            vehicleType {
+                id
+            }
+            count
+        }
+        vehicleDocksAvailable {
+            vehicleTypes {
+                id
             }
             count
         }
