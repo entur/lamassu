@@ -21,11 +21,15 @@ package org.entur.lamassu.mapper.feedmapper;
 import org.entur.gbfs.v2_3.system_information.GBFSData;
 import org.entur.gbfs.v2_3.system_information.GBFSSystemInformation;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class SystemInformationFeedMapper extends AbstractFeedMapper<GBFSSystemInformation> {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Value("${org.entur.lamassu.targetGbfsVersion:2.2}")
     private String targetGbfsVersion;
 
@@ -34,6 +38,11 @@ public class SystemInformationFeedMapper extends AbstractFeedMapper<GBFSSystemIn
 
     @Override
     public GBFSSystemInformation map(GBFSSystemInformation source, FeedProvider feedProvider) {
+        if (source == null) {
+            logger.warn("System information feed was null for provider={}", feedProvider);
+            return null;
+        }
+
         var mapped = new GBFSSystemInformation();
         mapped.setVersion(targetGbfsVersion);
         mapped.setLastUpdated(source.getLastUpdated());
