@@ -32,6 +32,7 @@ import org.redisson.api.RMapCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -55,6 +56,9 @@ public class FeedUpdater {
     private ForkJoinPool updaterThreadPool;
 
     private final RMapCache<String, ValidationResult> validationResultCache;
+
+    @Value("${org.entur.lamassu.enableValidation:false}")
+    private boolean enableValidation;
 
     @Autowired
     public FeedUpdater(
@@ -98,7 +102,7 @@ public class FeedUpdater {
         if (feedProvider.getAuthentication() != null) {
             options.setRequestAuthenticator(feedProvider.getAuthentication().getRequestAuthenticator());
         }
-        options.setEnableValidation(true);
+        options.setEnableValidation(enableValidation);
         subscriptionManager.subscribe(options, delivery -> receiveUpdate(feedProvider, delivery));
     }
 
@@ -107,7 +111,9 @@ public class FeedUpdater {
             logger.warn("Validation errors in feed update for system {}", feedProvider.getSystemId());
         }
 
-        validationResultCache.put(feedProvider.getSystemId(), delivery.getValidationResult());
+        if (enableValidation) {
+            validationResultCache.put(feedProvider.getSystemId(), delivery.getValidationResult());
+        }
 
         var mappedDelivery = gbfsDeliveryMapper.mapGbfsDelivery(delivery, feedProvider);
         var oldDelivery =  feedCachesUpdater.updateFeedCaches(feedProvider, mappedDelivery);
