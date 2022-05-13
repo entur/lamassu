@@ -10,4 +10,5 @@ public class LamassuApplication {
         SpringApplication.run(LamassuApplication.class, args);
     }
 
+
 }

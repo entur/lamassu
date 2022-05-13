@@ -112,7 +112,7 @@ public class StationsUpdater {
         var originalStations = stationCache.getAllAsMap(stationIds);
 
         var system = getSystem(feedProvider, systemInformationFeed);
-        var pricingPlans = getPricingPlans(feedProvider, pricingPlansFeed);
+        var pricingPlans = getPricingPlans(pricingPlansFeed, system.getLanguage());
 
         var stationInfo = Optional.ofNullable(stationInformationFeed)
                 .map(GBFSStationInformation::getData)
@@ -137,7 +137,7 @@ public class StationsUpdater {
                         station,
                         vehicleTypesFeed,
                         systemRegionsFeed,
-                        feedProvider.getLanguage())
+                        system.getLanguage())
                 ).collect(Collectors.toMap(Station::getId, s->s));
 
         Set<String> spatialIndicesToRemove = new java.util.HashSet<>(Set.of());
@@ -179,9 +179,9 @@ public class StationsUpdater {
         }
     }
 
-    private List<PricingPlan> getPricingPlans(FeedProvider feedProvider, GBFSSystemPricingPlans pricingPlansFeed) {
+    private List<PricingPlan> getPricingPlans(GBFSSystemPricingPlans pricingPlansFeed, String language) {
         return pricingPlansFeed.getData().getPlans().stream()
-                .map(pricingPlan -> pricingPlanMapper.mapPricingPlan(pricingPlan, feedProvider.getLanguage()))
+                .map(pricingPlan -> pricingPlanMapper.mapPricingPlan(pricingPlan, language))
                 .collect(Collectors.toList());
     }
 

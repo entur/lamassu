@@ -116,9 +116,10 @@ public class VehiclesUpdater {
                         .collect(Collectors.toSet())
         );
 
-        var pricingPlans = getPricingPlans(feedProvider, pricingPlansFeed);
-        var vehicleTypes = getVehicleTypes(feedProvider, vehicleTypesFeed, pricingPlans);
         var system = getSystem(feedProvider, systemInformationFeed);
+        var pricingPlans = getPricingPlans(pricingPlansFeed, system.getLanguage());
+        var vehicleTypes = getVehicleTypes(vehicleTypesFeed, pricingPlans, system.getLanguage());
+
 
         var vehicles = freeBikeStatusFeed.getData().getBikes().stream()
                 .filter(new VehicleFilter(pricingPlans, vehicleTypes))
@@ -177,9 +178,9 @@ public class VehiclesUpdater {
         }
     }
 
-    private Map<String, VehicleType> getVehicleTypes(FeedProvider feedProvider, GBFSVehicleTypes vehicleTypesFeed, Map<String, PricingPlan> pricingPlans) {
+    private Map<String, VehicleType> getVehicleTypes(GBFSVehicleTypes vehicleTypesFeed, Map<String, PricingPlan> pricingPlans, String language) {
         return vehicleTypesFeed.getData().getVehicleTypes().stream()
-                .map(vehicleType -> vehicleTypeMapper.mapVehicleType(vehicleType, new ArrayList<>(pricingPlans.values()), feedProvider.getLanguage()))
+                .map(vehicleType -> vehicleTypeMapper.mapVehicleType(vehicleType, new ArrayList<>(pricingPlans.values()), language))
                 .collect(Collectors.toMap(VehicleType::getId, i -> i));
     }
 
@@ -187,9 +188,9 @@ public class VehiclesUpdater {
         return systemMapper.mapSystem(systemInformationFeed.getData(), feedProvider);
     }
 
-    private Map<String, PricingPlan> getPricingPlans(FeedProvider feedProvider, GBFSSystemPricingPlans pricingPlansFeed) {
+    private Map<String, PricingPlan> getPricingPlans(GBFSSystemPricingPlans pricingPlansFeed, String language) {
         return pricingPlansFeed.getData().getPlans().stream()
-                .map(pricingPlan -> pricingPlanMapper.mapPricingPlan(pricingPlan, feedProvider.getLanguage()))
+                .map(pricingPlan -> pricingPlanMapper.mapPricingPlan(pricingPlan, language))
                 .collect(Collectors.toMap(PricingPlan::getId, i -> i));
     }
 
