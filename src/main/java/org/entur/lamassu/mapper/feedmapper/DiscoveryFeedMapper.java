@@ -38,9 +38,6 @@ public class DiscoveryFeedMapper extends AbstractFeedMapper<GBFS> {
     @Value("${org.entur.lamassu.baseUrl}")
     private String baseUrl;
 
-    @Value("${org.entur.lamassu.targetLanguageCode:nb}")
-    private String targetLanguageCode;
-
     @Value("${org.entur.lamassu.targetGbfsVersion:2.2}")
     private String targetGbfsVersion;
 
@@ -99,7 +96,7 @@ public class DiscoveryFeedMapper extends AbstractFeedMapper<GBFS> {
         }
 
         mappedData.setFeeds(feeds);
-        dataWrapper.put(targetLanguageCode, mappedData);
+        dataWrapper.put(sourceLanguageCode, mappedData);
         mapped.setFeedsData(dataWrapper);
         return mapped;
     }

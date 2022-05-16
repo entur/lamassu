@@ -33,9 +33,6 @@ public class SystemInformationFeedMapper extends AbstractFeedMapper<GBFSSystemIn
     @Value("${org.entur.lamassu.targetGbfsVersion:2.2}")
     private String targetGbfsVersion;
 
-    @Value("${org.entur.lamassu.targetLanguageCode:nb}")
-    private String targetLanguageCode;
-
     @Override
     public GBFSSystemInformation map(GBFSSystemInformation source, FeedProvider feedProvider) {
         if (source == null) {
@@ -58,7 +55,7 @@ public class SystemInformationFeedMapper extends AbstractFeedMapper<GBFSSystemIn
 
         var mapped = new GBFSData();
         mapped.setSystemId(feedProvider.getSystemId());
-        mapped.setLanguage(targetLanguageCode);
+        mapped.setLanguage(source.getLanguage());
         mapped.setName(source.getName());
         mapped.setShortName(source.getShortName());
         mapped.setOperator(source.getOperator() != null && !source.getOperator().isBlank() ? source.getOperator() : feedProvider.getOperatorName());

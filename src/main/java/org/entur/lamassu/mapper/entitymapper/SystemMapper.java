@@ -42,12 +42,12 @@ public class SystemMapper {
         this.translationMapper = translationMapper;
     }
 
-    private Operator mapOperator(String operatorName, FeedProvider feedProvider) {
+    private Operator mapOperator(String operatorName, FeedProvider feedProvider, String language) {
         var operator = new Operator();
         operator.setId(feedProvider.getOperatorId());
         operator.setName(
                 translationMapper.mapSingleTranslation(
-                        feedProvider.getLanguage(),
+                        language,
                         operatorName != null ? operatorName : feedProvider.getOperatorName()
                 )
         );
@@ -58,9 +58,9 @@ public class SystemMapper {
         var system =  new System();
         system.setId(systemInformation.getSystemId());
         system.setLanguage(systemInformation.getLanguage());
-        system.setName(translationMapper.mapSingleTranslation(feedProvider.getLanguage(), systemInformation.getName()));
-        system.setShortName(translationMapper.mapSingleTranslation(feedProvider.getLanguage(), systemInformation.getShortName()));
-        system.setOperator(mapOperator(systemInformation.getOperator(), feedProvider));
+        system.setName(translationMapper.mapSingleTranslation(systemInformation.getLanguage(), systemInformation.getName()));
+        system.setShortName(translationMapper.mapSingleTranslation(systemInformation.getLanguage(), systemInformation.getShortName()));
+        system.setOperator(mapOperator(systemInformation.getOperator(), feedProvider, systemInformation.getLanguage()));
         system.setUrl(systemInformation.getUrl());
         system.setPurchaseUrl(systemInformation.getPurchaseUrl());
         system.setStartDate(systemInformation.getStartDate());

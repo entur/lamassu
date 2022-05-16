@@ -42,7 +42,6 @@ class DiscoveryFeedMapperTest {
     void prepare() {
         mapper = new DiscoveryFeedMapper();
         ReflectionTestUtils.setField(mapper, "targetGbfsVersion", "2.2");
-        ReflectionTestUtils.setField(mapper, "targetLanguageCode", "nb");
     }
 
     @Test
@@ -50,30 +49,6 @@ class DiscoveryFeedMapperTest {
         var gbfs = new GBFS();
         gbfs.setFeedsData(null);
         Assertions.assertNull(mapper.map(gbfs, getTestProvider()));
-    }
-
-    @Test
-    void testMapFeedWithLanguageCodeFallback() {
-        var feedProvider = getTestProvider();
-        var gbfs = new GBFS();
-        var feeds = new GBFSFeeds();
-        var feed = new GBFSFeed();
-        feed.setName(GBFSFeedName.GBFS);
-        feed.setUrl(URI.create("http://test.com/gbfs"));
-        feeds.setFeeds(List.of(
-                feed
-        ));
-
-        gbfs.setFeedsData(Map.of(
-                "sv", feeds
-        ));
-
-        var mapped = mapper.map(gbfs, feedProvider);
-
-        Assertions.assertEquals(
-                GBFSFeedName.GBFS,
-                mapped.getFeedsData().get("nb").getFeeds().get(0).getName()
-        );
     }
 
     @Test
@@ -117,11 +92,11 @@ class DiscoveryFeedMapperTest {
         var mapped = mapper.map(gbfs, feedProvider);
 
         Assertions.assertTrue(
-                mapped.getFeedsData().get("nb").getFeeds().stream().anyMatch(f -> f.getName().equals(GBFSFeedName.VehicleTypes))
+                mapped.getFeedsData().get("en").getFeeds().stream().anyMatch(f -> f.getName().equals(GBFSFeedName.VehicleTypes))
         );
 
         Assertions.assertTrue(
-                mapped.getFeedsData().get("nb").getFeeds().stream().anyMatch(f -> f.getName().equals(GBFSFeedName.SystemPricingPlans))
+                mapped.getFeedsData().get("en").getFeeds().stream().anyMatch(f -> f.getName().equals(GBFSFeedName.SystemPricingPlans))
         );
     }
 
