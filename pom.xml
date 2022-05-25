@@ -17,7 +17,7 @@
 
     <properties>
         <graphql-starter.version>11.1.0</graphql-starter.version>
-        <entur.helpers.version>1.0.71</entur.helpers.version>
+        <entur.helpers.version>1.0.73</entur.helpers.version>
         <redisson.version>3.17.2</redisson.version>
         <embedded-redis.version>0.8.2</embedded-redis.version>
         <okhttp.version>4.9.3</okhttp.version>
