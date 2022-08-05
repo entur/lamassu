@@ -5,7 +5,6 @@ import org.entur.lamassu.model.entities.GeofencingZones;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.redisson.Redisson;
-import org.redisson.api.MapOptions;
 import org.redisson.api.RBucket;
 import org.redisson.api.RGeo;
 import org.redisson.api.RMapCache;

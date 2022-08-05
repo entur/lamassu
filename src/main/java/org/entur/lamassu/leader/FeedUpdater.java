@@ -23,10 +23,10 @@ import org.entur.gbfs.GbfsSubscriptionManager;
 import org.entur.gbfs.GbfsSubscriptionOptions;
 import org.entur.gbfs.validation.model.ValidationResult;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
-import org.entur.lamassu.mapper.feedmapper.GbfsDeliveryMapper;
-import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.leader.entityupdater.EntityCachesUpdater;
 import org.entur.lamassu.leader.feedcachesupdater.FeedCachesUpdater;
+import org.entur.lamassu.mapper.feedmapper.GbfsDeliveryMapper;
+import org.entur.lamassu.model.provider.FeedProvider;
 import org.redisson.api.RBucket;
 import org.redisson.api.RMapCache;
 import org.slf4j.Logger;
@@ -37,10 +37,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
 
