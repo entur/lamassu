@@ -37,7 +37,12 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.TimeUnit;
 
 @Component
 @Profile("leader")
@@ -103,7 +108,14 @@ public class FeedUpdater {
             options.setRequestAuthenticator(feedProvider.getAuthentication().getRequestAuthenticator());
         }
         options.setEnableValidation(enableValidation);
-        subscriptionManager.subscribe(options, delivery -> receiveUpdate(feedProvider, delivery));
+        String id = subscriptionManager.subscribe(options, delivery -> receiveUpdate(feedProvider, delivery));
+
+        if (id == null) {
+            logger.warn("Failed to setup subscription, trying again in 5 seconds - systemId={}", feedProvider.getSystemId());
+            CompletableFuture.delayedExecutor(5, TimeUnit.SECONDS).execute(() -> updaterThreadPool.execute(() -> createSubscription(feedProvider)));
+        } else {
+            logger.info("Setup subscription complete systemId={}", feedProvider.getSystemId());
+        }
     }
 
     private void receiveUpdate(FeedProvider feedProvider, GbfsDelivery delivery) {
