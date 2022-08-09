@@ -23,10 +23,10 @@ import org.entur.gbfs.GbfsSubscriptionManager;
 import org.entur.gbfs.GbfsSubscriptionOptions;
 import org.entur.gbfs.validation.model.ValidationResult;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
-import org.entur.lamassu.mapper.feedmapper.GbfsDeliveryMapper;
-import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.leader.entityupdater.EntityCachesUpdater;
 import org.entur.lamassu.leader.feedcachesupdater.FeedCachesUpdater;
+import org.entur.lamassu.mapper.feedmapper.GbfsDeliveryMapper;
+import org.entur.lamassu.model.provider.FeedProvider;
 import org.redisson.api.RBucket;
 import org.redisson.api.RMapCache;
 import org.slf4j.Logger;
@@ -37,7 +37,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.TimeUnit;
 
 @Component
 @Profile("leader")
@@ -103,7 +105,14 @@ public class FeedUpdater {
             options.setRequestAuthenticator(feedProvider.getAuthentication().getRequestAuthenticator());
         }
         options.setEnableValidation(enableValidation);
-        subscriptionManager.subscribe(options, delivery -> receiveUpdate(feedProvider, delivery));
+        String id = subscriptionManager.subscribe(options, delivery -> receiveUpdate(feedProvider, delivery));
+
+        if (id == null) {
+            logger.warn("Failed to setup subscription, trying again in 5 seconds - systemId={}", feedProvider.getSystemId());
+            CompletableFuture.delayedExecutor(5, TimeUnit.SECONDS).execute(() -> updaterThreadPool.execute(() -> createSubscription(feedProvider)));
+        } else {
+            logger.info("Setup subscription complete systemId={}", feedProvider.getSystemId());
+        }
     }
 
     private void receiveUpdate(FeedProvider feedProvider, GbfsDelivery delivery) {

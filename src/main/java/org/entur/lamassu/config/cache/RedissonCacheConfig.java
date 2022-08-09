@@ -78,6 +78,7 @@ public class RedissonCacheConfig {
     @Bean(destroyMethod = "shutdown")
     @Profile("!test")
     public RedissonClient redissonClient(Config redissonConfig) {
+
         return Redisson.create(redissonConfig);
     }
 
