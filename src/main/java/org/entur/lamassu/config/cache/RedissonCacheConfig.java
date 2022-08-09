@@ -13,10 +13,11 @@ import org.redisson.codec.Kryo5Codec;
 import org.redisson.config.Config;
 import org.redisson.spring.data.connection.RedissonConnectionFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+
+import java.util.Set;
 
 @Configuration
 public class RedissonCacheConfig {
@@ -34,20 +35,39 @@ public class RedissonCacheConfig {
 
     private final Config redissonConfig;
 
-    public RedissonCacheConfig(RedisProperties redisProperties) {
+    public RedissonCacheConfig(
+            @Value("${org.entur.lamassu.redis.master.host}") String masterHost,
+            @Value("${org.entur.lamassu.redis.master.port}") String masterPort,
+            @Value("${org.entur.lamassu.redis.slave.enabled:false}") boolean slaveEnabled,
+            @Value("${org.entur.lamassu.redis.slave.host:na}") String slaveHost,
+            @Value("${org.entur.lamassu.redis.slave.port:na}") String slavePort
+    ) {
         redissonConfig = new Config();
 
         var codec = new Kryo5Codec(this.getClass().getClassLoader());
 
         redissonConfig.setCodec(codec);
 
-        var address = String.format(
+        var masterAddress = String.format(
                 "redis://%s:%s",
-                redisProperties.getHost(),
-                redisProperties.getPort()
+                masterHost,
+                masterPort
         );
-        redissonConfig.useSingleServer()
-                .setAddress(address);
+
+        if (slaveEnabled) {
+            var slaveAddress = String.format(
+                    "redis://%s:%s",
+                    slaveHost,
+                    slavePort
+            );
+
+            redissonConfig.useMasterSlaveServers()
+                    .setMasterAddress(masterAddress)
+                    .setSlaveAddresses(Set.of(slaveAddress));
+        } else {
+            redissonConfig.useSingleServer()
+                    .setAddress(masterAddress);
+        }
     }
 
     @Bean
