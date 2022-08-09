@@ -1,9 +1,3 @@
 {
-  "extends": ["github>entur/ror-renovate-config"],
-  "packageRules": [
-    {
-      "matchPackageNames": ["org.redisson:redisson", "org.redisson:redisson-spring-data-23", "org.redisson:redisson-spring-boot-starter"],
-      "allowedVersions": "<=3.17.3"
-    }
-  ]
+  "extends": ["github>entur/ror-renovate-config"]
 }
