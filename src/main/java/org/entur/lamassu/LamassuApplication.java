@@ -16,7 +16,7 @@
  *
  */
 
-package org.entur.lamassu.util;
+package org.entur.lamassu;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
