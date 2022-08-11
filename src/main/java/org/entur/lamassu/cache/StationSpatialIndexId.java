@@ -42,4 +42,12 @@ public class StationSpatialIndexId extends AbstractSpatialIndexId implements Spa
     public void setPropulsionTypes(List<PropulsionType> propulsionTypes) {
         this.propulsionTypes = propulsionTypes;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AbstractSpatialIndexId that = (AbstractSpatialIndexId) o;
+        return getId().equals(that.getId());
+    }
 }

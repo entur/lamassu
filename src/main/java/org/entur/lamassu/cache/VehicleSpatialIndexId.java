@@ -6,13 +6,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class VehicleSpatialIndexId extends AbstractSpatialIndexId implements SpatialIndexId {
-    private static final Logger logger = LoggerFactory.getLogger(VehicleSpatialIndexId.class);
     private FormFactor formFactor;
     private PropulsionType propulsionType;
     private boolean isReserved;
     private boolean isDisabled;
-
-    public VehicleSpatialIndexId() {}
 
     public FormFactor getFormFactor() {
         return formFactor;
@@ -44,5 +41,13 @@ public class VehicleSpatialIndexId extends AbstractSpatialIndexId implements Spa
 
     public void setDisabled(boolean disabled) {
         isDisabled = disabled;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AbstractSpatialIndexId that = (AbstractSpatialIndexId) o;
+        return getId().equals(that.getId());
     }
 }

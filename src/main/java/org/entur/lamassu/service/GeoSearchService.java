@@ -1,6 +1,5 @@
 package org.entur.lamassu.service;
 
-import org.entur.lamassu.cache.VehicleSpatialIndexId;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.Vehicle;
 
