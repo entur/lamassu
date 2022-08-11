@@ -1,6 +1,8 @@
 package org.entur.lamassu.config.cache;
 
 import org.entur.gbfs.validation.model.ValidationResult;
+import org.entur.lamassu.cache.StationSpatialIndexId;
+import org.entur.lamassu.cache.VehicleSpatialIndexId;
 import org.entur.lamassu.model.entities.GeofencingZones;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.Vehicle;
@@ -88,12 +90,12 @@ public class RedissonCacheConfig {
     }
 
     @Bean
-    public RGeo<String> vehicleSpatialIndex(RedissonClient redissonClient) {
+    public RGeo<VehicleSpatialIndexId> vehicleSpatialIndex(RedissonClient redissonClient) {
         return redissonClient.getGeo(VEHICLE_SPATIAL_INDEX_KEY + "_" + serializationVersion);
     }
 
     @Bean
-    public RGeo<String> stationSpatialIndex(RedissonClient redissonClient) {
+    public RGeo<StationSpatialIndexId> stationSpatialIndex(RedissonClient redissonClient) {
         return redissonClient.getGeo(STATION_SPATIAL_INDEX_KEY + "_" + serializationVersion);
     }
 

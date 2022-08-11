@@ -1,29 +1,33 @@
 package org.entur.lamassu.util;
 
+import org.entur.lamassu.cache.StationSpatialIndexId;
+import org.entur.lamassu.cache.VehicleSpatialIndexId;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.provider.FeedProvider;
 
-import static org.entur.lamassu.cache.AbstractSpatialIndexId.SPATIAL_INDEX_ID_SEPARATOR;
-
 public class SpatialIndexIdUtil {
     private SpatialIndexIdUtil() {}
 
-    public static String createVehicleSpatialIndexId(Vehicle vehicle, FeedProvider feedProvider) {
-        return vehicle.getId()
-                + SPATIAL_INDEX_ID_SEPARATOR + feedProvider.getCodespace()
-                + SPATIAL_INDEX_ID_SEPARATOR + feedProvider.getSystemId()
-                + SPATIAL_INDEX_ID_SEPARATOR + feedProvider.getOperatorId()
-                + SPATIAL_INDEX_ID_SEPARATOR + vehicle.getVehicleType().getFormFactor()
-                + SPATIAL_INDEX_ID_SEPARATOR + vehicle.getVehicleType().getPropulsionType()
-                + SPATIAL_INDEX_ID_SEPARATOR + vehicle.getReserved()
-                + SPATIAL_INDEX_ID_SEPARATOR + vehicle.getDisabled();
+    public static VehicleSpatialIndexId createVehicleSpatialIndexId(Vehicle vehicle, FeedProvider feedProvider) {
+        var id = new VehicleSpatialIndexId();
+        id.setId(vehicle.getId());
+        id.setCodespace(feedProvider.getCodespace());
+        id.setSystemId(feedProvider.getSystemId());
+        id.setOperatorId(feedProvider.getOperatorId());
+        id.setFormFactor(vehicle.getVehicleType().getFormFactor());
+        id.setPropulsionType(vehicle.getVehicleType().getPropulsionType());
+        id.setReserved(vehicle.getReserved());
+        id.setDisabled(vehicle.getDisabled());
+        return id;
     }
 
-    public static String createStationSpatialIndexId(Station station, FeedProvider feedProvider) {
-        return station.getId()
-                + SPATIAL_INDEX_ID_SEPARATOR + feedProvider.getCodespace()
-                + SPATIAL_INDEX_ID_SEPARATOR + feedProvider.getSystemId()
-                + SPATIAL_INDEX_ID_SEPARATOR + feedProvider.getOperatorId();
+    public static StationSpatialIndexId createStationSpatialIndexId(Station station, FeedProvider feedProvider) {
+        var id = new StationSpatialIndexId();
+        id.setId(station.getId());
+        id.setCodespace(feedProvider.getCodespace());
+        id.setSystemId(feedProvider.getSystemId());
+        id.setOperatorId(feedProvider.getOperatorId());
+        return id;
     }
 }

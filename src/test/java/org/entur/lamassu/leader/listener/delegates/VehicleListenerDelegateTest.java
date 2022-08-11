@@ -63,6 +63,8 @@ class VehicleListenerDelegateTest {
         vehicleType.setFormFactor(FormFactor.SCOOTER);
         vehicleType.setPropulsionType(PropulsionType.ELECTRIC);
         vehicle.setVehicleType(vehicleType);
+        vehicle.setReserved(false);
+        vehicle.setDisabled(false);
         return vehicle;
     }
 

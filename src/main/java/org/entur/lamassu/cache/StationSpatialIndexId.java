@@ -18,29 +18,28 @@
 
 package org.entur.lamassu.cache;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.entur.lamassu.model.entities.FormFactor;
+import org.entur.lamassu.model.entities.PropulsionType;
 
-public class StationSpatialIndexId extends AbstractSpatialIndexId {
-    private static final Logger logger = LoggerFactory.getLogger(StationSpatialIndexId.class);
+import java.util.List;
 
-    public static StationSpatialIndexId fromString(String indexId) {
-        try {
-            var parsed = new StationSpatialIndexId();
-            var parts = indexId.split(SPATIAL_INDEX_ID_SEPARATOR);
-            parsed.parse(parts);
-            return parsed;
-        } catch (IndexOutOfBoundsException e) {
-            logger.warn("Caught IndexOutOfBoundsException while trying to parse spatial index id {}", indexId, e);
-            return null;
-        }
+public class StationSpatialIndexId extends AbstractSpatialIndexId implements SpatialIndexId {
+    private List<FormFactor> formFactors;
+    private List<PropulsionType> propulsionTypes;
+
+    public List<FormFactor> getFormFactors() {
+        return formFactors;
     }
 
-    @Override
-    public String toString() {
-        return getId() + SPATIAL_INDEX_ID_SEPARATOR +
-                getCodespace() + SPATIAL_INDEX_ID_SEPARATOR +
-                getSystemId() + SPATIAL_INDEX_ID_SEPARATOR +
-                getOperatorId();
+    public void setFormFactors(List<FormFactor> formFactors) {
+        this.formFactors = formFactors;
+    }
+
+    public List<PropulsionType> getPropulsionTypes() {
+        return propulsionTypes;
+    }
+
+    public void setPropulsionTypes(List<PropulsionType> propulsionTypes) {
+        this.propulsionTypes = propulsionTypes;
     }
 }

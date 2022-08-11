@@ -20,6 +20,7 @@ package org.entur.lamassu.cache.impl;
 
 import io.lettuce.core.RedisException;
 import org.entur.lamassu.cache.SpatialIndex;
+import org.entur.lamassu.cache.SpatialIndexId;
 import org.entur.lamassu.model.entities.LocationEntity;
 import org.redisson.api.GeoEntry;
 import org.redisson.api.GeoOrder;
@@ -34,17 +35,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public abstract class SpatialIndexImpl<T extends LocationEntity> implements SpatialIndex<T> {
-    private final RGeo<String> spatialIndex;
+public abstract class SpatialIndexImpl<S extends SpatialIndexId, T extends LocationEntity> implements SpatialIndex<S, T> {
+    private final RGeo<S> spatialIndex;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    protected SpatialIndexImpl(RGeo<String> spatialIndex) {
+    protected SpatialIndexImpl(RGeo<S> spatialIndex) {
         this.spatialIndex = spatialIndex;
     }
 
     @Override
-    public void addAll(Map<String, T> spatialIndexUpdateMap) {
+    public void addAll(Map<S, T> spatialIndexUpdateMap) {
         try {
             spatialIndex.addAsync(spatialIndexUpdateMap.entrySet().stream()
                     .filter(e -> e.getValue() != null)
@@ -55,24 +56,24 @@ public abstract class SpatialIndexImpl<T extends LocationEntity> implements Spat
         }
     }
 
-    private GeoEntry map(Map.Entry<String, T> entry) {
+    private GeoEntry map(Map.Entry<S, T> entry) {
         var key = entry.getKey();
         var entity = entry.getValue();
         return new GeoEntry(entity.getLon(), entity.getLat(), key);
     }
 
     @Override
-    public void removeAll(Set<String> ids) {
+    public void removeAll(Set<S> ids) {
         spatialIndex.removeAllAsync(ids);
     }
 
     @Override
-    public List<String> radius(Double longitude, Double latitude, Double radius, GeoUnit geoUnit, GeoOrder geoOrder) {
+    public List<S> radius(Double longitude, Double latitude, Double radius, GeoUnit geoUnit, GeoOrder geoOrder) {
         return spatialIndex.search(GeoSearchArgs.from(longitude, latitude).radius(radius, geoUnit).order(geoOrder));
     }
 
     @Override
-    public Collection<String> getAll() {
+    public Collection<S> getAll() {
         return spatialIndex.readAll();
     }
 }

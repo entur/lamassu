@@ -29,6 +29,7 @@ import org.entur.gbfs.v2_3.system_regions.GBFSSystemRegions;
 import org.entur.gbfs.v2_3.vehicle_types.GBFSVehicleTypes;
 import org.entur.lamassu.cache.StationCache;
 import org.entur.lamassu.cache.StationSpatialIndex;
+import org.entur.lamassu.cache.StationSpatialIndexId;
 import org.entur.lamassu.mapper.entitymapper.PricingPlanMapper;
 import org.entur.lamassu.mapper.entitymapper.StationMapper;
 import org.entur.lamassu.mapper.entitymapper.SystemMapper;
@@ -140,8 +141,8 @@ public class StationsUpdater {
                         system.getLanguage())
                 ).collect(Collectors.toMap(Station::getId, s->s));
 
-        Set<String> spatialIndicesToRemove = new java.util.HashSet<>(Set.of());
-        Map<String, Station> spatialIndexUpdateMap = new java.util.HashMap<>(Map.of());
+        Set<StationSpatialIndexId> spatialIndicesToRemove = new java.util.HashSet<>(Set.of());
+        Map<StationSpatialIndexId, Station> spatialIndexUpdateMap = new java.util.HashMap<>(Map.of());
 
         stations.forEach((key, station) -> {
             var spatialIndexId = SpatialIndexIdUtil.createStationSpatialIndexId(station, feedProvider);
@@ -149,7 +150,7 @@ public class StationsUpdater {
 
             if (previousStation != null) {
                 var oldSpatialIndexId = SpatialIndexIdUtil.createStationSpatialIndexId(previousStation, feedProvider);
-                if (!oldSpatialIndexId.equalsIgnoreCase(spatialIndexId)) {
+                if (!oldSpatialIndexId.equals(spatialIndexId)) {
                     spatialIndicesToRemove.add(oldSpatialIndexId);
                 }
             }

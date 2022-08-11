@@ -16,20 +16,7 @@
  *
  */
 
-package org.entur.lamassu.cache.impl;
+package org.entur.lamassu.cache;
 
-import org.entur.lamassu.cache.StationSpatialIndex;
-import org.entur.lamassu.cache.StationSpatialIndexId;
-import org.entur.lamassu.model.entities.Station;
-import org.redisson.api.RGeo;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-@Component
-public class StationSpatialIndexImpl extends SpatialIndexImpl<StationSpatialIndexId, Station> implements StationSpatialIndex {
-
-    @Autowired
-    public StationSpatialIndexImpl(RGeo<StationSpatialIndexId> stationSpatialIndex) {
-        super(stationSpatialIndex);
-    }
+public interface SpatialIndexId {
 }

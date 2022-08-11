@@ -26,6 +26,7 @@ import org.entur.gbfs.v2_3.system_pricing_plans.GBFSSystemPricingPlans;
 import org.entur.gbfs.v2_3.vehicle_types.GBFSVehicleTypes;
 import org.entur.lamassu.cache.VehicleCache;
 import org.entur.lamassu.cache.VehicleSpatialIndex;
+import org.entur.lamassu.cache.VehicleSpatialIndexId;
 import org.entur.lamassu.mapper.entitymapper.PricingPlanMapper;
 import org.entur.lamassu.mapper.entitymapper.SystemMapper;
 import org.entur.lamassu.mapper.entitymapper.VehicleMapper;
@@ -131,8 +132,8 @@ public class VehiclesUpdater {
                 ))
                 .collect(Collectors.toMap(v -> getVehicleCacheKey(v.getId(), feedProvider), v -> v));
 
-        Set<String> spatialIndicesToRemove = new java.util.HashSet<>(Set.of());
-        Map<String, Vehicle> spatialIndexUpdateMap = new java.util.HashMap<>(Map.of());
+        Set<VehicleSpatialIndexId> spatialIndicesToRemove = new java.util.HashSet<>(Set.of());
+        Map<VehicleSpatialIndexId, Vehicle> spatialIndexUpdateMap = new java.util.HashMap<>(Map.of());
 
         vehicles.forEach((key, vehicle) -> {
             var spatialIndexId = SpatialIndexIdUtil.createVehicleSpatialIndexId(vehicle, feedProvider);
@@ -140,7 +141,7 @@ public class VehiclesUpdater {
 
             if (previousVehicle != null) {
                 var oldSpatialIndexId = SpatialIndexIdUtil.createVehicleSpatialIndexId(previousVehicle, feedProvider);
-                if (!oldSpatialIndexId.equalsIgnoreCase(spatialIndexId)) {
+                if (!oldSpatialIndexId.equals(spatialIndexId)) {
                     spatialIndicesToRemove.add(oldSpatialIndexId);
                 }
             }

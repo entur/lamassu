@@ -5,47 +5,14 @@ import org.entur.lamassu.model.entities.PropulsionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class VehicleSpatialIndexId extends AbstractSpatialIndexId {
+public class VehicleSpatialIndexId extends AbstractSpatialIndexId implements SpatialIndexId {
     private static final Logger logger = LoggerFactory.getLogger(VehicleSpatialIndexId.class);
     private FormFactor formFactor;
     private PropulsionType propulsionType;
     private boolean isReserved;
     private boolean isDisabled;
 
-    public static VehicleSpatialIndexId fromString(String indexId) {
-        try {
-            var parsed = new VehicleSpatialIndexId();
-            var parts = indexId.split(SPATIAL_INDEX_ID_SEPARATOR);
-            parsed.parse(parts);
-            return parsed;
-        } catch (IndexOutOfBoundsException e) {
-            logger.warn("Caught IndexOutOfBoundsException while trying to parse spatial index id {}", indexId, e);
-            return null;
-        }
-    }
-
-    @Override
-    public void parse(String[] parts) {
-        super.parse(parts);
-        setFormFactor(FormFactor.valueOf(parts[4]));
-        setPropulsionType(PropulsionType.valueOf(parts[5]));
-        setReserved(Boolean.parseBoolean(parts[6]));
-        setDisabled(Boolean.parseBoolean(parts[7]));
-    }
-
-    @Override
-    public String toString() {
-        return getId() + SPATIAL_INDEX_ID_SEPARATOR +
-                getCodespace() + SPATIAL_INDEX_ID_SEPARATOR +
-                getSystemId() + SPATIAL_INDEX_ID_SEPARATOR +
-                getOperatorId() + SPATIAL_INDEX_ID_SEPARATOR +
-                getFormFactor() + SPATIAL_INDEX_ID_SEPARATOR +
-                getPropulsionType() + SPATIAL_INDEX_ID_SEPARATOR +
-                getReserved() + SPATIAL_INDEX_ID_SEPARATOR +
-                getDisabled();
-    }
-
-    private VehicleSpatialIndexId() {}
+    public VehicleSpatialIndexId() {}
 
     public FormFactor getFormFactor() {
         return formFactor;
