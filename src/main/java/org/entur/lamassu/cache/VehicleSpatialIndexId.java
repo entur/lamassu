@@ -2,8 +2,6 @@ package org.entur.lamassu.cache;
 
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PropulsionType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class VehicleSpatialIndexId extends AbstractSpatialIndexId implements SpatialIndexId {
     private FormFactor formFactor;
