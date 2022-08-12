@@ -57,4 +57,19 @@ public abstract class AbstractSpatialIndexId implements Serializable {
     public void setOperatorId(String operatorId) {
         this.operatorId = operatorId;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AbstractSpatialIndexId that = (AbstractSpatialIndexId) o;
+
+        return id != null ? id.equals(that.id) : that.id == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
 }

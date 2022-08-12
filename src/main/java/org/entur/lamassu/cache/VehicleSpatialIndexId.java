@@ -45,9 +45,11 @@ public class VehicleSpatialIndexId extends AbstractSpatialIndexId implements Spa
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        AbstractSpatialIndexId that = (AbstractSpatialIndexId) o;
-        return getId().equals(that.getId());
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 }
