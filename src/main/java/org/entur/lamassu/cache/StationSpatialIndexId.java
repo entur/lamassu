@@ -18,30 +18,7 @@
 
 package org.entur.lamassu.cache;
 
-import org.entur.lamassu.model.entities.FormFactor;
-import org.entur.lamassu.model.entities.PropulsionType;
-
-import java.util.List;
-
 public class StationSpatialIndexId extends AbstractSpatialIndexId implements SpatialIndexId {
-    private List<FormFactor> formFactors;
-    private List<PropulsionType> propulsionTypes;
-
-    public List<FormFactor> getFormFactors() {
-        return formFactors;
-    }
-
-    public void setFormFactors(List<FormFactor> formFactors) {
-        this.formFactors = formFactors;
-    }
-
-    public List<PropulsionType> getPropulsionTypes() {
-        return propulsionTypes;
-    }
-
-    public void setPropulsionTypes(List<PropulsionType> propulsionTypes) {
-        this.propulsionTypes = propulsionTypes;
-    }
 
     @Override
     public boolean equals(Object o) {
