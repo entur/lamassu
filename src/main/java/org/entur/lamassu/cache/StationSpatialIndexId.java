@@ -18,29 +18,15 @@
 
 package org.entur.lamassu.cache;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+public class StationSpatialIndexId extends AbstractSpatialIndexId implements SpatialIndexId {
 
-public class StationSpatialIndexId extends AbstractSpatialIndexId {
-    private static final Logger logger = LoggerFactory.getLogger(StationSpatialIndexId.class);
-
-    public static StationSpatialIndexId fromString(String indexId) {
-        try {
-            var parsed = new StationSpatialIndexId();
-            var parts = indexId.split(SPATIAL_INDEX_ID_SEPARATOR);
-            parsed.parse(parts);
-            return parsed;
-        } catch (IndexOutOfBoundsException e) {
-            logger.warn("Caught IndexOutOfBoundsException while trying to parse spatial index id {}", indexId, e);
-            return null;
-        }
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
     }
 
     @Override
-    public String toString() {
-        return getId() + SPATIAL_INDEX_ID_SEPARATOR +
-                getCodespace() + SPATIAL_INDEX_ID_SEPARATOR +
-                getSystemId() + SPATIAL_INDEX_ID_SEPARATOR +
-                getOperatorId();
+    public int hashCode() {
+        return super.hashCode();
     }
 }

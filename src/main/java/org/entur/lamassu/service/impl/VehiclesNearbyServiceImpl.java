@@ -47,10 +47,9 @@ public class VehiclesNearbyServiceImpl implements GeoSearchService {
         Double range = rangeQueryParameters.getRange();
         Integer count = rangeQueryParameters.getCount();
 
-        List<String> indexIds = vehicleSpatialIndex.radius(longitude, latitude, range, GeoUnit.METERS, GeoOrder.ASC);
+        List<VehicleSpatialIndexId> indexIds = vehicleSpatialIndex.radius(longitude, latitude, range, GeoUnit.METERS, GeoOrder.ASC);
 
         var stream = indexIds.stream()
-                .map(VehicleSpatialIndexId::fromString)
                 .filter(Objects::nonNull)
                 .filter(id -> SpatialIndexIdFilter.filterVehicle(id, vehicleFilterParameters));
 
@@ -75,10 +74,9 @@ public class VehiclesNearbyServiceImpl implements GeoSearchService {
         Double range = rangeQueryParameters.getRange();
         Integer count = rangeQueryParameters.getCount();
 
-        List<String> indexIds = stationSpatialIndex.radius(longitude, latitude, range, GeoUnit.METERS, GeoOrder.ASC);
+        List<StationSpatialIndexId> indexIds = stationSpatialIndex.radius(longitude, latitude, range, GeoUnit.METERS, GeoOrder.ASC);
 
         var stream = indexIds.stream()
-                .map(StationSpatialIndexId::fromString)
                 .filter(Objects::nonNull)
                 .filter(id -> SpatialIndexIdFilter.filterStation(id, filterParameters));
 
@@ -95,7 +93,6 @@ public class VehiclesNearbyServiceImpl implements GeoSearchService {
     public Collection<String> getVehicleSpatialIndexOrphans() {
         var indexIds = vehicleSpatialIndex.getAll();
         return indexIds.stream()
-                .map(VehicleSpatialIndexId::fromString)
                 .filter(Objects::nonNull)
                 .map(this::getVehicleCacheKey)
                 .filter(key -> !vehicleCache.hasKey(key))
@@ -106,17 +103,15 @@ public class VehiclesNearbyServiceImpl implements GeoSearchService {
     public Collection<String> removeVehicleSpatialIndexOrphans() {
         var indexIds = vehicleSpatialIndex.getAll();
         var orphans = indexIds.stream()
-                .map(VehicleSpatialIndexId::fromString)
                 .filter(Objects::nonNull)
                 .filter(indexId -> {
                     var cacheKey = getVehicleCacheKey(indexId);
                     return !vehicleCache.hasKey(cacheKey);
                 })
-                .map(VehicleSpatialIndexId::toString)
                 .collect(Collectors.toSet());
 
         vehicleSpatialIndex.removeAll(orphans);
 
-        return orphans;
+        return orphans.stream().map(this::getVehicleCacheKey).collect(Collectors.toList());
     }
 }

@@ -134,19 +134,19 @@ public class SpatialIndexIdFilterTest {
     }
 
     private VehicleSpatialIndexId testId() {
-        return VehicleSpatialIndexId.fromString(SpatialIndexIdUtil.createVehicleSpatialIndexId(testVehicle(), testProvider()));
+        return SpatialIndexIdUtil.createVehicleSpatialIndexId(testVehicle(), testProvider());
     }
 
     private VehicleSpatialIndexId testReservedId() {
         var vehicle = testVehicle();
         vehicle.setReserved(true);
-        return VehicleSpatialIndexId.fromString(SpatialIndexIdUtil.createVehicleSpatialIndexId(vehicle, testProvider()));
+        return SpatialIndexIdUtil.createVehicleSpatialIndexId(vehicle, testProvider());
     }
 
     private VehicleSpatialIndexId testDisabledId() {
         var vehicle = testVehicle();
         vehicle.setDisabled(true);
-        return VehicleSpatialIndexId.fromString(SpatialIndexIdUtil.createVehicleSpatialIndexId(vehicle, testProvider()));
+        return SpatialIndexIdUtil.createVehicleSpatialIndexId(vehicle, testProvider());
     }
 
     private Vehicle testVehicle() {

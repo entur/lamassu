@@ -27,9 +27,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public interface SpatialIndex<T extends LocationEntity> {
-    void addAll(Map<String, T> spatialIndexUpdateMap);
-    void removeAll(Set<String> ids);
-    List<String> radius(Double longitude, Double latitude, Double radius, GeoUnit geoUnit, GeoOrder geoOrder);
-    Collection<String> getAll();
+public interface SpatialIndex<S extends SpatialIndexId, T extends LocationEntity> {
+    void addAll(Map<S, T> spatialIndexUpdateMap);
+    void removeAll(Set<S> ids);
+    List<S> radius(Double longitude, Double latitude, Double radius, GeoUnit geoUnit, GeoOrder geoOrder);
+    Collection<S> getAll();
 }
