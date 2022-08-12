@@ -1,11 +1,15 @@
 package org.entur.lamassu.util;
 
+import org.entur.lamassu.cache.StationSpatialIndexId;
 import org.entur.lamassu.cache.VehicleSpatialIndexId;
+import org.entur.lamassu.model.entities.Station;
+import org.entur.lamassu.model.entities.VehicleTypeAvailability;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PropulsionType;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.entities.VehicleType;
+import org.entur.lamassu.service.StationFilterParameters;
 import org.entur.lamassu.service.VehicleFilterParameters;
 import org.junit.Assert;
 import org.junit.Test;
@@ -17,14 +21,14 @@ public class SpatialIndexIdFilterTest {
     @Test
     public void testNoFilter() {
         Assert.assertTrue(
-                SpatialIndexIdFilter.filterVehicle(testId(), testFilterParams())
+                SpatialIndexIdFilter.filterVehicle(testVehicleId(), testVehicleFilterParams())
         );
     }
 
     @Test
     public void testCodespaceFilter() {
-        var testId = testId();
-        var params = testFilterParams();
+        var testId = testVehicleId();
+        var params = testVehicleFilterParams();
 
         params.setCodespaces(List.of("TST"));
         Assert.assertTrue(
@@ -39,8 +43,8 @@ public class SpatialIndexIdFilterTest {
 
     @Test
     public void testSystemFilter() {
-        var testId = testId();
-        var params = testFilterParams();
+        var testId = testVehicleId();
+        var params = testVehicleFilterParams();
 
         params.setSystems(List.of("TST:System:testprovider"));
         Assert.assertTrue(
@@ -55,8 +59,8 @@ public class SpatialIndexIdFilterTest {
 
     @Test
     public void testOperatorFilter() {
-        var testId = testId();
-        var params = testFilterParams();
+        var testId = testVehicleId();
+        var params = testVehicleFilterParams();
 
         params.setOperators(List.of("TST:Operator:test"));
         Assert.assertTrue(
@@ -71,8 +75,8 @@ public class SpatialIndexIdFilterTest {
 
     @Test
     public void testFormFactorFilter() {
-        var testId = testId();
-        var params = testFilterParams();
+        var testId = testVehicleId();
+        var params = testVehicleFilterParams();
 
         params.setFormFactors(List.of(FormFactor.SCOOTER));
         Assert.assertTrue(
@@ -87,8 +91,8 @@ public class SpatialIndexIdFilterTest {
 
     @Test
     public void testPropulsionTypeFilter() {
-        var testId = testId();
-        var params = testFilterParams();
+        var testId = testVehicleId();
+        var params = testVehicleFilterParams();
 
         params.setPropulsionTypes(List.of(PropulsionType.ELECTRIC));
         Assert.assertTrue(
@@ -104,7 +108,7 @@ public class SpatialIndexIdFilterTest {
     @Test
     public void testIncludeReservedFilter() {
         var testId = testReservedId();
-        var params = testFilterParams();
+        var params = testVehicleFilterParams();
 
         params.setIncludeReserved(true);
         Assert.assertTrue(
@@ -120,7 +124,7 @@ public class SpatialIndexIdFilterTest {
     @Test
     public void testIncludeDisabledFilter() {
         var testId = testDisabledId();
-        var params = testFilterParams();
+        var params = testVehicleFilterParams();
 
         params.setIncludeDisabled(true);
         Assert.assertTrue(
@@ -133,8 +137,50 @@ public class SpatialIndexIdFilterTest {
         );
     }
 
-    private VehicleSpatialIndexId testId() {
+    @Test
+    public void testVehicleTypesAvailableFilter() {
+        var testId = testStationId();
+        var params = new StationFilterParameters();
+
+        var vehicleTypeFilter = new VehicleTypeFilter();
+        vehicleTypeFilter.setFormFactor(FormFactor.SCOOTER);
+        vehicleTypeFilter.setPropulsionType(PropulsionType.ELECTRIC);
+        params.setVehicleTypesAvailable(List.of(vehicleTypeFilter));
+
+        Assert.assertTrue(
+                SpatialIndexIdFilter.filterStation(
+                    testId, params
+                )
+        );
+
+        vehicleTypeFilter.setFormFactor(FormFactor.BICYCLE);
+
+        Assert.assertFalse(
+                SpatialIndexIdFilter.filterStation(
+                        testId, params
+                )
+        );
+
+        vehicleTypeFilter.setFormFactor(null);
+
+        var secondVehicleTypeFilter = new VehicleTypeFilter();
+        vehicleTypeFilter.setPropulsionType(PropulsionType.HUMAN);
+
+        params.setVehicleTypesAvailable(List.of(vehicleTypeFilter, secondVehicleTypeFilter));
+
+        Assert.assertTrue(
+                SpatialIndexIdFilter.filterStation(
+                        testId, params
+                )
+        );
+    }
+
+    private VehicleSpatialIndexId testVehicleId() {
         return SpatialIndexIdUtil.createVehicleSpatialIndexId(testVehicle(), testProvider());
+    }
+
+    private StationSpatialIndexId testStationId() {
+        return SpatialIndexIdUtil.createStationSpatialIndexId(testStation(), testProvider());
     }
 
     private VehicleSpatialIndexId testReservedId() {
@@ -158,6 +204,18 @@ public class SpatialIndexIdFilterTest {
         return vehicle;
     }
 
+    private Station testStation() {
+        var station = new Station();
+        station.setId("TST:Station:foobar");
+        var vehicleTypeAvailability = new VehicleTypeAvailability();
+        vehicleTypeAvailability.setVehicleType(scooterVehicle());
+        vehicleTypeAvailability.setCount(1);
+        station.setVehicleTypesAvailable(List.of(
+                vehicleTypeAvailability
+        ));
+        return station;
+    }
+
     private VehicleType scooterVehicle() {
         var type = new VehicleType();
         type.setId("TST:VehicleType:Scooter");
@@ -175,7 +233,7 @@ public class SpatialIndexIdFilterTest {
         return provider;
     }
 
-    private VehicleFilterParameters testFilterParams() {
+    private VehicleFilterParameters testVehicleFilterParams() {
         var params = new VehicleFilterParameters();
         params.setIncludeReserved(false);
         params.setIncludeDisabled(false);

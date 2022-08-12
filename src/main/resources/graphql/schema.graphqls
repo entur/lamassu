@@ -24,6 +24,7 @@ type Query {
         codespaces: [String]
         systems: [String]
         operators: [String]
+        vehicleTypesAvailable: [VehicleTypeFilter]
     ): [Station]
 
     stationsById(ids: [String]!): [Station]
@@ -79,6 +80,11 @@ type VehicleType {
     vehicleAssets: VehicleAssets
     defaultPricingPlan: PricingPlan
     pricingPlans: [PricingPlan]
+}
+
+input VehicleTypeFilter {
+    formFactor: FormFactor
+    propulsionType: PropulsionType
 }
 
 enum FormFactor {
