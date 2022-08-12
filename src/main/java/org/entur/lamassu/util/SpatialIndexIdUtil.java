@@ -2,9 +2,16 @@ package org.entur.lamassu.util;
 
 import org.entur.lamassu.cache.StationSpatialIndexId;
 import org.entur.lamassu.cache.VehicleSpatialIndexId;
+import org.entur.lamassu.cache.VehicleTypeFilter;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.Vehicle;
+import org.entur.lamassu.model.entities.VehicleDocksAvailability;
+import org.entur.lamassu.model.entities.VehicleType;
+import org.entur.lamassu.model.entities.VehicleTypeAvailability;
 import org.entur.lamassu.model.provider.FeedProvider;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class SpatialIndexIdUtil {
     private SpatialIndexIdUtil() {}
@@ -28,6 +35,14 @@ public class SpatialIndexIdUtil {
         id.setCodespace(feedProvider.getCodespace());
         id.setSystemId(feedProvider.getSystemId());
         id.setOperatorId(feedProvider.getOperatorId());
+        id.setVehicleTypesAvailable(station.getVehicleTypesAvailable().stream().map(SpatialIndexIdUtil::mapToVehicleTypeFilter).collect(Collectors.toList()));
         return id;
+    }
+
+    private static VehicleTypeFilter mapToVehicleTypeFilter(VehicleTypeAvailability vehicleTypeAvailability) {
+        var filter = new VehicleTypeFilter();
+        filter.setFormFactor(vehicleTypeAvailability.getVehicleType().getFormFactor());
+        filter.setPropulsionType(vehicleTypeAvailability.getVehicleType().getPropulsionType());
+        return filter;
     }
 }

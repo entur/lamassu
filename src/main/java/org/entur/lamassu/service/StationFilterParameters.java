@@ -16,11 +16,13 @@
  *
  */
 
-package org.entur.lamassu.cache;
+package org.entur.lamassu.service;
+
+import org.entur.lamassu.cache.VehicleTypeFilter;
 
 import java.util.List;
 
-public class StationSpatialIndexId extends AbstractSpatialIndexId implements SpatialIndexId {
+public class StationFilterParameters extends FilterParameters {
     List<VehicleTypeFilter> vehicleTypesAvailable;
 
     public List<VehicleTypeFilter> getVehicleTypesAvailable() {
@@ -29,15 +31,5 @@ public class StationSpatialIndexId extends AbstractSpatialIndexId implements Spa
 
     public void setVehicleTypesAvailable(List<VehicleTypeFilter> vehicleTypesAvailable) {
         this.vehicleTypesAvailable = vehicleTypesAvailable;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return super.equals(o);
-    }
-
-    @Override
-    public int hashCode() {
-        return super.hashCode();
     }
 }

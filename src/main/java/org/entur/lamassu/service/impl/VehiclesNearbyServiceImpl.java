@@ -9,6 +9,7 @@ import org.entur.lamassu.cache.VehicleSpatialIndexId;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.service.FilterParameters;
+import org.entur.lamassu.service.StationFilterParameters;
 import org.entur.lamassu.service.VehicleFilterParameters;
 import org.entur.lamassu.service.RangeQueryParameters;
 import org.entur.lamassu.service.GeoSearchService;
@@ -68,7 +69,7 @@ public class VehiclesNearbyServiceImpl implements GeoSearchService {
     }
 
     @Override
-    public List<Station> getStationsNearby(RangeQueryParameters rangeQueryParameters, FilterParameters filterParameters) {
+    public List<Station> getStationsNearby(RangeQueryParameters rangeQueryParameters, StationFilterParameters filterParameters) {
         Double longitude = rangeQueryParameters.getLon();
         Double latitude = rangeQueryParameters.getLat();
         Double range = rangeQueryParameters.getRange();

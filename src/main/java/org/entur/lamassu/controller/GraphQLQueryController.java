@@ -4,6 +4,7 @@ import graphql.GraphqlErrorException;
 import graphql.kickstart.tools.GraphQLQueryResolver;
 import org.entur.lamassu.cache.GeofencingZonesCache;
 import org.entur.lamassu.cache.StationCache;
+import org.entur.lamassu.cache.VehicleTypeFilter;
 import org.entur.lamassu.model.entities.GeofencingZones;
 import org.entur.lamassu.model.entities.Operator;
 import org.entur.lamassu.model.entities.Station;
@@ -13,6 +14,7 @@ import org.entur.lamassu.model.entities.PropulsionType;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.service.FeedProviderService;
 import org.entur.lamassu.service.FilterParameters;
+import org.entur.lamassu.service.StationFilterParameters;
 import org.entur.lamassu.service.VehicleFilterParameters;
 import org.entur.lamassu.service.RangeQueryParameters;
 import org.entur.lamassu.service.GeoSearchService;
@@ -98,7 +100,8 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
             Integer count,
             List<String> codespaces,
             List<String> systems,
-            List<String> operators
+            List<String> operators,
+            List<VehicleTypeFilter> vehicleTypesAvailable
     ) {
         validateRange(range);
         validateCount(count);
@@ -112,10 +115,11 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
         queryParams.setRange(range);
         queryParams.setCount(count);
 
-        var filterParams = new FilterParameters();
+        var filterParams = new StationFilterParameters();
         filterParams.setCodespaces(codespaces);
         filterParams.setSystems(systems);
         filterParams.setOperators(operators);
+        filterParams.setVehicleTypesAvailable(vehicleTypesAvailable);
 
         logger.debug("getStations called query={} filter={}", queryParams, filterParams);
 

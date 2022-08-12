@@ -2,8 +2,12 @@ package org.entur.lamassu.util;
 
 import org.entur.lamassu.cache.StationSpatialIndexId;
 import org.entur.lamassu.cache.VehicleSpatialIndexId;
+import org.entur.lamassu.cache.VehicleTypeFilter;
 import org.entur.lamassu.service.FilterParameters;
+import org.entur.lamassu.service.StationFilterParameters;
 import org.entur.lamassu.service.VehicleFilterParameters;
+
+import java.util.List;
 
 public class SpatialIndexIdFilter {
     private SpatialIndexIdFilter() {}
@@ -40,7 +44,7 @@ public class SpatialIndexIdFilter {
         return true;
     }
 
-    public static boolean filterStation(StationSpatialIndexId parsedId, FilterParameters filters) {
+    public static boolean filterStation(StationSpatialIndexId parsedId, StationFilterParameters filters) {
         if (filters.getCodespaces() != null && !filters.getCodespaces().contains(parsedId.getCodespace())) {
             return false;
         }
@@ -53,6 +57,25 @@ public class SpatialIndexIdFilter {
             return false;
         }
 
+        if (filters.getVehicleTypesAvailable() != null && !vehicleTypesAvailablePredicate(filters.getVehicleTypesAvailable(), parsedId.getVehicleTypesAvailable())) {
+            return false;
+        }
+
         return true;
     }
+
+    public static boolean vehicleTypesAvailablePredicate(List<VehicleTypeFilter> filter, List<VehicleTypeFilter> vehicleTypesAvailable) {
+        return filter.stream().anyMatch(vehicleTypeFilter -> vehicleTypesAvailable.stream().anyMatch(vta -> {
+            if (vta.getFormFactor() != null && vehicleTypeFilter.getFormFactor() != null && !vehicleTypeFilter.getFormFactor().equals(vta.getFormFactor())) {
+                return false;
+            }
+
+            if (vta.getPropulsionType() != null && vehicleTypeFilter.getPropulsionType() != null && !vehicleTypeFilter.getPropulsionType().equals(vta.getPropulsionType())) {
+                return false;
+            }
+
+            return true;
+        }));
+    }
+
 }
