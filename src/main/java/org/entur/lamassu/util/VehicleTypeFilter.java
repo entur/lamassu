@@ -42,22 +42,4 @@ public class VehicleTypeFilter implements Serializable {
     public void setPropulsionType(PropulsionType propulsionType) {
         this.propulsionType = propulsionType;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        VehicleTypeFilter that = (VehicleTypeFilter) o;
-
-        if (formFactor != that.formFactor) return false;
-        return propulsionType == that.propulsionType;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = formFactor != null ? formFactor.hashCode() : 0;
-        result = 31 * result + (propulsionType != null ? propulsionType.hashCode() : 0);
-        return result;
-    }
 }
