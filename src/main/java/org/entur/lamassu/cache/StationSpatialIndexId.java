@@ -23,7 +23,7 @@ import org.entur.lamassu.util.VehicleTypeFilter;
 import java.util.List;
 
 public class StationSpatialIndexId extends AbstractSpatialIndexId implements SpatialIndexId {
-    List<VehicleTypeFilter> vehicleTypesAvailable;
+    private List<VehicleTypeFilter> vehicleTypesAvailable;
 
     public List<VehicleTypeFilter> getVehicleTypesAvailable() {
         return vehicleTypesAvailable;
