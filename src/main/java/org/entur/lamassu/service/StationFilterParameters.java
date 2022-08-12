@@ -23,7 +23,7 @@ import org.entur.lamassu.util.VehicleTypeFilter;
 import java.util.List;
 
 public class StationFilterParameters extends FilterParameters {
-    List<VehicleTypeFilter> vehicleTypesAvailable;
+    private List<VehicleTypeFilter> vehicleTypesAvailable;
 
     public List<VehicleTypeFilter> getVehicleTypesAvailable() {
         return vehicleTypesAvailable;
