@@ -2,8 +2,6 @@ package org.entur.lamassu.util;
 
 import org.entur.lamassu.cache.StationSpatialIndexId;
 import org.entur.lamassu.cache.VehicleSpatialIndexId;
-import org.entur.lamassu.cache.VehicleTypeFilter;
-import org.entur.lamassu.service.FilterParameters;
 import org.entur.lamassu.service.StationFilterParameters;
 import org.entur.lamassu.service.VehicleFilterParameters;
 

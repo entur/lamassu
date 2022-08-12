@@ -8,7 +8,6 @@ import org.entur.lamassu.cache.VehicleSpatialIndex;
 import org.entur.lamassu.cache.VehicleSpatialIndexId;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.Vehicle;
-import org.entur.lamassu.service.FilterParameters;
 import org.entur.lamassu.service.StationFilterParameters;
 import org.entur.lamassu.service.VehicleFilterParameters;
 import org.entur.lamassu.service.RangeQueryParameters;
@@ -26,7 +25,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
-public class VehiclesNearbyServiceImpl implements GeoSearchService {
+public class GeoSearchServiceImpl implements GeoSearchService {
 
     private final VehicleSpatialIndex vehicleSpatialIndex;
     private final StationSpatialIndex stationSpatialIndex;
@@ -34,7 +33,7 @@ public class VehiclesNearbyServiceImpl implements GeoSearchService {
     private final StationCache stationCache;
 
     @Autowired
-    public VehiclesNearbyServiceImpl(VehicleSpatialIndex vehicleSpatialIndex, StationSpatialIndex stationSpatialIndex, VehicleCache vehicleCache, StationCache stationCache) {
+    public GeoSearchServiceImpl(VehicleSpatialIndex vehicleSpatialIndex, StationSpatialIndex stationSpatialIndex, VehicleCache vehicleCache, StationCache stationCache) {
         this.vehicleSpatialIndex = vehicleSpatialIndex;
         this.stationSpatialIndex = stationSpatialIndex;
         this.vehicleCache = vehicleCache;

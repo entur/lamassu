@@ -18,6 +18,8 @@
 
 package org.entur.lamassu.cache;
 
+import org.entur.lamassu.util.VehicleTypeFilter;
+
 import java.util.List;
 
 public class StationSpatialIndexId extends AbstractSpatialIndexId implements SpatialIndexId {

@@ -18,7 +18,7 @@
 
 package org.entur.lamassu.service;
 
-import org.entur.lamassu.cache.VehicleTypeFilter;
+import org.entur.lamassu.util.VehicleTypeFilter;
 
 import java.util.List;
 
