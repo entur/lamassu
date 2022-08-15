@@ -31,14 +31,8 @@ public class SpatialIndexIdUtil {
         id.setCodespace(feedProvider.getCodespace());
         id.setSystemId(feedProvider.getSystemId());
         id.setOperatorId(feedProvider.getOperatorId());
-        id.setVehicleTypesAvailable(station.getVehicleTypesAvailable().stream().map(SpatialIndexIdUtil::mapToVehicleTypeFilter).collect(Collectors.toList()));
+        id.setAvailableFormFactors(station.getVehicleTypesAvailable().stream().map(vta -> vta.getVehicleType().getFormFactor()).collect(Collectors.toList()));
+        id.setAvailablePropulsionTypes(station.getVehicleTypesAvailable().stream().map(vta -> vta.getVehicleType().getPropulsionType()).collect(Collectors.toList()));
         return id;
-    }
-
-    private static VehicleTypeFilter mapToVehicleTypeFilter(VehicleTypeAvailability vehicleTypeAvailability) {
-        var filter = new VehicleTypeFilter();
-        filter.setFormFactor(vehicleTypeAvailability.getVehicleType().getFormFactor());
-        filter.setPropulsionType(vehicleTypeAvailability.getVehicleType().getPropulsionType());
-        return filter;
     }
 }

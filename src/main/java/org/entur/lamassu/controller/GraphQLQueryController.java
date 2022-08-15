@@ -100,7 +100,8 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
             List<String> codespaces,
             List<String> systems,
             List<String> operators,
-            List<VehicleTypeFilter> vehicleTypesAvailable
+            List<FormFactor> availableFormFactors,
+            List<PropulsionType> availablePropulsionTypes
     ) {
         validateRange(range);
         validateCount(count);
@@ -118,7 +119,8 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
         filterParams.setCodespaces(codespaces);
         filterParams.setSystems(systems);
         filterParams.setOperators(operators);
-        filterParams.setVehicleTypesAvailable(vehicleTypesAvailable);
+        filterParams.setAvailableFormFactors(availableFormFactors);
+        filterParams.setAvailablePropulsionTypes(availablePropulsionTypes);
 
         logger.debug("getStations called query={} filter={}", queryParams, filterParams);
 

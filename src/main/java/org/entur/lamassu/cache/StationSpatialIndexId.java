@@ -18,28 +18,29 @@
 
 package org.entur.lamassu.cache;
 
+import org.entur.lamassu.model.entities.FormFactor;
+import org.entur.lamassu.model.entities.PropulsionType;
 import org.entur.lamassu.util.VehicleTypeFilter;
 
 import java.util.List;
 
 public class StationSpatialIndexId extends AbstractSpatialIndexId implements SpatialIndexId {
-    private List<VehicleTypeFilter> vehicleTypesAvailable;
+    private List<FormFactor> availableFormFactors;
+    private List<PropulsionType> availablePropulsionTypes;
 
-    public List<VehicleTypeFilter> getVehicleTypesAvailable() {
-        return vehicleTypesAvailable;
+    public List<FormFactor> getAvailableFormFactors() {
+        return availableFormFactors;
     }
 
-    public void setVehicleTypesAvailable(List<VehicleTypeFilter> vehicleTypesAvailable) {
-        this.vehicleTypesAvailable = vehicleTypesAvailable;
+    public void setAvailableFormFactors(List<FormFactor> availableFormFactors) {
+        this.availableFormFactors = availableFormFactors;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        return super.equals(o);
+    public List<PropulsionType> getAvailablePropulsionTypes() {
+        return availablePropulsionTypes;
     }
 
-    @Override
-    public int hashCode() {
-        return super.hashCode();
+    public void setAvailablePropulsionTypes(List<PropulsionType> availablePropulsionTypes) {
+        this.availablePropulsionTypes = availablePropulsionTypes;
     }
 }
