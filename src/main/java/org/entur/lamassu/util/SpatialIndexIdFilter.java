@@ -55,25 +55,15 @@ public class SpatialIndexIdFilter {
             return false;
         }
 
-        if (filters.getVehicleTypesAvailable() != null && !vehicleTypesAvailablePredicate(filters.getVehicleTypesAvailable(), parsedId.getVehicleTypesAvailable())) {
+        if (filters.getAvailableFormFactors() != null && filters.getAvailableFormFactors().stream().noneMatch(formFactor -> parsedId.getAvailableFormFactors().contains(formFactor))) {
+            return false;
+        }
+
+        if (filters.getAvailablePropulsionTypes() != null && filters.getAvailablePropulsionTypes().stream().noneMatch(propulsionType -> parsedId.getAvailablePropulsionTypes().contains(propulsionType))) {
             return false;
         }
 
         return true;
-    }
-
-    public static boolean vehicleTypesAvailablePredicate(List<VehicleTypeFilter> filter, List<VehicleTypeFilter> vehicleTypesAvailable) {
-        return filter.stream().anyMatch(vehicleTypeFilter -> vehicleTypesAvailable.stream().anyMatch(vta -> {
-            if (vta.getFormFactor() != null && vehicleTypeFilter.getFormFactor() != null && !vehicleTypeFilter.getFormFactor().equals(vta.getFormFactor())) {
-                return false;
-            }
-
-            if (vta.getPropulsionType() != null && vehicleTypeFilter.getPropulsionType() != null && !vehicleTypeFilter.getPropulsionType().equals(vta.getPropulsionType())) {
-                return false;
-            }
-
-            return true;
-        }));
     }
 
 }

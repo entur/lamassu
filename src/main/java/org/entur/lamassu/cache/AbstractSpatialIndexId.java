@@ -19,6 +19,7 @@
 package org.entur.lamassu.cache;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public abstract class AbstractSpatialIndexId implements Serializable {
     private String id;
@@ -65,11 +66,18 @@ public abstract class AbstractSpatialIndexId implements Serializable {
 
         AbstractSpatialIndexId that = (AbstractSpatialIndexId) o;
 
-        return id != null ? id.equals(that.id) : that.id == null;
+        if (!Objects.equals(id, that.id)) return false;
+        if (!Objects.equals(codespace, that.codespace)) return false;
+        if (!Objects.equals(systemId, that.systemId)) return false;
+        return Objects.equals(operatorId, that.operatorId);
     }
 
     @Override
     public int hashCode() {
-        return id != null ? id.hashCode() : 0;
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (codespace != null ? codespace.hashCode() : 0);
+        result = 31 * result + (systemId != null ? systemId.hashCode() : 0);
+        result = 31 * result + (operatorId != null ? operatorId.hashCode() : 0);
+        return result;
     }
 }

@@ -18,28 +18,50 @@
 
 package org.entur.lamassu.cache;
 
-import org.entur.lamassu.util.VehicleTypeFilter;
+import org.entur.lamassu.model.entities.FormFactor;
+import org.entur.lamassu.model.entities.PropulsionType;
 
 import java.util.List;
+import java.util.Objects;
 
 public class StationSpatialIndexId extends AbstractSpatialIndexId implements SpatialIndexId {
-    private List<VehicleTypeFilter> vehicleTypesAvailable;
+    private List<FormFactor> availableFormFactors;
+    private List<PropulsionType> availablePropulsionTypes;
 
-    public List<VehicleTypeFilter> getVehicleTypesAvailable() {
-        return vehicleTypesAvailable;
+    public List<FormFactor> getAvailableFormFactors() {
+        return availableFormFactors;
     }
 
-    public void setVehicleTypesAvailable(List<VehicleTypeFilter> vehicleTypesAvailable) {
-        this.vehicleTypesAvailable = vehicleTypesAvailable;
+    public void setAvailableFormFactors(List<FormFactor> availableFormFactors) {
+        this.availableFormFactors = availableFormFactors;
+    }
+
+    public List<PropulsionType> getAvailablePropulsionTypes() {
+        return availablePropulsionTypes;
+    }
+
+    public void setAvailablePropulsionTypes(List<PropulsionType> availablePropulsionTypes) {
+        this.availablePropulsionTypes = availablePropulsionTypes;
     }
 
     @Override
     public boolean equals(Object o) {
-        return super.equals(o);
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        StationSpatialIndexId that = (StationSpatialIndexId) o;
+
+        if (!Objects.equals(availableFormFactors, that.availableFormFactors))
+            return false;
+        return Objects.equals(availablePropulsionTypes, that.availablePropulsionTypes);
     }
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        int result = super.hashCode();
+        result = 31 * result + (availableFormFactors != null ? availableFormFactors.hashCode() : 0);
+        result = 31 * result + (availablePropulsionTypes != null ? availablePropulsionTypes.hashCode() : 0);
+        return result;
     }
 }

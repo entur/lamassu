@@ -23,6 +23,7 @@ public class LamassuSecurityConfigurerAdapter extends WebSecurityConfigurerAdapt
                 .httpBasic();
     }
 
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

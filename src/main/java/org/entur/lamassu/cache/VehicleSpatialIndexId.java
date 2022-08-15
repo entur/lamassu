@@ -43,11 +43,25 @@ public class VehicleSpatialIndexId extends AbstractSpatialIndexId implements Spa
 
     @Override
     public boolean equals(Object o) {
-        return super.equals(o);
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        VehicleSpatialIndexId that = (VehicleSpatialIndexId) o;
+
+        if (isReserved != that.isReserved) return false;
+        if (isDisabled != that.isDisabled) return false;
+        if (formFactor != that.formFactor) return false;
+        return propulsionType == that.propulsionType;
     }
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        int result = super.hashCode();
+        result = 31 * result + (formFactor != null ? formFactor.hashCode() : 0);
+        result = 31 * result + (propulsionType != null ? propulsionType.hashCode() : 0);
+        result = 31 * result + (isReserved ? 1 : 0);
+        result = 31 * result + (isDisabled ? 1 : 0);
+        return result;
     }
 }

@@ -142,10 +142,8 @@ public class SpatialIndexIdFilterTest {
         var testId = testStationId();
         var params = new StationFilterParameters();
 
-        var vehicleTypeFilter = new VehicleTypeFilter();
-        vehicleTypeFilter.setFormFactor(FormFactor.SCOOTER);
-        vehicleTypeFilter.setPropulsionType(PropulsionType.ELECTRIC);
-        params.setVehicleTypesAvailable(List.of(vehicleTypeFilter));
+        params.setAvailableFormFactors(List.of(FormFactor.SCOOTER));
+        params.setAvailablePropulsionTypes(List.of(PropulsionType.ELECTRIC));
 
         Assert.assertTrue(
                 SpatialIndexIdFilter.filterStation(
@@ -153,7 +151,7 @@ public class SpatialIndexIdFilterTest {
                 )
         );
 
-        vehicleTypeFilter.setFormFactor(FormFactor.BICYCLE);
+        params.setAvailableFormFactors(List.of(FormFactor.BICYCLE));
 
         Assert.assertFalse(
                 SpatialIndexIdFilter.filterStation(
@@ -161,14 +159,11 @@ public class SpatialIndexIdFilterTest {
                 )
         );
 
-        vehicleTypeFilter.setFormFactor(null);
+        params.setAvailableFormFactors(null);
 
-        var secondVehicleTypeFilter = new VehicleTypeFilter();
-        vehicleTypeFilter.setPropulsionType(PropulsionType.HUMAN);
+        params.setAvailablePropulsionTypes(List.of(PropulsionType.HUMAN));
 
-        params.setVehicleTypesAvailable(List.of(vehicleTypeFilter, secondVehicleTypeFilter));
-
-        Assert.assertTrue(
+        Assert.assertFalse(
                 SpatialIndexIdFilter.filterStation(
                         testId, params
                 )
