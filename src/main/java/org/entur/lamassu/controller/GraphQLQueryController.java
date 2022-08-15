@@ -4,7 +4,6 @@ import graphql.GraphqlErrorException;
 import graphql.kickstart.tools.GraphQLQueryResolver;
 import org.entur.lamassu.cache.GeofencingZonesCache;
 import org.entur.lamassu.cache.StationCache;
-import org.entur.lamassu.util.VehicleTypeFilter;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.GeofencingZones;
 import org.entur.lamassu.model.entities.Operator;

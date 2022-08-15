@@ -20,7 +20,6 @@ package org.entur.lamassu.cache;
 
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PropulsionType;
-import org.entur.lamassu.util.VehicleTypeFilter;
 
 import java.util.List;
 
