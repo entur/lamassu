@@ -45,6 +45,8 @@
             <logger name="com" level="WARN"/>
             <logger name="no" level="WARN"/>
             <logger name="org" level="WARN"/>
+            <logger name="org.apache" level="ERROR"/>
+            <logger name="org.entur.gbfs" level="ERROR"/>
             <root level="WARN">
                 <appender-ref ref="console"/>
             </root>

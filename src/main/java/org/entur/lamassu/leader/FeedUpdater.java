@@ -118,7 +118,7 @@ public class FeedUpdater {
     private void receiveUpdate(FeedProvider feedProvider, GbfsDelivery delivery) {
         if (enableValidation) {
             if (delivery.getValidationResult().getSummary().getErrorsCount() > 0) {
-                logger.warn("Validation errors in feed update for system {}", feedProvider.getSystemId());
+                logger.info("Validation errors in feed update for system {}", feedProvider.getSystemId());
             }
             validationResultCache.put(feedProvider.getSystemId(), delivery.getValidationResult());
         }
