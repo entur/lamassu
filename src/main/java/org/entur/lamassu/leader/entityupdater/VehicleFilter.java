@@ -41,17 +41,17 @@ class VehicleFilter implements Predicate<GBFSBike> {
     @Override
     public boolean test(GBFSBike vehicle) {
         if (vehicle.getStationId() != null) {
-            logger.debug("Skipping hybrid-system vehicle {}", vehicle);
+            logger.info("Skipping hybrid-system vehicle {}", vehicle);
             return false;
         }
 
         if (!pricingPlans.containsKey(vehicle.getPricingPlanId())) {
-            logger.warn("Skipping vehicle with unknown pricing plan id {}", vehicle);
+            logger.info("Skipping vehicle with unknown pricing plan id {}", vehicle);
             return false;
         }
 
         if (!vehicleTypes.containsKey(vehicle.getVehicleTypeId())) {
-            logger.warn("Skipping vehicle with unknown vehicle type id {}", vehicle);
+            logger.info("Skipping vehicle with unknown vehicle type id {}", vehicle);
             return false;
         }
 
