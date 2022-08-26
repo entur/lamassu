@@ -42,10 +42,10 @@
                     </providers>
                 </encoder>
             </appender>
-            <logger name="com" level="INFO"/>
-            <logger name="no" level="INFO"/>
-            <logger name="org" level="INFO"/>
-            <root level="INFO">
+            <logger name="com" level="WARN"/>
+            <logger name="no" level="WARN"/>
+            <logger name="org" level="WARN"/>
+            <root level="WARN">
                 <appender-ref ref="console"/>
             </root>
         </else>
