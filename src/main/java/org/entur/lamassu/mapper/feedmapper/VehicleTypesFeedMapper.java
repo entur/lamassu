@@ -30,6 +30,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.entur.lamassu.mapper.feedmapper.IdMappers.PRICING_PLAN_ID_TYPE;
 import static org.entur.lamassu.mapper.feedmapper.IdMappers.VEHICLE_TYPE_ID_TYPE;
 
 @Component
@@ -101,8 +102,8 @@ public class VehicleTypesFeedMapper extends AbstractFeedMapper<GBFSVehicleTypes>
         mapped.setDefaultReserveTime(vehicleType.getDefaultReserveTime());
         mapped.setReturnConstraint(vehicleType.getReturnConstraint());
         mapped.setVehicleAssets(vehicleType.getVehicleAssets());
-        mapped.setDefaultPricingPlanId(vehicleType.getDefaultPricingPlanId());
-        mapped.setPricingPlanIds(vehicleType.getPricingPlanIds());
+        mapped.setDefaultPricingPlanId(IdMappers.mapId(codespace, PRICING_PLAN_ID_TYPE, vehicleType.getDefaultPricingPlanId()));
+        mapped.setPricingPlanIds(vehicleType.getPricingPlanIds() != null ? IdMappers.mapIds(codespace, PRICING_PLAN_ID_TYPE, vehicleType.getPricingPlanIds()).orElse(null) : null);
         return mapped;
     }
 }
