@@ -41,6 +41,7 @@ import org.entur.lamassu.util.SpatialIndexIdUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
@@ -59,6 +60,9 @@ public class StationsUpdater {
     private final PricingPlanMapper pricingPlanMapper;
     private final StationMapper stationMapper;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @Value("${org.entur.lamassu.excludeVirtualStations:true}")
+    private boolean excludeVirtualStations;
 
     @Autowired
     public StationsUpdater(
@@ -130,7 +134,7 @@ public class StationsUpdater {
                     return true;
                 })
                 // Filter out virtual stations until we have a use case for this, and graphql API supports filtering on it
-                .filter(s -> !Optional.ofNullable(stationInfo.get(s.getStationId()).getIsVirtualStation()).orElse(false))
+                .filter(s -> !excludeVirtualStations || !Optional.ofNullable(stationInfo.get(s.getStationId()).getIsVirtualStation()).orElse(false))
                 .map(station -> stationMapper.mapStation(
                         system,
                         pricingPlans,
