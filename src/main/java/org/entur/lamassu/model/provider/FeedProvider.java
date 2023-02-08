@@ -18,6 +18,7 @@
 
 package org.entur.lamassu.model.provider;
 
+import org.entur.gbfs.v2_3.gbfs.GBFSFeedName;
 import org.entur.gbfs.v2_3.system_pricing_plans.GBFSPlan;
 import org.entur.gbfs.v2_3.vehicle_types.GBFSVehicleType;
 
@@ -32,7 +33,9 @@ public class FeedProvider {
     private String url;
     private String language;
     private Authentication authentication;
+    private Boolean excludeVirtualStations = false;
 
+    private List<GBFSFeedName> excludeFeeds;
     private List<GBFSVehicleType> vehicleTypes;
     private List<GBFSPlan> pricingPlans;
 
@@ -108,6 +111,22 @@ public class FeedProvider {
         this.authentication = authentication;
     }
 
+    public Boolean getExcludeVirtualStations() {
+        return excludeVirtualStations;
+    }
+
+    public void setExcludeVirtualStations(Boolean excludeVirtualStations) {
+        this.excludeVirtualStations = excludeVirtualStations;
+    }
+
+    public List<GBFSFeedName> getExcludeFeeds() {
+        return excludeFeeds;
+    }
+
+    public void setExcludeFeeds(List<GBFSFeedName> excludeFeeds) {
+        this.excludeFeeds = excludeFeeds;
+    }
+
     @Override
     public String toString() {
         return "FeedProvider{" +
@@ -117,6 +136,9 @@ public class FeedProvider {
                 ", codespace='" + codespace + '\'' +
                 ", url='" + url + '\'' +
                 ", language='" + language + '\'' +
+                ", authentication=" + authentication +
+                ", excludeVirtualStations=" + excludeVirtualStations +
+                ", excludeFeeds=" + excludeFeeds +
                 ", vehicleTypes=" + vehicleTypes +
                 ", pricingPlans=" + pricingPlans +
                 '}';

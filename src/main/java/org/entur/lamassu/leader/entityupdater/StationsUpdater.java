@@ -133,8 +133,8 @@ public class StationsUpdater {
                     }
                     return true;
                 })
-                // Filter out virtual stations until we have a use case for this, and graphql API supports filtering on it
-                .filter(s -> !excludeVirtualStations || !Optional.ofNullable(stationInfo.get(s.getStationId()).getIsVirtualStation()).orElse(false))
+                // Optionally filter out virtual stations
+                .filter(s -> !excludeVirtualStations || !feedProvider.getExcludeVirtualStations() || !Optional.ofNullable(stationInfo.get(s.getStationId()).getIsVirtualStation()).orElse(false))
                 .map(station -> stationMapper.mapStation(
                         system,
                         pricingPlans,
