@@ -63,7 +63,7 @@ public class FeedCachesUpdater {
     }
 
     private <T> void updateFeedCache(FeedProvider feedProvider, GBFSFeedName feedName, T feed) {
-        if (feed != null && (feedProvider.getExcludeFeeds() == null || feedProvider.getExcludeFeeds().contains(feedName))) {
+        if (feed != null && (feedProvider.getExcludeFeeds() == null || !feedProvider.getExcludeFeeds().contains(feedName))) {
             logger.debug("updating feed {} for provider {}", feedName, feedProvider.getSystemId());
             logger.trace("updating feed {} for provider {} data {}", feedName, feedProvider.getSystemId(), feed);
             var ttl = getTtl(feedName.implementingClass(), feed, 3600);
