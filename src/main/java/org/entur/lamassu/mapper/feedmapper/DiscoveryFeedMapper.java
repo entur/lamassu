@@ -69,6 +69,7 @@ public class DiscoveryFeedMapper extends AbstractFeedMapper<GBFS> {
                 .get(sourceLanguageCode)
                 .getFeeds()
                 .stream()
+                .filter(feed -> feedProvider.getExcludeFeeds() == null || feedProvider.getExcludeFeeds().stream().noneMatch(excluded -> excluded.equals(feed.getName())))
                 .map(feed -> {
                     var mappedFeed = new GBFSFeed();
                     mappedFeed.setName(feed.getName());
