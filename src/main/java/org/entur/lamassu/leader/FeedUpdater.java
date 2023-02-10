@@ -86,11 +86,7 @@ public class FeedUpdater {
     }
 
     public void update() {
-        try {
-            subscriptionManager.update();
-        } catch (Exception e) {
-            logger.warn("Caught exception in subscriptionManager::update", e);
-        }
+        subscriptionManager.update();
     }
 
     public void stop() {
