@@ -63,7 +63,7 @@ public class FeedCachesUpdater {
     }
 
     private <T> void updateFeedCache(FeedProvider feedProvider, GBFSFeedName feedName, T feed) {
-        if (feed != null && (feedProvider.getExcludeFeeds() == null || !feedProvider.getExcludeFeeds().contains(feedName))) {
+        if (shouldIncludeFeed(feedProvider, feedName, feed)) {
             logger.debug("updating feed {} for provider {}", feedName, feedProvider.getSystemId());
             logger.trace("updating feed {} for provider {} data {}", feedName, feedProvider.getSystemId(), feed);
             var ttl = getTtl(feedName.implementingClass(), feed, 3600);
@@ -86,7 +86,7 @@ public class FeedCachesUpdater {
 
 
     private <T> T getAndUpdateFeedCache(FeedProvider feedProvider, GBFSFeedName feedName, T feed) {
-        if (feed != null) {
+        if (shouldIncludeFeed(feedProvider, feedName, feed)) {
             logger.debug("updating feed {} for provider {}", feedName, feedProvider.getSystemId());
             logger.trace("updating feed {} for provider {} data {}", feedName, feedProvider.getSystemId(), feed);
             var ttl = getTtl(feedName.implementingClass(), feed, 3600);
@@ -95,5 +95,9 @@ public class FeedCachesUpdater {
             logger.debug("no feed {} found for provider {}", feedName, feedProvider.getSystemId());
             return null;
         }
+    }
+
+    private <T> boolean shouldIncludeFeed(FeedProvider feedProvider, GBFSFeedName feedName, T feed) {
+        return feed != null && (feedProvider.getExcludeFeeds() == null || !feedProvider.getExcludeFeeds().contains(feedName));
     }
 }
