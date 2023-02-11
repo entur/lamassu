@@ -44,6 +44,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -121,6 +122,7 @@ public class StationMapper {
     private List<RentalMethod> mapRentalMethods(List<org.entur.gbfs.v2_3.station_information.RentalMethod> rentalMethods) {
         return Optional.ofNullable(rentalMethods)
                 .map(values -> values.stream()
+                        .filter(Objects::nonNull)
                         .map(rentalMethod -> RentalMethod.valueOf(rentalMethod.name().toUpperCase()))
                         .collect(Collectors.toList())
                 ).orElse(null);
