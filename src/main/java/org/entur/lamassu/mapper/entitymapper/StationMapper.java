@@ -129,7 +129,7 @@ public class StationMapper {
     }
 
     private Region mapRegion(GBFSSystemRegions regions, String regionId, String language) {
-        if (regionId == null) {
+        if (regionId == null || regionId.isBlank()) {
             return null;
         }
 
