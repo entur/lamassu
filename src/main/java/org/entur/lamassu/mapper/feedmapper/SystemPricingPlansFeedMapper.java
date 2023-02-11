@@ -43,7 +43,7 @@ public class SystemPricingPlansFeedMapper extends AbstractFeedMapper<GBFSSystemP
             return customPricingPlans(feedProvider);
         }
 
-        if (source == null) {
+        if (source == null || source.getData() == null || source.getData().getPlans() == null) {
             return null;
         }
 
