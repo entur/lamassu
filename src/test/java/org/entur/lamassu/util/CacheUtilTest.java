@@ -24,16 +24,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
-import java.time.Clock;
 import java.time.Instant;
 
 import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
 
 class CacheUtilTest {
 
-    private MockedStatic<Clock> clockMock;
+    private MockedStatic<Instant> instantMock;
 
     // 2021-12-20T11:33:20Z
     private final int now = 1640000000;
@@ -45,14 +42,13 @@ class CacheUtilTest {
 
     @AfterEach
     public void destroy() {
-        clockMock.close();
+        instantMock.close();
     }
 
     private void mockInstant(long expected) {
-        Clock spyClock = spy(Clock.class);
-        clockMock = mockStatic(Clock.class);
-        clockMock.when(Clock::systemUTC).thenReturn(spyClock);
-        when(spyClock.instant()).thenReturn(Instant.ofEpochSecond(expected));
+        final Instant instantExpected = Instant.ofEpochSecond(expected);
+        instantMock = mockStatic(Instant.class);
+        instantMock.when(Instant::now).thenReturn(instantExpected);
     }
 
     @Test
