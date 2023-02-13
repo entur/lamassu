@@ -26,6 +26,7 @@ type Query {
         operators: [String]
         availableFormFactors: [FormFactor]
         availablePropulsionTypes: [PropulsionType]
+        excludeVirtualStations: Boolean = false
     ): [Station]
 
     stationsById(ids: [String]!): [Station]

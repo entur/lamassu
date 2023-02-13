@@ -27,6 +27,7 @@ import java.util.Objects;
 public class StationSpatialIndexId extends AbstractSpatialIndexId implements SpatialIndexId {
     private List<FormFactor> availableFormFactors;
     private List<PropulsionType> availablePropulsionTypes;
+    private Boolean isVirtualStation;
 
     public List<FormFactor> getAvailableFormFactors() {
         return availableFormFactors;
@@ -44,6 +45,14 @@ public class StationSpatialIndexId extends AbstractSpatialIndexId implements Spa
         this.availablePropulsionTypes = availablePropulsionTypes;
     }
 
+    public Boolean getVirtualStation() {
+        return isVirtualStation;
+    }
+
+    public void setVirtualStation(Boolean virtualStation) {
+        isVirtualStation = virtualStation;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -54,7 +63,9 @@ public class StationSpatialIndexId extends AbstractSpatialIndexId implements Spa
 
         if (!Objects.equals(availableFormFactors, that.availableFormFactors))
             return false;
-        return Objects.equals(availablePropulsionTypes, that.availablePropulsionTypes);
+        if (!Objects.equals(availablePropulsionTypes, that.availablePropulsionTypes))
+            return false;
+        return Objects.equals(isVirtualStation, that.isVirtualStation);
     }
 
     @Override
@@ -62,6 +73,7 @@ public class StationSpatialIndexId extends AbstractSpatialIndexId implements Spa
         int result = super.hashCode();
         result = 31 * result + (availableFormFactors != null ? availableFormFactors.hashCode() : 0);
         result = 31 * result + (availablePropulsionTypes != null ? availablePropulsionTypes.hashCode() : 0);
+        result = 31 * result + (isVirtualStation != null ? isVirtualStation.hashCode() : 0);
         return result;
     }
 }
