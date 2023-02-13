@@ -134,7 +134,7 @@ public class StationsUpdater {
                     return true;
                 })
                 // Optionally filter out virtual stations
-                .filter(s -> !excludeVirtualStations || !feedProvider.getExcludeVirtualStations() || !Optional.ofNullable(stationInfo.get(s.getStationId()).getIsVirtualStation()).orElse(false))
+                .filter(s -> !excludeVirtualStations && (!feedProvider.getExcludeVirtualStations() || !Optional.ofNullable(stationInfo.get(s.getStationId()).getIsVirtualStation()).orElse(false)))
                 .map(station -> stationMapper.mapStation(
                         system,
                         pricingPlans,
