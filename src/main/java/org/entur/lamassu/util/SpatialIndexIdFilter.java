@@ -63,7 +63,7 @@ public class SpatialIndexIdFilter {
             return false;
         }
 
-        if (filters.getExcludeVirtualStations() != null && filters.getExcludeVirtualStations() && parsedId.getVirtualStation()) {
+        if (filters.getExcludeVirtualStations() != null && filters.getExcludeVirtualStations() && parsedId.getVirtualStation() != null && parsedId.getVirtualStation()) {
             return false;
         }
 
