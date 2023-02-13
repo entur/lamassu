@@ -61,7 +61,7 @@ public class StationsUpdater {
     private final StationMapper stationMapper;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Value("${org.entur.lamassu.excludeVirtualStations:true}")
+    @Value("${org.entur.lamassu.excludeVirtualStations:false}")
     private boolean excludeVirtualStations;
 
     @Autowired
