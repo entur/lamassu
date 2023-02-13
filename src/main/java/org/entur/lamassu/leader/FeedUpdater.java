@@ -80,7 +80,12 @@ public class FeedUpdater {
     }
 
     public void start() {
-        updaterThreadPool = new ForkJoinPool(NUM_CORES * 2);
+        updaterThreadPool = new ForkJoinPool(
+                NUM_CORES * 2,
+                ForkJoinPool.defaultForkJoinWorkerThreadFactory,
+                (thread, exception) -> logger.warn("Caught exception in ForkJoinPool", exception),
+                true
+        );
         subscriptionManager = new GbfsSubscriptionManager(updaterThreadPool);
         updaterThreadPool.execute(this::createSubscriptions);
     }
