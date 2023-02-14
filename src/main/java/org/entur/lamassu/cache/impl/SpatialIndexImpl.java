@@ -34,6 +34,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 
 public abstract class SpatialIndexImpl<S extends SpatialIndexId, T extends LocationEntity> implements SpatialIndex<S, T> {
     private final RGeo<S> spatialIndex;
@@ -47,11 +48,12 @@ public abstract class SpatialIndexImpl<S extends SpatialIndexId, T extends Locat
     @Override
     public void addAll(Map<S, T> spatialIndexUpdateMap) {
         try {
-            spatialIndex.addAsync(spatialIndexUpdateMap.entrySet().stream()
+            Long added = spatialIndex.addAsync(spatialIndexUpdateMap.entrySet().stream()
                     .filter(e -> e.getValue() != null)
                     .filter(e -> e.getValue().getLat() != null && e.getValue().getLon() != null)
-                    .map(this::map).toArray(GeoEntry[]::new));
-        } catch (RedisException e) {
+                    .map(this::map).toArray(GeoEntry[]::new)).get();
+            logger.debug("Added {} stations", added);
+        } catch (RedisException | ExecutionException | InterruptedException e) {
             logger.warn("Caught exception while adding entries to spatialIndex", e);
         }
     }
