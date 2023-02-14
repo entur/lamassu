@@ -101,7 +101,7 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
             List<String> operators,
             List<FormFactor> availableFormFactors,
             List<PropulsionType> availablePropulsionTypes,
-            boolean excludeVirtualStations
+            boolean includeVirtualStations
     ) {
         validateRange(range);
         validateCount(count);
@@ -121,7 +121,7 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
         filterParams.setOperators(operators);
         filterParams.setAvailableFormFactors(availableFormFactors);
         filterParams.setAvailablePropulsionTypes(availablePropulsionTypes);
-        filterParams.setExcludeVirtualStations(excludeVirtualStations);
+        filterParams.setIncludeVirtualStations(includeVirtualStations);
 
         logger.debug("getStations called query={} filter={}", queryParams, filterParams);
 

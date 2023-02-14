@@ -5,8 +5,6 @@ import org.entur.lamassu.cache.VehicleSpatialIndexId;
 import org.entur.lamassu.service.StationFilterParameters;
 import org.entur.lamassu.service.VehicleFilterParameters;
 
-import java.util.List;
-
 public class SpatialIndexIdFilter {
     private SpatialIndexIdFilter() {}
 
@@ -63,7 +61,7 @@ public class SpatialIndexIdFilter {
             return false;
         }
 
-        if (filters.getExcludeVirtualStations() != null && filters.getExcludeVirtualStations() && parsedId.getVirtualStation() != null && parsedId.getVirtualStation()) {
+        if (filters.getIncludeVirtualStations() != null && !filters.getIncludeVirtualStations() && parsedId.getVirtualStation() != null && parsedId.getVirtualStation()) {
             return false;
         }
 

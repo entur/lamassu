@@ -26,7 +26,7 @@ import java.util.List;
 public class StationFilterParameters extends FilterParameters {
     private List<FormFactor> availableFormFactors;
     private List<PropulsionType> availablePropulsionTypes;
-    private Boolean excludeVirtualStations;
+    private Boolean includeVirtualStations;
 
     public List<FormFactor> getAvailableFormFactors() {
         return availableFormFactors;
@@ -44,11 +44,11 @@ public class StationFilterParameters extends FilterParameters {
         this.availablePropulsionTypes = availablePropulsionTypes;
     }
 
-    public Boolean getExcludeVirtualStations() {
-        return excludeVirtualStations;
+    public Boolean getIncludeVirtualStations() {
+        return includeVirtualStations;
     }
 
-    public void setExcludeVirtualStations(Boolean excludeVirtualStations) {
-        this.excludeVirtualStations = excludeVirtualStations;
+    public void setIncludeVirtualStations(Boolean includeVirtualStations) {
+        this.includeVirtualStations = includeVirtualStations;
     }
 }
