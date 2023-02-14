@@ -27,7 +27,7 @@ import java.util.Objects;
 public class StationSpatialIndexId extends AbstractSpatialIndexId implements SpatialIndexId {
     private List<FormFactor> availableFormFactors;
     private List<PropulsionType> availablePropulsionTypes;
-    private Boolean isVirtualStation;
+    private boolean isVirtualStation;
 
     public List<FormFactor> getAvailableFormFactors() {
         return availableFormFactors;
@@ -45,11 +45,11 @@ public class StationSpatialIndexId extends AbstractSpatialIndexId implements Spa
         this.availablePropulsionTypes = availablePropulsionTypes;
     }
 
-    public Boolean getVirtualStation() {
+    public boolean getVirtualStation() {
         return isVirtualStation;
     }
 
-    public void setVirtualStation(Boolean virtualStation) {
+    public void setVirtualStation(boolean virtualStation) {
         isVirtualStation = virtualStation;
     }
 
@@ -61,11 +61,10 @@ public class StationSpatialIndexId extends AbstractSpatialIndexId implements Spa
 
         StationSpatialIndexId that = (StationSpatialIndexId) o;
 
+        if (isVirtualStation != that.isVirtualStation) return false;
         if (!Objects.equals(availableFormFactors, that.availableFormFactors))
             return false;
-        if (!Objects.equals(availablePropulsionTypes, that.availablePropulsionTypes))
-            return false;
-        return Objects.equals(isVirtualStation, that.isVirtualStation);
+        return Objects.equals(availablePropulsionTypes, that.availablePropulsionTypes);
     }
 
     @Override
@@ -73,7 +72,7 @@ public class StationSpatialIndexId extends AbstractSpatialIndexId implements Spa
         int result = super.hashCode();
         result = 31 * result + (availableFormFactors != null ? availableFormFactors.hashCode() : 0);
         result = 31 * result + (availablePropulsionTypes != null ? availablePropulsionTypes.hashCode() : 0);
-        result = 31 * result + (isVirtualStation != null ? isVirtualStation.hashCode() : 0);
+        result = 31 * result + (isVirtualStation ? 1 : 0);
         return result;
     }
 }
