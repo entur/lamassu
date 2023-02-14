@@ -33,7 +33,7 @@ public class VehicleTypeCapacityProducer {
         then set to the same value as number of available bikes for that station.
      */
     public static void addToStations(GBFSStationStatus stationStatus, GBFSVehicleTypes vehicleTypes) {
-        if (vehicleTypes.getData() != null && vehicleTypes.getData().getVehicleTypes() != null && vehicleTypes.getData().getVehicleTypes().size() == 1) {
+        if (vehicleTypes != null && vehicleTypes.getData() != null && vehicleTypes.getData().getVehicleTypes() != null && vehicleTypes.getData().getVehicleTypes().size() == 1) {
             var vehicleType = vehicleTypes.getData().getVehicleTypes().get(0);
             stationStatus.getData().getStations().forEach(station -> {
                 if (station.getVehicleTypesAvailable() == null || station.getVehicleTypesAvailable().isEmpty()) {
