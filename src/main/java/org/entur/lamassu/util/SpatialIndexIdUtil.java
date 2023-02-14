@@ -33,7 +33,7 @@ public class SpatialIndexIdUtil {
         id.setOperatorId(feedProvider.getOperatorId());
         id.setAvailableFormFactors(station.getVehicleTypesAvailable().stream().map(vta -> vta.getVehicleType().getFormFactor()).collect(Collectors.toList()));
         id.setAvailablePropulsionTypes(station.getVehicleTypesAvailable().stream().map(vta -> vta.getVehicleType().getPropulsionType()).collect(Collectors.toList()));
-        id.setVirtualStation(station.getVirtualStation());
+        id.setVirtualStation(station.getVirtualStation() != null ? station.getVirtualStation() : false);
         return id;
     }
 }
