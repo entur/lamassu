@@ -3,9 +3,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.rutebanken.superpom</groupId>
+        <groupId>org.entur.ror</groupId>
         <artifactId>superpom</artifactId>
-        <version>1.0.38</version>
+        <version>1.53</version>
     </parent>
     <groupId>org.entur</groupId>
     <artifactId>lamassu</artifactId>
@@ -16,7 +16,7 @@
     <description>Micro mobility aggregation</description>
 
     <properties>
-        <graphql-starter.version>11.1.0</graphql-starter.version>
+        <graphql-starter.version>14.1.0</graphql-starter.version>
         <entur.helpers.version>1.0.77</entur.helpers.version>
         <redisson.version>3.19.3</redisson.version>
         <embedded-redis.version>0.8.3</embedded-redis.version>
@@ -102,12 +102,6 @@
             <groupId>com.graphql-java-kickstart</groupId>
             <artifactId>graphql-spring-boot-starter</artifactId>
             <version>${graphql-starter.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.graphql-java-kickstart</groupId>
-            <artifactId>graphiql-spring-boot-starter</artifactId>
-            <version>${graphql-starter.version}</version>
-            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>net.logstash.logback</groupId>
