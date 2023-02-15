@@ -33,7 +33,6 @@ public class FeedProvider {
     private String url;
     private String language;
     private Authentication authentication;
-    private Boolean excludeVirtualStations = false;
 
     private List<GBFSFeedName> excludeFeeds;
     private List<GBFSVehicleType> vehicleTypes;
@@ -111,14 +110,6 @@ public class FeedProvider {
         this.authentication = authentication;
     }
 
-    public Boolean getExcludeVirtualStations() {
-        return excludeVirtualStations;
-    }
-
-    public void setExcludeVirtualStations(Boolean excludeVirtualStations) {
-        this.excludeVirtualStations = excludeVirtualStations;
-    }
-
     public List<GBFSFeedName> getExcludeFeeds() {
         return excludeFeeds;
     }
@@ -137,7 +128,6 @@ public class FeedProvider {
                 ", url='" + url + '\'' +
                 ", language='" + language + '\'' +
                 ", authentication=" + authentication +
-                ", excludeVirtualStations=" + excludeVirtualStations +
                 ", excludeFeeds=" + excludeFeeds +
                 ", vehicleTypes=" + vehicleTypes +
                 ", pricingPlans=" + pricingPlans +

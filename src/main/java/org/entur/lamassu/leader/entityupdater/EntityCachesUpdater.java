@@ -19,6 +19,7 @@
 package org.entur.lamassu.leader.entityupdater;
 
 import org.entur.gbfs.GbfsDelivery;
+import org.entur.gbfs.v2_3.gbfs.GBFSFeedName;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -41,7 +42,7 @@ public class EntityCachesUpdater {
     }
 
     public void updateEntityCaches(FeedProvider feedProvider, GbfsDelivery delivery, GbfsDelivery oldDelivery) {
-        if (canUpdateVehicles(delivery)) {
+        if (canUpdateVehicles(delivery, feedProvider)) {
             vehiclesUpdater.addOrUpdateVehicles(
                     feedProvider,
                     delivery,
@@ -49,7 +50,7 @@ public class EntityCachesUpdater {
             );
         }
 
-        if (canUpdateStations(delivery)) {
+        if (canUpdateStations(delivery, feedProvider)) {
             stationsUpdater.addOrUpdateStations(
                     feedProvider,
                     delivery,
@@ -58,14 +59,20 @@ public class EntityCachesUpdater {
         }
 
         if (delivery.getGeofencingZones() != null) {
-            geofencingZonesUpdater.addOrUpdateGeofencingZones(
-                    feedProvider,
-                    delivery.getGeofencingZones()
-            );
+            if (feedProvider.getExcludeFeeds() == null || !feedProvider.getExcludeFeeds().contains(GBFSFeedName.GeofencingZones)) {
+                geofencingZonesUpdater.addOrUpdateGeofencingZones(
+                        feedProvider,
+                        delivery.getGeofencingZones()
+                );
+            }
         }
     }
 
-    private boolean canUpdateVehicles(GbfsDelivery delivery) {
+    private boolean canUpdateVehicles(GbfsDelivery delivery, FeedProvider feedProvider) {
+        if (feedProvider.getExcludeFeeds() != null && feedProvider.getExcludeFeeds().contains(GBFSFeedName.FreeBikeStatus)) {
+            return false;
+        }
+
         return delivery.getFreeBikeStatus() != null
                 && delivery.getFreeBikeStatus().getData() != null
                 && delivery.getSystemInformation() != null
@@ -76,10 +83,17 @@ public class EntityCachesUpdater {
                 && delivery.getSystemPricingPlans().getData() != null;
     }
 
-    private boolean canUpdateStations(GbfsDelivery delivery) {
+    private boolean canUpdateStations(GbfsDelivery delivery, FeedProvider feedProvider) {
+        if (feedProvider.getExcludeFeeds() != null) {
+            if (feedProvider.getExcludeFeeds().contains(GBFSFeedName.StationInformation)
+                    || feedProvider.getExcludeFeeds().contains(GBFSFeedName.StationStatus)) {
+                return false;
+            }
+        }
+
         return delivery.getStationStatus() != null
-                && delivery.getStationStatus().getData() != null
                 && delivery.getStationInformation() != null
+                && delivery.getStationStatus().getData() != null
                 && delivery.getStationInformation().getData() != null
                 && delivery.getSystemInformation() != null
                 && delivery.getSystemInformation().getData() != null

@@ -61,9 +61,6 @@ public class StationsUpdater {
     private final StationMapper stationMapper;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Value("${org.entur.lamassu.excludeVirtualStations:false}")
-    private boolean excludeVirtualStations;
-
     @Autowired
     public StationsUpdater(
             StationCache stationCache,
@@ -133,8 +130,6 @@ public class StationsUpdater {
                     }
                     return true;
                 })
-                // Optionally filter out virtual stations
-                .filter(s -> !excludeVirtualStations && (!feedProvider.getExcludeVirtualStations() || !Optional.ofNullable(stationInfo.get(s.getStationId()).getIsVirtualStation()).orElse(false)))
                 .map(station -> stationMapper.mapStation(
                         system,
                         pricingPlans,
