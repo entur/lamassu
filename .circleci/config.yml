@@ -31,7 +31,7 @@ aliases:
 jobs:
   test:
     docker:
-      - image:  cimg/openjdk:17.0.6
+      - image: cimg/openjdk:17.0.6
         auth:
           username: $DOCKERHUB_LOGIN
           password: $DOCKERHUB_PASSWORD
@@ -78,7 +78,7 @@ jobs:
             - .circleci
   build:
     docker:
-      - image: cimg/openjdk:11.0
+      - image: cimg/openjdk:17.0.6
         auth:
           username: $DOCKERHUB_LOGIN
           password: $DOCKERHUB_PASSWORD
