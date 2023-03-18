@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.entur.ror</groupId>
         <artifactId>superpom</artifactId>
-        <version>1.53</version>
+        <version>1.56</version>
     </parent>
     <groupId>org.entur</groupId>
     <artifactId>lamassu</artifactId>
@@ -18,7 +18,7 @@
     <properties>
         <graphql-starter.version>14.1.0</graphql-starter.version>
         <entur.ror.helpers.version>1.92</entur.ror.helpers.version>
-        <redisson.version>3.19.3</redisson.version>
+        <redisson.version>3.20.0</redisson.version>
         <embedded-redis.version>0.8.3</embedded-redis.version>
         <okhttp.version>4.10.0</okhttp.version>
         <kryo.version>5.4.0</kryo.version>
@@ -169,7 +169,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-inline</artifactId>
-            <version>4.11.0</version>
+            <version>5.2.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
