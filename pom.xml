@@ -17,7 +17,7 @@
 
     <properties>
         <graphql-starter.version>14.1.0</graphql-starter.version>
-        <entur.helpers.version>1.0.77</entur.helpers.version>
+        <entur.ror.helpers.version>1.92</entur.ror.helpers.version>
         <redisson.version>3.19.3</redisson.version>
         <embedded-redis.version>0.8.3</embedded-redis.version>
         <okhttp.version>4.10.0</okhttp.version>
@@ -42,9 +42,9 @@
             <version>${gbfs-loader-java.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.entur.helpers</groupId>
+            <groupId>org.entur.ror.helpers</groupId>
             <artifactId>logging</artifactId>
-            <version>${entur.helpers.version}</version>
+            <version>${entur.ror.helpers.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
