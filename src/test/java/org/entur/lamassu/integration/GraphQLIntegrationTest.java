@@ -55,4 +55,11 @@ public class GraphQLIntegrationTest extends AbstractIntegrationTestBase {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("testatlantis", response.get("$.data.geofencingZones[0].systemId"));
     }
+
+    @Test
+    public void testUnknownOperatorDoesNotThrow() throws IOException {
+        GraphQLResponse response = graphQLTestTemplate.postForResource("stations_query_unknown_operator.graphql");
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertTrue(response.get("$.data.stations", List.class).isEmpty());
+    }
  }

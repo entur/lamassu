@@ -69,7 +69,6 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
         validateCount(count);
         validateCodespaces(codespaces);
         validateSystems(systems);
-        validateOperators(operators);
 
         var queryParams = new RangeQueryParameters();
         queryParams.setLat(lat);
@@ -106,7 +105,6 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
         validateCount(count);
         validateCodespaces(codespaces);
         validateSystems(systems);
-        validateOperators(operators);
 
         var queryParams = new RangeQueryParameters();
         queryParams.setLat(lat);
@@ -174,13 +172,6 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
 
     private Collection<String> getSystems() {
         return feedProviderService.getFeedProviders().stream().map(FeedProvider::getSystemId).collect(Collectors.toSet());
-    }
-
-    private void validateOperators(List<String> operators) {
-        if (operators != null) {
-            var validOperators = getOperators().stream().map(Operator::getId).collect(Collectors.toList());
-            validate(validOperators::containsAll, operators, "Unknown operator(s)");
-        }
     }
 
     private <T> void validate(Predicate<T> predicate, T value, String message) {
