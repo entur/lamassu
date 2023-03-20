@@ -1,0 +1,12 @@
+{
+    stations(
+        lat: 11.342,
+        lon: 44.673,
+        count: 1,
+        range: 500,
+        operators: ["FOO:Operator:fake"]
+    ) {
+        id
+    }
+}
+,
