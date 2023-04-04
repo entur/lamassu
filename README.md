@@ -13,8 +13,8 @@ Mobility aggregation service based on the [General Bikeshare Feed Specification 
                 operatorName: My operator
                 codespace: MFM
                 url: https://myfavoritegbfsfeeed.com/gbfs.json
-                language: en             
-                
+                language: en
+
 This will use the GBFS auto-discovery at `url` and poll `en` language feeds.
 
 NOTE: codespace is relevant when aggregating entities across systems, to avoid conflicts between IDs. 
