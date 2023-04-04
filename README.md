@@ -19,7 +19,7 @@ This will use the GBFS auto-discovery at `url` and poll `en` language feeds.
 
 NOTE: codespace is relevant when aggregating entities across systems, to avoid conflicts between IDs. 
 Every ID (except systemId, which (by GBFS convention) should already be globally unique) is prefixed by this codespace.
-Every feed should be assigned its own unique codespace, even when published by the same operator.
+At least every operator should be assigned its own unique codespace, assuming operators already maintain data / ID separation accross their feeds.
 The codespaced operatorId should comply with the following format `<codespace>:Operator:<operator>`.
 
 ### End-points
