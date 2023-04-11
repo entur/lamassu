@@ -8,8 +8,7 @@ Mobility aggregation service based on the [General Bikeshare Feed Specification 
 
         lamassu:
             providers:
-              
-                systemName: My System
+              - systemId: mysystem
                 operatorId: MFM:Operator:myoperator
                 operatorName: My operator
                 codespace: MFM
@@ -17,6 +16,11 @@ Mobility aggregation service based on the [General Bikeshare Feed Specification 
                 language: en
 
 This will use the GBFS auto-discovery at `url` and poll `en` language feeds.
+
+NOTE: codespace is relevant when aggregating entities across systems, to avoid conflicts between IDs. 
+Every ID (except systemId, which (by GBFS convention) should already be globally unique) is prefixed by this codespace.
+At least every operator should be assigned its own unique codespace, assuming operators already maintain data / ID separation accross their feeds.
+The codespaced operatorId should comply with the following format `<codespace>:Operator:<operator>`.
 
 ### End-points
 
