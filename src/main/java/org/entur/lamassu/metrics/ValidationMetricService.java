@@ -18,9 +18,8 @@
 
 package org.entur.lamassu.metrics;
 
+import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
-import io.micrometer.prometheus.PrometheusConfig;
-import io.micrometer.prometheus.PrometheusMeterRegistry;
 import org.entur.gbfs.validation.model.ValidationResult;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.springframework.stereotype.Component;
@@ -36,14 +35,14 @@ public class ValidationMetricService {
     public static final String LABEL_VERSION = "version";
     public static final String LABEL_FILE = "file";
 
-    private final PrometheusMeterRegistry registry;
+    private final MeterRegistry meterRegistry;
 
-    public ValidationMetricService() {
-        registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
+    public ValidationMetricService(MeterRegistry meterRegistry) {
+        this.meterRegistry = meterRegistry;
     }
 
     public void registerValidationResult(FeedProvider feedProvider, ValidationResult validationResult) {
-        registry.gauge(
+        meterRegistry.gauge(
                 VALIDATION_FEED_ERRORS,
                 List.of(
                         Tag.of(LABEL_SYSTEM, feedProvider.getSystemId()),
@@ -54,7 +53,7 @@ public class ValidationMetricService {
 
         validationResult.getFiles().forEach((file, result) -> {
                     if (result.isRequired()) {
-                        registry.gauge(
+                        meterRegistry.gauge(
                                 VALIDATION_MISSING_REQUIRED_FILE,
                                 List.of(
                                         Tag.of(LABEL_SYSTEM, feedProvider.getSystemId()),
@@ -64,7 +63,7 @@ public class ValidationMetricService {
                                 result.isExists() ? 0 : 1
                         );
                     } else if (result.isExists()) {
-                        registry.gauge(
+                        meterRegistry.gauge(
                                 VALIDATION_FILE_ERRORS,
                                 List.of(
                                         Tag.of(LABEL_SYSTEM, feedProvider.getSystemId()),
