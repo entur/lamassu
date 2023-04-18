@@ -27,18 +27,29 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class ValidationMetricService {
+public class MetricsService {
     private static final String VALIDATION_MISSING_REQUIRED_FILE = "app.lamassu.gbfs.validation.missingrequiredfile";
     private static final String VALIDATION_FILE_ERRORS = "app.lamassu.gbfs.validation.fileerrors";
     private static final String VALIDATION_FEED_ERRORS = "app.lamassu.gbfs.validation.feederrors";
     public static final String LABEL_SYSTEM = "system";
     public static final String LABEL_VERSION = "version";
     public static final String LABEL_FILE = "file";
+    public static final String SUBSCRIPTION_FAILEDSETUP = "app.lamassu.gbfs.subscription.failedsetup";
 
     private final MeterRegistry meterRegistry;
 
-    public ValidationMetricService(MeterRegistry meterRegistry) {
+    public MetricsService(MeterRegistry meterRegistry) {
         this.meterRegistry = meterRegistry;
+    }
+
+    public void registerSubscriptionSetup(FeedProvider feedProvider, boolean success) {
+        meterRegistry.gauge(
+                SUBSCRIPTION_FAILEDSETUP,
+                List.of(
+                        Tag.of(LABEL_SYSTEM, feedProvider.getSystemId())
+                ),
+                success ? 0 : 1
+        );
     }
 
     public void registerValidationResult(FeedProvider feedProvider, ValidationResult validationResult) {

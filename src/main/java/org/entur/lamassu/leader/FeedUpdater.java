@@ -26,7 +26,7 @@ import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.leader.entityupdater.EntityCachesUpdater;
 import org.entur.lamassu.leader.feedcachesupdater.FeedCachesUpdater;
 import org.entur.lamassu.mapper.feedmapper.GbfsDeliveryMapper;
-import org.entur.lamassu.metrics.ValidationMetricService;
+import org.entur.lamassu.metrics.MetricsService;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.redisson.api.RBucket;
 import org.redisson.api.RMapCache;
@@ -63,7 +63,7 @@ public class FeedUpdater {
     @Value("${org.entur.lamassu.enableValidation:false}")
     private boolean enableValidation;
 
-    private ValidationMetricService validationMetricService;
+    private MetricsService metricsService;
 
     @Autowired
     public FeedUpdater(
@@ -73,7 +73,7 @@ public class FeedUpdater {
             EntityCachesUpdater entityCachesUpdater,
             RMapCache<String, ValidationResult> validationResultCache,
             RBucket<Boolean> cacheReady,
-            ValidationMetricService validationMetricService
+            MetricsService metricsService
     ) {
         this.feedProviderConfig = feedProviderConfig;
         this.gbfsDeliveryMapper = gbfsDeliveryMapper;
@@ -81,7 +81,7 @@ public class FeedUpdater {
         this.entityCachesUpdater = entityCachesUpdater;
         this.validationResultCache = validationResultCache;
         this.cacheReady = cacheReady;
-        this.validationMetricService = validationMetricService;
+        this.metricsService = metricsService;
     }
 
     public void start() {
@@ -119,9 +119,11 @@ public class FeedUpdater {
 
         if (id == null) {
             logger.warn("Failed to setup subscription, trying again in 5 seconds - systemId={}", feedProvider.getSystemId());
+            metricsService.registerSubscriptionSetup(feedProvider, false);
             CompletableFuture.delayedExecutor(5, TimeUnit.SECONDS).execute(() -> updaterThreadPool.execute(() -> createSubscription(feedProvider)));
         } else {
             logger.info("Setup subscription complete systemId={}", feedProvider.getSystemId());
+            metricsService.registerSubscriptionSetup(feedProvider, true);
         }
     }
 
@@ -131,7 +133,7 @@ public class FeedUpdater {
                 logger.info("Validation errors in feed update for system {}", feedProvider.getSystemId());
             }
             validationResultCache.put(feedProvider.getSystemId(), delivery.getValidationResult());
-            validationMetricService.registerValidationResult(feedProvider, delivery.getValidationResult());
+            metricsService.registerValidationResult(feedProvider, delivery.getValidationResult());
         }
 
         var mappedDelivery = gbfsDeliveryMapper.mapGbfsDelivery(delivery, feedProvider);
