@@ -29,9 +29,9 @@ import java.util.List;
 
 @Component
 public class ValidationMetricService {
-    private static final String VALIDATION_MISSING_REQUIRED_FILE = "app_lamassu_gbfs_validation_missingrequiredfile";
-    private static final String VALIDATION_FILE_ERRORS = "app_lamassu_gbfs_validation_fileerrors";
-    private static final String VALIDATION_FEED_ERRORS = "app_lamassu_gbfs_validation_feederrors";
+    private static final String VALIDATION_MISSING_REQUIRED_FILE = "app.lamassu.gbfs.validation.missingrequiredfile";
+    private static final String VALIDATION_FILE_ERRORS = "app.lamassu.gbfs.validation.fileerrors";
+    private static final String VALIDATION_FEED_ERRORS = "app.lamassu.gbfs.validation.feederrors";
     public static final String LABEL_SYSTEM = "system";
     public static final String LABEL_VERSION = "version";
     public static final String LABEL_FILE = "file";
