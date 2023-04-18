@@ -32,6 +32,9 @@ public class ValidationMetricService {
     private static final String VALIDATION_MISSING_REQUIRED_FILE = "app_lamassu_gbfs_validation_missingrequiredfile";
     private static final String VALIDATION_FILE_ERRORS = "app_lamassu_gbfs_validation_fileerrors";
     private static final String VALIDATION_FEED_ERRORS = "app_lamassu_gbfs_validation_feederrors";
+    public static final String LABEL_SYSTEM = "system";
+    public static final String LABEL_VERSION = "version";
+    public static final String LABEL_FILE = "file";
 
     private final PrometheusMeterRegistry registry;
 
@@ -43,8 +46,8 @@ public class ValidationMetricService {
         registry.gauge(
                 VALIDATION_FEED_ERRORS,
                 List.of(
-                        Tag.of("system", feedProvider.getSystemId()),
-                        Tag.of("version", validationResult.getSummary().getVersion())
+                        Tag.of(LABEL_SYSTEM, feedProvider.getSystemId()),
+                        Tag.of(LABEL_VERSION, validationResult.getSummary().getVersion())
                 ),
                 validationResult.getSummary().getErrorsCount()
         );
@@ -54,9 +57,9 @@ public class ValidationMetricService {
                         registry.gauge(
                                 VALIDATION_MISSING_REQUIRED_FILE,
                                 List.of(
-                                        Tag.of("system", feedProvider.getSystemId()),
-                                        Tag.of("version", result.getVersion()),
-                                        Tag.of("file", file)
+                                        Tag.of(LABEL_SYSTEM, feedProvider.getSystemId()),
+                                        Tag.of(LABEL_VERSION, result.getVersion()),
+                                        Tag.of(LABEL_FILE, file)
                                 ),
                                 result.isExists() ? 0 : 1
                         );
@@ -64,9 +67,9 @@ public class ValidationMetricService {
                         registry.gauge(
                                 VALIDATION_FILE_ERRORS,
                                 List.of(
-                                        Tag.of("system", feedProvider.getSystemId()),
-                                        Tag.of("version", result.getVersion()),
-                                        Tag.of("file", file)
+                                        Tag.of(LABEL_SYSTEM, feedProvider.getSystemId()),
+                                        Tag.of(LABEL_VERSION, result.getVersion()),
+                                        Tag.of(LABEL_FILE, file)
                                 ),
                                 result.getErrorsCount()
                         );
