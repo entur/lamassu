@@ -26,6 +26,7 @@ import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.leader.entityupdater.EntityCachesUpdater;
 import org.entur.lamassu.leader.feedcachesupdater.FeedCachesUpdater;
 import org.entur.lamassu.mapper.feedmapper.GbfsDeliveryMapper;
+import org.entur.lamassu.metrics.ValidationMetricService;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.redisson.api.RBucket;
 import org.redisson.api.RMapCache;
@@ -62,6 +63,8 @@ public class FeedUpdater {
     @Value("${org.entur.lamassu.enableValidation:false}")
     private boolean enableValidation;
 
+    private ValidationMetricService validationMetricService;
+
     @Autowired
     public FeedUpdater(
             FeedProviderConfig feedProviderConfig,
@@ -69,7 +72,8 @@ public class FeedUpdater {
             FeedCachesUpdater feedCachesUpdater,
             EntityCachesUpdater entityCachesUpdater,
             RMapCache<String, ValidationResult> validationResultCache,
-            RBucket<Boolean> cacheReady
+            RBucket<Boolean> cacheReady,
+            ValidationMetricService validationMetricService
     ) {
         this.feedProviderConfig = feedProviderConfig;
         this.gbfsDeliveryMapper = gbfsDeliveryMapper;
@@ -77,6 +81,7 @@ public class FeedUpdater {
         this.entityCachesUpdater = entityCachesUpdater;
         this.validationResultCache = validationResultCache;
         this.cacheReady = cacheReady;
+        this.validationMetricService = validationMetricService;
     }
 
     public void start() {
@@ -126,6 +131,7 @@ public class FeedUpdater {
                 logger.info("Validation errors in feed update for system {}", feedProvider.getSystemId());
             }
             validationResultCache.put(feedProvider.getSystemId(), delivery.getValidationResult());
+            validationMetricService.registerValidationResult(feedProvider, delivery.getValidationResult());
         }
 
         var mappedDelivery = gbfsDeliveryMapper.mapGbfsDelivery(delivery, feedProvider);
