@@ -120,7 +120,7 @@ public class FeedUpdater {
         if (id == null) {
             logger.warn("Failed to setup subscription, trying again in 5 seconds - systemId={}", feedProvider.getSystemId());
             metricsService.registerSubscriptionSetup(feedProvider, false);
-            CompletableFuture.delayedExecutor(5, TimeUnit.SECONDS).execute(() -> updaterThreadPool.execute(() -> createSubscription(feedProvider)));
+            CompletableFuture.delayedExecutor(60, TimeUnit.SECONDS).execute(() -> updaterThreadPool.execute(() -> createSubscription(feedProvider)));
         } else {
             logger.info("Setup subscription complete systemId={}", feedProvider.getSystemId());
             metricsService.registerSubscriptionSetup(feedProvider, true);
