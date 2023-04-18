@@ -24,10 +24,12 @@ import io.micrometer.prometheus.PrometheusMeterRegistry;
 import io.prometheus.client.CollectorRegistry;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 @Configuration
 public class MetricsConfiguration {
 
+    @Profile("!test")
     @Bean(name = { "metricsRegistry", "prometheusMeterRegistry" })
     public PrometheusMeterRegistry prometheusMeterRegistry(
             PrometheusConfig prometheusConfig, CollectorRegistry collectorRegistry, Clock clock) {
