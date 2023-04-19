@@ -73,7 +73,9 @@ public class MetricsService {
                                 ),
                                 result.isExists() ? 0 : 1
                         );
-                    } else if (result.isExists()) {
+                    }
+
+                    if (result.isExists()) {
                         meterRegistry.gauge(
                                 VALIDATION_FILE_ERRORS,
                                 List.of(
