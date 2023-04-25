@@ -1,6 +1,5 @@
 package org.entur.lamassu.service.impl;
 
-import org.entur.lamassu.cache.AbstractSpatialIndexId;
 import org.entur.lamassu.cache.StationCache;
 import org.entur.lamassu.cache.StationSpatialIndex;
 import org.entur.lamassu.cache.StationSpatialIndexId;
@@ -9,10 +8,10 @@ import org.entur.lamassu.cache.VehicleSpatialIndex;
 import org.entur.lamassu.cache.VehicleSpatialIndexId;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.Vehicle;
+import org.entur.lamassu.service.GeoSearchService;
+import org.entur.lamassu.service.RangeQueryParameters;
 import org.entur.lamassu.service.StationFilterParameters;
 import org.entur.lamassu.service.VehicleFilterParameters;
-import org.entur.lamassu.service.RangeQueryParameters;
-import org.entur.lamassu.service.GeoSearchService;
 import org.entur.lamassu.util.SpatialIndexIdFilter;
 import org.redisson.api.GeoOrder;
 import org.redisson.api.GeoUnit;
@@ -24,7 +23,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Component
 public class GeoSearchServiceImpl implements GeoSearchService {
