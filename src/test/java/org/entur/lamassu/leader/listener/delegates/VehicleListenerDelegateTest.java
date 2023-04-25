@@ -19,6 +19,7 @@
 package org.entur.lamassu.leader.listener.delegates;
 
 import org.entur.lamassu.cache.VehicleSpatialIndex;
+import org.entur.lamassu.cache.VehicleSpatialIndexId;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PropulsionType;
 import org.entur.lamassu.model.entities.Vehicle;
@@ -30,6 +31,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.redisson.api.map.event.EntryEvent;
 
+import java.util.List;
 import java.util.Set;
 
 import static org.mockito.Mockito.when;
@@ -43,15 +45,16 @@ class VehicleListenerDelegateTest {
     void testExpiry() {
         FeedProvider feedProvider = getFeedProvider();
         Vehicle vehicle = getVehicle();
+        VehicleSpatialIndexId expectedId = SpatialIndexIdUtil.createVehicleSpatialIndexId(vehicle, feedProvider);
 
         when(mockFeedProviderService.getFeedProviderBySystemId(feedProvider.getSystemId())).thenReturn(feedProvider);
+        when(mockIndex.getAll()).thenReturn(List.of(expectedId));
 
         EntryEvent<String, Vehicle> event = new EntryEvent<>(null, EntryEvent.Type.EXPIRED, "foo", vehicle, null);
 
         var subject = new VehicleListenerDelegate(mockFeedProviderService, mockIndex);
         subject.onExpired(event);
 
-        var expectedId = SpatialIndexIdUtil.createVehicleSpatialIndexId(vehicle, feedProvider);
         Mockito.verify(mockIndex).removeAll(Set.of(expectedId));
 
     }
