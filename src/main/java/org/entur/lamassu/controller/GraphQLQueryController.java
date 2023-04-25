@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -56,7 +57,7 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
     }
 
     public Collection<Vehicle> getVehicles(
-            List<String> ids,
+            Set<String> ids,
             Double lat,
             Double lon,
             Double range,
@@ -69,6 +70,10 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
             boolean includeReserved,
             boolean includeDisabled
     ) {
+        if (ids != null) {
+            return vehicleCache.getAll(ids);
+        }
+
         validateRange(range);
         validateCount(count);
         validateCodespaces(codespaces);
@@ -99,7 +104,7 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
     }
 
     public Collection<Station> getStations(
-            List<String> ids,
+            Set<String> ids,
             Double lat,
             Double lon,
             Double range,
@@ -110,6 +115,10 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
             List<FormFactor> availableFormFactors,
             List<PropulsionType> availablePropulsionTypes
     ) {
+        if (ids != null) {
+            return stationCache.getAll(ids);
+        }
+
         validateRange(range);
         validateCount(count);
         validateCodespaces(codespaces);
