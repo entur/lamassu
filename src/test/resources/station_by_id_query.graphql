@@ -1,0 +1,65 @@
+{
+    stationById(
+        id: "TST:Station:1"
+    ) {
+        id
+        name {
+            translation {
+                language
+                value
+            }
+        }
+        lat
+        lon
+        address
+        capacity
+        numBikesAvailable
+        vehicleTypesAvailable {
+            vehicleType {
+                formFactor
+                propulsionType
+                gCO2km
+                maxPermittedSpeed
+                maxRangeMeters
+                wheelCount
+                returnConstraint
+                ratedPower
+                riderCapacity
+                cargoLoadCapacity
+                cargoVolumeCapacity
+                vehicleAccessories
+                make
+                model
+                color
+            }
+            count
+        }
+        vehicleDocksAvailable {
+            vehicleTypes {
+                formFactor
+                propulsionType
+                gCO2km
+                maxPermittedSpeed
+                maxRangeMeters
+                wheelCount
+                returnConstraint
+                ratedPower
+                riderCapacity
+                cargoLoadCapacity
+                cargoVolumeCapacity
+                vehicleAccessories
+                make
+                model
+                color
+            }
+            count
+        }
+        numDocksAvailable
+        isInstalled
+        isRenting
+        isReturning
+        lastReported
+        system { id }
+        pricingPlans { id }
+    }
+}
