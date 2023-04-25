@@ -1,5 +1,6 @@
 package org.entur.lamassu.service.impl;
 
+import org.entur.lamassu.cache.AbstractSpatialIndexId;
 import org.entur.lamassu.cache.StationCache;
 import org.entur.lamassu.cache.StationSpatialIndex;
 import org.entur.lamassu.cache.StationSpatialIndexId;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 public class GeoSearchServiceImpl implements GeoSearchService {
