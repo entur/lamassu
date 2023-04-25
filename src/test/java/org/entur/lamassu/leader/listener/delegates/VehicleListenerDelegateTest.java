@@ -25,7 +25,6 @@ import org.entur.lamassu.model.entities.PropulsionType;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.entities.VehicleType;
 import org.entur.lamassu.model.provider.FeedProvider;
-import org.entur.lamassu.service.FeedProviderService;
 import org.entur.lamassu.util.SpatialIndexIdUtil;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -38,8 +37,6 @@ import static org.mockito.Mockito.when;
 
 class VehicleListenerDelegateTest {
     VehicleSpatialIndex mockIndex = Mockito.mock(VehicleSpatialIndex.class);
-    FeedProviderService mockFeedProviderService = Mockito.mock(FeedProviderService.class);
-
 
     @Test
     void testExpiry() {
@@ -47,12 +44,11 @@ class VehicleListenerDelegateTest {
         Vehicle vehicle = getVehicle();
         VehicleSpatialIndexId expectedId = SpatialIndexIdUtil.createVehicleSpatialIndexId(vehicle, feedProvider);
 
-        when(mockFeedProviderService.getFeedProviderBySystemId(feedProvider.getSystemId())).thenReturn(feedProvider);
         when(mockIndex.getAll()).thenReturn(List.of(expectedId));
 
         EntryEvent<String, Vehicle> event = new EntryEvent<>(null, EntryEvent.Type.EXPIRED, "foo", vehicle, null);
 
-        var subject = new VehicleListenerDelegate(mockFeedProviderService, mockIndex);
+        var subject = new VehicleListenerDelegate(mockIndex);
         subject.onExpired(event);
 
         Mockito.verify(mockIndex).removeAll(Set.of(expectedId));

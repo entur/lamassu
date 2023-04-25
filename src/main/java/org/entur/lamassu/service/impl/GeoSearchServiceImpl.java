@@ -63,10 +63,6 @@ public class GeoSearchServiceImpl implements GeoSearchService {
         return vehicleCache.getAll(vehicleIds);
     }
 
-    private String getVehicleCacheKey(VehicleSpatialIndexId spatialIndexId) {
-        return spatialIndexId.getId() + "_" + spatialIndexId.getSystemId();
-    }
-
     @Override
     public List<Station> getStationsNearby(RangeQueryParameters rangeQueryParameters, StationFilterParameters filterParameters) {
         Double longitude = rangeQueryParameters.getLon();
