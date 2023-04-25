@@ -30,14 +30,14 @@ public class GraphQLIntegrationTest extends AbstractIntegrationTestBase {
     public void testVehicleByIdQuery() throws IOException {
         GraphQLResponse response = graphQLTestTemplate.postForResource("vehicle_by_id_query.graphql");
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("TST:Vehicle:1235", response.get("$.data.vehicleById.id"));
+        assertEquals("TST:Vehicle:1235", response.get("$.data.vehicle.id"));
     }
 
     @Test
     public void testVehiclesByIdQuery() throws IOException {
         GraphQLResponse response = graphQLTestTemplate.postForResource("vehicles_by_id_query.graphql");
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("TST:Vehicle:1235", response.get("$.data.vehiclesById[0].id"));
+        assertEquals("TST:Vehicle:1235", response.get("$.data.vehicles[0].id"));
     }
 
     @Test
@@ -60,16 +60,16 @@ public class GraphQLIntegrationTest extends AbstractIntegrationTestBase {
     public void testStationByIdQuery() throws IOException {
         GraphQLResponse response = graphQLTestTemplate.postForResource("station_by_id_query.graphql");
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("TST:Station:1", response.get("$.data.stationById.id"));
-        assertEquals("2", response.get("$.data.stationById.vehicleDocksAvailable[0].count"));
+        assertEquals("TST:Station:1", response.get("$.data.station.id"));
+        assertEquals("2", response.get("$.data.station.vehicleDocksAvailable[0].count"));
     }
 
     @Test
     public void testStationsByIdQuery() throws IOException {
         GraphQLResponse response = graphQLTestTemplate.postForResource("stations_by_id_query.graphql");
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("TST:Station:1", response.get("$.data.stationsById[0].id"));
-        assertEquals("2", response.get("$.data.stationsById[0].vehicleDocksAvailable[0].count"));
+        assertEquals("TST:Station:1", response.get("$.data.stations[0].id"));
+        assertEquals("2", response.get("$.data.stations[0].vehicleDocksAvailable[0].count"));
     }
 
     @Test

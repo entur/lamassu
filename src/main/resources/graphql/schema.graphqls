@@ -2,10 +2,13 @@ type Query {
     codespaces: [String]
     operators: [Operator]
 
+    vehicle(id: String!): Vehicle
+
     vehicles(
-        lat: Float!
-        lon: Float!
-        range: Int!
+        ids: [String!]
+        lat: Float
+        lon: Float
+        range: Int
         count: Int
         codespaces: [String]
         systems: [String]
@@ -16,14 +19,13 @@ type Query {
         includeDisabled: Boolean = false
     ): [Vehicle]
 
-    vehicleById(id: String!): Vehicle
-
-    vehiclesById(ids: [String]!): [Vehicle]
+    station(id: String!): Station
 
     stations(
-        lat: Float!
-        lon: Float!
-        range: Int!
+        ids: [String!]
+        lat: Float
+        lon: Float
+        range: Int
         count: Int
         codespaces: [String]
         systems: [String]
@@ -32,9 +34,7 @@ type Query {
         availablePropulsionTypes: [PropulsionType]
     ): [Station]
 
-    stationById(id: String!): Station
-
-    stationsById(ids: [String]!): [Station]
+    stationsById(ids: [String]!): [Station] @deprecated(reason: "stationsById is deprecated. Use stations query instead.")
 
     geofencingZones(systemIds: [ID]): [GeofencingZones]
 }
