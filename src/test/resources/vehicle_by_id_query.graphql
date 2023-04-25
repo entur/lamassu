@@ -1,11 +1,5 @@
 {
-    vehicles(
-        lat: 59.9146,
-        lon: 10.7604,
-        count: 2,
-        range: 500,
-        includeDisabled: true
-    ) {
+    vehicleById(id:"TST:Vehicle:1235") {
         id
         lat
         lon
@@ -80,6 +74,5 @@
                 brandTermsUrl
             }
         }
-
     }
 }

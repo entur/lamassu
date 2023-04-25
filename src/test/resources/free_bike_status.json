@@ -19,6 +19,22 @@
           "ios": "test://rentme/1234",
           "web": "https://test.com/rentme/1234"
         }
+      },
+      {
+        "bike_id": "1235",
+        "lat": 59.91462349277344,
+        "lon": 10.760423490319824,
+        "is_reserved": false,
+        "is_disabled": false,
+        "vehicle_type_id": "Scooter",
+        "current_range_meters": 1431.2,
+        "current_fuel_percent": 50.0,
+        "pricing_plan_id": "Basic",
+        "rental_uris": {
+          "android": "test://rentme/1234",
+          "ios": "test://rentme/1234",
+          "web": "https://test.com/rentme/1234"
+        }
       }
     ]
   }
