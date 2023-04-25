@@ -16,6 +16,10 @@ type Query {
         includeDisabled: Boolean = false
     ): [Vehicle]
 
+    vehicleById(id: String!): Vehicle
+
+    vehiclesById(ids: [String]!): [Vehicle]
+
     stations(
         lat: Float!
         lon: Float!
@@ -27,6 +31,8 @@ type Query {
         availableFormFactors: [FormFactor]
         availablePropulsionTypes: [PropulsionType]
     ): [Station]
+
+    stationById(id: String!): Station
 
     stationsById(ids: [String]!): [Station]
 

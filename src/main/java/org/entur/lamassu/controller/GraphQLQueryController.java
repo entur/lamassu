@@ -4,6 +4,7 @@ import graphql.GraphqlErrorException;
 import graphql.kickstart.tools.GraphQLQueryResolver;
 import org.entur.lamassu.cache.GeofencingZonesCache;
 import org.entur.lamassu.cache.StationCache;
+import org.entur.lamassu.cache.VehicleCache;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.GeofencingZones;
 import org.entur.lamassu.model.entities.Operator;
@@ -33,13 +34,15 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
 
     private final GeoSearchService geoSearchService;
     private final FeedProviderService feedProviderService;
+    private final VehicleCache vehicleCache;
     private final StationCache stationCache;
     private final GeofencingZonesCache geofencingZonesCache;
 
     @Autowired
-    public GraphQLQueryController(GeoSearchService geoSearchService, FeedProviderService feedProviderService, StationCache stationCache, GeofencingZonesCache geofencingZonesCache) {
+    public GraphQLQueryController(GeoSearchService geoSearchService, FeedProviderService feedProviderService, VehicleCache vehicleCache, StationCache stationCache, GeofencingZonesCache geofencingZonesCache) {
         this.geoSearchService = geoSearchService;
         this.feedProviderService = feedProviderService;
+        this.vehicleCache = vehicleCache;
         this.stationCache = stationCache;
         this.geofencingZonesCache = geofencingZonesCache;
     }
@@ -90,6 +93,17 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
         return geoSearchService.getVehiclesNearby(queryParams, filterParams);
     }
 
+    public Vehicle getVehicleById(String id) {
+        return vehicleCache.get(id);
+    }
+
+    public Collection<Vehicle> getVehiclesById(
+            List<String> ids
+    ) {
+        logger.debug("getVehiclesByIds called ids={}", ids);
+        return vehicleCache.getAll(new HashSet<>(ids));
+    }
+
     public Collection<Station> getStations(
             Double lat,
             Double lon,
@@ -122,6 +136,10 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
         logger.debug("getStations called query={} filter={}", queryParams, filterParams);
 
         return geoSearchService.getStationsNearby(queryParams, filterParams);
+    }
+
+    public Station getStationById(String id) {
+        return stationCache.get(id);
     }
 
     public Collection<Station> getStationsById(
