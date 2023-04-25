@@ -1,5 +1,5 @@
 {
-    vehicleById(id:"TST:Vehicle:1235") {
+    vehicle(id:"TST:Vehicle:1235") {
         id
         lat
         lon

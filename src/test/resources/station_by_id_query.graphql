@@ -1,5 +1,5 @@
 {
-    stationById(
+    station(
         id: "TST:Station:1"
     ) {
         id
