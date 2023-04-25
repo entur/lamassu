@@ -8,10 +8,10 @@ import org.entur.lamassu.cache.VehicleSpatialIndex;
 import org.entur.lamassu.cache.VehicleSpatialIndexId;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.Vehicle;
+import org.entur.lamassu.service.GeoSearchService;
+import org.entur.lamassu.service.RangeQueryParameters;
 import org.entur.lamassu.service.StationFilterParameters;
 import org.entur.lamassu.service.VehicleFilterParameters;
-import org.entur.lamassu.service.RangeQueryParameters;
-import org.entur.lamassu.service.GeoSearchService;
 import org.entur.lamassu.util.SpatialIndexIdFilter;
 import org.redisson.api.GeoOrder;
 import org.redisson.api.GeoUnit;
@@ -57,14 +57,10 @@ public class GeoSearchServiceImpl implements GeoSearchService {
             stream = stream.limit(count.longValue());
         }
 
-        Set<String> vehicleIds = stream.map(this::getVehicleCacheKey)
+        Set<String> vehicleIds = stream.map(VehicleSpatialIndexId::getId)
                 .collect(Collectors.toSet());
 
         return vehicleCache.getAll(vehicleIds);
-    }
-
-    private String getVehicleCacheKey(VehicleSpatialIndexId spatialIndexId) {
-        return spatialIndexId.getId() + "_" + spatialIndexId.getSystemId();
     }
 
     @Override
@@ -94,7 +90,7 @@ public class GeoSearchServiceImpl implements GeoSearchService {
         var indexIds = vehicleSpatialIndex.getAll();
         return indexIds.stream()
                 .filter(Objects::nonNull)
-                .map(this::getVehicleCacheKey)
+                .map(VehicleSpatialIndexId::getId)
                 .filter(key -> !vehicleCache.hasKey(key))
                 .collect(Collectors.toList());
     }
@@ -104,14 +100,11 @@ public class GeoSearchServiceImpl implements GeoSearchService {
         var indexIds = vehicleSpatialIndex.getAll();
         var orphans = indexIds.stream()
                 .filter(Objects::nonNull)
-                .filter(indexId -> {
-                    var cacheKey = getVehicleCacheKey(indexId);
-                    return !vehicleCache.hasKey(cacheKey);
-                })
+                .filter(indexId -> !vehicleCache.hasKey(indexId.getId()))
                 .collect(Collectors.toSet());
 
         vehicleSpatialIndex.removeAll(orphans);
 
-        return orphans.stream().map(this::getVehicleCacheKey).collect(Collectors.toList());
+        return orphans.stream().map(VehicleSpatialIndexId::getId).collect(Collectors.toList());
     }
 }

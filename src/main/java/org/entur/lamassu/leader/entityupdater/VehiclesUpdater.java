@@ -111,16 +111,10 @@ public class VehiclesUpdater {
             logger.debug("Old free_bike_status feed was not available or had no data. As a workaround, removing all vehicles for provider {}", feedProvider.getSystemId());
         }
 
-        var currentVehicles = vehicleCache.getAllAsMap(
-                vehicleIds.stream()
-                        .map(id -> getVehicleCacheKey(id, feedProvider))
-                        .collect(Collectors.toSet())
-        );
-
+        var currentVehicles = vehicleCache.getAllAsMap(new HashSet<>(vehicleIds));
         var system = getSystem(feedProvider, systemInformationFeed);
         var pricingPlans = getPricingPlans(pricingPlansFeed, system.getLanguage());
         var vehicleTypes = getVehicleTypes(vehicleTypesFeed, pricingPlans, system.getLanguage());
-
 
         var vehicles = freeBikeStatusFeed.getData().getBikes().stream()
                 .filter(new VehicleFilter(pricingPlans, vehicleTypes))
@@ -130,7 +124,7 @@ public class VehiclesUpdater {
                         pricingPlans.get(vehicle.getPricingPlanId()),
                         system
                 ))
-                .collect(Collectors.toMap(v -> getVehicleCacheKey(v.getId(), feedProvider), v -> v));
+                .collect(Collectors.toMap(Vehicle::getId, v -> v));
 
         Set<VehicleSpatialIndexId> spatialIndicesToRemove = new java.util.HashSet<>(Set.of());
         Map<VehicleSpatialIndexId, Vehicle> spatialIndexUpdateMap = new java.util.HashMap<>(Map.of());
@@ -150,9 +144,8 @@ public class VehiclesUpdater {
 
         spatialIndicesToRemove.addAll(
                 vehicleIdsToRemove.stream()
-                        .map(vehicleId -> getVehicleCacheKey(vehicleId, feedProvider))
                         .filter(currentVehicles::containsKey)
-                        .map(vehicleCacheKey -> SpatialIndexIdUtil.createVehicleSpatialIndexId(currentVehicles.get(vehicleCacheKey), feedProvider))
+                        .map(id -> SpatialIndexIdUtil.createVehicleSpatialIndexId(currentVehicles.get(id), feedProvider))
                         .collect(Collectors.toSet())
         );
 
@@ -163,7 +156,7 @@ public class VehiclesUpdater {
 
         if (!vehicleIdsToRemove.isEmpty()) {
             logger.debug("Removing {} vehicles from vehicle cache", vehicleIdsToRemove.size());
-            vehicleCache.removeAll(vehicleIdsToRemove.stream().map(id -> getVehicleCacheKey(id, feedProvider)).collect(Collectors.toSet()));
+            vehicleCache.removeAll(new HashSet<>(vehicleIdsToRemove));
         }
 
         if (!vehicles.isEmpty()) {
@@ -193,10 +186,5 @@ public class VehiclesUpdater {
         return pricingPlansFeed.getData().getPlans().stream()
                 .map(pricingPlan -> pricingPlanMapper.mapPricingPlan(pricingPlan, language))
                 .collect(Collectors.toMap(PricingPlan::getId, i -> i));
-    }
-
-
-    private String getVehicleCacheKey(String vehicleId, FeedProvider feedProvider) {
-        return vehicleId + "_" + feedProvider.getSystemId();
     }
 }

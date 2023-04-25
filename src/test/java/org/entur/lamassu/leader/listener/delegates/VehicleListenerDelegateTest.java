@@ -19,39 +19,38 @@
 package org.entur.lamassu.leader.listener.delegates;
 
 import org.entur.lamassu.cache.VehicleSpatialIndex;
+import org.entur.lamassu.cache.VehicleSpatialIndexId;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PropulsionType;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.entities.VehicleType;
 import org.entur.lamassu.model.provider.FeedProvider;
-import org.entur.lamassu.service.FeedProviderService;
 import org.entur.lamassu.util.SpatialIndexIdUtil;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.redisson.api.map.event.EntryEvent;
 
+import java.util.List;
 import java.util.Set;
 
 import static org.mockito.Mockito.when;
 
 class VehicleListenerDelegateTest {
     VehicleSpatialIndex mockIndex = Mockito.mock(VehicleSpatialIndex.class);
-    FeedProviderService mockFeedProviderService = Mockito.mock(FeedProviderService.class);
-
 
     @Test
     void testExpiry() {
         FeedProvider feedProvider = getFeedProvider();
         Vehicle vehicle = getVehicle();
+        VehicleSpatialIndexId expectedId = SpatialIndexIdUtil.createVehicleSpatialIndexId(vehicle, feedProvider);
 
-        when(mockFeedProviderService.getFeedProviderBySystemId(feedProvider.getSystemId())).thenReturn(feedProvider);
+        when(mockIndex.getAll()).thenReturn(List.of(expectedId));
 
-        EntryEvent<String, Vehicle> event = new EntryEvent<>(null, EntryEvent.Type.EXPIRED, "foo_bar", vehicle, null);
+        EntryEvent<String, Vehicle> event = new EntryEvent<>(null, EntryEvent.Type.EXPIRED, "foo", vehicle, null);
 
-        var subject = new VehicleListenerDelegate(mockFeedProviderService, mockIndex);
+        var subject = new VehicleListenerDelegate(mockIndex);
         subject.onExpired(event);
 
-        var expectedId = SpatialIndexIdUtil.createVehicleSpatialIndexId(vehicle, feedProvider);
         Mockito.verify(mockIndex).removeAll(Set.of(expectedId));
 
     }
