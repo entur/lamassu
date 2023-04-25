@@ -57,7 +57,7 @@ public class GeoSearchServiceImpl implements GeoSearchService {
             stream = stream.limit(count.longValue());
         }
 
-        Set<String> vehicleIds = stream.map(this::getVehicleCacheKey)
+        Set<String> vehicleIds = stream.map(VehicleSpatialIndexId::getId)
                 .collect(Collectors.toSet());
 
         return vehicleCache.getAll(vehicleIds);
@@ -94,7 +94,7 @@ public class GeoSearchServiceImpl implements GeoSearchService {
         var indexIds = vehicleSpatialIndex.getAll();
         return indexIds.stream()
                 .filter(Objects::nonNull)
-                .map(this::getVehicleCacheKey)
+                .map(VehicleSpatialIndexId::getId)
                 .filter(key -> !vehicleCache.hasKey(key))
                 .collect(Collectors.toList());
     }
@@ -104,14 +104,11 @@ public class GeoSearchServiceImpl implements GeoSearchService {
         var indexIds = vehicleSpatialIndex.getAll();
         var orphans = indexIds.stream()
                 .filter(Objects::nonNull)
-                .filter(indexId -> {
-                    var cacheKey = getVehicleCacheKey(indexId);
-                    return !vehicleCache.hasKey(cacheKey);
-                })
+                .filter(indexId -> !vehicleCache.hasKey(indexId.getId()))
                 .collect(Collectors.toSet());
 
         vehicleSpatialIndex.removeAll(orphans);
 
-        return orphans.stream().map(this::getVehicleCacheKey).collect(Collectors.toList());
+        return orphans.stream().map(VehicleSpatialIndexId::getId).collect(Collectors.toList());
     }
 }

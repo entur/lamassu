@@ -46,7 +46,7 @@ class VehicleListenerDelegateTest {
 
         when(mockFeedProviderService.getFeedProviderBySystemId(feedProvider.getSystemId())).thenReturn(feedProvider);
 
-        EntryEvent<String, Vehicle> event = new EntryEvent<>(null, EntryEvent.Type.EXPIRED, "foo_bar", vehicle, null);
+        EntryEvent<String, Vehicle> event = new EntryEvent<>(null, EntryEvent.Type.EXPIRED, "foo", vehicle, null);
 
         var subject = new VehicleListenerDelegate(mockFeedProviderService, mockIndex);
         subject.onExpired(event);

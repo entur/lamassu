@@ -30,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class VehicleListenerDelegate implements CacheEntryListenerDelegate<Vehicle> {
@@ -51,16 +52,9 @@ public class VehicleListenerDelegate implements CacheEntryListenerDelegate<Vehic
         logger.info("Expired event {}", event);
         var name = event.getKey();
         var vehicle= event.getValue();
-        var split = name.split("_");
-        var feedProvider = feedProviderService.getFeedProviderBySystemId(split[split.length - 1]);
-        if (feedProvider == null) {
-            logger.warn("Feed provider not found on expired vehicle={}. Probably means feed provider was removed.", name);
-        } else {
-            var id = SpatialIndexIdUtil.createVehicleSpatialIndexId(
-                    vehicle,
-                    feedProvider
-            );
-            spatialIndex.removeAll(Set.of(id));
-        }
+        var expired = spatialIndex.getAll().stream()
+                .filter(spatialIndexId -> spatialIndexId.getId().equals(vehicle.getId()))
+                .collect(Collectors.toSet());
+        spatialIndex.removeAll(expired);
     }
 }
