@@ -21,7 +21,6 @@ package org.entur.lamassu.leader.listener.delegates;
 import org.entur.lamassu.cache.VehicleSpatialIndex;
 import org.entur.lamassu.leader.listener.CacheEntryListenerDelegate;
 import org.entur.lamassu.model.entities.Vehicle;
-import org.entur.lamassu.service.FeedProviderService;
 import org.redisson.api.map.event.EntryEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
