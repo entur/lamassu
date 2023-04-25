@@ -56,6 +56,7 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
     }
 
     public Collection<Vehicle> getVehicles(
+            List<String> ids,
             Double lat,
             Double lon,
             Double range,
@@ -93,18 +94,12 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
         return geoSearchService.getVehiclesNearby(queryParams, filterParams);
     }
 
-    public Vehicle getVehicleById(String id) {
+    public Vehicle getVehicle(String id) {
         return vehicleCache.get(id);
     }
 
-    public Collection<Vehicle> getVehiclesById(
-            List<String> ids
-    ) {
-        logger.debug("getVehiclesByIds called ids={}", ids);
-        return vehicleCache.getAll(new HashSet<>(ids));
-    }
-
     public Collection<Station> getStations(
+            List<String> ids,
             Double lat,
             Double lon,
             Double range,
@@ -138,7 +133,7 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
         return geoSearchService.getStationsNearby(queryParams, filterParams);
     }
 
-    public Station getStationById(String id) {
+    public Station getStation(String id) {
         return stationCache.get(id);
     }
 
