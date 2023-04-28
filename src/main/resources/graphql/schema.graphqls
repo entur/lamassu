@@ -1,36 +1,79 @@
 type Query {
     codespaces: [String]
+
     operators: [Operator]
 
     vehicle(id: String!): Vehicle
 
     vehicles(
+        "Fetch vehicles with specific ids. All other filters are ignored!"
         ids: [String!]
+
+        "Required unless using 'ids'"
         lat: Float
+
+        "Required unless using 'ids'"
         lon: Float
+
+        "Search radius in meters. Required unless using 'ids'"
         range: Int
+
+        "Max results to return."
         count: Int
+
+        "Filter by codespaces"
         codespaces: [String]
+
+        "Filter by systems"
         systems: [String]
+
+        "Filter by operators"
         operators: [String]
+
+        "Filter by form factors"
         formFactors: [FormFactor]
+
+        "Filter by propulsion type"
         propulsionTypes: [PropulsionType]
+
+        "Include reserved vehicles in result"
         includeReserved: Boolean = false
+
+        "Include disabled vehicles in result"
         includeDisabled: Boolean = false
     ): [Vehicle]
 
     station(id: String!): Station
 
     stations(
+        "Fetch vehicles with specific ids. All other filters are ignored!"
         ids: [String!]
+
+        "Required unless using 'ids'"
         lat: Float
+
+        "Required unless using 'ids'"
         lon: Float
+
+        "Search radius in meters. Required unless using 'ids'"
         range: Int
+
+        "Max results to return."
         count: Int
+
+        "Filter by codespaces"
         codespaces: [String]
+
+        "Filter by systems"
         systems: [String]
+
+        "Filter by operators"
         operators: [String]
+
+        "Filter by available form factors at station"
         availableFormFactors: [FormFactor]
+
+        "Filter by available propulsion types at station"
         availablePropulsionTypes: [PropulsionType]
     ): [Station]
 
