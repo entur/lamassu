@@ -9,12 +9,11 @@ import static org.mockito.Mockito.*;
 public class LeaderSingletonServiceTest {
 
     FeedUpdater mockedFeedUpdater = mock(FeedUpdater.class);
-    ListenerManager mockedListenerManager = mock(ListenerManager.class);
     GeoSearchService mockedGeoSearchService = mock(GeoSearchService.class);
 
     @Test
     public void testStartsScheduling() {
-        var service = new LeaderSingletonService(mockedFeedUpdater, mockedListenerManager, mockedGeoSearchService);
+        var service = new LeaderSingletonService(mockedFeedUpdater, mockedGeoSearchService);
         service.init();
         verify(mockedFeedUpdater).start();
     }

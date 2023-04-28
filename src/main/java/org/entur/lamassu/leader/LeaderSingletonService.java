@@ -16,19 +16,16 @@ import javax.annotation.PreDestroy;
 public class LeaderSingletonService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final FeedUpdater feedUpdater;
-    private final ListenerManager listenerManager;
     private final GeoSearchService geoSearchService;
 
-    public LeaderSingletonService(@Autowired FeedUpdater feedUpdater, @Autowired ListenerManager listenerManager, @Autowired GeoSearchService geoSearchService) {
+    public LeaderSingletonService(@Autowired FeedUpdater feedUpdater, @Autowired GeoSearchService geoSearchService) {
         this.feedUpdater = feedUpdater;
-        this.listenerManager = listenerManager;
         this.geoSearchService = geoSearchService;
     }
 
     @PostConstruct
     public void init() {
         logger.info("Initializing leader");
-        listenerManager.start();
         feedUpdater.start();
     }
 
@@ -36,7 +33,6 @@ public class LeaderSingletonService {
     public void shutdown() {
         logger.info("Shutting down leader");
         feedUpdater.stop();
-        listenerManager.stop();
     }
 
     @Scheduled(fixedRateString = "${org.entur.lamassu.feedupdateinterval:30000}")
