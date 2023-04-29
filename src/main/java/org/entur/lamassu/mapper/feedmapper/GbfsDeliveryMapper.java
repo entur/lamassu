@@ -82,7 +82,6 @@ public class GbfsDeliveryMapper {
     // mapping of the versions file, if it exists, is intentionally skipped.
     public GbfsDelivery mapGbfsDelivery(GbfsDelivery delivery, FeedProvider feedProvider) {
         var mapped = new GbfsDelivery();
-        mapped.setDiscovery(discoveryFeedMapper.map(delivery.getDiscovery(), feedProvider));
         mapped.setSystemInformation(systemInformationFeedMapper.map(delivery.getSystemInformation(), feedProvider));
         mapped.setSystemAlerts(systemAlertsFeedMapper.map(delivery.getSystemAlerts(), feedProvider));
         mapped.setSystemCalendar(systemCalendarFeedMapper.map(delivery.getSystemCalendar(), feedProvider));
@@ -99,6 +98,11 @@ public class GbfsDeliveryMapper {
                         stationStatus -> VehicleTypeCapacityProducer.addToStations(stationStatus, mapped.getVehicleTypes()))
         );
         mapped.setFreeBikeStatus(freeBikeStatusFeedMapper.map(delivery.getFreeBikeStatus(), feedProvider));
+        mapped.setDiscovery(
+                discoveryFeedMapper.map(
+                        delivery.getDiscovery(),
+                        feedProvider,
+                        discovery -> DiscoveryFeedPostProcessor.removeUnavailableFiles(discovery, mapped)));
         return mapped;
     }
 }

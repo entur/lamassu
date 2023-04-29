@@ -8,6 +8,7 @@ import org.entur.lamassu.cache.GBFSFeedCache;
 import org.entur.lamassu.model.discovery.System;
 import org.entur.lamassu.model.discovery.SystemDiscovery;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.entur.lamassu.service.FeedAvailabilityService;
 import org.entur.lamassu.service.FeedProviderService;
 import org.entur.lamassu.service.SystemDiscoveryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,8 @@ public class GBFSFeedController {
     private final GBFSFeedCache feedCache;
     private final FeedProviderService feedProviderService;
 
+    private final FeedAvailabilityService feedAvailabilityService;
+
     @Value("${org.entur.lamassu.baseUrl}")
     private String baseUrl;
 
@@ -35,10 +38,11 @@ public class GBFSFeedController {
     private String internalLoadBalancer;
 
     @Autowired
-    public GBFSFeedController(SystemDiscoveryService systemDiscoveryService, GBFSFeedCache feedCache, FeedProviderService feedProviderService) {
+    public GBFSFeedController(SystemDiscoveryService systemDiscoveryService, GBFSFeedCache feedCache, FeedProviderService feedProviderService, FeedAvailabilityService feedAvailabilityService) {
         this.systemDiscoveryService = systemDiscoveryService;
         this.feedCache = feedCache;
         this.feedProviderService = feedProviderService;
+        this.feedAvailabilityService = feedAvailabilityService;
     }
 
     @GetMapping("/gbfs")
@@ -72,8 +76,9 @@ public class GBFSFeedController {
         try {
             var feedName = GBFSFeedName.fromValue(feed);
             var feedProvider = feedProviderService.getFeedProviderBySystemId(systemId);
+            var availableFiles = feedAvailabilityService.getAvailableFiles(systemId);
 
-            if (feedProvider == null) {
+            if (feedProvider == null || availableFiles == null || !availableFiles.contains(feedName) && !feedName.equals(GBFSFeedName.GBFS)) {
                 throw new NoSuchElementException();
             }
 

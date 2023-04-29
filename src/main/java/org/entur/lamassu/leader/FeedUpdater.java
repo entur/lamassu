@@ -21,6 +21,7 @@ package org.entur.lamassu.leader;
 import org.entur.gbfs.GbfsDelivery;
 import org.entur.gbfs.GbfsSubscriptionManager;
 import org.entur.gbfs.GbfsSubscriptionOptions;
+import org.entur.gbfs.v2_3.gbfs.GBFSFeed;
 import org.entur.gbfs.validation.model.ValidationResult;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.leader.entityupdater.EntityCachesUpdater;
@@ -28,6 +29,7 @@ import org.entur.lamassu.leader.feedcachesupdater.FeedCachesUpdater;
 import org.entur.lamassu.mapper.feedmapper.GbfsDeliveryMapper;
 import org.entur.lamassu.metrics.MetricsService;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.entur.lamassu.service.FeedAvailabilityService;
 import org.redisson.api.RBucket;
 import org.redisson.api.RMapCache;
 import org.slf4j.Logger;
@@ -41,6 +43,7 @@ import java.net.URI;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Component
 @Profile("leader")
@@ -65,6 +68,8 @@ public class FeedUpdater {
 
     private MetricsService metricsService;
 
+    private FeedAvailabilityService feedAvailabilityService;
+
     @Autowired
     public FeedUpdater(
             FeedProviderConfig feedProviderConfig,
@@ -73,7 +78,8 @@ public class FeedUpdater {
             EntityCachesUpdater entityCachesUpdater,
             RMapCache<String, ValidationResult> validationResultCache,
             RBucket<Boolean> cacheReady,
-            MetricsService metricsService
+            MetricsService metricsService,
+            FeedAvailabilityService feedAvailabilityService
     ) {
         this.feedProviderConfig = feedProviderConfig;
         this.gbfsDeliveryMapper = gbfsDeliveryMapper;
@@ -82,6 +88,7 @@ public class FeedUpdater {
         this.validationResultCache = validationResultCache;
         this.cacheReady = cacheReady;
         this.metricsService = metricsService;
+        this.feedAvailabilityService = feedAvailabilityService;
     }
 
     public void start() {
@@ -138,7 +145,19 @@ public class FeedUpdater {
 
         var mappedDelivery = gbfsDeliveryMapper.mapGbfsDelivery(delivery, feedProvider);
         var oldDelivery =  feedCachesUpdater.updateFeedCaches(feedProvider, mappedDelivery);
-        entityCachesUpdater.updateEntityCaches(feedProvider, mappedDelivery, oldDelivery);
+
+        try {
+            entityCachesUpdater.updateEntityCaches(feedProvider, mappedDelivery, oldDelivery);
+        } catch (ClassCastException e) {
+            logger.warn("This should not occur in production", e);
+        }
+
+
+        feedAvailabilityService.setAvailableFiles(
+                feedProvider.getSystemId(),
+                mappedDelivery.getDiscovery().getFeedsData().get(feedProvider.getLanguage()).getFeeds().stream().map(GBFSFeed::getName).collect(Collectors.toList())
+        );
+
         cacheReady.set(true);
     }
 }
