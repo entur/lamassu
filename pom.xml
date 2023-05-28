@@ -24,7 +24,7 @@
         <kryo.version>5.5.0</kryo.version>
         <jackson.version>2.15.1</jackson.version>
         <gbfs-loader-java.version>1.3.5</gbfs-loader-java.version>
-        <netex-utils.version>1.41</netex-utils.version>
+        <netex-utils.version>1.42</netex-utils.version>
     </properties>
 
     <distributionManagement>
