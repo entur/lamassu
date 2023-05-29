@@ -10,16 +10,21 @@ import org.entur.lamassu.model.discovery.SystemDiscovery;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.service.FeedProviderService;
 import org.entur.lamassu.service.SystemDiscoveryService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.NoSuchElementException;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @RestController
@@ -42,14 +47,19 @@ public class GBFSFeedController {
     }
 
     @GetMapping("/gbfs")
-    public SystemDiscovery getFeedProviderDiscovery() {
-        return systemDiscoveryService.getSystemDiscovery();
+    public ResponseEntity<SystemDiscovery> getFeedProviderDiscovery() {
+        var data = systemDiscoveryService.getSystemDiscovery();
+        return ResponseEntity.ok()
+                .cacheControl(CacheControl.maxAge(60, TimeUnit.MINUTES).cachePublic())
+                .body(data);
     }
 
     @GetMapping("/gbfs-internal")
-    public SystemDiscovery getInternalFeedProviderDiscovery() {
-        var data = getFeedProviderDiscovery();
-        return modifySystemDiscoveryUrls(data);
+    public ResponseEntity<SystemDiscovery> getInternalFeedProviderDiscovery() {
+        var data = systemDiscoveryService.getSystemDiscovery();
+        return ResponseEntity.ok()
+                .cacheControl(CacheControl.maxAge(60, TimeUnit.MINUTES).cachePublic())
+                .body(modifySystemDiscoveryUrls(data));
     }
 
     private SystemDiscovery modifySystemDiscoveryUrls(SystemDiscovery data) {
@@ -68,22 +78,14 @@ public class GBFSFeedController {
     }
 
     @GetMapping(value = {"/gbfs/{systemId}/{feed}", "/gbfs/{systemId}/{feed}.json"})
-    public Object getGbfsFeedForProvider(@PathVariable String systemId, @PathVariable String feed) {
+    public ResponseEntity<Object> getGbfsFeedForProvider(@PathVariable String systemId, @PathVariable String feed) {
         try {
             var feedName = GBFSFeedName.fromValue(feed);
-            var feedProvider = feedProviderService.getFeedProviderBySystemId(systemId);
+            Object data = getFeed(systemId, feed);
 
-            if (feedProvider == null) {
-                throw new NoSuchElementException();
-            }
-
-            var data = feedCache.find(feedName, feedProvider);
-
-            if (data == null) {
-                throw new NoSuchElementException();
-            }
-
-            return data;
+            return ResponseEntity.ok()
+                    .cacheControl(CacheControl.maxAge(getMaxAge(feedName, data), TimeUnit.SECONDS).cachePublic())
+                    .body(data);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         } catch (NoSuchElementException e) {
@@ -93,14 +95,60 @@ public class GBFSFeedController {
 
     @GetMapping(value = {"/gbfs-internal/{systemId}/{feed}", "/gbfs-internal/{systemId}/{feed}.json"})
     public Object getInternalGbfsFeedForProvider(@PathVariable String systemId, @PathVariable String feed) {
+        try {
+            var feedName = GBFSFeedName.fromValue(feed);
+            var feedProvider = feedProviderService.getFeedProviderBySystemId(systemId);
+            Object data = getFeed(systemId, feed);
+            if (feedName.equals(GBFSFeedName.GBFS)) {
+                data = modifyDiscoveryUrls(feedProvider, (GBFS) data);
+            }
+
+            return ResponseEntity.ok()
+                    .cacheControl(CacheControl.maxAge(getMaxAge(feedName, data), TimeUnit.SECONDS).cachePublic())
+                    .body(data);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        } catch (NoSuchElementException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    private int getMaxAge(GBFSFeedName feedName, Object data) {
+        int maxAge = 60;
+        try {
+            Integer lastUpdated = (Integer) feedName.implementingClass().getMethod("getLastUpdated").invoke(data);
+            Integer ttl = (Integer) feedName.implementingClass().getMethod("getTtl").invoke(data);
+
+            if (lastUpdated != null && ttl != null) {
+                maxAge = getCurrentTimeSeconds() - lastUpdated + ttl;
+            }
+
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            // log something?
+        }
+
+        return maxAge;
+    }
+
+    private int getCurrentTimeSeconds() {
+        return (int)(java.lang.System.currentTimeMillis() / 1000L);
+    }
+
+    @NotNull
+    private Object getFeed(String systemId, String feed) {
         var feedName = GBFSFeedName.fromValue(feed);
         var feedProvider = feedProviderService.getFeedProviderBySystemId(systemId);
-        var data = getGbfsFeedForProvider(systemId, feed);
-        if (feedName.equals(GBFSFeedName.GBFS)) {
-            return modifyDiscoveryUrls(feedProvider, (GBFS) data);
-        } else {
-            return data;
+
+        if (feedProvider == null) {
+            throw new NoSuchElementException();
         }
+
+        var data = feedCache.find(feedName, feedProvider);
+
+        if (data == null) {
+            throw new NoSuchElementException();
+        }
+        return data;
     }
 
     private GBFS modifyDiscoveryUrls(FeedProvider feedProvider, GBFS data) {
