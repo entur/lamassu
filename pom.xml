@@ -23,7 +23,7 @@
         <okhttp.version>4.11.0</okhttp.version>
         <kryo.version>5.5.0</kryo.version>
         <jackson.version>2.15.2</jackson.version>
-        <gbfs-loader-java.version>1.3.5</gbfs-loader-java.version>
+        <gbfs-loader-java.version>1.3.6-SNAPSHOT</gbfs-loader-java.version>
         <netex-utils.version>1.42</netex-utils.version>
     </properties>
 
@@ -47,11 +47,6 @@
             <groupId>org.entur.gbfs</groupId>
             <artifactId>gbfs-validator-java</artifactId>
             <version>1.0.4-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20230227</version>
         </dependency>
         <dependency>
             <groupId>org.entur.ror.helpers</groupId>

@@ -2,6 +2,7 @@ package org.entur.lamassu.integration;
 
 import com.graphql.spring.boot.test.GraphQLResponse;
 import com.graphql.spring.boot.test.GraphQLTestTemplate;
+import com.jayway.jsonpath.JsonPath;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,11 @@ public class GraphQLIntegrationTest extends AbstractIntegrationTestBase {
     public void testVehiclesQuery() throws IOException {
         GraphQLResponse response = graphQLTestTemplate.postForResource("vehicles_query_with_disabled.graphql");
         assertEquals(HttpStatus.OK,response.getStatusCode());
-        assertEquals(2, response.get("$.data.vehicles", List.class).size());
+
+        // TODO: investigate why this started failing
+        //assertEquals(2, response.get("$.data.vehicles", List.class).size());
+        assertEquals(2, JsonPath.parse(response.getRawResponse().getBody()).read("$.data.vehicles", List.class).size());
+
         assertEquals("TST:Vehicle:1234", response.get("$.data.vehicles[0].id"));
         assertEquals("Test", response.get("$.data.vehicles[0].system.name.translation[0].value"));
     }
@@ -44,7 +49,10 @@ public class GraphQLIntegrationTest extends AbstractIntegrationTestBase {
     public void testVehicleQueryWithoutDisabled() throws IOException {
         GraphQLResponse response = graphQLTestTemplate.postForResource("vehicles_query_without_disabled.graphql");
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(1, response.get("$.data.vehicles", List.class).size());
+
+        // TODO: investigate why this started failing
+        //assertEquals(1, response.get("$.data.vehicles", List.class).size());
+        assertEquals(1, JsonPath.parse(response.getRawResponse().getBody()).read("$.data.vehicles", List.class).size());
     }
 
     @Test
@@ -83,6 +91,9 @@ public class GraphQLIntegrationTest extends AbstractIntegrationTestBase {
     public void testUnknownOperatorDoesNotThrow() throws IOException {
         GraphQLResponse response = graphQLTestTemplate.postForResource("stations_query_unknown_operator.graphql");
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertTrue(response.get("$.data.stations", List.class).isEmpty());
+
+        // TODO: investigate why this started failing
+        //assertTrue(response.get("$.data.stations", List.class).isEmpty());
+        assertTrue(JsonPath.parse(response.getRawResponse().getBody()).read("$.data.stations", List.class).isEmpty());
     }
  }
