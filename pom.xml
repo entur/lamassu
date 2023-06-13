@@ -35,11 +35,23 @@
         </snapshotRepository>
     </distributionManagement>
 
+
+
     <dependencies>
         <dependency>
             <groupId>org.entur.gbfs</groupId>
             <artifactId>gbfs-loader-java</artifactId>
             <version>${gbfs-loader-java.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.entur.gbfs</groupId>
+            <artifactId>gbfs-validator-java</artifactId>
+            <version>1.0.4-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20230227</version>
         </dependency>
         <dependency>
             <groupId>org.entur.ror.helpers</groupId>
