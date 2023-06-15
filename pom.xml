@@ -46,7 +46,7 @@
         <dependency>
             <groupId>org.entur.gbfs</groupId>
             <artifactId>gbfs-validator-java</artifactId>
-            <version>1.0.4-20230614.121202-32</version>
+            <version>1.0.4-20230615.095728-35</version>
         </dependency>
         <dependency>
             <groupId>org.entur.ror.helpers</groupId>

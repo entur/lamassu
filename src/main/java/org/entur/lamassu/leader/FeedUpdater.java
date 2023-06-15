@@ -29,6 +29,7 @@ import org.entur.lamassu.mapper.feedmapper.GbfsDeliveryMapper;
 import org.entur.lamassu.metrics.MetricsService;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.redisson.api.RBucket;
+import org.redisson.api.RListMultimap;
 import org.redisson.api.RMapCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,8 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
@@ -58,7 +61,7 @@ public class FeedUpdater {
     private GbfsSubscriptionManager subscriptionManager;
     private ForkJoinPool updaterThreadPool;
 
-    private final RMapCache<String, ValidationResult> validationResultCache;
+    private final RListMultimap<String, ValidationResult> validationResultsCache;
 
     @Value("${org.entur.lamassu.enableValidation:false}")
     private boolean enableValidation;
@@ -71,7 +74,7 @@ public class FeedUpdater {
             GbfsDeliveryMapper gbfsDeliveryMapper,
             FeedCachesUpdater feedCachesUpdater,
             EntityCachesUpdater entityCachesUpdater,
-            RMapCache<String, ValidationResult> validationResultCache,
+            RListMultimap<String, ValidationResult> validationResultsCache,
             RBucket<Boolean> cacheReady,
             MetricsService metricsService
     ) {
@@ -79,7 +82,7 @@ public class FeedUpdater {
         this.gbfsDeliveryMapper = gbfsDeliveryMapper;
         this.feedCachesUpdater = feedCachesUpdater;
         this.entityCachesUpdater = entityCachesUpdater;
-        this.validationResultCache = validationResultCache;
+        this.validationResultsCache = validationResultsCache;
         this.cacheReady = cacheReady;
         this.metricsService = metricsService;
     }
@@ -132,7 +135,7 @@ public class FeedUpdater {
             if (delivery.getValidationResult().getSummary().getErrorsCount() > 0) {
                 logger.info("Validation errors in feed update for system {}", feedProvider.getSystemId());
             }
-            validationResultCache.put(feedProvider.getSystemId(), delivery.getValidationResult());
+            updateValidationReportsCache(feedProvider.getSystemId(), delivery.getValidationResult());
             metricsService.registerValidationResult(feedProvider, delivery.getValidationResult());
         }
 
@@ -140,5 +143,21 @@ public class FeedUpdater {
         var oldDelivery =  feedCachesUpdater.updateFeedCaches(feedProvider, mappedDelivery);
         entityCachesUpdater.updateEntityCaches(feedProvider, mappedDelivery, oldDelivery);
         cacheReady.set(true);
+    }
+
+    private void updateValidationReportsCache(String systemId, ValidationResult validationResult) {
+        var validationResults = validationResultsCache.get(systemId);
+        var mostRecent = validationResults.get(validationResults.size() - 1);
+
+        if (validationResult.sameAs(mostRecent)) {
+            validationResults.fastSet(validationResults.size() - 1, validationResult);
+        } else {
+            validationResults.add(validationResult);
+
+            // Configurable maximum history?
+            if (validationResults.size() > 10) {
+                validationResults.remove(0);
+            }
+        }
     }
 }

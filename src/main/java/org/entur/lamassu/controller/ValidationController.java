@@ -23,7 +23,7 @@ import org.entur.gbfs.validation.model.ValidationResult;
 import org.entur.lamassu.model.validation.ShortFileValidationResult;
 import org.entur.lamassu.model.validation.ShortValidationResult;
 import org.entur.lamassu.service.FeedProviderService;
-import org.redisson.api.RMapCache;
+import org.redisson.api.RListMultimap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,7 +31,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.AbstractMap;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -39,12 +41,15 @@ import java.util.stream.Collectors;
 @RequestMapping("/validation")
 public class ValidationController {
     private final FeedProviderService feedProviderService;
-    private final RMapCache<String, ValidationResult> validationResultCache;
+    private final RListMultimap<String, ValidationResult> validationResultsCache;
 
     @Autowired
-    public ValidationController(FeedProviderService feedProviderService, RMapCache<String, ValidationResult> validationResultCache) {
+    public ValidationController(
+            FeedProviderService feedProviderService,
+            RListMultimap<String, ValidationResult> validationResultsCache
+    ) {
         this.feedProviderService = feedProviderService;
-        this.validationResultCache = validationResultCache;
+        this.validationResultsCache = validationResultsCache;
     }
 
     @GetMapping("/systems")
@@ -52,12 +57,27 @@ public class ValidationController {
         Map<String, ShortValidationResult> systems = new HashMap<>();
         feedProviderService.getFeedProviders()
                 .forEach(feedProvider -> {
-                    var validationResult = validationResultCache.get(feedProvider.getSystemId());
+                    var validationResults = validationResultsCache.get(feedProvider.getSystemId());
+                    var validationResult = validationResults.get(validationResults.size() - 1);
                     if (validationResult != null) {
                         systems.put(feedProvider.getSystemId(), mapToShortValidationResult(validationResult));
                     }
                 });
         return systems;
+    }
+
+    @GetMapping("/systems/{systemId}")
+    public List<ShortValidationResult> getValidationResultsForSystem(@PathVariable String systemId) {
+        var validationResults = validationResultsCache.getAll(systemId);
+        var shortResults = validationResults.stream().map(this::mapToShortValidationResult).collect(Collectors.toList());
+        Collections.reverse(shortResults);
+        return shortResults;
+    }
+
+    @GetMapping("/systems/{systemId}/{index}")
+    public ValidationResult getValidationResultForSystem(@PathVariable String systemId, @PathVariable int index) {
+        var validationResults = validationResultsCache.get(systemId);
+        return validationResults.get(index);
     }
 
     private ShortValidationResult mapToShortValidationResult(ValidationResult validationResult) {
@@ -85,10 +105,5 @@ public class ValidationController {
         shortFileValidationResult.setExists(value.isExists());
         shortFileValidationResult.setVersion(value.getVersion());
         return shortFileValidationResult;
-    }
-
-    @GetMapping("/systems/{systemId}")
-    public ValidationResult getValidationResultForSystem(@PathVariable String systemId) {
-        return validationResultCache.get(systemId);
     }
 }

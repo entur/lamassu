@@ -9,6 +9,7 @@ import org.entur.lamassu.model.entities.Vehicle;
 import org.redisson.Redisson;
 import org.redisson.api.RBucket;
 import org.redisson.api.RGeo;
+import org.redisson.api.RListMultimap;
 import org.redisson.api.RMapCache;
 import org.redisson.api.RedissonClient;
 import org.redisson.codec.Kryo5Codec;
@@ -29,7 +30,7 @@ public class RedissonCacheConfig {
     public static final String GEOFENCING_ZONES_CACHE_KEY = "geofencingZonesCache";
     public static final String VEHICLE_SPATIAL_INDEX_KEY = "vehicleSpatialIndex";
     public static final String STATION_SPATIAL_INDEX_KEY = "stationSpatialIndex";
-    public static final String VALIDATION_REPORT_CACHE_KEY = "validationReportCache";
+    public static final String VALIDATION_REPORTS_CACHE_KEY = "validationReportsCache";
     public static final String CACHE_READY_KEY = "cacheReady";
 
     @Value("${org.entur.lamassu.serializationVersion}")
@@ -120,8 +121,8 @@ public class RedissonCacheConfig {
     }
 
     @Bean
-    public RMapCache<String, ValidationResult> validationResultCache(RedissonClient redissonClient) {
-        return redissonClient.getMapCache(VALIDATION_REPORT_CACHE_KEY + "_" + serializationVersion);
+    public RListMultimap<String, ValidationResult> validationResultsCache(RedissonClient redissonClient) {
+        return redissonClient.getListMultimap(VALIDATION_REPORTS_CACHE_KEY + "_" + serializationVersion);
     }
 
     @Bean
