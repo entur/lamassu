@@ -69,9 +69,7 @@ public class ValidationController {
     @GetMapping("/systems/{systemId}")
     public List<ShortValidationResult> getValidationResultsForSystem(@PathVariable String systemId) {
         var validationResults = validationResultsCache.getAll(systemId);
-        var shortResults = validationResults.stream().map(this::mapToShortValidationResult).collect(Collectors.toList());
-        Collections.reverse(shortResults);
-        return shortResults;
+        return validationResults.stream().map(this::mapToShortValidationResult).collect(Collectors.toList());
     }
 
     @GetMapping("/systems/{systemId}/{index}")
