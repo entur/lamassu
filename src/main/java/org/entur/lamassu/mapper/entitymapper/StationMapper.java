@@ -19,7 +19,6 @@
 package org.entur.lamassu.mapper.entitymapper;
 
 import org.entur.gbfs.v2_3.station_information.GBFSStation;
-import org.entur.gbfs.v2_3.station_information.GBFSStationArea;
 import org.entur.gbfs.v2_3.station_information.GBFSVehicleCapacity;
 import org.entur.gbfs.v2_3.station_information.GBFSVehicleTypeCapacity;
 import org.entur.gbfs.v2_3.station_status.GBFSVehicleDocksAvailable;
@@ -109,14 +108,12 @@ public class StationMapper {
         return ParkingType.valueOf(parkingType.value().toUpperCase());
     }
 
-    private MultiPolygon mapStationArea(GBFSStationArea stationArea) {
+    private MultiPolygon mapStationArea(org.geojson.MultiPolygon stationArea) {
         if (stationArea == null) {
             return null;
         }
 
-        var multiPolygon = new MultiPolygon();
-        multiPolygon.setCoordinates(stationArea.getCoordinates());
-        return multiPolygon;
+        return MultiPolygon.fromGeoJson(stationArea);
     }
 
     private List<RentalMethod> mapRentalMethods(List<org.entur.gbfs.v2_3.station_information.RentalMethod> rentalMethods) {

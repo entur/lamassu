@@ -20,6 +20,7 @@ package org.entur.lamassu.model.entities;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MultiPolygon implements Serializable {
     private String type = "MultiPolygon";
@@ -35,5 +36,19 @@ public class MultiPolygon implements Serializable {
 
     public void setCoordinates(List<List<List<List<Double>>>> coordinates) {
         this.coordinates = coordinates;
+    }
+
+    public static MultiPolygon fromGeoJson(org.geojson.MultiPolygon geometry) {
+        var mapped = new MultiPolygon();
+        var coordinates = geometry.getCoordinates();
+        var mappedCoordinates = coordinates.stream()
+                .map(e -> e.stream()
+                        .map(f -> f.stream()
+                                .map(lngLatAlt -> List.of(lngLatAlt.getLongitude(), lngLatAlt.getLatitude()))
+                                .collect(Collectors.toList())
+                        ).collect(Collectors.toList())
+                ).collect(Collectors.toList());
+        mapped.setCoordinates(mappedCoordinates);
+        return mapped;
     }
 }

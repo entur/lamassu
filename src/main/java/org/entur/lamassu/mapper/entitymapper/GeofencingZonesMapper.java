@@ -20,7 +20,6 @@ package org.entur.lamassu.mapper.entitymapper;
 
 import org.entur.gbfs.v2_3.geofencing_zones.GBFSFeature;
 import org.entur.gbfs.v2_3.geofencing_zones.GBFSGeofencingZones__1;
-import org.entur.gbfs.v2_3.geofencing_zones.GBFSGeometry;
 import org.entur.gbfs.v2_3.geofencing_zones.GBFSProperties;
 import org.entur.gbfs.v2_3.geofencing_zones.GBFSRule;
 import org.entur.lamassu.model.entities.MultiPolygon;
@@ -54,7 +53,7 @@ public class GeofencingZonesMapper {
     private org.entur.lamassu.model.entities.GeofencingZones.Feature mapFeature(GBFSFeature feature) {
         var mapped = new org.entur.lamassu.model.entities.GeofencingZones.Feature();
         mapped.setProperties(mapProperties(feature.getProperties()));
-        mapped.setGeometry(mapGeometry(feature.getGeometry()));
+        mapped.setGeometry(MultiPolygon.fromGeoJson(feature.getGeometry()));
         return mapped;
     }
 
@@ -80,12 +79,6 @@ public class GeofencingZonesMapper {
         mapped.setRideThroughAllowed(rule.getRideThroughAllowed());
         mapped.setMaximumSpeedKph(rule.getMaximumSpeedKph() != null ? rule.getMaximumSpeedKph().intValue() : null);
         mapped.setStationParking(rule.getStationParking());
-        return mapped;
-    }
-
-    private MultiPolygon mapGeometry(GBFSGeometry geometry) {
-        var mapped = new MultiPolygon();
-        mapped.setCoordinates(geometry.getCoordinates());
         return mapped;
     }
 }
