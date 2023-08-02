@@ -25,20 +25,21 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SystemHoursFeedMapper extends AbstractFeedMapper<GBFSSystemHours> {
-    @Value("${org.entur.lamassu.targetGbfsVersion:2.2}")
-    private String targetGbfsVersion;
 
-    @Override
-    public GBFSSystemHours map(GBFSSystemHours source, FeedProvider feedProvider) {
-        if (source ==  null) {
-            return null;
-        }
+  @Value("${org.entur.lamassu.targetGbfsVersion:2.2}")
+  private String targetGbfsVersion;
 
-        var mapped = new GBFSSystemHours();
-        mapped.setVersion(targetGbfsVersion);
-        mapped.setLastUpdated(source.getLastUpdated());
-        mapped.setTtl(source.getTtl());
-        mapped.setData(source.getData());
-        return mapped;
+  @Override
+  public GBFSSystemHours map(GBFSSystemHours source, FeedProvider feedProvider) {
+    if (source == null) {
+      return null;
     }
+
+    var mapped = new GBFSSystemHours();
+    mapped.setVersion(targetGbfsVersion);
+    mapped.setLastUpdated(source.getLastUpdated());
+    mapped.setTtl(source.getTtl());
+    mapped.setData(source.getData());
+    return mapped;
+  }
 }

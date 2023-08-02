@@ -37,68 +37,95 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class GbfsDeliveryMapper {
-    private final FeedMapper<GBFS> discoveryFeedMapper;
-    private final FeedMapper<GBFSSystemInformation> systemInformationFeedMapper;
-    private final FeedMapper<GBFSSystemAlerts> systemAlertsFeedMapper;
-    private final FeedMapper<GBFSSystemCalendar> systemCalendarFeedMapper;
-    private final FeedMapper<GBFSSystemRegions> systemRegionsFeedMapper;
-    private final FeedMapper<GBFSSystemPricingPlans> systemPricingPlansFeedMapper;
-    private final FeedMapper<GBFSSystemHours> systemHoursFeedMapper;
-    private final FeedMapper<GBFSVehicleTypes> vehicleTypesFeedMapper;
-    private final FeedMapper<GBFSGeofencingZones> geofencingZonesFeedMapper;
-    private final FeedMapper<GBFSStationInformation> stationInformationFeedMapper;
-    private final FeedMapper<GBFSStationStatus> stationStatusFeedMapper;
-    private final FeedMapper<GBFSFreeBikeStatus> freeBikeStatusFeedMapper;
 
-    @Autowired
-    public GbfsDeliveryMapper(
-            FeedMapper<GBFS> discoveryFeedMapper,
-            FeedMapper<GBFSSystemInformation> systemInformationFeedMapper,
-            FeedMapper<GBFSSystemAlerts> systemAlertsFeedMapper,
-            FeedMapper<GBFSSystemCalendar> systemCalendarFeedMapper,
-            FeedMapper<GBFSSystemRegions> systemRegionsFeedMapper,
-            FeedMapper<GBFSSystemPricingPlans> systemPricingPlansFeedMapper,
-            FeedMapper<GBFSSystemHours> systemHoursFeedMapper,
-            FeedMapper<GBFSVehicleTypes> vehicleTypesFeedMapper,
-            FeedMapper<GBFSGeofencingZones> geofencingZonesFeedMapper,
-            FeedMapper<GBFSStationInformation> stationInformationFeedMapper,
-            FeedMapper<GBFSStationStatus> stationStatusFeedMapper,
-            FeedMapper<GBFSFreeBikeStatus> freeBikeStatusFeedMapper
-    ) {
-        this.discoveryFeedMapper = discoveryFeedMapper;
-        this.systemInformationFeedMapper = systemInformationFeedMapper;
-        this.systemAlertsFeedMapper = systemAlertsFeedMapper;
-        this.systemCalendarFeedMapper = systemCalendarFeedMapper;
-        this.systemRegionsFeedMapper = systemRegionsFeedMapper;
-        this.systemPricingPlansFeedMapper = systemPricingPlansFeedMapper;
-        this.systemHoursFeedMapper = systemHoursFeedMapper;
-        this.vehicleTypesFeedMapper = vehicleTypesFeedMapper;
-        this.geofencingZonesFeedMapper = geofencingZonesFeedMapper;
-        this.stationInformationFeedMapper = stationInformationFeedMapper;
-        this.stationStatusFeedMapper = stationStatusFeedMapper;
-        this.freeBikeStatusFeedMapper = freeBikeStatusFeedMapper;
-    }
-    // Lamassu currently only support producing a single version of GBFS, therefore
-    // mapping of the versions file, if it exists, is intentionally skipped.
-    public GbfsDelivery mapGbfsDelivery(GbfsDelivery delivery, FeedProvider feedProvider) {
-        var mapped = new GbfsDelivery();
-        mapped.setDiscovery(discoveryFeedMapper.map(delivery.getDiscovery(), feedProvider));
-        mapped.setSystemInformation(systemInformationFeedMapper.map(delivery.getSystemInformation(), feedProvider));
-        mapped.setSystemAlerts(systemAlertsFeedMapper.map(delivery.getSystemAlerts(), feedProvider));
-        mapped.setSystemCalendar(systemCalendarFeedMapper.map(delivery.getSystemCalendar(), feedProvider));
-        mapped.setSystemRegions(systemRegionsFeedMapper.map(delivery.getSystemRegions(), feedProvider));
-        mapped.setSystemPricingPlans(systemPricingPlansFeedMapper.map(delivery.getSystemPricingPlans(), feedProvider));
-        mapped.setSystemHours(systemHoursFeedMapper.map(delivery.getSystemHours(), feedProvider));
-        mapped.setVehicleTypes(vehicleTypesFeedMapper.map(delivery.getVehicleTypes(), feedProvider));
-        mapped.setGeofencingZones(geofencingZonesFeedMapper.map(delivery.getGeofencingZones(), feedProvider));
-        mapped.setStationInformation(stationInformationFeedMapper.map(delivery.getStationInformation(), feedProvider));
-        mapped.setStationStatus(
-                stationStatusFeedMapper.map(
-                        delivery.getStationStatus(),
-                        feedProvider,
-                        stationStatus -> VehicleTypeCapacityProducer.addToStations(stationStatus, mapped.getVehicleTypes()))
-        );
-        mapped.setFreeBikeStatus(freeBikeStatusFeedMapper.map(delivery.getFreeBikeStatus(), feedProvider));
-        return mapped;
-    }
+  private final FeedMapper<GBFS> discoveryFeedMapper;
+  private final FeedMapper<GBFSSystemInformation> systemInformationFeedMapper;
+  private final FeedMapper<GBFSSystemAlerts> systemAlertsFeedMapper;
+  private final FeedMapper<GBFSSystemCalendar> systemCalendarFeedMapper;
+  private final FeedMapper<GBFSSystemRegions> systemRegionsFeedMapper;
+  private final FeedMapper<GBFSSystemPricingPlans> systemPricingPlansFeedMapper;
+  private final FeedMapper<GBFSSystemHours> systemHoursFeedMapper;
+  private final FeedMapper<GBFSVehicleTypes> vehicleTypesFeedMapper;
+  private final FeedMapper<GBFSGeofencingZones> geofencingZonesFeedMapper;
+  private final FeedMapper<GBFSStationInformation> stationInformationFeedMapper;
+  private final FeedMapper<GBFSStationStatus> stationStatusFeedMapper;
+  private final FeedMapper<GBFSFreeBikeStatus> freeBikeStatusFeedMapper;
+
+  @Autowired
+  public GbfsDeliveryMapper(
+    FeedMapper<GBFS> discoveryFeedMapper,
+    FeedMapper<GBFSSystemInformation> systemInformationFeedMapper,
+    FeedMapper<GBFSSystemAlerts> systemAlertsFeedMapper,
+    FeedMapper<GBFSSystemCalendar> systemCalendarFeedMapper,
+    FeedMapper<GBFSSystemRegions> systemRegionsFeedMapper,
+    FeedMapper<GBFSSystemPricingPlans> systemPricingPlansFeedMapper,
+    FeedMapper<GBFSSystemHours> systemHoursFeedMapper,
+    FeedMapper<GBFSVehicleTypes> vehicleTypesFeedMapper,
+    FeedMapper<GBFSGeofencingZones> geofencingZonesFeedMapper,
+    FeedMapper<GBFSStationInformation> stationInformationFeedMapper,
+    FeedMapper<GBFSStationStatus> stationStatusFeedMapper,
+    FeedMapper<GBFSFreeBikeStatus> freeBikeStatusFeedMapper
+  ) {
+    this.discoveryFeedMapper = discoveryFeedMapper;
+    this.systemInformationFeedMapper = systemInformationFeedMapper;
+    this.systemAlertsFeedMapper = systemAlertsFeedMapper;
+    this.systemCalendarFeedMapper = systemCalendarFeedMapper;
+    this.systemRegionsFeedMapper = systemRegionsFeedMapper;
+    this.systemPricingPlansFeedMapper = systemPricingPlansFeedMapper;
+    this.systemHoursFeedMapper = systemHoursFeedMapper;
+    this.vehicleTypesFeedMapper = vehicleTypesFeedMapper;
+    this.geofencingZonesFeedMapper = geofencingZonesFeedMapper;
+    this.stationInformationFeedMapper = stationInformationFeedMapper;
+    this.stationStatusFeedMapper = stationStatusFeedMapper;
+    this.freeBikeStatusFeedMapper = freeBikeStatusFeedMapper;
+  }
+
+  // Lamassu currently only support producing a single version of GBFS, therefore
+  // mapping of the versions file, if it exists, is intentionally skipped.
+  public GbfsDelivery mapGbfsDelivery(GbfsDelivery delivery, FeedProvider feedProvider) {
+    var mapped = new GbfsDelivery();
+    mapped.setDiscovery(discoveryFeedMapper.map(delivery.getDiscovery(), feedProvider));
+    mapped.setSystemInformation(
+      systemInformationFeedMapper.map(delivery.getSystemInformation(), feedProvider)
+    );
+    mapped.setSystemAlerts(
+      systemAlertsFeedMapper.map(delivery.getSystemAlerts(), feedProvider)
+    );
+    mapped.setSystemCalendar(
+      systemCalendarFeedMapper.map(delivery.getSystemCalendar(), feedProvider)
+    );
+    mapped.setSystemRegions(
+      systemRegionsFeedMapper.map(delivery.getSystemRegions(), feedProvider)
+    );
+    mapped.setSystemPricingPlans(
+      systemPricingPlansFeedMapper.map(delivery.getSystemPricingPlans(), feedProvider)
+    );
+    mapped.setSystemHours(
+      systemHoursFeedMapper.map(delivery.getSystemHours(), feedProvider)
+    );
+    mapped.setVehicleTypes(
+      vehicleTypesFeedMapper.map(delivery.getVehicleTypes(), feedProvider)
+    );
+    mapped.setGeofencingZones(
+      geofencingZonesFeedMapper.map(delivery.getGeofencingZones(), feedProvider)
+    );
+    mapped.setStationInformation(
+      stationInformationFeedMapper.map(delivery.getStationInformation(), feedProvider)
+    );
+    mapped.setStationStatus(
+      stationStatusFeedMapper.map(
+        delivery.getStationStatus(),
+        feedProvider,
+        stationStatus ->
+          VehicleTypeCapacityProducer.addToStations(
+            stationStatus,
+            mapped.getVehicleTypes()
+          )
+      )
+    );
+    mapped.setFreeBikeStatus(
+      freeBikeStatusFeedMapper.map(delivery.getFreeBikeStatus(), feedProvider)
+    );
+    return mapped;
+  }
 }

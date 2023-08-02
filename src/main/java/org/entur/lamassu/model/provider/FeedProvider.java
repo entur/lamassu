@@ -18,119 +18,136 @@
 
 package org.entur.lamassu.model.provider;
 
+import java.util.List;
 import org.entur.gbfs.v2_3.gbfs.GBFSFeedName;
 import org.entur.gbfs.v2_3.system_pricing_plans.GBFSPlan;
 import org.entur.gbfs.v2_3.vehicle_types.GBFSVehicleType;
 
-import java.util.List;
-
 public class FeedProvider {
 
-    private String systemId;
-    private String operatorId;
-    private String operatorName;
-    private String codespace;
-    private String url;
-    private String language;
-    private Authentication authentication;
+  private String systemId;
+  private String operatorId;
+  private String operatorName;
+  private String codespace;
+  private String url;
+  private String language;
+  private Authentication authentication;
 
-    private List<GBFSFeedName> excludeFeeds;
-    private List<GBFSVehicleType> vehicleTypes;
-    private List<GBFSPlan> pricingPlans;
+  private List<GBFSFeedName> excludeFeeds;
+  private List<GBFSVehicleType> vehicleTypes;
+  private List<GBFSPlan> pricingPlans;
 
-    public String getSystemId() {
-        return systemId;
-    }
+  public String getSystemId() {
+    return systemId;
+  }
 
-    public void setSystemId(String systemId) {
-        this.systemId = systemId;
-    }
+  public void setSystemId(String systemId) {
+    this.systemId = systemId;
+  }
 
-    public String getOperatorId() {
-        return operatorId;
-    }
+  public String getOperatorId() {
+    return operatorId;
+  }
 
-    public void setOperatorId(String operatorId) {
-        this.operatorId = operatorId;
-    }
+  public void setOperatorId(String operatorId) {
+    this.operatorId = operatorId;
+  }
 
-    public String getOperatorName() {
-        return operatorName;
-    }
+  public String getOperatorName() {
+    return operatorName;
+  }
 
-    public void setOperatorName(String operatorName) {
-        this.operatorName = operatorName;
-    }
+  public void setOperatorName(String operatorName) {
+    this.operatorName = operatorName;
+  }
 
-    public String getCodespace() {
-        return codespace;
-    }
+  public String getCodespace() {
+    return codespace;
+  }
 
-    public void setCodespace(String codespace) {
-        this.codespace = codespace;
-    }
+  public void setCodespace(String codespace) {
+    this.codespace = codespace;
+  }
 
-    public String getUrl() {
-        return url;
-    }
+  public String getUrl() {
+    return url;
+  }
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
+  public void setUrl(String url) {
+    this.url = url;
+  }
 
-    public String getLanguage() {
-        return language;
-    }
+  public String getLanguage() {
+    return language;
+  }
 
-    public void setLanguage(String language) {
-        this.language = language;
-    }
+  public void setLanguage(String language) {
+    this.language = language;
+  }
 
-    public List<GBFSVehicleType> getVehicleTypes() {
-        return vehicleTypes;
-    }
+  public List<GBFSVehicleType> getVehicleTypes() {
+    return vehicleTypes;
+  }
 
-    public void setVehicleTypes(List<GBFSVehicleType> vehicleTypes) {
-        this.vehicleTypes = vehicleTypes;
-    }
+  public void setVehicleTypes(List<GBFSVehicleType> vehicleTypes) {
+    this.vehicleTypes = vehicleTypes;
+  }
 
-    public List<GBFSPlan> getPricingPlans() {
-        return pricingPlans;
-    }
+  public List<GBFSPlan> getPricingPlans() {
+    return pricingPlans;
+  }
 
-    public void setPricingPlans(List<GBFSPlan> pricingPlans) {
-        this.pricingPlans = pricingPlans;
-    }
+  public void setPricingPlans(List<GBFSPlan> pricingPlans) {
+    this.pricingPlans = pricingPlans;
+  }
 
-    public Authentication getAuthentication() {
-        return authentication;
-    }
+  public Authentication getAuthentication() {
+    return authentication;
+  }
 
-    public void setAuthentication(Authentication authentication) {
-        this.authentication = authentication;
-    }
+  public void setAuthentication(Authentication authentication) {
+    this.authentication = authentication;
+  }
 
-    public List<GBFSFeedName> getExcludeFeeds() {
-        return excludeFeeds;
-    }
+  public List<GBFSFeedName> getExcludeFeeds() {
+    return excludeFeeds;
+  }
 
-    public void setExcludeFeeds(List<GBFSFeedName> excludeFeeds) {
-        this.excludeFeeds = excludeFeeds;
-    }
+  public void setExcludeFeeds(List<GBFSFeedName> excludeFeeds) {
+    this.excludeFeeds = excludeFeeds;
+  }
 
-    @Override
-    public String toString() {
-        return "FeedProvider{" +
-                "systemId='" + systemId + '\'' +
-                ", operatorId='" + operatorId + '\'' +
-                ", operatorName='" + operatorName + '\'' +
-                ", codespace='" + codespace + '\'' +
-                ", url='" + url + '\'' +
-                ", language='" + language + '\'' +
-                ", authentication=" + authentication +
-                ", excludeFeeds=" + excludeFeeds +
-                ", vehicleTypes=" + vehicleTypes +
-                ", pricingPlans=" + pricingPlans +
-                '}';
-    }
+  @Override
+  public String toString() {
+    return (
+      "FeedProvider{" +
+      "systemId='" +
+      systemId +
+      '\'' +
+      ", operatorId='" +
+      operatorId +
+      '\'' +
+      ", operatorName='" +
+      operatorName +
+      '\'' +
+      ", codespace='" +
+      codespace +
+      '\'' +
+      ", url='" +
+      url +
+      '\'' +
+      ", language='" +
+      language +
+      '\'' +
+      ", authentication=" +
+      authentication +
+      ", excludeFeeds=" +
+      excludeFeeds +
+      ", vehicleTypes=" +
+      vehicleTypes +
+      ", pricingPlans=" +
+      pricingPlans +
+      '}'
+    );
+  }
 }

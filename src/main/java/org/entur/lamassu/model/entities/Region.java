@@ -21,30 +21,28 @@ package org.entur.lamassu.model.entities;
 import java.io.Serializable;
 
 public class Region implements Serializable {
-    private String id;
-    private TranslatedString name;
 
-    public String getId() {
-        return id;
-    }
+  private String id;
+  private TranslatedString name;
 
-    public void setId(String id) {
-        this.id = id;
-    }
+  public String getId() {
+    return id;
+  }
 
-    public TranslatedString getName() {
-        return name;
-    }
+  public void setId(String id) {
+    this.id = id;
+  }
 
-    public void setName(TranslatedString name) {
-        this.name = name;
-    }
+  public TranslatedString getName() {
+    return name;
+  }
 
-    @Override
-    public String toString() {
-        return "Region{" +
-                "id='" + id + '\'' +
-                ", name=" + name +
-                '}';
-    }
+  public void setName(TranslatedString name) {
+    this.name = name;
+  }
+
+  @Override
+  public String toString() {
+    return "Region{" + "id='" + id + '\'' + ", name=" + name + '}';
+  }
 }

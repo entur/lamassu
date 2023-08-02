@@ -24,8 +24,11 @@ import org.redisson.api.RMapCache;
 import org.springframework.stereotype.Component;
 
 @Component
-public class GeofencingZonesCacheImpl extends EntityCacheImpl<GeofencingZones> implements GeofencingZonesCache {
-    protected GeofencingZonesCacheImpl(RMapCache<String, GeofencingZones> cache) {
-        super(cache);
-    }
+public class GeofencingZonesCacheImpl
+  extends EntityCacheImpl<GeofencingZones>
+  implements GeofencingZonesCache {
+
+  protected GeofencingZonesCacheImpl(RMapCache<String, GeofencingZones> cache) {
+    super(cache);
+  }
 }

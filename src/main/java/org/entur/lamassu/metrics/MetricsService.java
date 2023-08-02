@@ -20,72 +20,79 @@ package org.entur.lamassu.metrics;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
+import java.util.List;
 import org.entur.gbfs.validation.model.ValidationResult;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Component
 public class MetricsService {
-    private static final String VALIDATION_MISSING_REQUIRED_FILE = "app.lamassu.gbfs.validation.missingrequiredfile";
-    private static final String VALIDATION_FILE_ERRORS = "app.lamassu.gbfs.validation.fileerrors";
-    private static final String VALIDATION_FEED_ERRORS = "app.lamassu.gbfs.validation.feederrors";
-    public static final String LABEL_SYSTEM = "system";
-    public static final String LABEL_VERSION = "version";
-    public static final String LABEL_FILE = "file";
-    public static final String SUBSCRIPTION_FAILEDSETUP = "app.lamassu.gbfs.subscription.failedsetup";
 
-    private final MeterRegistry meterRegistry;
+  private static final String VALIDATION_MISSING_REQUIRED_FILE =
+    "app.lamassu.gbfs.validation.missingrequiredfile";
+  private static final String VALIDATION_FILE_ERRORS =
+    "app.lamassu.gbfs.validation.fileerrors";
+  private static final String VALIDATION_FEED_ERRORS =
+    "app.lamassu.gbfs.validation.feederrors";
+  public static final String LABEL_SYSTEM = "system";
+  public static final String LABEL_VERSION = "version";
+  public static final String LABEL_FILE = "file";
+  public static final String SUBSCRIPTION_FAILEDSETUP =
+    "app.lamassu.gbfs.subscription.failedsetup";
 
-    public MetricsService(MeterRegistry meterRegistry) {
-        this.meterRegistry = meterRegistry;
-    }
+  private final MeterRegistry meterRegistry;
 
-    public void registerSubscriptionSetup(FeedProvider feedProvider, boolean success) {
-        meterRegistry.gauge(
-                SUBSCRIPTION_FAILEDSETUP,
-                List.of(
-                        Tag.of(LABEL_SYSTEM, feedProvider.getSystemId())
-                ),
-                success ? 0 : 1
-        );
-    }
+  public MetricsService(MeterRegistry meterRegistry) {
+    this.meterRegistry = meterRegistry;
+  }
 
-    public void registerValidationResult(FeedProvider feedProvider, ValidationResult validationResult) {
-        meterRegistry.gauge(
-                VALIDATION_FEED_ERRORS,
-                List.of(
-                        Tag.of(LABEL_SYSTEM, feedProvider.getSystemId()),
-                        Tag.of(LABEL_VERSION, validationResult.getSummary().getVersion())
-                ),
-                validationResult.getSummary().getErrorsCount()
-        );
+  public void registerSubscriptionSetup(FeedProvider feedProvider, boolean success) {
+    meterRegistry.gauge(
+      SUBSCRIPTION_FAILEDSETUP,
+      List.of(Tag.of(LABEL_SYSTEM, feedProvider.getSystemId())),
+      success ? 0 : 1
+    );
+  }
 
-        validationResult.getFiles().forEach((file, result) -> {
-                    if (result.isRequired()) {
-                        meterRegistry.gauge(
-                                VALIDATION_MISSING_REQUIRED_FILE,
-                                List.of(
-                                        Tag.of(LABEL_SYSTEM, feedProvider.getSystemId()),
-                                        Tag.of(LABEL_VERSION, result.getVersion()),
-                                        Tag.of(LABEL_FILE, file)
-                                ),
-                                result.isExists() ? 0 : 1
-                        );
-                    }
+  public void registerValidationResult(
+    FeedProvider feedProvider,
+    ValidationResult validationResult
+  ) {
+    meterRegistry.gauge(
+      VALIDATION_FEED_ERRORS,
+      List.of(
+        Tag.of(LABEL_SYSTEM, feedProvider.getSystemId()),
+        Tag.of(LABEL_VERSION, validationResult.getSummary().getVersion())
+      ),
+      validationResult.getSummary().getErrorsCount()
+    );
 
-                    if (result.isExists()) {
-                        meterRegistry.gauge(
-                                VALIDATION_FILE_ERRORS,
-                                List.of(
-                                        Tag.of(LABEL_SYSTEM, feedProvider.getSystemId()),
-                                        Tag.of(LABEL_VERSION, result.getVersion()),
-                                        Tag.of(LABEL_FILE, file)
-                                ),
-                                result.getErrorsCount()
-                        );
-                    }
-                });
-    }
+    validationResult
+      .getFiles()
+      .forEach((file, result) -> {
+        if (result.isRequired()) {
+          meterRegistry.gauge(
+            VALIDATION_MISSING_REQUIRED_FILE,
+            List.of(
+              Tag.of(LABEL_SYSTEM, feedProvider.getSystemId()),
+              Tag.of(LABEL_VERSION, result.getVersion()),
+              Tag.of(LABEL_FILE, file)
+            ),
+            result.isExists() ? 0 : 1
+          );
+        }
+
+        if (result.isExists()) {
+          meterRegistry.gauge(
+            VALIDATION_FILE_ERRORS,
+            List.of(
+              Tag.of(LABEL_SYSTEM, feedProvider.getSystemId()),
+              Tag.of(LABEL_VERSION, result.getVersion()),
+              Tag.of(LABEL_FILE, file)
+            ),
+            result.getErrorsCount()
+          );
+        }
+      });
+  }
 }

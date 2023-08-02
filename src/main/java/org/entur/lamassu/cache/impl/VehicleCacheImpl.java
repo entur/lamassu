@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class VehicleCacheImpl extends EntityCacheImpl<Vehicle> implements VehicleCache {
-    protected VehicleCacheImpl(@Autowired RMapCache<String, Vehicle> cache) {
-        super(cache);
-    }
-}
 
+  protected VehicleCacheImpl(@Autowired RMapCache<String, Vehicle> cache) {
+    super(cache);
+  }
+}

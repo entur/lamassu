@@ -18,6 +18,8 @@
 
 package org.entur.lamassu.leader.entityupdater;
 
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import org.entur.gbfs.v2_3.geofencing_zones.GBFSGeofencingZones;
 import org.entur.lamassu.cache.GeofencingZonesCache;
 import org.entur.lamassu.mapper.entitymapper.GeofencingZonesMapper;
@@ -26,31 +28,36 @@ import org.entur.lamassu.util.CacheUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
 @Component
 public class GeofencingZonesUpdater {
-    private final GeofencingZonesCache geofencingZonesCache;
-    private final GeofencingZonesMapper geofencingZonesMapper;
 
-    @Autowired
-    public GeofencingZonesUpdater(
-            GeofencingZonesCache geofencingZonesCache,
-            GeofencingZonesMapper geofencingZonesMapper
-    ) {
-        this.geofencingZonesCache = geofencingZonesCache;
-        this.geofencingZonesMapper = geofencingZonesMapper;
-    }
+  private final GeofencingZonesCache geofencingZonesCache;
+  private final GeofencingZonesMapper geofencingZonesMapper;
 
-    public void addOrUpdateGeofencingZones(
-            FeedProvider feedProvider,
-            GBFSGeofencingZones feed
-    ) {
-        var mapped = geofencingZonesMapper.map(feed.getData().getGeofencingZones(), feedProvider);
-        var lastUpdated = feed.getLastUpdated();
-        var ttl = feed.getTtl();
+  @Autowired
+  public GeofencingZonesUpdater(
+    GeofencingZonesCache geofencingZonesCache,
+    GeofencingZonesMapper geofencingZonesMapper
+  ) {
+    this.geofencingZonesCache = geofencingZonesCache;
+    this.geofencingZonesMapper = geofencingZonesMapper;
+  }
 
-        geofencingZonesCache.updateAll(Map.of(mapped.getId(), mapped), CacheUtil.getTtl(lastUpdated, ttl, 3600), TimeUnit.SECONDS);
-    }
+  public void addOrUpdateGeofencingZones(
+    FeedProvider feedProvider,
+    GBFSGeofencingZones feed
+  ) {
+    var mapped = geofencingZonesMapper.map(
+      feed.getData().getGeofencingZones(),
+      feedProvider
+    );
+    var lastUpdated = feed.getLastUpdated();
+    var ttl = feed.getTtl();
+
+    geofencingZonesCache.updateAll(
+      Map.of(mapped.getId(), mapped),
+      CacheUtil.getTtl(lastUpdated, ttl, 3600),
+      TimeUnit.SECONDS
+    );
+  }
 }

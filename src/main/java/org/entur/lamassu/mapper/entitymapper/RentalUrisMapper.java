@@ -24,27 +24,30 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class RentalUrisMapper {
-    public RentalUris mapRentalUris(GBFSRentalUris rentalUris) {
-        if (rentalUris == null) {
-            return null;
-        }
 
-        var mapped = new RentalUris();
-        mapped.setAndroid(rentalUris.getAndroid());
-        mapped.setIos(rentalUris.getIos());
-        mapped.setWeb(rentalUris.getWeb());
-        return mapped;
+  public RentalUris mapRentalUris(GBFSRentalUris rentalUris) {
+    if (rentalUris == null) {
+      return null;
     }
 
-    public RentalUris mapRentalUris(org.entur.gbfs.v2_3.station_information.GBFSRentalUris rentalUris) {
-        if (rentalUris == null) {
-            return null;
-        }
+    var mapped = new RentalUris();
+    mapped.setAndroid(rentalUris.getAndroid());
+    mapped.setIos(rentalUris.getIos());
+    mapped.setWeb(rentalUris.getWeb());
+    return mapped;
+  }
 
-        var mapped = new RentalUris();
-        mapped.setAndroid(rentalUris.getAndroid());
-        mapped.setIos(rentalUris.getIos());
-        mapped.setWeb(rentalUris.getWeb());
-        return mapped;
+  public RentalUris mapRentalUris(
+    org.entur.gbfs.v2_3.station_information.GBFSRentalUris rentalUris
+  ) {
+    if (rentalUris == null) {
+      return null;
     }
+
+    var mapped = new RentalUris();
+    mapped.setAndroid(rentalUris.getAndroid());
+    mapped.setIos(rentalUris.getIos());
+    mapped.setWeb(rentalUris.getWeb());
+    return mapped;
+  }
 }

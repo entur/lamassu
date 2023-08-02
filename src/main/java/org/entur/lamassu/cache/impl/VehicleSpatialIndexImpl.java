@@ -8,10 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class VehicleSpatialIndexImpl extends SpatialIndexImpl<VehicleSpatialIndexId, Vehicle> implements VehicleSpatialIndex {
+public class VehicleSpatialIndexImpl
+  extends SpatialIndexImpl<VehicleSpatialIndexId, Vehicle>
+  implements VehicleSpatialIndex {
 
-    @Autowired
-    public VehicleSpatialIndexImpl(RGeo<VehicleSpatialIndexId> vehicleSpatialIndex) {
-        super(vehicleSpatialIndex);
-    }
+  @Autowired
+  public VehicleSpatialIndexImpl(RGeo<VehicleSpatialIndexId> vehicleSpatialIndex) {
+    super(vehicleSpatialIndex);
+  }
 }

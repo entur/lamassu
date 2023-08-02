@@ -18,60 +18,65 @@
 
 package org.entur.lamassu.service.impl;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.mapper.entitymapper.TranslationMapper;
-import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.model.entities.Operator;
+import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.service.FeedProviderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 @Component
 public class FeedProviderServiceImpl implements FeedProviderService {
-    private final Map<String, FeedProvider> feedProvidersBySystemId;
-    private final List<FeedProvider> feedProviders;
-    private final TranslationMapper translationMapper;
 
-    @Autowired
-    public FeedProviderServiceImpl(FeedProviderConfig feedProviderConfig, TranslationMapper translationMapper) {
-        feedProviders = feedProviderConfig.getProviders();
-        feedProvidersBySystemId = feedProviders.stream()
-                .collect(Collectors.toMap(FeedProvider::getSystemId, fp -> fp));
-        this.translationMapper = translationMapper;
-    }
+  private final Map<String, FeedProvider> feedProvidersBySystemId;
+  private final List<FeedProvider> feedProviders;
+  private final TranslationMapper translationMapper;
 
-    @Override
-    public List<FeedProvider> getFeedProviders() {
-        return feedProviders;
-    }
+  @Autowired
+  public FeedProviderServiceImpl(
+    FeedProviderConfig feedProviderConfig,
+    TranslationMapper translationMapper
+  ) {
+    feedProviders = feedProviderConfig.getProviders();
+    feedProvidersBySystemId =
+      feedProviders
+        .stream()
+        .collect(Collectors.toMap(FeedProvider::getSystemId, fp -> fp));
+    this.translationMapper = translationMapper;
+  }
 
-    @Override
-    public List<Operator> getOperators() {
-        return getFeedProviders().stream()
-                .map(this::mapOperator)
-                .distinct()
-                .collect(Collectors.toList());
-    }
+  @Override
+  public List<FeedProvider> getFeedProviders() {
+    return feedProviders;
+  }
 
-    private Operator mapOperator(FeedProvider feedProvider) {
-        var operator = new Operator();
-        operator.setId(feedProvider.getOperatorId());
-        operator.setName(
-                translationMapper.mapSingleTranslation(
-                        feedProvider.getLanguage(),
-                        feedProvider.getOperatorName()
-                )
-        );
-        return operator;
-    }
+  @Override
+  public List<Operator> getOperators() {
+    return getFeedProviders()
+      .stream()
+      .map(this::mapOperator)
+      .distinct()
+      .collect(Collectors.toList());
+  }
 
-    @Override
-    public FeedProvider getFeedProviderBySystemId(String systemId) {
-        return feedProvidersBySystemId
-                .get(systemId);
-    }
+  private Operator mapOperator(FeedProvider feedProvider) {
+    var operator = new Operator();
+    operator.setId(feedProvider.getOperatorId());
+    operator.setName(
+      translationMapper.mapSingleTranslation(
+        feedProvider.getLanguage(),
+        feedProvider.getOperatorName()
+      )
+    );
+    return operator;
+  }
+
+  @Override
+  public FeedProvider getFeedProviderBySystemId(String systemId) {
+    return feedProvidersBySystemId.get(systemId);
+  }
 }

@@ -18,6 +18,12 @@
 
 package org.entur.lamassu.controller;
 
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.entur.gbfs.validation.model.FileValidationResult;
 import org.entur.gbfs.validation.model.ValidationResult;
 import org.entur.lamassu.model.validation.ShortFileValidationResult;
@@ -30,78 +36,99 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.AbstractMap;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 @RestController
 @RequestMapping("/validation")
 public class ValidationController {
-    private final FeedProviderService feedProviderService;
-    private final RListMultimap<String, ValidationResult> validationResultsCache;
 
-    @Autowired
-    public ValidationController(
-            FeedProviderService feedProviderService,
-            RListMultimap<String, ValidationResult> validationResultsCache
-    ) {
-        this.feedProviderService = feedProviderService;
-        this.validationResultsCache = validationResultsCache;
-    }
+  private final FeedProviderService feedProviderService;
+  private final RListMultimap<String, ValidationResult> validationResultsCache;
 
-    @GetMapping("/systems")
-    public Map<String, ShortValidationResult> getValidationResultForAllSystems() {
-        Map<String, ShortValidationResult> systems = new HashMap<>();
-        feedProviderService.getFeedProviders()
-                .forEach(feedProvider -> {
-                    var validationResults = validationResultsCache.get(feedProvider.getSystemId());
-                    var validationResult = validationResults.get(validationResults.size() - 1);
-                    if (validationResult != null) {
-                        systems.put(feedProvider.getSystemId(), mapToShortValidationResult(validationResult));
-                    }
-                });
-        return systems;
-    }
+  @Autowired
+  public ValidationController(
+    FeedProviderService feedProviderService,
+    RListMultimap<String, ValidationResult> validationResultsCache
+  ) {
+    this.feedProviderService = feedProviderService;
+    this.validationResultsCache = validationResultsCache;
+  }
 
-    @GetMapping("/systems/{systemId}")
-    public List<ShortValidationResult> getValidationResultsForSystem(@PathVariable String systemId) {
-        var validationResults = validationResultsCache.getAll(systemId);
-        return validationResults.stream().map(this::mapToShortValidationResult).collect(Collectors.toList());
-    }
+  @GetMapping("/systems")
+  public Map<String, ShortValidationResult> getValidationResultForAllSystems() {
+    Map<String, ShortValidationResult> systems = new HashMap<>();
+    feedProviderService
+      .getFeedProviders()
+      .forEach(feedProvider -> {
+        var validationResults = validationResultsCache.get(feedProvider.getSystemId());
+        var validationResult = validationResults.get(validationResults.size() - 1);
+        if (validationResult != null) {
+          systems.put(
+            feedProvider.getSystemId(),
+            mapToShortValidationResult(validationResult)
+          );
+        }
+      });
+    return systems;
+  }
 
-    @GetMapping("/systems/{systemId}/{index}")
-    public ValidationResult getValidationResultForSystem(@PathVariable String systemId, @PathVariable int index) {
-        var validationResults = validationResultsCache.get(systemId);
-        return validationResults.get(index);
-    }
+  @GetMapping("/systems/{systemId}")
+  public List<ShortValidationResult> getValidationResultsForSystem(
+    @PathVariable String systemId
+  ) {
+    var validationResults = validationResultsCache.getAll(systemId);
+    return validationResults
+      .stream()
+      .map(this::mapToShortValidationResult)
+      .collect(Collectors.toList());
+  }
 
-    private ShortValidationResult mapToShortValidationResult(ValidationResult validationResult) {
-        ShortValidationResult shortResult = new ShortValidationResult();
-        shortResult.setSummary(validationResult.getSummary());
-        shortResult.setFiles(mapToShortFileValidationResults(validationResult.getFiles()));
-        return shortResult;
-    }
+  @GetMapping("/systems/{systemId}/{index}")
+  public ValidationResult getValidationResultForSystem(
+    @PathVariable String systemId,
+    @PathVariable int index
+  ) {
+    var validationResults = validationResultsCache.get(systemId);
+    return validationResults.get(index);
+  }
 
-    private Map<String, ShortFileValidationResult> mapToShortFileValidationResults(Map<String, FileValidationResult> files) {
-        return files.entrySet().stream().map(entry ->
-                new AbstractMap.SimpleEntry<>(
-                        entry.getKey(),
-                        mapToShortFileValidationResult(entry.getValue())
-                )
-        ).collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
-    }
+  private ShortValidationResult mapToShortValidationResult(
+    ValidationResult validationResult
+  ) {
+    ShortValidationResult shortResult = new ShortValidationResult();
+    shortResult.setSummary(validationResult.getSummary());
+    shortResult.setFiles(mapToShortFileValidationResults(validationResult.getFiles()));
+    return shortResult;
+  }
 
-    private ShortFileValidationResult mapToShortFileValidationResult(FileValidationResult value) {
-        ShortFileValidationResult shortFileValidationResult = new ShortFileValidationResult();
-        shortFileValidationResult.setFile(value.getFile());
-        shortFileValidationResult.setErrorsCount(value.getErrorsCount());
-        shortFileValidationResult.setErrors(value.getErrors());
-        shortFileValidationResult.setRequired(value.isRequired());
-        shortFileValidationResult.setExists(value.isExists());
-        shortFileValidationResult.setVersion(value.getVersion());
-        return shortFileValidationResult;
-    }
+  private Map<String, ShortFileValidationResult> mapToShortFileValidationResults(
+    Map<String, FileValidationResult> files
+  ) {
+    return files
+      .entrySet()
+      .stream()
+      .map(entry ->
+        new AbstractMap.SimpleEntry<>(
+          entry.getKey(),
+          mapToShortFileValidationResult(entry.getValue())
+        )
+      )
+      .collect(
+        Collectors.toMap(
+          AbstractMap.SimpleEntry::getKey,
+          AbstractMap.SimpleEntry::getValue
+        )
+      );
+  }
+
+  private ShortFileValidationResult mapToShortFileValidationResult(
+    FileValidationResult value
+  ) {
+    ShortFileValidationResult shortFileValidationResult = new ShortFileValidationResult();
+    shortFileValidationResult.setFile(value.getFile());
+    shortFileValidationResult.setErrorsCount(value.getErrorsCount());
+    shortFileValidationResult.setErrors(value.getErrors());
+    shortFileValidationResult.setRequired(value.isRequired());
+    shortFileValidationResult.setExists(value.isExists());
+    shortFileValidationResult.setVersion(value.getVersion());
+    return shortFileValidationResult;
+  }
 }

@@ -1,40 +1,41 @@
 package org.entur.lamassu.service;
 
 public class RangeQueryParameters {
-    private Double lat;
-    private Double lon;
-    private Double range;
-    private Integer count;
 
-    public Double getLat() {
-        return lat;
-    }
+  private Double lat;
+  private Double lon;
+  private Double range;
+  private Integer count;
 
-    public void setLat(Double lat) {
-        this.lat = lat;
-    }
+  public Double getLat() {
+    return lat;
+  }
 
-    public Double getLon() {
-        return lon;
-    }
+  public void setLat(Double lat) {
+    this.lat = lat;
+  }
 
-    public void setLon(Double lon) {
-        this.lon = lon;
-    }
+  public Double getLon() {
+    return lon;
+  }
 
-    public Double getRange() {
-        return range;
-    }
+  public void setLon(Double lon) {
+    this.lon = lon;
+  }
 
-    public void setRange(Double range) {
-        this.range = range;
-    }
+  public Double getRange() {
+    return range;
+  }
 
-    public Integer getCount() {
-        return count;
-    }
+  public void setRange(Double range) {
+    this.range = range;
+  }
 
-    public void setCount(Integer count) {
-        this.count = count;
-    }
+  public Integer getCount() {
+    return count;
+  }
+
+  public void setCount(Integer count) {
+    this.count = count;
+  }
 }

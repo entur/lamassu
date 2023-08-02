@@ -18,6 +18,9 @@
 
 package org.entur.lamassu.mapper.feedmapper;
 
+import java.net.URI;
+import java.util.List;
+import java.util.Map;
 import org.entur.gbfs.v2_3.gbfs.GBFS;
 import org.entur.gbfs.v2_3.gbfs.GBFSFeed;
 import org.entur.gbfs.v2_3.gbfs.GBFSFeedName;
@@ -31,81 +34,84 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.net.URI;
-import java.util.List;
-import java.util.Map;
-
 class DiscoveryFeedMapperTest {
-    DiscoveryFeedMapper mapper;
 
-    @BeforeEach
-    void prepare() {
-        mapper = new DiscoveryFeedMapper();
-        ReflectionTestUtils.setField(mapper, "targetGbfsVersion", "2.2");
-    }
+  DiscoveryFeedMapper mapper;
 
-    @Test
-    void testMapFeedWhenSourceFeedsDataIsNullReturnsNull() {
-        var gbfs = new GBFS();
-        gbfs.setFeedsData(null);
-        Assertions.assertNull(mapper.map(gbfs, getTestProvider()));
-    }
+  @BeforeEach
+  void prepare() {
+    mapper = new DiscoveryFeedMapper();
+    ReflectionTestUtils.setField(mapper, "targetGbfsVersion", "2.2");
+  }
 
-    @Test
-    void testMapFeedWithCustomData() {
-        var feedProvider = getTestProvider();
-        var vehicleType = new GBFSVehicleType();
-        vehicleType.setVehicleTypeId("TestScooter");
-        vehicleType.setName("TestScooter");
-        vehicleType.setFormFactor(GBFSVehicleType.FormFactor.SCOOTER);
-        vehicleType.setPropulsionType(GBFSVehicleType.PropulsionType.ELECTRIC);
-        vehicleType.setMaxRangeMeters(1000.0);
-        feedProvider.setVehicleTypes(List.of(vehicleType));
+  @Test
+  void testMapFeedWhenSourceFeedsDataIsNullReturnsNull() {
+    var gbfs = new GBFS();
+    gbfs.setFeedsData(null);
+    Assertions.assertNull(mapper.map(gbfs, getTestProvider()));
+  }
 
-        var plan = new GBFSPlan();
-        plan.setPlanId("TestPlan");
-        plan.setName("TestPlan");
-        plan.setPrice(0.0);
-        plan.setIsTaxable(false);
-        plan.setCurrency("NOK");
-        plan.setDescription("Describe your plan");
-        var perMinPricing = new GBFSPerMinPricing();
-        perMinPricing.setStart(0);
-        perMinPricing.setInterval(1);
-        perMinPricing.setRate(5.0);
-        plan.setPerMinPricing(List.of(perMinPricing));
-        feedProvider.setPricingPlans(List.of(plan));
+  @Test
+  void testMapFeedWithCustomData() {
+    var feedProvider = getTestProvider();
+    var vehicleType = new GBFSVehicleType();
+    vehicleType.setVehicleTypeId("TestScooter");
+    vehicleType.setName("TestScooter");
+    vehicleType.setFormFactor(GBFSVehicleType.FormFactor.SCOOTER);
+    vehicleType.setPropulsionType(GBFSVehicleType.PropulsionType.ELECTRIC);
+    vehicleType.setMaxRangeMeters(1000.0);
+    feedProvider.setVehicleTypes(List.of(vehicleType));
 
-        var gbfs = new GBFS();
-        var feeds = new GBFSFeeds();
-        var feed = new GBFSFeed();
-        feed.setName(GBFSFeedName.GBFS);
-        feed.setUrl(URI.create("http://test.com/gbfs"));
-        feeds.setFeeds(List.of(
-                feed
-        ));
+    var plan = new GBFSPlan();
+    plan.setPlanId("TestPlan");
+    plan.setName("TestPlan");
+    plan.setPrice(0.0);
+    plan.setIsTaxable(false);
+    plan.setCurrency("NOK");
+    plan.setDescription("Describe your plan");
+    var perMinPricing = new GBFSPerMinPricing();
+    perMinPricing.setStart(0);
+    perMinPricing.setInterval(1);
+    perMinPricing.setRate(5.0);
+    plan.setPerMinPricing(List.of(perMinPricing));
+    feedProvider.setPricingPlans(List.of(plan));
 
-        gbfs.setFeedsData(Map.of(
-                "en", feeds
-        ));
+    var gbfs = new GBFS();
+    var feeds = new GBFSFeeds();
+    var feed = new GBFSFeed();
+    feed.setName(GBFSFeedName.GBFS);
+    feed.setUrl(URI.create("http://test.com/gbfs"));
+    feeds.setFeeds(List.of(feed));
 
-        var mapped = mapper.map(gbfs, feedProvider);
+    gbfs.setFeedsData(Map.of("en", feeds));
 
-        Assertions.assertTrue(
-                mapped.getFeedsData().get("en").getFeeds().stream().anyMatch(f -> f.getName().equals(GBFSFeedName.VehicleTypes))
-        );
+    var mapped = mapper.map(gbfs, feedProvider);
 
-        Assertions.assertTrue(
-                mapped.getFeedsData().get("en").getFeeds().stream().anyMatch(f -> f.getName().equals(GBFSFeedName.SystemPricingPlans))
-        );
-    }
+    Assertions.assertTrue(
+      mapped
+        .getFeedsData()
+        .get("en")
+        .getFeeds()
+        .stream()
+        .anyMatch(f -> f.getName().equals(GBFSFeedName.VehicleTypes))
+    );
 
-    private FeedProvider getTestProvider() {
-        var feedProvider = new FeedProvider();
-        feedProvider.setSystemId("testsystem");
-        feedProvider.setCodespace("TST");
-        feedProvider.setLanguage("en");
+    Assertions.assertTrue(
+      mapped
+        .getFeedsData()
+        .get("en")
+        .getFeeds()
+        .stream()
+        .anyMatch(f -> f.getName().equals(GBFSFeedName.SystemPricingPlans))
+    );
+  }
 
-        return feedProvider;
-    }
+  private FeedProvider getTestProvider() {
+    var feedProvider = new FeedProvider();
+    feedProvider.setSystemId("testsystem");
+    feedProvider.setCodespace("TST");
+    feedProvider.setLanguage("en");
+
+    return feedProvider;
+  }
 }

@@ -18,6 +18,7 @@
 
 package org.entur.lamassu.mapper.feedmapper;
 
+import java.util.List;
 import org.entur.gbfs.v2_3.system_pricing_plans.GBFSPerMinPricing;
 import org.entur.gbfs.v2_3.system_pricing_plans.GBFSPlan;
 import org.entur.gbfs.v2_3.vehicle_types.GBFSVehicleType;
@@ -26,35 +27,36 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.List;
-
 class SystemPricingPlansFeedMapperTest {
 
-    @Test
-    void testCustomPricingPlans() {
-        var mapper = new SystemPricingPlansFeedMapper();
-        ReflectionTestUtils.setField(mapper, "targetGbfsVersion", "2.2");
-        var feed = mapper.map(null, getTestProvider());
-        Assertions.assertEquals("TST:PricingPlan:TestPlan", feed.getData().getPlans().get(0).getPlanId());
-    }
+  @Test
+  void testCustomPricingPlans() {
+    var mapper = new SystemPricingPlansFeedMapper();
+    ReflectionTestUtils.setField(mapper, "targetGbfsVersion", "2.2");
+    var feed = mapper.map(null, getTestProvider());
+    Assertions.assertEquals(
+      "TST:PricingPlan:TestPlan",
+      feed.getData().getPlans().get(0).getPlanId()
+    );
+  }
 
-    private FeedProvider getTestProvider() {
-        var feedProvider = new FeedProvider();
-        feedProvider.setSystemId("testsystem");
-        feedProvider.setCodespace("TST");
-        var plan = new GBFSPlan();
-        plan.setPlanId("TestPlan");
-        plan.setName("TestPlan");
-        plan.setPrice(0.0);
-        plan.setIsTaxable(false);
-        plan.setCurrency("NOK");
-        plan.setDescription("Describe your plan");
-        var perMinPricing = new GBFSPerMinPricing();
-        perMinPricing.setStart(0);
-        perMinPricing.setInterval(1);
-        perMinPricing.setRate(5.0);
-        plan.setPerMinPricing(List.of(perMinPricing));
-        feedProvider.setPricingPlans(List.of(plan));
-        return feedProvider;
-    }
+  private FeedProvider getTestProvider() {
+    var feedProvider = new FeedProvider();
+    feedProvider.setSystemId("testsystem");
+    feedProvider.setCodespace("TST");
+    var plan = new GBFSPlan();
+    plan.setPlanId("TestPlan");
+    plan.setName("TestPlan");
+    plan.setPrice(0.0);
+    plan.setIsTaxable(false);
+    plan.setCurrency("NOK");
+    plan.setDescription("Describe your plan");
+    var perMinPricing = new GBFSPerMinPricing();
+    perMinPricing.setStart(0);
+    perMinPricing.setInterval(1);
+    perMinPricing.setRate(5.0);
+    plan.setPerMinPricing(List.of(perMinPricing));
+    feedProvider.setPricingPlans(List.of(plan));
+    return feedProvider;
+  }
 }

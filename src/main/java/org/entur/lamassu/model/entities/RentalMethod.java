@@ -19,12 +19,12 @@
 package org.entur.lamassu.model.entities;
 
 public enum RentalMethod {
-    KEY,
-    CREDITCARD,
-    PAYPASS,
-    APPLEPLAY,
-    ANDROIDPAY,
-    TRANSITCARD,
-    ACCOUNTNUMBER,
-    PHONE
+  KEY,
+  CREDITCARD,
+  PAYPASS,
+  APPLEPLAY,
+  ANDROIDPAY,
+  TRANSITCARD,
+  ACCOUNTNUMBER,
+  PHONE,
 }

@@ -25,20 +25,21 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SystemCalendarFeedMapper extends AbstractFeedMapper<GBFSSystemCalendar> {
-    @Value("${org.entur.lamassu.targetGbfsVersion:2.2}")
-    private String targetGbfsVersion;
 
-    @Override
-    public GBFSSystemCalendar map(GBFSSystemCalendar source, FeedProvider feedProvider) {
-        if (source == null) {
-            return null;
-        }
+  @Value("${org.entur.lamassu.targetGbfsVersion:2.2}")
+  private String targetGbfsVersion;
 
-        var mapped = new GBFSSystemCalendar();
-        mapped.setVersion(targetGbfsVersion);
-        mapped.setLastUpdated(source.getLastUpdated());
-        mapped.setTtl(source.getTtl());
-        mapped.setData(source.getData());
-        return mapped;
+  @Override
+  public GBFSSystemCalendar map(GBFSSystemCalendar source, FeedProvider feedProvider) {
+    if (source == null) {
+      return null;
     }
+
+    var mapped = new GBFSSystemCalendar();
+    mapped.setVersion(targetGbfsVersion);
+    mapped.setLastUpdated(source.getLastUpdated());
+    mapped.setTtl(source.getTtl());
+    mapped.setData(source.getData());
+    return mapped;
+  }
 }

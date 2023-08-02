@@ -19,14 +19,14 @@
 package org.entur.lamassu.model.entities;
 
 public enum VehicleAccessory {
-    AIR_CONDITIONING,
-    AUTOMATIC,
-    MANUAL,
-    CONVERTIBLE,
-    CRUISE_CONTROL,
-    DOORS_2,
-    DOORS_3,
-    DOORS_4,
-    DOORS_5,
-    NAVIGATION;
+  AIR_CONDITIONING,
+  AUTOMATIC,
+  MANUAL,
+  CONVERTIBLE,
+  CRUISE_CONTROL,
+  DOORS_2,
+  DOORS_3,
+  DOORS_4,
+  DOORS_5,
+  NAVIGATION,
 }

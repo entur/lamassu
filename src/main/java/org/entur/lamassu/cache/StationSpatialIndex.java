@@ -20,4 +20,5 @@ package org.entur.lamassu.cache;
 
 import org.entur.lamassu.model.entities.Station;
 
-public interface StationSpatialIndex extends SpatialIndex<StationSpatialIndexId, Station> {}
+public interface StationSpatialIndex
+  extends SpatialIndex<StationSpatialIndexId, Station> {}

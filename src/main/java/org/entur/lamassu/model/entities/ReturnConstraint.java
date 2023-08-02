@@ -19,8 +19,8 @@
 package org.entur.lamassu.model.entities;
 
 public enum ReturnConstraint {
-    FREE_FLOATING,
-    ROUNDTRIP_STATION,
-    ANY_STATION,
-    HYBRID;
+  FREE_FLOATING,
+  ROUNDTRIP_STATION,
+  ANY_STATION,
+  HYBRID,
 }
