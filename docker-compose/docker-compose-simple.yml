@@ -1,0 +1,17 @@
+services:
+  redis:
+    image: "redis:alpine"
+  lamassu:
+    build:
+      context: ../
+      dockerfile: ./docker-compose/Dockerfile.example
+    ports:
+      - "8080:8080"
+      - "9001:9001"
+    environment:
+      JDK_JAVA_OPTIONS:
+        -Dspring.config.location=/etc/application-config/application.properties 
+        -Dspring.profiles.active=leader
+        -Dorg.entur.lamassu.adminPassword=secret
+    volumes:
+      - ./application-config:/etc/application-config
