@@ -87,7 +87,7 @@ public class SystemMapper {
     system.setPhoneNumber(systemInformation.getPhoneNumber());
     system.setEmail(systemInformation.getEmail());
     system.setFeedContactEmail(system.getFeedContactEmail());
-    system.setTimezone(systemInformation.getTimezone().value());
+    system.setTimezone(systemInformation.getTimezone() != null ? systemInformation.getTimezone().value() : null);
     system.setLicenseUrl(systemInformation.getLicenseUrl());
     system.setBrandAssets(mapBrandAssets(systemInformation.getBrandAssets()));
     system.setTermsUrl(systemInformation.getTermsUrl());
