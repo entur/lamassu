@@ -53,8 +53,11 @@ public abstract class SpatialIndexImpl<S extends SpatialIndexId, T extends Locat
                     .filter(e -> e.getValue().getLat() != null && e.getValue().getLon() != null)
                     .map(this::map).toArray(GeoEntry[]::new)).get();
             logger.debug("Added {} stations", added);
-        } catch (RedisException | ExecutionException | InterruptedException e) {
+        } catch (RedisException | ExecutionException e) {
             logger.warn("Caught exception while adding entries to spatialIndex", e);
+        } catch (InterruptedException e) {
+            logger.warn("Interrupted while adding entries to spatialIndex", e);
+            Thread.currentThread().interrupt();
         }
     }
 
