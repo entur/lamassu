@@ -18,13 +18,12 @@
 
 package org.entur.lamassu.service;
 
-import org.entur.lamassu.model.provider.FeedProvider;
-import org.entur.lamassu.model.entities.Operator;
-
 import java.util.List;
+import org.entur.lamassu.model.entities.Operator;
+import org.entur.lamassu.model.provider.FeedProvider;
 
 public interface FeedProviderService {
-    List<FeedProvider> getFeedProviders();
-    List<Operator> getOperators();
-    FeedProvider getFeedProviderBySystemId(String systemId);
+  List<FeedProvider> getFeedProviders();
+  List<Operator> getOperators();
+  FeedProvider getFeedProviderBySystemId(String systemId);
 }

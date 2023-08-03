@@ -22,43 +22,41 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public class Operator implements Serializable {
-    private String id;
-    private TranslatedString name;
 
-    public String getId() {
-        return id;
-    }
+  private String id;
+  private TranslatedString name;
 
-    public void setId(String id) {
-        this.id = id;
-    }
+  public String getId() {
+    return id;
+  }
 
-    public TranslatedString getName() {
-        return name;
-    }
+  public void setId(String id) {
+    this.id = id;
+  }
 
-    public void setName(TranslatedString name) {
-        this.name = name;
-    }
+  public TranslatedString getName() {
+    return name;
+  }
 
-    @Override
-    public String toString() {
-        return "Operator{" +
-                "id='" + id + '\'' +
-                ", name=" + name +
-                '}';
-    }
+  public void setName(TranslatedString name) {
+    this.name = name;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        var operator = (Operator) o;
-        return id.equals(operator.id);
-    }
+  @Override
+  public String toString() {
+    return "Operator{" + "id='" + id + '\'' + ", name=" + name + '}';
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    var operator = (Operator) o;
+    return id.equals(operator.id);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
+  }
 }

@@ -21,30 +21,37 @@ package org.entur.lamassu.model.entities;
 import java.io.Serializable;
 
 public class EcoLabel implements Serializable {
-    private String countryCode;
-    private String ecoSticker;
 
-    public String getCountryCode() {
-        return countryCode;
-    }
+  private String countryCode;
+  private String ecoSticker;
 
-    public void setCountryCode(String countryCode) {
-        this.countryCode = countryCode;
-    }
+  public String getCountryCode() {
+    return countryCode;
+  }
 
-    public String getEcoSticker() {
-        return ecoSticker;
-    }
+  public void setCountryCode(String countryCode) {
+    this.countryCode = countryCode;
+  }
 
-    public void setEcoSticker(String ecoSticker) {
-        this.ecoSticker = ecoSticker;
-    }
+  public String getEcoSticker() {
+    return ecoSticker;
+  }
 
-    @Override
-    public String toString() {
-        return "EcoLabel{" +
-                "countryCode='" + countryCode + '\'' +
-                ", ecoSticker='" + ecoSticker + '\'' +
-                '}';
-    }
+  public void setEcoSticker(String ecoSticker) {
+    this.ecoSticker = ecoSticker;
+  }
+
+  @Override
+  public String toString() {
+    return (
+      "EcoLabel{" +
+      "countryCode='" +
+      countryCode +
+      '\'' +
+      ", ecoSticker='" +
+      ecoSticker +
+      '\'' +
+      '}'
+    );
+  }
 }

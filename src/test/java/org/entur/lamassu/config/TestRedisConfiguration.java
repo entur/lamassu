@@ -12,15 +12,14 @@ import redis.embedded.RedisServer;
 @Configuration
 public class TestRedisConfiguration {
 
-    @Bean(destroyMethod = "shutdown")
-    @DependsOn("redissonServer")
-    public RedissonClient redissonClient(Config redissonConfig) {
-        return Redisson.create(redissonConfig);
-    }
+  @Bean(destroyMethod = "shutdown")
+  @DependsOn("redissonServer")
+  public RedissonClient redissonClient(Config redissonConfig) {
+    return Redisson.create(redissonConfig);
+  }
 
-    @Bean(initMethod = "start", destroyMethod = "stop")
-    public RedisServer redissonServer(RedisProperties redisProperties) {
-        return new RedisServer(redisProperties.getPort());
-    }
-
+  @Bean(initMethod = "start", destroyMethod = "stop")
+  public RedisServer redissonServer(RedisProperties redisProperties) {
+    return new RedisServer(redisProperties.getPort());
+  }
 }

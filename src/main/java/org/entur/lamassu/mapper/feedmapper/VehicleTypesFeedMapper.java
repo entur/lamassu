@@ -18,6 +18,13 @@
 
 package org.entur.lamassu.mapper.feedmapper;
 
+import static org.entur.lamassu.mapper.feedmapper.IdMappers.PRICING_PLAN_ID_TYPE;
+import static org.entur.lamassu.mapper.feedmapper.IdMappers.VEHICLE_TYPE_ID_TYPE;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.entur.gbfs.v2_3.vehicle_types.GBFSData;
 import org.entur.gbfs.v2_3.vehicle_types.GBFSVehicleType;
 import org.entur.gbfs.v2_3.vehicle_types.GBFSVehicleTypes;
@@ -25,85 +32,96 @@ import org.entur.lamassu.model.provider.FeedProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.entur.lamassu.mapper.feedmapper.IdMappers.PRICING_PLAN_ID_TYPE;
-import static org.entur.lamassu.mapper.feedmapper.IdMappers.VEHICLE_TYPE_ID_TYPE;
-
 @Component
 public class VehicleTypesFeedMapper extends AbstractFeedMapper<GBFSVehicleTypes> {
-    @Value("${org.entur.lamassu.targetGbfsVersion:2.2}")
-    private String targetGbfsVersion;
 
-    @Override
-    public GBFSVehicleTypes map(GBFSVehicleTypes source, FeedProvider feedProvider) {
-        if (feedProvider.getVehicleTypes() != null) {
-            return customVehicleTypes(feedProvider);
-        }
+  @Value("${org.entur.lamassu.targetGbfsVersion:2.2}")
+  private String targetGbfsVersion;
 
-        if (source == null) {
-            return null;
-        }
-
-        var mapped = new GBFSVehicleTypes();
-        mapped.setVersion(targetGbfsVersion);
-        mapped.setTtl(source.getTtl());
-        mapped.setLastUpdated(source.getLastUpdated());
-        mapped.setData(mapData(source.getData(), feedProvider.getCodespace()));
-        return mapped;
+  @Override
+  public GBFSVehicleTypes map(GBFSVehicleTypes source, FeedProvider feedProvider) {
+    if (feedProvider.getVehicleTypes() != null) {
+      return customVehicleTypes(feedProvider);
     }
 
-    private GBFSVehicleTypes customVehicleTypes(FeedProvider feedProvider) {
-        var custom = new GBFSVehicleTypes();
-        custom.setVersion(targetGbfsVersion);
-        custom.setLastUpdated((int) Instant.now().getEpochSecond());
-        custom.setTtl((int)Duration.ofMinutes(5).toSeconds());
-        var data = new GBFSData();
-        data.setVehicleTypes(feedProvider.getVehicleTypes());
-        custom.setData(mapData(data, feedProvider.getCodespace()));
-        return custom;
+    if (source == null) {
+      return null;
     }
 
-    private GBFSData mapData(GBFSData data, String codespace) {
-        var mapped = new GBFSData();
-        mapped.setVehicleTypes(mapVehicleTypes(data.getVehicleTypes(), codespace));
-        return mapped;
-    }
+    var mapped = new GBFSVehicleTypes();
+    mapped.setVersion(targetGbfsVersion);
+    mapped.setTtl(source.getTtl());
+    mapped.setLastUpdated(source.getLastUpdated());
+    mapped.setData(mapData(source.getData(), feedProvider.getCodespace()));
+    return mapped;
+  }
 
-    private List<GBFSVehicleType> mapVehicleTypes(List<GBFSVehicleType> vehicleTypes, String codespace) {
-        return vehicleTypes.stream()
-                .map(vehicleType -> mapVehicleType(vehicleType, codespace))
-                .collect(Collectors.toList());
-    }
+  private GBFSVehicleTypes customVehicleTypes(FeedProvider feedProvider) {
+    var custom = new GBFSVehicleTypes();
+    custom.setVersion(targetGbfsVersion);
+    custom.setLastUpdated((int) Instant.now().getEpochSecond());
+    custom.setTtl((int) Duration.ofMinutes(5).toSeconds());
+    var data = new GBFSData();
+    data.setVehicleTypes(feedProvider.getVehicleTypes());
+    custom.setData(mapData(data, feedProvider.getCodespace()));
+    return custom;
+  }
 
-    private GBFSVehicleType mapVehicleType(GBFSVehicleType vehicleType, String codespace) {
-        var mapped = new GBFSVehicleType();
-        mapped.setVehicleTypeId(IdMappers.mapId(codespace, VEHICLE_TYPE_ID_TYPE, vehicleType.getVehicleTypeId()));
-        mapped.setFormFactor(vehicleType.getFormFactor());
-        mapped.setRiderCapacity(vehicleType.getRiderCapacity());
-        mapped.setCargoVolumeCapacity(vehicleType.getCargoVolumeCapacity());
-        mapped.setCargoLoadCapacity(vehicleType.getCargoLoadCapacity());
-        mapped.setPropulsionType(vehicleType.getPropulsionType());
-        mapped.setEcoLabel(vehicleType.getEcoLabel());
-        mapped.setMaxRangeMeters(vehicleType.getMaxRangeMeters());
-        mapped.setName(vehicleType.getName());
-        mapped.setVehicleAccessories(vehicleType.getVehicleAccessories());
-        mapped.setgCO2Km(vehicleType.getgCO2Km());
-        mapped.setVehicleImage(vehicleType.getVehicleImage());
-        mapped.setMake(vehicleType.getMake());
-        mapped.setModel(vehicleType.getModel());
-        mapped.setColor(vehicleType.getColor());
-        mapped.setWheelCount(vehicleType.getWheelCount());
-        mapped.setMaxPermittedSpeed(vehicleType.getMaxPermittedSpeed());
-        mapped.setRatedPower(vehicleType.getRatedPower());
-        mapped.setDefaultReserveTime(vehicleType.getDefaultReserveTime());
-        mapped.setReturnConstraint(vehicleType.getReturnConstraint());
-        mapped.setVehicleAssets(vehicleType.getVehicleAssets());
-        mapped.setDefaultPricingPlanId(IdMappers.mapId(codespace, PRICING_PLAN_ID_TYPE, vehicleType.getDefaultPricingPlanId()));
-        mapped.setPricingPlanIds(vehicleType.getPricingPlanIds() != null ? IdMappers.mapIds(codespace, PRICING_PLAN_ID_TYPE, vehicleType.getPricingPlanIds()).orElse(null) : null);
-        return mapped;
-    }
+  private GBFSData mapData(GBFSData data, String codespace) {
+    var mapped = new GBFSData();
+    mapped.setVehicleTypes(mapVehicleTypes(data.getVehicleTypes(), codespace));
+    return mapped;
+  }
+
+  private List<GBFSVehicleType> mapVehicleTypes(
+    List<GBFSVehicleType> vehicleTypes,
+    String codespace
+  ) {
+    return vehicleTypes
+      .stream()
+      .map(vehicleType -> mapVehicleType(vehicleType, codespace))
+      .collect(Collectors.toList());
+  }
+
+  private GBFSVehicleType mapVehicleType(GBFSVehicleType vehicleType, String codespace) {
+    var mapped = new GBFSVehicleType();
+    mapped.setVehicleTypeId(
+      IdMappers.mapId(codespace, VEHICLE_TYPE_ID_TYPE, vehicleType.getVehicleTypeId())
+    );
+    mapped.setFormFactor(vehicleType.getFormFactor());
+    mapped.setRiderCapacity(vehicleType.getRiderCapacity());
+    mapped.setCargoVolumeCapacity(vehicleType.getCargoVolumeCapacity());
+    mapped.setCargoLoadCapacity(vehicleType.getCargoLoadCapacity());
+    mapped.setPropulsionType(vehicleType.getPropulsionType());
+    mapped.setEcoLabel(vehicleType.getEcoLabel());
+    mapped.setMaxRangeMeters(vehicleType.getMaxRangeMeters());
+    mapped.setName(vehicleType.getName());
+    mapped.setVehicleAccessories(vehicleType.getVehicleAccessories());
+    mapped.setgCO2Km(vehicleType.getgCO2Km());
+    mapped.setVehicleImage(vehicleType.getVehicleImage());
+    mapped.setMake(vehicleType.getMake());
+    mapped.setModel(vehicleType.getModel());
+    mapped.setColor(vehicleType.getColor());
+    mapped.setWheelCount(vehicleType.getWheelCount());
+    mapped.setMaxPermittedSpeed(vehicleType.getMaxPermittedSpeed());
+    mapped.setRatedPower(vehicleType.getRatedPower());
+    mapped.setDefaultReserveTime(vehicleType.getDefaultReserveTime());
+    mapped.setReturnConstraint(vehicleType.getReturnConstraint());
+    mapped.setVehicleAssets(vehicleType.getVehicleAssets());
+    mapped.setDefaultPricingPlanId(
+      IdMappers.mapId(
+        codespace,
+        PRICING_PLAN_ID_TYPE,
+        vehicleType.getDefaultPricingPlanId()
+      )
+    );
+    mapped.setPricingPlanIds(
+      vehicleType.getPricingPlanIds() != null
+        ? IdMappers
+          .mapIds(codespace, PRICING_PLAN_ID_TYPE, vehicleType.getPricingPlanIds())
+          .orElse(null)
+        : null
+    );
+    return mapped;
+  }
 }

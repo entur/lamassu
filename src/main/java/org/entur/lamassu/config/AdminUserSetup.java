@@ -27,13 +27,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class AdminUserSetup {
 
-    @Value("${org.entur.lamassu.adminPassword:admin}")
-    private String adminPassword;
+  @Value("${org.entur.lamassu.adminPassword:admin}")
+  private String adminPassword;
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth, PasswordEncoder encoder) throws Exception {
-        auth.inMemoryAuthentication()
-                .withUser("admin").password(encoder.encode(adminPassword))
-                .roles("ADMIN");
-    }
+  @Autowired
+  public void configureGlobal(AuthenticationManagerBuilder auth, PasswordEncoder encoder)
+    throws Exception {
+    auth
+      .inMemoryAuthentication()
+      .withUser("admin")
+      .password(encoder.encode(adminPassword))
+      .roles("ADMIN");
+  }
 }

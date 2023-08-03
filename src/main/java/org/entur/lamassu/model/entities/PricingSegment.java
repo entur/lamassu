@@ -3,50 +3,57 @@ package org.entur.lamassu.model.entities;
 import java.io.Serializable;
 
 public class PricingSegment implements Serializable {
-    private Integer start;
-    private Float rate;
-    private Integer interval;
-    private Integer end;
 
-    public Integer getStart() {
-        return start;
-    }
+  private Integer start;
+  private Float rate;
+  private Integer interval;
+  private Integer end;
 
-    public void setStart(Integer start) {
-        this.start = start;
-    }
+  public Integer getStart() {
+    return start;
+  }
 
-    public Float getRate() {
-        return rate;
-    }
+  public void setStart(Integer start) {
+    this.start = start;
+  }
 
-    public void setRate(Float rate) {
-        this.rate = rate;
-    }
+  public Float getRate() {
+    return rate;
+  }
 
-    public Integer getInterval() {
-        return interval;
-    }
+  public void setRate(Float rate) {
+    this.rate = rate;
+  }
 
-    public void setInterval(Integer interval) {
-        this.interval = interval;
-    }
+  public Integer getInterval() {
+    return interval;
+  }
 
-    public Integer getEnd() {
-        return end;
-    }
+  public void setInterval(Integer interval) {
+    this.interval = interval;
+  }
 
-    public void setEnd(Integer end) {
-        this.end = end;
-    }
+  public Integer getEnd() {
+    return end;
+  }
 
-    @Override
-    public String toString() {
-        return "PricingSegment{" +
-                "start=" + start +
-                ", rate=" + rate +
-                ", interval=" + interval +
-                ", end=" + end +
-                '}';
-    }
+  public void setEnd(Integer end) {
+    this.end = end;
+  }
+
+  @Override
+  public String toString() {
+    return (
+      "PricingSegment{" +
+      "start=" +
+      start +
+      ", rate=" +
+      rate +
+      ", interval=" +
+      interval +
+      ", end=" +
+      end +
+      '}'
+    );
+  }
 }

@@ -18,32 +18,48 @@
 
 package org.entur.lamassu.mapper.feedmapper;
 
+import java.util.List;
 import org.entur.gbfs.v2_3.station_status.GBFSStationStatus;
 import org.entur.gbfs.v2_3.station_status.GBFSVehicleTypesAvailable;
 import org.entur.gbfs.v2_3.vehicle_types.GBFSVehicleTypes;
 
-import java.util.List;
-
 public class VehicleTypeCapacityProducer {
-    private VehicleTypeCapacityProducer() {}
 
-    /*
+  private VehicleTypeCapacityProducer() {}
+
+  /*
         Adds vehicle type availability to stations that don't have it according to the requirements,
         on the condition that the system only has 1 vehicle type. The vehicle type availability count is
         then set to the same value as number of available bikes for that station.
      */
-    public static void addToStations(GBFSStationStatus stationStatus, GBFSVehicleTypes vehicleTypes) {
-        if (vehicleTypes != null && vehicleTypes.getData() != null && vehicleTypes.getData().getVehicleTypes() != null && vehicleTypes.getData().getVehicleTypes().size() == 1) {
-            var vehicleType = vehicleTypes.getData().getVehicleTypes().get(0);
-            stationStatus.getData().getStations().forEach(station -> {
-                if (station.getVehicleTypesAvailable() == null || station.getVehicleTypesAvailable().isEmpty()) {
-                    station.setVehicleTypesAvailable(List.of(
-                            new GBFSVehicleTypesAvailable()
-                                    .withVehicleTypeId(vehicleType.getVehicleTypeId())
-                                    .withCount(station.getNumBikesAvailable())
-                    ));
-                }
-            });
-        }
+  public static void addToStations(
+    GBFSStationStatus stationStatus,
+    GBFSVehicleTypes vehicleTypes
+  ) {
+    if (
+      vehicleTypes != null &&
+      vehicleTypes.getData() != null &&
+      vehicleTypes.getData().getVehicleTypes() != null &&
+      vehicleTypes.getData().getVehicleTypes().size() == 1
+    ) {
+      var vehicleType = vehicleTypes.getData().getVehicleTypes().get(0);
+      stationStatus
+        .getData()
+        .getStations()
+        .forEach(station -> {
+          if (
+            station.getVehicleTypesAvailable() == null ||
+            station.getVehicleTypesAvailable().isEmpty()
+          ) {
+            station.setVehicleTypesAvailable(
+              List.of(
+                new GBFSVehicleTypesAvailable()
+                  .withVehicleTypeId(vehicleType.getVehicleTypeId())
+                  .withCount(station.getNumBikesAvailable())
+              )
+            );
+          }
+        });
     }
+  }
 }

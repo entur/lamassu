@@ -29,10 +29,13 @@ import org.springframework.context.annotation.Profile;
 @Configuration
 public class MetricsConfiguration {
 
-    @Profile("!test")
-    @Bean(name = { "metricsRegistry", "prometheusMeterRegistry" })
-    public PrometheusMeterRegistry prometheusMeterRegistry(
-            PrometheusConfig prometheusConfig, CollectorRegistry collectorRegistry, Clock clock) {
-        return new PrometheusMeterRegistry(prometheusConfig, collectorRegistry, clock);
-    }
+  @Profile("!test")
+  @Bean(name = { "metricsRegistry", "prometheusMeterRegistry" })
+  public PrometheusMeterRegistry prometheusMeterRegistry(
+    PrometheusConfig prometheusConfig,
+    CollectorRegistry collectorRegistry,
+    Clock clock
+  ) {
+    return new PrometheusMeterRegistry(prometheusConfig, collectorRegistry, clock);
+  }
 }

@@ -18,17 +18,17 @@
 
 package org.entur.lamassu.mapper.feedmapper;
 
+import java.util.function.Consumer;
 import org.entur.lamassu.model.provider.FeedProvider;
 
-import java.util.function.Consumer;
-
 public abstract class AbstractFeedMapper<T> implements FeedMapper<T> {
-    @Override
-    public T map(T source, FeedProvider feedProvider, Consumer<T> postProcessor) {
-        var mapped = map(source, feedProvider);
-        if (mapped != null) {
-            postProcessor.accept(mapped);
-        }
-        return mapped;
+
+  @Override
+  public T map(T source, FeedProvider feedProvider, Consumer<T> postProcessor) {
+    var mapped = map(source, feedProvider);
+    if (mapped != null) {
+      postProcessor.accept(mapped);
     }
+    return mapped;
+  }
 }

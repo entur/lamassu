@@ -18,50 +18,50 @@
 
 package org.entur.lamassu.stubs;
 
-import org.entur.lamassu.cache.VehicleCache;
-import org.entur.lamassu.model.entities.Vehicle;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import org.entur.lamassu.cache.VehicleCache;
+import org.entur.lamassu.model.entities.Vehicle;
 
 public class VehicleCacheStub implements VehicleCache {
-    private final Map<String, Vehicle> map = new HashMap<>();
 
-    @Override
-    public List<Vehicle> getAll(Set<String> keys) {
-        return null;
-    }
+  private final Map<String, Vehicle> map = new HashMap<>();
 
-    @Override
-    public List<Vehicle> getAll() {
-        return null;
-    }
+  @Override
+  public List<Vehicle> getAll(Set<String> keys) {
+    return null;
+  }
 
-    @Override
-    public Map<String, Vehicle> getAllAsMap(Set<String> keys) {
-        return null;
-    }
+  @Override
+  public List<Vehicle> getAll() {
+    return null;
+  }
 
-    @Override
-    public Vehicle get(String key) {
-        return map.get(key);
-    }
+  @Override
+  public Map<String, Vehicle> getAllAsMap(Set<String> keys) {
+    return null;
+  }
 
-    @Override
-    public void updateAll(Map<String, Vehicle> entities, int ttl, TimeUnit timeUnit) {
-        map.putAll(entities);
-    }
+  @Override
+  public Vehicle get(String key) {
+    return map.get(key);
+  }
 
-    @Override
-    public void removeAll(Set<String> keys) {
-        keys.forEach(map::remove);
-    }
+  @Override
+  public void updateAll(Map<String, Vehicle> entities, int ttl, TimeUnit timeUnit) {
+    map.putAll(entities);
+  }
 
-    @Override
-    public boolean hasKey(String key) {
-        return map.containsKey(key);
-    }
+  @Override
+  public void removeAll(Set<String> keys) {
+    keys.forEach(map::remove);
+  }
+
+  @Override
+  public boolean hasKey(String key) {
+    return map.containsKey(key);
+  }
 }

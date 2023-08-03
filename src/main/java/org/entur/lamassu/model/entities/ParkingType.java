@@ -19,9 +19,9 @@
 package org.entur.lamassu.model.entities;
 
 public enum ParkingType {
-    PARKING_LOT,
-    STREET_PARKING,
-    UNDERGROUND_PARKING,
-    SIDEWALK_PARKING,
-    OTHER
+  PARKING_LOT,
+  STREET_PARKING,
+  UNDERGROUND_PARKING,
+  SIDEWALK_PARKING,
+  OTHER,
 }

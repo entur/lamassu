@@ -23,16 +23,16 @@ import org.junit.jupiter.api.Test;
 
 class IdMappersTest {
 
-    @Test
-    void testMapIdWhenValueCannotBeMapped() {
-        Assertions.assertNull(IdMappers.mapId("TST", "Type", null));
-        Assertions.assertEquals("", IdMappers.mapId("TST", "Type", ""));
-        Assertions.assertEquals(" ", IdMappers.mapId("TST", "Type", " "));
-    }
+  @Test
+  void testMapIdWhenValueCannotBeMapped() {
+    Assertions.assertNull(IdMappers.mapId("TST", "Type", null));
+    Assertions.assertEquals("", IdMappers.mapId("TST", "Type", ""));
+    Assertions.assertEquals(" ", IdMappers.mapId("TST", "Type", " "));
+  }
 
-    @Test
-    void testMapId() {
-        Assertions.assertEquals("TST:Type:1", IdMappers.mapId("TST", "Type", "TST:Type:1"));
-        Assertions.assertEquals("TST:Type:1", IdMappers.mapId("TST", "Type", "1"));
-    }
+  @Test
+  void testMapId() {
+    Assertions.assertEquals("TST:Type:1", IdMappers.mapId("TST", "Type", "TST:Type:1"));
+    Assertions.assertEquals("TST:Type:1", IdMappers.mapId("TST", "Type", "1"));
+  }
 }

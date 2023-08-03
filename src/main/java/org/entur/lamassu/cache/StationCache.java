@@ -20,5 +20,4 @@ package org.entur.lamassu.cache;
 
 import org.entur.lamassu.model.entities.Station;
 
-public interface StationCache extends EntityCache<Station> {
-}
+public interface StationCache extends EntityCache<Station> {}

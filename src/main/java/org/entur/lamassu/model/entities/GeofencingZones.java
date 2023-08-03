@@ -22,157 +22,162 @@ import java.io.Serializable;
 import java.util.List;
 
 public class GeofencingZones implements Entity {
-    private String systemId;
-    private FeatureCollection geojson;
 
-    public String getSystemId() {
-        return systemId;
+  private String systemId;
+  private FeatureCollection geojson;
+
+  public String getSystemId() {
+    return systemId;
+  }
+
+  public void setSystemId(String systemId) {
+    this.systemId = systemId;
+  }
+
+  public FeatureCollection getGeojson() {
+    return geojson;
+  }
+
+  public void setGeojson(FeatureCollection geojson) {
+    this.geojson = geojson;
+  }
+
+  @Override
+  public String getId() {
+    return getSystemId();
+  }
+
+  public static class FeatureCollection implements Serializable {
+
+    private String type = "FeatureCollection";
+    private List<Feature> features;
+
+    public String getType() {
+      return type;
     }
 
-    public void setSystemId(String systemId) {
-        this.systemId = systemId;
+    public List<Feature> getFeatures() {
+      return features;
     }
 
-    public FeatureCollection getGeojson() {
-        return geojson;
+    public void setFeatures(List<Feature> features) {
+      this.features = features;
+    }
+  }
+
+  public static class Feature implements Serializable {
+
+    private String type = "Feature";
+    private MultiPolygon geometry;
+    private Properties properties;
+
+    public String getType() {
+      return type;
     }
 
-    public void setGeojson(FeatureCollection geojson) {
-        this.geojson = geojson;
+    public MultiPolygon getGeometry() {
+      return geometry;
     }
 
-    @Override
-    public String getId() {
-        return getSystemId();
+    public void setGeometry(MultiPolygon geometry) {
+      this.geometry = geometry;
     }
 
-    public static class FeatureCollection implements Serializable {
-        private String type = "FeatureCollection";
-        private List<Feature> features;
-
-        public String getType() {
-            return type;
-        }
-
-        public List<Feature> getFeatures() {
-            return features;
-        }
-
-        public void setFeatures(List<Feature> features) {
-            this.features = features;
-        }
+    public Properties getProperties() {
+      return properties;
     }
 
-    public static class Feature implements Serializable {
-        private String type = "Feature";
-        private MultiPolygon geometry;
-        private Properties properties;
+    public void setProperties(Properties properties) {
+      this.properties = properties;
+    }
+  }
 
-        public String getType() {
-            return type;
-        }
+  public static class Properties implements Serializable {
 
-        public MultiPolygon getGeometry() {
-            return geometry;
-        }
+    private String name;
+    private Long start;
+    private Long end;
+    private List<Rule> rules;
 
-        public void setGeometry(MultiPolygon geometry) {
-            this.geometry = geometry;
-        }
-
-        public Properties getProperties() {
-            return properties;
-        }
-
-        public void setProperties(Properties properties) {
-            this.properties = properties;
-        }
+    public String getName() {
+      return name;
     }
 
-    public static class Properties implements Serializable {
-        private String name;
-        private Long start;
-        private Long end;
-        private List<Rule> rules;
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public Long getStart() {
-            return start;
-        }
-
-        public void setStart(Long start) {
-            this.start = start;
-        }
-
-        public Long getEnd() {
-            return end;
-        }
-
-        public void setEnd(Long end) {
-            this.end = end;
-        }
-
-        public List<Rule> getRules() {
-            return rules;
-        }
-
-        public void setRules(List<Rule> rules) {
-            this.rules = rules;
-        }
+    public void setName(String name) {
+      this.name = name;
     }
 
-    public static class Rule implements Serializable {
-        private List<String> vehicleTypeIds;
-        private Boolean rideAllowed;
-        private Boolean rideThroughAllowed;
-        private Integer maximumSpeedKph;
-        private Boolean stationParking;
-
-        public List<String> getVehicleTypeIds() {
-            return vehicleTypeIds;
-        }
-
-        public void setVehicleTypeIds(List<String> vehicleTypeIds) {
-            this.vehicleTypeIds = vehicleTypeIds;
-        }
-
-        public Boolean getRideAllowed() {
-            return rideAllowed;
-        }
-
-        public void setRideAllowed(Boolean rideAllowed) {
-            this.rideAllowed = rideAllowed;
-        }
-
-        public Boolean getRideThroughAllowed() {
-            return rideThroughAllowed;
-        }
-
-        public void setRideThroughAllowed(Boolean rideThroughAllowed) {
-            this.rideThroughAllowed = rideThroughAllowed;
-        }
-
-        public Integer getMaximumSpeedKph() {
-            return maximumSpeedKph;
-        }
-
-        public void setMaximumSpeedKph(Integer maximumSpeedKph) {
-            this.maximumSpeedKph = maximumSpeedKph;
-        }
-
-        public Boolean getStationParking() {
-            return stationParking;
-        }
-
-        public void setStationParking(Boolean stationParking) {
-            this.stationParking = stationParking;
-        }
+    public Long getStart() {
+      return start;
     }
+
+    public void setStart(Long start) {
+      this.start = start;
+    }
+
+    public Long getEnd() {
+      return end;
+    }
+
+    public void setEnd(Long end) {
+      this.end = end;
+    }
+
+    public List<Rule> getRules() {
+      return rules;
+    }
+
+    public void setRules(List<Rule> rules) {
+      this.rules = rules;
+    }
+  }
+
+  public static class Rule implements Serializable {
+
+    private List<String> vehicleTypeIds;
+    private Boolean rideAllowed;
+    private Boolean rideThroughAllowed;
+    private Integer maximumSpeedKph;
+    private Boolean stationParking;
+
+    public List<String> getVehicleTypeIds() {
+      return vehicleTypeIds;
+    }
+
+    public void setVehicleTypeIds(List<String> vehicleTypeIds) {
+      this.vehicleTypeIds = vehicleTypeIds;
+    }
+
+    public Boolean getRideAllowed() {
+      return rideAllowed;
+    }
+
+    public void setRideAllowed(Boolean rideAllowed) {
+      this.rideAllowed = rideAllowed;
+    }
+
+    public Boolean getRideThroughAllowed() {
+      return rideThroughAllowed;
+    }
+
+    public void setRideThroughAllowed(Boolean rideThroughAllowed) {
+      this.rideThroughAllowed = rideThroughAllowed;
+    }
+
+    public Integer getMaximumSpeedKph() {
+      return maximumSpeedKph;
+    }
+
+    public void setMaximumSpeedKph(Integer maximumSpeedKph) {
+      this.maximumSpeedKph = maximumSpeedKph;
+    }
+
+    public Boolean getStationParking() {
+      return stationParking;
+    }
+
+    public void setStationParking(Boolean stationParking) {
+      this.stationParking = stationParking;
+    }
+  }
 }

@@ -18,6 +18,8 @@
 
 package org.entur.lamassu.mapper.entitymapper;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.entur.gbfs.v2_3.free_bike_status.GBFSBike;
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.System;
@@ -27,41 +29,51 @@ import org.entur.lamassu.model.entities.VehicleType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Component
 public class VehicleMapper {
-    private final RentalUrisMapper rentalUrisMapper;
 
-    @Autowired
-    public VehicleMapper(RentalUrisMapper rentalUrisMapper) {
-        this.rentalUrisMapper = rentalUrisMapper;
+  private final RentalUrisMapper rentalUrisMapper;
+
+  @Autowired
+  public VehicleMapper(RentalUrisMapper rentalUrisMapper) {
+    this.rentalUrisMapper = rentalUrisMapper;
+  }
+
+  public Vehicle mapVehicle(
+    GBFSBike bike,
+    VehicleType vehicleType,
+    PricingPlan pricingPlan,
+    System system
+  ) {
+    var vehicle = new Vehicle();
+    vehicle.setId(bike.getBikeId());
+    vehicle.setLat(bike.getLat());
+    vehicle.setLon(bike.getLon());
+    vehicle.setReserved(bike.getIsReserved());
+    vehicle.setDisabled(bike.getIsDisabled());
+    vehicle.setCurrentRangeMeters(bike.getCurrentRangeMeters());
+    vehicle.setCurrentFuelPercent(bike.getCurrentFuelPercent());
+    vehicle.setVehicleType(vehicleType);
+    vehicle.setPricingPlan(pricingPlan);
+    vehicle.setVehicleEquipment(mapVehicleEquipment(bike.getVehicleEquipment()));
+    vehicle.setRentalUris(rentalUrisMapper.mapRentalUris(bike.getRentalUris()));
+    vehicle.setAvailableUntil(bike.getAvailableUntil());
+    vehicle.setSystem(system);
+    return vehicle;
+  }
+
+  private List<VehicleEquipment> mapVehicleEquipment(
+    List<org.entur.gbfs.v2_3.free_bike_status.VehicleEquipment> vehicleEquipment
+  ) {
+    if (vehicleEquipment == null) {
+      return null;
     }
 
-    public Vehicle mapVehicle(GBFSBike bike, VehicleType vehicleType, PricingPlan pricingPlan, System system) {
-        var vehicle = new Vehicle();
-        vehicle.setId(bike.getBikeId());
-        vehicle.setLat(bike.getLat());
-        vehicle.setLon(bike.getLon());
-        vehicle.setReserved(bike.getIsReserved());
-        vehicle.setDisabled(bike.getIsDisabled());
-        vehicle.setCurrentRangeMeters(bike.getCurrentRangeMeters());
-        vehicle.setCurrentFuelPercent(bike.getCurrentFuelPercent());
-        vehicle.setVehicleType(vehicleType);
-        vehicle.setPricingPlan(pricingPlan);
-        vehicle.setVehicleEquipment(mapVehicleEquipment(bike.getVehicleEquipment()));
-        vehicle.setRentalUris(rentalUrisMapper.mapRentalUris(bike.getRentalUris()));
-        vehicle.setAvailableUntil(bike.getAvailableUntil());
-        vehicle.setSystem(system);
-        return vehicle;
-    }
-
-    private List<VehicleEquipment> mapVehicleEquipment(List<org.entur.gbfs.v2_3.free_bike_status.VehicleEquipment> vehicleEquipment) {
-        if (vehicleEquipment == null) {
-            return null;
-        }
-
-        return vehicleEquipment.stream().map(vehicleEquipmentEnum -> VehicleEquipment.valueOf(vehicleEquipmentEnum.value().toUpperCase())).collect(Collectors.toList());
-    }
+    return vehicleEquipment
+      .stream()
+      .map(vehicleEquipmentEnum ->
+        VehicleEquipment.valueOf(vehicleEquipmentEnum.value().toUpperCase())
+      )
+      .collect(Collectors.toList());
+  }
 }

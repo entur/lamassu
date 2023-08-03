@@ -18,21 +18,25 @@
 
 package org.entur.lamassu.util;
 
+import java.net.URI;
 import org.entur.lamassu.model.provider.FeedProvider;
 
-import java.net.URI;
-
 public class FeedUrlUtil {
-    private FeedUrlUtil() {}
 
-    public static URI mapFeedUrl(String baseUrl, org.entur.gbfs.v2_3.gbfs.GBFSFeedName feedName, FeedProvider feedProvider) {
-        var systemId= feedProvider.getSystemId();
-        var feedUrl = addToPath(baseUrl, "gbfs");
-        feedUrl = addToPath(feedUrl, systemId);
-        return URI.create(addToPath(feedUrl, feedName.value()).toLowerCase());
-    }
+  private FeedUrlUtil() {}
 
-    private static String addToPath(String base, String toAdd) {
-        return String.format("%s/%s", base, toAdd);
-    }
+  public static URI mapFeedUrl(
+    String baseUrl,
+    org.entur.gbfs.v2_3.gbfs.GBFSFeedName feedName,
+    FeedProvider feedProvider
+  ) {
+    var systemId = feedProvider.getSystemId();
+    var feedUrl = addToPath(baseUrl, "gbfs");
+    feedUrl = addToPath(feedUrl, systemId);
+    return URI.create(addToPath(feedUrl, feedName.value()).toLowerCase());
+  }
+
+  private static String addToPath(String base, String toAdd) {
+    return String.format("%s/%s", base, toAdd);
+  }
 }

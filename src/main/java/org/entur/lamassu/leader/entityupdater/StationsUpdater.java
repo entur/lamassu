@@ -18,6 +18,13 @@
 
 package org.entur.lamassu.leader.entityupdater;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import org.entur.gbfs.GbfsDelivery;
 import org.entur.gbfs.v2_3.station_information.GBFSData;
 import org.entur.gbfs.v2_3.station_information.GBFSStationInformation;
@@ -44,148 +51,196 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
 @Component
 public class StationsUpdater {
-    private final StationCache stationCache;
-    private final StationSpatialIndex spatialIndex;
-    private final SystemMapper systemMapper;
-    private final PricingPlanMapper pricingPlanMapper;
-    private final StationMapper stationMapper;
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    public StationsUpdater(
-            StationCache stationCache,
-            StationSpatialIndex spatialIndex,
-            SystemMapper systemMapper,
-            PricingPlanMapper pricingPlanMapper,
-            StationMapper stationMapper
-    ) {
-        this.stationCache = stationCache;
-        this.spatialIndex = spatialIndex;
-        this.systemMapper = systemMapper;
-        this.pricingPlanMapper = pricingPlanMapper;
-        this.stationMapper = stationMapper;
+  private final StationCache stationCache;
+  private final StationSpatialIndex spatialIndex;
+  private final SystemMapper systemMapper;
+  private final PricingPlanMapper pricingPlanMapper;
+  private final StationMapper stationMapper;
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+  @Autowired
+  public StationsUpdater(
+    StationCache stationCache,
+    StationSpatialIndex spatialIndex,
+    SystemMapper systemMapper,
+    PricingPlanMapper pricingPlanMapper,
+    StationMapper stationMapper
+  ) {
+    this.stationCache = stationCache;
+    this.spatialIndex = spatialIndex;
+    this.systemMapper = systemMapper;
+    this.pricingPlanMapper = pricingPlanMapper;
+    this.stationMapper = stationMapper;
+  }
+
+  public void addOrUpdateStations(
+    FeedProvider feedProvider,
+    GbfsDelivery delivery,
+    GbfsDelivery oldDelivery
+  ) {
+    GBFSStationStatus stationStatusFeed = delivery.getStationStatus();
+    GBFSStationStatus oldStationStatusFeed = oldDelivery.getStationStatus();
+    GBFSStationInformation stationInformationFeed = delivery.getStationInformation();
+    GBFSSystemInformation systemInformationFeed = delivery.getSystemInformation();
+    GBFSSystemPricingPlans pricingPlansFeed = delivery.getSystemPricingPlans();
+    GBFSVehicleTypes vehicleTypesFeed = delivery.getVehicleTypes();
+    GBFSSystemRegions systemRegionsFeed = delivery.getSystemRegions();
+
+    var stationIds = stationStatusFeed
+      .getData()
+      .getStations()
+      .stream()
+      .map(GBFSStation::getStationId)
+      .collect(Collectors.toSet());
+
+    Set<String> stationIdsToRemove = null;
+
+    if (oldStationStatusFeed != null && oldStationStatusFeed.getData() != null) {
+      stationIdsToRemove =
+        oldStationStatusFeed
+          .getData()
+          .getStations()
+          .stream()
+          .map(GBFSStation::getStationId)
+          .collect(Collectors.toSet());
+      stationIdsToRemove.removeAll(stationIds);
+      logger.debug(
+        "Found {} stationIds to remove from old station_status feed",
+        stationIdsToRemove.size()
+      );
+
+      // Add station ids that are staged for removal to the set of stations ids that will be used to
+      // fetch current stations from cache
+      stationIds.addAll(stationIdsToRemove);
     }
 
-    public void addOrUpdateStations(
-            FeedProvider feedProvider,
-            GbfsDelivery delivery,
-            GbfsDelivery oldDelivery
-    ) {
-        GBFSStationStatus stationStatusFeed = delivery.getStationStatus();
-        GBFSStationStatus oldStationStatusFeed = oldDelivery.getStationStatus();
-        GBFSStationInformation stationInformationFeed = delivery.getStationInformation();
-        GBFSSystemInformation systemInformationFeed = delivery.getSystemInformation();
-        GBFSSystemPricingPlans pricingPlansFeed = delivery.getSystemPricingPlans();
-        GBFSVehicleTypes vehicleTypesFeed = delivery.getVehicleTypes();
-        GBFSSystemRegions systemRegionsFeed = delivery.getSystemRegions();
-
-        var stationIds = stationStatusFeed.getData().getStations().stream()
-                .map(GBFSStation::getStationId)
-                .collect(Collectors.toSet());
-
-        Set<String> stationIdsToRemove = null;
-
-        if (oldStationStatusFeed != null && oldStationStatusFeed.getData() != null) {
-            stationIdsToRemove = oldStationStatusFeed.getData().getStations().stream()
-                    .map(GBFSStation::getStationId).collect(Collectors.toSet());
-            stationIdsToRemove.removeAll(stationIds);
-            logger.debug("Found {} stationIds to remove from old station_status feed", stationIdsToRemove.size());
-
-            // Add station ids that are staged for removal to the set of stations ids that will be used to
-            // fetch current stations from cache
-            stationIds.addAll(stationIdsToRemove);
-        }
-
-        if (stationIdsToRemove == null) {
-            stationIdsToRemove = new HashSet<>(stationIds);
-            logger.debug("Old station_status feed was not available or had no data. As a workaround, removing all stations for provider {}", feedProvider.getSystemId());
-        }
-
-        var originalStations = stationCache.getAllAsMap(stationIds);
-
-        var system = getSystem(feedProvider, systemInformationFeed);
-        var pricingPlans = getPricingPlans(pricingPlansFeed, system.getLanguage());
-
-        var stationInfo = Optional.ofNullable(stationInformationFeed)
-                .map(GBFSStationInformation::getData)
-                .map(GBFSData::getStations)
-                .orElse(List.of())
-                .stream().collect(Collectors.toMap(org.entur.gbfs.v2_3.station_information.GBFSStation::getStationId, s -> s));
-
-        var stations = stationStatusFeed.getData().getStations().stream()
-                .filter(s -> {
-                    if (stationInfo.get(s.getStationId()) == null) {
-                        logger.warn("Skipping station due to missing station information feed for provider={} stationId={}", feedProvider, s.getStationId());
-                        return false;
-                    }
-                    return true;
-                })
-                .map(station -> stationMapper.mapStation(
-                        system,
-                        pricingPlans,
-                        stationInfo.get(station.getStationId()),
-                        station,
-                        vehicleTypesFeed,
-                        systemRegionsFeed,
-                        system.getLanguage())
-                ).collect(Collectors.toMap(Station::getId, s->s));
-
-        Set<StationSpatialIndexId> spatialIndicesToRemove = new java.util.HashSet<>(Set.of());
-        Map<StationSpatialIndexId, Station> spatialIndexUpdateMap = new java.util.HashMap<>(Map.of());
-
-        stations.forEach((key, station) -> {
-            var spatialIndexId = SpatialIndexIdUtil.createStationSpatialIndexId(station, feedProvider);
-            var previousStation = originalStations.get(key);
-
-            if (previousStation != null) {
-                var oldSpatialIndexId = SpatialIndexIdUtil.createStationSpatialIndexId(previousStation, feedProvider);
-                if (!oldSpatialIndexId.equals(spatialIndexId)) {
-                    spatialIndicesToRemove.add(oldSpatialIndexId);
-                }
-            }
-            spatialIndexUpdateMap.put(spatialIndexId, station);
-        });
-
-        if (!spatialIndicesToRemove.isEmpty()) {
-            logger.debug("Removing {} stale entries in spatial index", spatialIndicesToRemove.size());
-            spatialIndex.removeAll(spatialIndicesToRemove);
-        }
-
-        if (!stationIdsToRemove.isEmpty()) {
-            logger.debug("Removing {} stations from station cache", stationIdsToRemove.size());
-            stationCache.removeAll(stationIdsToRemove);
-        }
-
-        if (!stations.isEmpty()) {
-            logger.debug("Adding/updating {} stations in station cache", stations.size());
-            var lastUpdated = stationStatusFeed.getLastUpdated();
-            var ttl = stationStatusFeed.getTtl();
-            stationCache.updateAll(stations, CacheUtil.getTtl(lastUpdated, ttl, 300), TimeUnit.SECONDS);
-        }
-
-        if (!spatialIndexUpdateMap.isEmpty()) {
-            logger.debug("Updating {} entries in spatial index", spatialIndexUpdateMap.size());
-            spatialIndex.addAll(spatialIndexUpdateMap);
-        }
+    if (stationIdsToRemove == null) {
+      stationIdsToRemove = new HashSet<>(stationIds);
+      logger.debug(
+        "Old station_status feed was not available or had no data. As a workaround, removing all stations for provider {}",
+        feedProvider.getSystemId()
+      );
     }
 
-    private List<PricingPlan> getPricingPlans(GBFSSystemPricingPlans pricingPlansFeed, String language) {
-        return pricingPlansFeed.getData().getPlans().stream()
-                .map(pricingPlan -> pricingPlanMapper.mapPricingPlan(pricingPlan, language))
-                .collect(Collectors.toList());
+    var originalStations = stationCache.getAllAsMap(stationIds);
+
+    var system = getSystem(feedProvider, systemInformationFeed);
+    var pricingPlans = getPricingPlans(pricingPlansFeed, system.getLanguage());
+
+    var stationInfo = Optional
+      .ofNullable(stationInformationFeed)
+      .map(GBFSStationInformation::getData)
+      .map(GBFSData::getStations)
+      .orElse(List.of())
+      .stream()
+      .collect(
+        Collectors.toMap(
+          org.entur.gbfs.v2_3.station_information.GBFSStation::getStationId,
+          s -> s
+        )
+      );
+
+    var stations = stationStatusFeed
+      .getData()
+      .getStations()
+      .stream()
+      .filter(s -> {
+        if (stationInfo.get(s.getStationId()) == null) {
+          logger.warn(
+            "Skipping station due to missing station information feed for provider={} stationId={}",
+            feedProvider,
+            s.getStationId()
+          );
+          return false;
+        }
+        return true;
+      })
+      .map(station ->
+        stationMapper.mapStation(
+          system,
+          pricingPlans,
+          stationInfo.get(station.getStationId()),
+          station,
+          vehicleTypesFeed,
+          systemRegionsFeed,
+          system.getLanguage()
+        )
+      )
+      .collect(Collectors.toMap(Station::getId, s -> s));
+
+    Set<StationSpatialIndexId> spatialIndicesToRemove = new java.util.HashSet<>(Set.of());
+    Map<StationSpatialIndexId, Station> spatialIndexUpdateMap = new java.util.HashMap<>(
+      Map.of()
+    );
+
+    stations.forEach((key, station) -> {
+      var spatialIndexId = SpatialIndexIdUtil.createStationSpatialIndexId(
+        station,
+        feedProvider
+      );
+      var previousStation = originalStations.get(key);
+
+      if (previousStation != null) {
+        var oldSpatialIndexId = SpatialIndexIdUtil.createStationSpatialIndexId(
+          previousStation,
+          feedProvider
+        );
+        if (!oldSpatialIndexId.equals(spatialIndexId)) {
+          spatialIndicesToRemove.add(oldSpatialIndexId);
+        }
+      }
+      spatialIndexUpdateMap.put(spatialIndexId, station);
+    });
+
+    if (!spatialIndicesToRemove.isEmpty()) {
+      logger.debug(
+        "Removing {} stale entries in spatial index",
+        spatialIndicesToRemove.size()
+      );
+      spatialIndex.removeAll(spatialIndicesToRemove);
     }
 
-    private org.entur.lamassu.model.entities.System getSystem(FeedProvider feedProvider, GBFSSystemInformation systemInformationFeed) {
-        return systemMapper.mapSystem(systemInformationFeed.getData(), feedProvider);
+    if (!stationIdsToRemove.isEmpty()) {
+      logger.debug("Removing {} stations from station cache", stationIdsToRemove.size());
+      stationCache.removeAll(stationIdsToRemove);
     }
+
+    if (!stations.isEmpty()) {
+      logger.debug("Adding/updating {} stations in station cache", stations.size());
+      var lastUpdated = stationStatusFeed.getLastUpdated();
+      var ttl = stationStatusFeed.getTtl();
+      stationCache.updateAll(
+        stations,
+        CacheUtil.getTtl(lastUpdated, ttl, 300),
+        TimeUnit.SECONDS
+      );
+    }
+
+    if (!spatialIndexUpdateMap.isEmpty()) {
+      logger.debug("Updating {} entries in spatial index", spatialIndexUpdateMap.size());
+      spatialIndex.addAll(spatialIndexUpdateMap);
+    }
+  }
+
+  private List<PricingPlan> getPricingPlans(
+    GBFSSystemPricingPlans pricingPlansFeed,
+    String language
+  ) {
+    return pricingPlansFeed
+      .getData()
+      .getPlans()
+      .stream()
+      .map(pricingPlan -> pricingPlanMapper.mapPricingPlan(pricingPlan, language))
+      .collect(Collectors.toList());
+  }
+
+  private org.entur.lamassu.model.entities.System getSystem(
+    FeedProvider feedProvider,
+    GBFSSystemInformation systemInformationFeed
+  ) {
+    return systemMapper.mapSystem(systemInformationFeed.getData(), feedProvider);
+  }
 }

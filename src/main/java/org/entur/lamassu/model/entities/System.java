@@ -1,201 +1,237 @@
 package org.entur.lamassu.model.entities;
 
 public class System implements Entity {
-    String id;
-    String language;
-    TranslatedString name;
-    TranslatedString shortName;
-    Operator operator;
-    String url;
-    String purchaseUrl;
-    String startDate;
-    String phoneNumber;
-    String email;
-    String feedContactEmail;
-    String timezone;
-    String licenseUrl;
-    BrandAssets brandAssets;
-    String termsUrl;
-    String termsLastUpdated;
-    String privacyUrl;
-    String privacyLastUpdated;
-    RentalApps rentalApps;
 
-    @Override
-    public String getId() {
-        return id;
-    }
+  String id;
+  String language;
+  TranslatedString name;
+  TranslatedString shortName;
+  Operator operator;
+  String url;
+  String purchaseUrl;
+  String startDate;
+  String phoneNumber;
+  String email;
+  String feedContactEmail;
+  String timezone;
+  String licenseUrl;
+  BrandAssets brandAssets;
+  String termsUrl;
+  String termsLastUpdated;
+  String privacyUrl;
+  String privacyLastUpdated;
+  RentalApps rentalApps;
 
-    public void setId(String id) {
-        this.id = id;
-    }
+  @Override
+  public String getId() {
+    return id;
+  }
 
-    public String getLanguage() {
-        return language;
-    }
+  public void setId(String id) {
+    this.id = id;
+  }
 
-    public void setLanguage(String language) {
-        this.language = language;
-    }
+  public String getLanguage() {
+    return language;
+  }
 
-    public TranslatedString getName() {
-        return name;
-    }
+  public void setLanguage(String language) {
+    this.language = language;
+  }
 
-    public void setName(TranslatedString name) {
-        this.name = name;
-    }
+  public TranslatedString getName() {
+    return name;
+  }
 
-    public TranslatedString getShortName() {
-        return shortName;
-    }
+  public void setName(TranslatedString name) {
+    this.name = name;
+  }
 
-    public void setShortName(TranslatedString shortName) {
-        this.shortName = shortName;
-    }
+  public TranslatedString getShortName() {
+    return shortName;
+  }
 
-    public Operator getOperator() {
-        return operator;
-    }
+  public void setShortName(TranslatedString shortName) {
+    this.shortName = shortName;
+  }
 
-    public void setOperator(Operator operator) {
-        this.operator = operator;
-    }
+  public Operator getOperator() {
+    return operator;
+  }
 
-    public String getUrl() {
-        return url;
-    }
+  public void setOperator(Operator operator) {
+    this.operator = operator;
+  }
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
+  public String getUrl() {
+    return url;
+  }
 
-    public String getPurchaseUrl() {
-        return purchaseUrl;
-    }
+  public void setUrl(String url) {
+    this.url = url;
+  }
 
-    public void setPurchaseUrl(String purchaseUrl) {
-        this.purchaseUrl = purchaseUrl;
-    }
+  public String getPurchaseUrl() {
+    return purchaseUrl;
+  }
 
-    public String getStartDate() {
-        return startDate;
-    }
+  public void setPurchaseUrl(String purchaseUrl) {
+    this.purchaseUrl = purchaseUrl;
+  }
 
-    public void setStartDate(String startDate) {
-        this.startDate = startDate;
-    }
+  public String getStartDate() {
+    return startDate;
+  }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
+  public void setStartDate(String startDate) {
+    this.startDate = startDate;
+  }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
+  public String getPhoneNumber() {
+    return phoneNumber;
+  }
 
-    public String getEmail() {
-        return email;
-    }
+  public void setPhoneNumber(String phoneNumber) {
+    this.phoneNumber = phoneNumber;
+  }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+  public String getEmail() {
+    return email;
+  }
 
-    public String getFeedContactEmail() {
-        return feedContactEmail;
-    }
+  public void setEmail(String email) {
+    this.email = email;
+  }
 
-    public void setFeedContactEmail(String feedContactEmail) {
-        this.feedContactEmail = feedContactEmail;
-    }
+  public String getFeedContactEmail() {
+    return feedContactEmail;
+  }
 
-    public String getTimezone() {
-        return timezone;
-    }
+  public void setFeedContactEmail(String feedContactEmail) {
+    this.feedContactEmail = feedContactEmail;
+  }
 
-    public void setTimezone(String timezone) {
-        this.timezone = timezone;
-    }
+  public String getTimezone() {
+    return timezone;
+  }
 
-    public String getLicenseUrl() {
-        return licenseUrl;
-    }
+  public void setTimezone(String timezone) {
+    this.timezone = timezone;
+  }
 
-    public void setLicenseUrl(String licenseUrl) {
-        this.licenseUrl = licenseUrl;
-    }
+  public String getLicenseUrl() {
+    return licenseUrl;
+  }
 
-    public BrandAssets getBrandAssets() {
-        return brandAssets;
-    }
+  public void setLicenseUrl(String licenseUrl) {
+    this.licenseUrl = licenseUrl;
+  }
 
-    public void setBrandAssets(BrandAssets brandAssets) {
-        this.brandAssets = brandAssets;
-    }
+  public BrandAssets getBrandAssets() {
+    return brandAssets;
+  }
 
-    public String getTermsUrl() {
-        return termsUrl;
-    }
+  public void setBrandAssets(BrandAssets brandAssets) {
+    this.brandAssets = brandAssets;
+  }
 
-    public void setTermsUrl(String termsUrl) {
-        this.termsUrl = termsUrl;
-    }
+  public String getTermsUrl() {
+    return termsUrl;
+  }
 
-    public String getTermsLastUpdated() {
-        return termsLastUpdated;
-    }
+  public void setTermsUrl(String termsUrl) {
+    this.termsUrl = termsUrl;
+  }
 
-    public void setTermsLastUpdated(String termsLastUpdated) {
-        this.termsLastUpdated = termsLastUpdated;
-    }
+  public String getTermsLastUpdated() {
+    return termsLastUpdated;
+  }
 
-    public String getPrivacyUrl() {
-        return privacyUrl;
-    }
+  public void setTermsLastUpdated(String termsLastUpdated) {
+    this.termsLastUpdated = termsLastUpdated;
+  }
 
-    public void setPrivacyUrl(String privacyUrl) {
-        this.privacyUrl = privacyUrl;
-    }
+  public String getPrivacyUrl() {
+    return privacyUrl;
+  }
 
-    public String getPrivacyLastUpdated() {
-        return privacyLastUpdated;
-    }
+  public void setPrivacyUrl(String privacyUrl) {
+    this.privacyUrl = privacyUrl;
+  }
 
-    public void setPrivacyLastUpdated(String privacyLastUpdated) {
-        this.privacyLastUpdated = privacyLastUpdated;
-    }
+  public String getPrivacyLastUpdated() {
+    return privacyLastUpdated;
+  }
 
-    public RentalApps getRentalApps() {
-        return rentalApps;
-    }
+  public void setPrivacyLastUpdated(String privacyLastUpdated) {
+    this.privacyLastUpdated = privacyLastUpdated;
+  }
 
-    public void setRentalApps(RentalApps rentalApps) {
-        this.rentalApps = rentalApps;
-    }
+  public RentalApps getRentalApps() {
+    return rentalApps;
+  }
 
-    @Override
-    public String toString() {
-        return "System{" +
-                "id='" + id + '\'' +
-                ", language='" + language + '\'' +
-                ", name=" + name +
-                ", shortName=" + shortName +
-                ", operator=" + operator +
-                ", url='" + url + '\'' +
-                ", purchaseUrl='" + purchaseUrl + '\'' +
-                ", startDate='" + startDate + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                ", email='" + email + '\'' +
-                ", feedContactEmail='" + feedContactEmail + '\'' +
-                ", timezone='" + timezone + '\'' +
-                ", licenseUrl='" + licenseUrl + '\'' +
-                ", brandAssets=" + brandAssets +
-                ", termsUrl='" + termsUrl + '\'' +
-                ", termsLastUpdated='" + termsLastUpdated + '\'' +
-                ", privacyUrl='" + privacyUrl + '\'' +
-                ", privacyLastUpdated='" + privacyLastUpdated + '\'' +
-                ", rentalApps=" + rentalApps +
-                '}';
-    }
+  public void setRentalApps(RentalApps rentalApps) {
+    this.rentalApps = rentalApps;
+  }
+
+  @Override
+  public String toString() {
+    return (
+      "System{" +
+      "id='" +
+      id +
+      '\'' +
+      ", language='" +
+      language +
+      '\'' +
+      ", name=" +
+      name +
+      ", shortName=" +
+      shortName +
+      ", operator=" +
+      operator +
+      ", url='" +
+      url +
+      '\'' +
+      ", purchaseUrl='" +
+      purchaseUrl +
+      '\'' +
+      ", startDate='" +
+      startDate +
+      '\'' +
+      ", phoneNumber='" +
+      phoneNumber +
+      '\'' +
+      ", email='" +
+      email +
+      '\'' +
+      ", feedContactEmail='" +
+      feedContactEmail +
+      '\'' +
+      ", timezone='" +
+      timezone +
+      '\'' +
+      ", licenseUrl='" +
+      licenseUrl +
+      '\'' +
+      ", brandAssets=" +
+      brandAssets +
+      ", termsUrl='" +
+      termsUrl +
+      '\'' +
+      ", termsLastUpdated='" +
+      termsLastUpdated +
+      '\'' +
+      ", privacyUrl='" +
+      privacyUrl +
+      '\'' +
+      ", privacyLastUpdated='" +
+      privacyLastUpdated +
+      '\'' +
+      ", rentalApps=" +
+      rentalApps +
+      '}'
+    );
+  }
 }

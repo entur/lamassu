@@ -18,36 +18,33 @@
 
 package org.entur.lamassu.model.validation;
 
-import org.entur.gbfs.validation.model.ValidationSummary;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.entur.gbfs.validation.model.ValidationSummary;
 
 public class ShortValidationResult {
-    private ValidationSummary summary = new ValidationSummary();
-    private Map<String, ShortFileValidationResult> files = new HashMap<>();
 
-    public ValidationSummary getSummary() {
-        return summary;
-    }
+  private ValidationSummary summary = new ValidationSummary();
+  private Map<String, ShortFileValidationResult> files = new HashMap<>();
 
-    public void setSummary(ValidationSummary summary) {
-        this.summary = summary;
-    }
+  public ValidationSummary getSummary() {
+    return summary;
+  }
 
-    public Map<String, ShortFileValidationResult> getFiles() {
-        return files;
-    }
+  public void setSummary(ValidationSummary summary) {
+    this.summary = summary;
+  }
 
-    public void setFiles(Map<String, ShortFileValidationResult> files) {
-        this.files = files;
-    }
+  public Map<String, ShortFileValidationResult> getFiles() {
+    return files;
+  }
 
-    @Override
-    public String toString() {
-        return "ShortValidationResult{" +
-                "summary=" + summary +
-                ", files=" + files +
-                '}';
-    }
+  public void setFiles(Map<String, ShortFileValidationResult> files) {
+    this.files = files;
+  }
+
+  @Override
+  public String toString() {
+    return "ShortValidationResult{" + "summary=" + summary + ", files=" + files + '}';
+  }
 }

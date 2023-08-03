@@ -29,22 +29,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/health")
 public class HealthController {
-    RBucket<Boolean> cacheReady;
 
-    @Autowired
-    public HealthController(
-            RBucket<Boolean> cacheReady
-    ) {
-        this.cacheReady = cacheReady;
-    }
+  RBucket<Boolean> cacheReady;
 
-    @GetMapping("/startup")
-    public ResponseEntity<Void> startup() {
-        var ready = cacheReady.get();
-        if (ready != null && ready) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
-            return new ResponseEntity<>(HttpStatus.TOO_EARLY);
-        }
+  @Autowired
+  public HealthController(RBucket<Boolean> cacheReady) {
+    this.cacheReady = cacheReady;
+  }
+
+  @GetMapping("/startup")
+  public ResponseEntity<Void> startup() {
+    var ready = cacheReady.get();
+    if (ready != null && ready) {
+      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    } else {
+      return new ResponseEntity<>(HttpStatus.TOO_EARLY);
     }
+  }
 }

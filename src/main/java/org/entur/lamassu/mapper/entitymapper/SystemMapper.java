@@ -24,104 +24,128 @@ import org.entur.gbfs.v2_3.system_information.GBFSData;
 import org.entur.gbfs.v2_3.system_information.GBFSIos;
 import org.entur.gbfs.v2_3.system_information.GBFSRentalApps;
 import org.entur.lamassu.model.entities.BrandAssets;
-import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.model.entities.Operator;
 import org.entur.lamassu.model.entities.RentalApp;
 import org.entur.lamassu.model.entities.RentalApps;
 import org.entur.lamassu.model.entities.System;
+import org.entur.lamassu.model.provider.FeedProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class SystemMapper {
 
-    private final TranslationMapper translationMapper;
+  private final TranslationMapper translationMapper;
 
-    @Autowired
-    public SystemMapper(TranslationMapper translationMapper) {
-        this.translationMapper = translationMapper;
+  @Autowired
+  public SystemMapper(TranslationMapper translationMapper) {
+    this.translationMapper = translationMapper;
+  }
+
+  private Operator mapOperator(
+    String operatorName,
+    FeedProvider feedProvider,
+    String language
+  ) {
+    var operator = new Operator();
+    operator.setId(feedProvider.getOperatorId());
+    operator.setName(
+      translationMapper.mapSingleTranslation(
+        language,
+        operatorName != null ? operatorName : feedProvider.getOperatorName()
+      )
+    );
+    return operator;
+  }
+
+  public System mapSystem(GBFSData systemInformation, FeedProvider feedProvider) {
+    var system = new System();
+    system.setId(systemInformation.getSystemId());
+    system.setLanguage(systemInformation.getLanguage());
+    system.setName(
+      translationMapper.mapSingleTranslation(
+        systemInformation.getLanguage(),
+        systemInformation.getName()
+      )
+    );
+    system.setShortName(
+      translationMapper.mapSingleTranslation(
+        systemInformation.getLanguage(),
+        systemInformation.getShortName()
+      )
+    );
+    system.setOperator(
+      mapOperator(
+        systemInformation.getOperator(),
+        feedProvider,
+        systemInformation.getLanguage()
+      )
+    );
+    system.setUrl(systemInformation.getUrl());
+    system.setPurchaseUrl(systemInformation.getPurchaseUrl());
+    system.setStartDate(systemInformation.getStartDate());
+    system.setPhoneNumber(systemInformation.getPhoneNumber());
+    system.setEmail(systemInformation.getEmail());
+    system.setFeedContactEmail(system.getFeedContactEmail());
+    system.setTimezone(
+      systemInformation.getTimezone() != null
+        ? systemInformation.getTimezone().value()
+        : null
+    );
+    system.setLicenseUrl(systemInformation.getLicenseUrl());
+    system.setBrandAssets(mapBrandAssets(systemInformation.getBrandAssets()));
+    system.setTermsUrl(systemInformation.getTermsUrl());
+    system.setTermsLastUpdated(systemInformation.getTermsLastUpdated());
+    system.setPrivacyUrl(systemInformation.getPrivacyUrl());
+    system.setPrivacyLastUpdated(systemInformation.getPrivacyLastUpdated());
+    system.setRentalApps(mapRentalApps(systemInformation.getRentalApps()));
+    return system;
+  }
+
+  private BrandAssets mapBrandAssets(GBFSBrandAssets brandAssets) {
+    if (brandAssets == null) {
+      return null;
     }
 
-    private Operator mapOperator(String operatorName, FeedProvider feedProvider, String language) {
-        var operator = new Operator();
-        operator.setId(feedProvider.getOperatorId());
-        operator.setName(
-                translationMapper.mapSingleTranslation(
-                        language,
-                        operatorName != null ? operatorName : feedProvider.getOperatorName()
-                )
-        );
-        return operator;
+    var mapped = new BrandAssets();
+    mapped.setBrandImageUrl(brandAssets.getBrandImageUrl());
+    mapped.setBrandLastModified(brandAssets.getBrandLastModified());
+    mapped.setBrandTermsUrl(brandAssets.getBrandTermsUrl());
+    mapped.setBrandImageUrlDark(brandAssets.getBrandImageUrlDark());
+    mapped.setColor(brandAssets.getColor());
+
+    return mapped;
+  }
+
+  private RentalApps mapRentalApps(GBFSRentalApps sourceRentalApps) {
+    if (sourceRentalApps == null) {
+      return null;
     }
 
-    public System mapSystem(GBFSData systemInformation, FeedProvider feedProvider) {
-        var system =  new System();
-        system.setId(systemInformation.getSystemId());
-        system.setLanguage(systemInformation.getLanguage());
-        system.setName(translationMapper.mapSingleTranslation(systemInformation.getLanguage(), systemInformation.getName()));
-        system.setShortName(translationMapper.mapSingleTranslation(systemInformation.getLanguage(), systemInformation.getShortName()));
-        system.setOperator(mapOperator(systemInformation.getOperator(), feedProvider, systemInformation.getLanguage()));
-        system.setUrl(systemInformation.getUrl());
-        system.setPurchaseUrl(systemInformation.getPurchaseUrl());
-        system.setStartDate(systemInformation.getStartDate());
-        system.setPhoneNumber(systemInformation.getPhoneNumber());
-        system.setEmail(systemInformation.getEmail());
-        system.setFeedContactEmail(system.getFeedContactEmail());
-        system.setTimezone(systemInformation.getTimezone().value());
-        system.setLicenseUrl(systemInformation.getLicenseUrl());
-        system.setBrandAssets(mapBrandAssets(systemInformation.getBrandAssets()));
-        system.setTermsUrl(systemInformation.getTermsUrl());
-        system.setTermsLastUpdated(systemInformation.getTermsLastUpdated());
-        system.setPrivacyUrl(systemInformation.getPrivacyUrl());
-        system.setPrivacyLastUpdated(systemInformation.getPrivacyLastUpdated());
-        system.setRentalApps(mapRentalApps(systemInformation.getRentalApps()));
-        return system;
+    var rentalApps = new RentalApps();
+
+    if (sourceRentalApps.getAndroid() != null) {
+      rentalApps.setAndroid(mapRentalApp(sourceRentalApps.getAndroid()));
     }
 
-    private BrandAssets mapBrandAssets(GBFSBrandAssets brandAssets) {
-        if (brandAssets == null) {
-            return null;
-        }
-
-        var mapped = new BrandAssets();
-        mapped.setBrandImageUrl(brandAssets.getBrandImageUrl());
-        mapped.setBrandLastModified(brandAssets.getBrandLastModified());
-        mapped.setBrandTermsUrl(brandAssets.getBrandTermsUrl());
-        mapped.setBrandImageUrlDark(brandAssets.getBrandImageUrlDark());
-        mapped.setColor(brandAssets.getColor());
-
-        return mapped;
+    if (sourceRentalApps.getIos() != null) {
+      rentalApps.setIos(mapRentalApp(sourceRentalApps.getIos()));
     }
 
-    private RentalApps mapRentalApps(GBFSRentalApps sourceRentalApps) {
-        if (sourceRentalApps == null) {
-            return null;
-        }
+    return rentalApps;
+  }
 
-        var rentalApps = new RentalApps();
+  private RentalApp mapRentalApp(GBFSAndroid sourceRentalApp) {
+    var rentalApp = new RentalApp();
+    rentalApp.setStoreUri(sourceRentalApp.getStoreUri());
+    rentalApp.setDiscoveryUri(sourceRentalApp.getDiscoveryUri());
+    return rentalApp;
+  }
 
-        if (sourceRentalApps.getAndroid() != null) {
-            rentalApps.setAndroid(mapRentalApp(sourceRentalApps.getAndroid()));
-        }
-
-        if (sourceRentalApps.getIos() != null) {
-            rentalApps.setIos(mapRentalApp(sourceRentalApps.getIos()));
-        }
-
-        return rentalApps;
-    }
-
-    private RentalApp mapRentalApp(GBFSAndroid sourceRentalApp) {
-        var rentalApp = new RentalApp();
-        rentalApp.setStoreUri(sourceRentalApp.getStoreUri());
-        rentalApp.setDiscoveryUri(sourceRentalApp.getDiscoveryUri());
-        return rentalApp;
-    }
-
-    private RentalApp mapRentalApp(GBFSIos sourceRentalApp) {
-        var rentalApp = new RentalApp();
-        rentalApp.setStoreUri(sourceRentalApp.getStoreUri());
-        rentalApp.setDiscoveryUri(sourceRentalApp.getDiscoveryUri());
-        return rentalApp;
-    }
+  private RentalApp mapRentalApp(GBFSIos sourceRentalApp) {
+    var rentalApp = new RentalApp();
+    rentalApp.setStoreUri(sourceRentalApp.getStoreUri());
+    rentalApp.setDiscoveryUri(sourceRentalApp.getDiscoveryUri());
+    return rentalApp;
+  }
 }

@@ -27,52 +27,61 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SystemInformationFeedMapper extends AbstractFeedMapper<GBFSSystemInformation> {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+public class SystemInformationFeedMapper
+  extends AbstractFeedMapper<GBFSSystemInformation> {
 
-    @Value("${org.entur.lamassu.targetGbfsVersion:2.2}")
-    private String targetGbfsVersion;
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Override
-    public GBFSSystemInformation map(GBFSSystemInformation source, FeedProvider feedProvider) {
-        if (source == null) {
-            logger.warn("System information feed was null for provider={}", feedProvider);
-            return null;
-        }
+  @Value("${org.entur.lamassu.targetGbfsVersion:2.2}")
+  private String targetGbfsVersion;
 
-        var mapped = new GBFSSystemInformation();
-        mapped.setVersion(targetGbfsVersion);
-        mapped.setLastUpdated(source.getLastUpdated());
-        mapped.setTtl(source.getTtl());
-        mapped.setData(mapData(source.getData(), feedProvider));
-        return mapped;
+  @Override
+  public GBFSSystemInformation map(
+    GBFSSystemInformation source,
+    FeedProvider feedProvider
+  ) {
+    if (source == null) {
+      logger.warn("System information feed was null for provider={}", feedProvider);
+      return null;
     }
 
-    private GBFSData mapData(GBFSData source, FeedProvider feedProvider) {
-        if (source ==  null) {
-            return null;
-        }
+    var mapped = new GBFSSystemInformation();
+    mapped.setVersion(targetGbfsVersion);
+    mapped.setLastUpdated(source.getLastUpdated());
+    mapped.setTtl(source.getTtl());
+    mapped.setData(mapData(source.getData(), feedProvider));
+    return mapped;
+  }
 
-        var mapped = new GBFSData();
-        mapped.setSystemId(feedProvider.getSystemId());
-        mapped.setLanguage(source.getLanguage());
-        mapped.setName(source.getName());
-        mapped.setShortName(source.getShortName());
-        mapped.setOperator(source.getOperator() != null && !source.getOperator().isBlank() ? source.getOperator() : feedProvider.getOperatorName());
-        mapped.setUrl(source.getUrl());
-        mapped.setPurchaseUrl(source.getPurchaseUrl());
-        mapped.setStartDate(source.getStartDate());
-        mapped.setPhoneNumber(source.getPhoneNumber());
-        mapped.setEmail(source.getEmail());
-        mapped.setFeedContactEmail(source.getFeedContactEmail());
-        mapped.setTimezone(source.getTimezone());
-        mapped.setLicenseUrl(source.getLicenseUrl());
-        mapped.setBrandAssets(source.getBrandAssets());
-        mapped.setTermsUrl(source.getTermsUrl());
-        mapped.setTermsLastUpdated(source.getTermsLastUpdated());
-        mapped.setPrivacyUrl(source.getPrivacyUrl());
-        mapped.setPrivacyLastUpdated(source.getPrivacyLastUpdated());
-        mapped.setRentalApps(source.getRentalApps());
-        return mapped;
+  private GBFSData mapData(GBFSData source, FeedProvider feedProvider) {
+    if (source == null) {
+      return null;
     }
+
+    var mapped = new GBFSData();
+    mapped.setSystemId(feedProvider.getSystemId());
+    mapped.setLanguage(source.getLanguage());
+    mapped.setName(source.getName());
+    mapped.setShortName(source.getShortName());
+    mapped.setOperator(
+      source.getOperator() != null && !source.getOperator().isBlank()
+        ? source.getOperator()
+        : feedProvider.getOperatorName()
+    );
+    mapped.setUrl(source.getUrl());
+    mapped.setPurchaseUrl(source.getPurchaseUrl());
+    mapped.setStartDate(source.getStartDate());
+    mapped.setPhoneNumber(source.getPhoneNumber());
+    mapped.setEmail(source.getEmail());
+    mapped.setFeedContactEmail(source.getFeedContactEmail());
+    mapped.setTimezone(source.getTimezone());
+    mapped.setLicenseUrl(source.getLicenseUrl());
+    mapped.setBrandAssets(source.getBrandAssets());
+    mapped.setTermsUrl(source.getTermsUrl());
+    mapped.setTermsLastUpdated(source.getTermsLastUpdated());
+    mapped.setPrivacyUrl(source.getPrivacyUrl());
+    mapped.setPrivacyLastUpdated(source.getPrivacyLastUpdated());
+    mapped.setRentalApps(source.getRentalApps());
+    return mapped;
+  }
 }

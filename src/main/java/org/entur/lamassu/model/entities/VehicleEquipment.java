@@ -19,9 +19,9 @@
 package org.entur.lamassu.model.entities;
 
 public enum VehicleEquipment {
-    CHILD_SEAT_A,
-    CHILD_SEAT_B,
-    CHILD_SEAT_C,
-    WINTER_TIRES,
-    SNOW_CHAINS;
+  CHILD_SEAT_A,
+  CHILD_SEAT_B,
+  CHILD_SEAT_C,
+  WINTER_TIRES,
+  SNOW_CHAINS,
 }

@@ -18,5 +18,4 @@
 
 package org.entur.lamassu.cache;
 
-public interface SpatialIndexId {
-}
+public interface SpatialIndexId {}

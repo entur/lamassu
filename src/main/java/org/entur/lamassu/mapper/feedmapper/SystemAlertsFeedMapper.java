@@ -18,6 +18,12 @@
 
 package org.entur.lamassu.mapper.feedmapper;
 
+import static org.entur.lamassu.mapper.feedmapper.IdMappers.ALERT_ID_TYPE;
+import static org.entur.lamassu.mapper.feedmapper.IdMappers.REGION_ID_TYPE;
+import static org.entur.lamassu.mapper.feedmapper.IdMappers.STATION_ID_TYPE;
+
+import java.util.List;
+import java.util.stream.Collectors;
 import org.entur.gbfs.v2_3.system_alerts.GBFSAlert;
 import org.entur.gbfs.v2_3.system_alerts.GBFSData;
 import org.entur.gbfs.v2_3.system_alerts.GBFSSystemAlerts;
@@ -25,58 +31,55 @@ import org.entur.lamassu.model.provider.FeedProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.entur.lamassu.mapper.feedmapper.IdMappers.ALERT_ID_TYPE;
-import static org.entur.lamassu.mapper.feedmapper.IdMappers.REGION_ID_TYPE;
-import static org.entur.lamassu.mapper.feedmapper.IdMappers.STATION_ID_TYPE;
-
 @Component
 public class SystemAlertsFeedMapper extends AbstractFeedMapper<GBFSSystemAlerts> {
-    @Value("${org.entur.lamassu.targetGbfsVersion:2.2}")
-    private String targetGbfsVersion;
 
-    public GBFSSystemAlerts map(GBFSSystemAlerts systemAlerts, FeedProvider feedProvider) {
-        if (systemAlerts == null) {
-            return null;
-        }
+  @Value("${org.entur.lamassu.targetGbfsVersion:2.2}")
+  private String targetGbfsVersion;
 
-        var codespace = feedProvider.getCodespace();
-        var mappedSystemAlerts = new GBFSSystemAlerts();
-        mappedSystemAlerts.setVersion(targetGbfsVersion);
-        mappedSystemAlerts.setLastUpdated(systemAlerts.getLastUpdated());
-        mappedSystemAlerts.setTtl(systemAlerts.getTtl());
-        mappedSystemAlerts.setData(mapData(systemAlerts.getData(), codespace));
-        return mappedSystemAlerts;
+  public GBFSSystemAlerts map(GBFSSystemAlerts systemAlerts, FeedProvider feedProvider) {
+    if (systemAlerts == null) {
+      return null;
     }
 
-    private GBFSData mapData(GBFSData data, String codespace) {
-        var mappedData = new GBFSData();
-        mappedData.setAlerts(
-                mapAlerts(data.getAlerts(), codespace)
-        );
-        return mappedData;
-    }
+    var codespace = feedProvider.getCodespace();
+    var mappedSystemAlerts = new GBFSSystemAlerts();
+    mappedSystemAlerts.setVersion(targetGbfsVersion);
+    mappedSystemAlerts.setLastUpdated(systemAlerts.getLastUpdated());
+    mappedSystemAlerts.setTtl(systemAlerts.getTtl());
+    mappedSystemAlerts.setData(mapData(systemAlerts.getData(), codespace));
+    return mappedSystemAlerts;
+  }
 
-    private List<GBFSAlert> mapAlerts(List<GBFSAlert> alerts, String codespace) {
-        return alerts.stream().map(
-                alert -> mapAlert(alert, codespace)
-        ).collect(Collectors.toList());
-    }
+  private GBFSData mapData(GBFSData data, String codespace) {
+    var mappedData = new GBFSData();
+    mappedData.setAlerts(mapAlerts(data.getAlerts(), codespace));
+    return mappedData;
+  }
 
-    private GBFSAlert mapAlert(GBFSAlert alert, String codespace) {
-        var mappedAlert = new GBFSAlert();
-        mappedAlert.setAlertId(IdMappers.mapId(codespace, ALERT_ID_TYPE, alert.getAlertId()));
-        mappedAlert.setLastUpdated(alert.getLastUpdated());
-        mappedAlert.setUrl(alert.getUrl());
-        mappedAlert.setDescription(alert.getDescription());
-        mappedAlert.setRegionIds(IdMappers.mapIds(codespace, REGION_ID_TYPE, alert.getRegionIds()).orElse(null));
-        mappedAlert.setDescription(alert.getDescription());
-        mappedAlert.setStationIds(IdMappers.mapIds(codespace, STATION_ID_TYPE, alert.getStationIds()).orElse(null));
-        mappedAlert.setSummary(alert.getSummary());
-        mappedAlert.setTimes(alert.getTimes());
-        mappedAlert.setType(alert.getType());
-        return mappedAlert;
-    }
+  private List<GBFSAlert> mapAlerts(List<GBFSAlert> alerts, String codespace) {
+    return alerts
+      .stream()
+      .map(alert -> mapAlert(alert, codespace))
+      .collect(Collectors.toList());
+  }
+
+  private GBFSAlert mapAlert(GBFSAlert alert, String codespace) {
+    var mappedAlert = new GBFSAlert();
+    mappedAlert.setAlertId(IdMappers.mapId(codespace, ALERT_ID_TYPE, alert.getAlertId()));
+    mappedAlert.setLastUpdated(alert.getLastUpdated());
+    mappedAlert.setUrl(alert.getUrl());
+    mappedAlert.setDescription(alert.getDescription());
+    mappedAlert.setRegionIds(
+      IdMappers.mapIds(codespace, REGION_ID_TYPE, alert.getRegionIds()).orElse(null)
+    );
+    mappedAlert.setDescription(alert.getDescription());
+    mappedAlert.setStationIds(
+      IdMappers.mapIds(codespace, STATION_ID_TYPE, alert.getStationIds()).orElse(null)
+    );
+    mappedAlert.setSummary(alert.getSummary());
+    mappedAlert.setTimes(alert.getTimes());
+    mappedAlert.setType(alert.getType());
+    return mappedAlert;
+  }
 }
