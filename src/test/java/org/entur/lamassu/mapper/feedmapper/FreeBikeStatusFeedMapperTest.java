@@ -18,6 +18,7 @@
 
 package org.entur.lamassu.mapper.feedmapper;
 
+import java.util.List;
 import org.entur.gbfs.v2_3.free_bike_status.GBFSBike;
 import org.entur.gbfs.v2_3.system_pricing_plans.GBFSPerMinPricing;
 import org.entur.gbfs.v2_3.system_pricing_plans.GBFSPlan;
@@ -27,67 +28,60 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 class FreeBikeStatusFeedMapperTest {
-    FreeBikeStatusFeedMapper mapper;
 
-    @BeforeEach
-    void prepare() {
-        mapper = new FreeBikeStatusFeedMapper();
-    }
+  FreeBikeStatusFeedMapper mapper;
 
-    @Test
-    void testMissingCurrentRangeMeters() {
-        var feedProvider = getTestProvider();
-        var mapped = mapper.mapBike(new GBFSBike(), feedProvider);
-        Assertions.assertNotNull(mapped.getCurrentRangeMeters());
-    }
+  @BeforeEach
+  void prepare() {
+    mapper = new FreeBikeStatusFeedMapper();
+  }
 
-    @Test
-    void testCustomData() {
-        var feedProvider = getTestProvider();
-        var vehicleType = new GBFSVehicleType();
-        vehicleType.setVehicleTypeId("TestScooter");
-        vehicleType.setName("TestScooter");
-        vehicleType.setFormFactor(GBFSVehicleType.FormFactor.SCOOTER);
-        vehicleType.setPropulsionType(GBFSVehicleType.PropulsionType.ELECTRIC);
-        vehicleType.setMaxRangeMeters(1000.0);
-        feedProvider.setVehicleTypes(List.of(vehicleType));
+  @Test
+  void testMissingCurrentRangeMeters() {
+    var feedProvider = getTestProvider();
+    var mapped = mapper.mapBike(new GBFSBike(), feedProvider);
+    Assertions.assertNotNull(mapped.getCurrentRangeMeters());
+  }
 
-        var plan = new GBFSPlan();
-        plan.setPlanId("TestPlan");
-        plan.setName("TestPlan");
-        plan.setPrice(0.0);
-        plan.setIsTaxable(false);
-        plan.setCurrency("NOK");
-        plan.setDescription("Describe your plan");
-        var perMinPricing = new GBFSPerMinPricing();
-        perMinPricing.setStart(0);
-        perMinPricing.setInterval(1);
-        perMinPricing.setRate(5.0);
-        plan.setPerMinPricing(List.of(perMinPricing));
-        feedProvider.setPricingPlans(List.of(plan));
+  @Test
+  void testCustomData() {
+    var feedProvider = getTestProvider();
+    var vehicleType = new GBFSVehicleType();
+    vehicleType.setVehicleTypeId("TestScooter");
+    vehicleType.setName("TestScooter");
+    vehicleType.setFormFactor(GBFSVehicleType.FormFactor.SCOOTER);
+    vehicleType.setPropulsionType(GBFSVehicleType.PropulsionType.ELECTRIC);
+    vehicleType.setMaxRangeMeters(1000.0);
+    feedProvider.setVehicleTypes(List.of(vehicleType));
 
-        var mapped = mapper.mapBike(new GBFSBike(), feedProvider);
+    var plan = new GBFSPlan();
+    plan.setPlanId("TestPlan");
+    plan.setName("TestPlan");
+    plan.setPrice(0.0);
+    plan.setIsTaxable(false);
+    plan.setCurrency("NOK");
+    plan.setDescription("Describe your plan");
+    var perMinPricing = new GBFSPerMinPricing();
+    perMinPricing.setStart(0);
+    perMinPricing.setInterval(1);
+    perMinPricing.setRate(5.0);
+    plan.setPerMinPricing(List.of(perMinPricing));
+    feedProvider.setPricingPlans(List.of(plan));
 
-        Assertions.assertEquals(
-                "TST:VehicleType:TestScooter",
-                mapped.getVehicleTypeId()
-        );
+    var mapped = mapper.mapBike(new GBFSBike(), feedProvider);
 
-        Assertions.assertEquals(
-                "TST:PricingPlan:TestPlan",
-                mapped.getPricingPlanId()
-        );
-    }
+    Assertions.assertEquals("TST:VehicleType:TestScooter", mapped.getVehicleTypeId());
 
-    private FeedProvider getTestProvider() {
-        var feedProvider = new FeedProvider();
-        feedProvider.setSystemId("testsystem");
-        feedProvider.setCodespace("TST");
-        feedProvider.setLanguage("en");
+    Assertions.assertEquals("TST:PricingPlan:TestPlan", mapped.getPricingPlanId());
+  }
 
-        return feedProvider;
-    }
+  private FeedProvider getTestProvider() {
+    var feedProvider = new FeedProvider();
+    feedProvider.setSystemId("testsystem");
+    feedProvider.setCodespace("TST");
+    feedProvider.setLanguage("en");
+
+    return feedProvider;
+  }
 }

@@ -26,10 +26,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class StationSpatialIndexImpl extends SpatialIndexImpl<StationSpatialIndexId, Station> implements StationSpatialIndex {
+public class StationSpatialIndexImpl
+  extends SpatialIndexImpl<StationSpatialIndexId, Station>
+  implements StationSpatialIndex {
 
-    @Autowired
-    public StationSpatialIndexImpl(RGeo<StationSpatialIndexId> stationSpatialIndex) {
-        super(stationSpatialIndex);
-    }
+  @Autowired
+  public StationSpatialIndexImpl(RGeo<StationSpatialIndexId> stationSpatialIndex) {
+    super(stationSpatialIndex);
+  }
 }

@@ -22,20 +22,19 @@ import java.io.Serializable;
 import java.util.List;
 
 public class TranslatedString implements Serializable {
-    private List<Translation> translation;
 
-    public List<Translation> getTranslation() {
-        return translation;
-    }
+  private List<Translation> translation;
 
-    public void setTranslation(List<Translation> translation) {
-        this.translation = translation;
-    }
+  public List<Translation> getTranslation() {
+    return translation;
+  }
 
-    @Override
-    public String toString() {
-        return "TranslatedString{" +
-                "translation=" + translation +
-                '}';
-    }
+  public void setTranslation(List<Translation> translation) {
+    this.translation = translation;
+  }
+
+  @Override
+  public String toString() {
+    return "TranslatedString{" + "translation=" + translation + '}';
+  }
 }

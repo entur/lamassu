@@ -22,30 +22,35 @@ import java.io.Serializable;
 import java.util.List;
 
 public class VehicleDocksAvailability implements Serializable {
-    private List<VehicleType> vehicleTypes;
-    private Integer count;
 
-    public List<VehicleType> getVehicleTypes() {
-        return vehicleTypes;
-    }
+  private List<VehicleType> vehicleTypes;
+  private Integer count;
 
-    public void setVehicleTypes(List<VehicleType> vehicleTypes) {
-        this.vehicleTypes = vehicleTypes;
-    }
+  public List<VehicleType> getVehicleTypes() {
+    return vehicleTypes;
+  }
 
-    public Integer getCount() {
-        return count;
-    }
+  public void setVehicleTypes(List<VehicleType> vehicleTypes) {
+    this.vehicleTypes = vehicleTypes;
+  }
 
-    public void setCount(Integer count) {
-        this.count = count;
-    }
+  public Integer getCount() {
+    return count;
+  }
 
-    @Override
-    public String toString() {
-        return "VehicleDocksAvailability{" +
-                "vehicleTypes=" + vehicleTypes +
-                ", count=" + count +
-                '}';
-    }
+  public void setCount(Integer count) {
+    this.count = count;
+  }
+
+  @Override
+  public String toString() {
+    return (
+      "VehicleDocksAvailability{" +
+      "vehicleTypes=" +
+      vehicleTypes +
+      ", count=" +
+      count +
+      '}'
+    );
+  }
 }

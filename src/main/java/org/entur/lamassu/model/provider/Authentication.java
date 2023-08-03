@@ -18,46 +18,44 @@
 
 package org.entur.lamassu.model.provider;
 
+import java.net.URI;
+import java.util.Map;
 import org.entur.gbfs.authentication.BearerTokenRequestAuthenticator;
 import org.entur.gbfs.authentication.Oauth2ClientCredentialsGrantRequestAuthenticator;
 import org.entur.gbfs.authentication.RequestAuthenticator;
 
-import java.net.URI;
-import java.util.Map;
-
 public class Authentication {
-    private AuthenticationScheme scheme;
-    private Map<String, String> properties;
 
-    public RequestAuthenticator getRequestAuthenticator() {
-        if (scheme == AuthenticationScheme.OAUTH2_CLIENT_CREDENTIALS_GRANT) {
-            return new Oauth2ClientCredentialsGrantRequestAuthenticator(
-                    URI.create(properties.get("tokenUrl")),
-                    properties.get("clientId"),
-                    properties.get("clientPassword")
-            );
-        } else if (scheme == AuthenticationScheme.BEARER_TOKEN) {
-            return new BearerTokenRequestAuthenticator(
-                    properties.get("accessToken")
-            );
-        } else {
-            return null;
-        }
-    }
+  private AuthenticationScheme scheme;
+  private Map<String, String> properties;
 
-    public AuthenticationScheme getScheme() {
-        return scheme;
+  public RequestAuthenticator getRequestAuthenticator() {
+    if (scheme == AuthenticationScheme.OAUTH2_CLIENT_CREDENTIALS_GRANT) {
+      return new Oauth2ClientCredentialsGrantRequestAuthenticator(
+        URI.create(properties.get("tokenUrl")),
+        properties.get("clientId"),
+        properties.get("clientPassword")
+      );
+    } else if (scheme == AuthenticationScheme.BEARER_TOKEN) {
+      return new BearerTokenRequestAuthenticator(properties.get("accessToken"));
+    } else {
+      return null;
     }
+  }
 
-    public void setScheme(AuthenticationScheme scheme) {
-        this.scheme = scheme;
-    }
+  public AuthenticationScheme getScheme() {
+    return scheme;
+  }
 
-    public Map<String, String> getProperties() {
-        return properties;
-    }
+  public void setScheme(AuthenticationScheme scheme) {
+    this.scheme = scheme;
+  }
 
-    public void setProperties(Map<String, String> properties) {
-        this.properties = properties;
-    }
+  public Map<String, String> getProperties() {
+    return properties;
+  }
+
+  public void setProperties(Map<String, String> properties) {
+    this.properties = properties;
+  }
 }

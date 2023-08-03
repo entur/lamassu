@@ -18,28 +18,28 @@
 
 package org.entur.lamassu.service;
 
+import java.util.List;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PropulsionType;
 
-import java.util.List;
-
 public class StationFilterParameters extends FilterParameters {
-    private List<FormFactor> availableFormFactors;
-    private List<PropulsionType> availablePropulsionTypes;
 
-    public List<FormFactor> getAvailableFormFactors() {
-        return availableFormFactors;
-    }
+  private List<FormFactor> availableFormFactors;
+  private List<PropulsionType> availablePropulsionTypes;
 
-    public void setAvailableFormFactors(List<FormFactor> availableFormFactors) {
-        this.availableFormFactors = availableFormFactors;
-    }
+  public List<FormFactor> getAvailableFormFactors() {
+    return availableFormFactors;
+  }
 
-    public List<PropulsionType> getAvailablePropulsionTypes() {
-        return availablePropulsionTypes;
-    }
+  public void setAvailableFormFactors(List<FormFactor> availableFormFactors) {
+    this.availableFormFactors = availableFormFactors;
+  }
 
-    public void setAvailablePropulsionTypes(List<PropulsionType> availablePropulsionTypes) {
-        this.availablePropulsionTypes = availablePropulsionTypes;
-    }
+  public List<PropulsionType> getAvailablePropulsionTypes() {
+    return availablePropulsionTypes;
+  }
+
+  public void setAvailablePropulsionTypes(List<PropulsionType> availablePropulsionTypes) {
+    this.availablePropulsionTypes = availablePropulsionTypes;
+  }
 }

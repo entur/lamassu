@@ -21,60 +21,73 @@ package org.entur.lamassu.model.entities;
 import java.io.Serializable;
 
 public class BrandAssets implements Serializable {
-    private String brandLastModified;
-    private String brandTermsUrl;
-    private String brandImageUrl;
-    private String brandImageUrlDark;
-    private String color;
 
-    public String getBrandLastModified() {
-        return brandLastModified;
-    }
+  private String brandLastModified;
+  private String brandTermsUrl;
+  private String brandImageUrl;
+  private String brandImageUrlDark;
+  private String color;
 
-    public void setBrandLastModified(String brandLastModified) {
-        this.brandLastModified = brandLastModified;
-    }
+  public String getBrandLastModified() {
+    return brandLastModified;
+  }
 
-    public String getBrandTermsUrl() {
-        return brandTermsUrl;
-    }
+  public void setBrandLastModified(String brandLastModified) {
+    this.brandLastModified = brandLastModified;
+  }
 
-    public void setBrandTermsUrl(String brandTermsUrl) {
-        this.brandTermsUrl = brandTermsUrl;
-    }
+  public String getBrandTermsUrl() {
+    return brandTermsUrl;
+  }
 
-    public String getBrandImageUrl() {
-        return brandImageUrl;
-    }
+  public void setBrandTermsUrl(String brandTermsUrl) {
+    this.brandTermsUrl = brandTermsUrl;
+  }
 
-    public void setBrandImageUrl(String brandImageUrl) {
-        this.brandImageUrl = brandImageUrl;
-    }
+  public String getBrandImageUrl() {
+    return brandImageUrl;
+  }
 
-    public String getBrandImageUrlDark() {
-        return brandImageUrlDark;
-    }
+  public void setBrandImageUrl(String brandImageUrl) {
+    this.brandImageUrl = brandImageUrl;
+  }
 
-    public void setBrandImageUrlDark(String brandImageUrlDark) {
-        this.brandImageUrlDark = brandImageUrlDark;
-    }
+  public String getBrandImageUrlDark() {
+    return brandImageUrlDark;
+  }
 
-    public String getColor() {
-        return color;
-    }
+  public void setBrandImageUrlDark(String brandImageUrlDark) {
+    this.brandImageUrlDark = brandImageUrlDark;
+  }
 
-    public void setColor(String color) {
-        this.color = color;
-    }
+  public String getColor() {
+    return color;
+  }
 
-    @Override
-    public String toString() {
-        return "BrandAssets{" +
-                "brandLastModified='" + brandLastModified + '\'' +
-                ", brandTermsUrl='" + brandTermsUrl + '\'' +
-                ", brandImageUrl='" + brandImageUrl + '\'' +
-                ", brandImageUrlDark='" + brandImageUrlDark + '\'' +
-                ", color='" + color + '\'' +
-                '}';
-    }
+  public void setColor(String color) {
+    this.color = color;
+  }
+
+  @Override
+  public String toString() {
+    return (
+      "BrandAssets{" +
+      "brandLastModified='" +
+      brandLastModified +
+      '\'' +
+      ", brandTermsUrl='" +
+      brandTermsUrl +
+      '\'' +
+      ", brandImageUrl='" +
+      brandImageUrl +
+      '\'' +
+      ", brandImageUrlDark='" +
+      brandImageUrlDark +
+      '\'' +
+      ", color='" +
+      color +
+      '\'' +
+      '}'
+    );
+  }
 }

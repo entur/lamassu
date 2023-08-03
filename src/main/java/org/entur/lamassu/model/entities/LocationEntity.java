@@ -19,6 +19,6 @@
 package org.entur.lamassu.model.entities;
 
 public interface LocationEntity extends Entity {
-    Double getLat();
-    Double getLon();
+  Double getLat();
+  Double getLon();
 }

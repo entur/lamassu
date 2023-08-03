@@ -18,43 +18,46 @@
 
 package org.entur.lamassu.leader.entityupdater;
 
+import java.util.Map;
+import java.util.function.Predicate;
 import org.entur.gbfs.v2_3.free_bike_status.GBFSBike;
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.VehicleType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
-import java.util.function.Predicate;
-
 class VehicleFilter implements Predicate<GBFSBike> {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final Map<String, PricingPlan> pricingPlans;
-    private final Map<String, VehicleType> vehicleTypes;
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public VehicleFilter(Map<String, PricingPlan> pricingPlans, Map<String, VehicleType> vehicleTypes) {
-        this.pricingPlans = pricingPlans;
-        this.vehicleTypes = vehicleTypes;
+  private final Map<String, PricingPlan> pricingPlans;
+  private final Map<String, VehicleType> vehicleTypes;
+
+  public VehicleFilter(
+    Map<String, PricingPlan> pricingPlans,
+    Map<String, VehicleType> vehicleTypes
+  ) {
+    this.pricingPlans = pricingPlans;
+    this.vehicleTypes = vehicleTypes;
+  }
+
+  @Override
+  public boolean test(GBFSBike vehicle) {
+    if (vehicle.getStationId() != null) {
+      logger.info("Skipping hybrid-system vehicle {}", vehicle);
+      return false;
     }
 
-    @Override
-    public boolean test(GBFSBike vehicle) {
-        if (vehicle.getStationId() != null) {
-            logger.info("Skipping hybrid-system vehicle {}", vehicle);
-            return false;
-        }
-
-        if (!pricingPlans.containsKey(vehicle.getPricingPlanId())) {
-            logger.info("Skipping vehicle with unknown pricing plan id {}", vehicle);
-            return false;
-        }
-
-        if (!vehicleTypes.containsKey(vehicle.getVehicleTypeId())) {
-            logger.info("Skipping vehicle with unknown vehicle type id {}", vehicle);
-            return false;
-        }
-
-        return true;
+    if (!pricingPlans.containsKey(vehicle.getPricingPlanId())) {
+      logger.info("Skipping vehicle with unknown pricing plan id {}", vehicle);
+      return false;
     }
+
+    if (!vehicleTypes.containsKey(vehicle.getVehicleTypeId())) {
+      logger.info("Skipping vehicle with unknown vehicle type id {}", vehicle);
+      return false;
+    }
+
+    return true;
+  }
 }

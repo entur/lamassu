@@ -18,53 +18,52 @@
 
 package org.entur.lamassu.util;
 
+import static org.mockito.Mockito.mockStatic;
+
+import java.time.Instant;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
-import java.time.Instant;
-
-import static org.mockito.Mockito.mockStatic;
-
 class CacheUtilTest {
 
-    private MockedStatic<Instant> instantMock;
+  private MockedStatic<Instant> instantMock;
 
-    // 2021-12-20T11:33:20Z
-    private final int now = 1640000000;
+  // 2021-12-20T11:33:20Z
+  private final int now = 1640000000;
 
-    @BeforeEach
-    public void setup() {
-        mockInstant(now);
-    }
+  @BeforeEach
+  public void setup() {
+    mockInstant(now);
+  }
 
-    @AfterEach
-    public void destroy() {
-        instantMock.close();
-    }
+  @AfterEach
+  public void destroy() {
+    instantMock.close();
+  }
 
-    private void mockInstant(long expected) {
-        final Instant instantExpected = Instant.ofEpochSecond(expected);
-        instantMock = mockStatic(Instant.class);
-        instantMock.when(Instant::now).thenReturn(instantExpected);
-    }
+  private void mockInstant(long expected) {
+    final Instant instantExpected = Instant.ofEpochSecond(expected);
+    instantMock = mockStatic(Instant.class);
+    instantMock.when(Instant::now).thenReturn(instantExpected);
+  }
 
-    @Test
-    void getTtlReturnsMinimumTtlWhenExpired() {
-        int expected = 3600;
-        Assertions.assertEquals(expected, CacheUtil.getTtl(now - 3600, 10, expected));
-    }
+  @Test
+  void getTtlReturnsMinimumTtlWhenExpired() {
+    int expected = 3600;
+    Assertions.assertEquals(expected, CacheUtil.getTtl(now - 3600, 10, expected));
+  }
 
-    @Test
-    void getTtlReturnsMinimumTtlWhenLessThanMinimumTtl() {
-        int expected = 3600;
-        Assertions.assertEquals(expected, CacheUtil.getTtl(now - 20, 10, expected));
-    }
+  @Test
+  void getTtlReturnsMinimumTtlWhenLessThanMinimumTtl() {
+    int expected = 3600;
+    Assertions.assertEquals(expected, CacheUtil.getTtl(now - 20, 10, expected));
+  }
 
-    @Test
-    void getTtlReturnsCalculatedTtlWhenLargerThanMinimumTtl() {
-        Assertions.assertEquals(20, CacheUtil.getTtl(now - 10, 30, 10));
-    }
+  @Test
+  void getTtlReturnsCalculatedTtlWhenLargerThanMinimumTtl() {
+    Assertions.assertEquals(20, CacheUtil.getTtl(now - 10, 30, 10));
+  }
 }

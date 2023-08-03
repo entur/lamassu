@@ -3,65 +3,68 @@ package org.entur.lamassu.cache;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PropulsionType;
 
-public class VehicleSpatialIndexId extends AbstractSpatialIndexId implements SpatialIndexId {
-    private FormFactor formFactor;
-    private PropulsionType propulsionType;
-    private boolean isReserved;
-    private boolean isDisabled;
+public class VehicleSpatialIndexId
+  extends AbstractSpatialIndexId
+  implements SpatialIndexId {
 
-    public FormFactor getFormFactor() {
-        return formFactor;
-    }
+  private FormFactor formFactor;
+  private PropulsionType propulsionType;
+  private boolean isReserved;
+  private boolean isDisabled;
 
-    public void setFormFactor(FormFactor formFactor) {
-        this.formFactor = formFactor;
-    }
+  public FormFactor getFormFactor() {
+    return formFactor;
+  }
 
-    public PropulsionType getPropulsionType() {
-        return propulsionType;
-    }
+  public void setFormFactor(FormFactor formFactor) {
+    this.formFactor = formFactor;
+  }
 
-    public void setPropulsionType(PropulsionType propulsionType) {
-        this.propulsionType = propulsionType;
-    }
+  public PropulsionType getPropulsionType() {
+    return propulsionType;
+  }
 
-    public boolean getReserved() {
-        return isReserved;
-    }
+  public void setPropulsionType(PropulsionType propulsionType) {
+    this.propulsionType = propulsionType;
+  }
 
-    public void setReserved(boolean reserved) {
-        isReserved = reserved;
-    }
+  public boolean getReserved() {
+    return isReserved;
+  }
 
-    public boolean getDisabled() {
-        return isDisabled;
-    }
+  public void setReserved(boolean reserved) {
+    isReserved = reserved;
+  }
 
-    public void setDisabled(boolean disabled) {
-        isDisabled = disabled;
-    }
+  public boolean getDisabled() {
+    return isDisabled;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+  public void setDisabled(boolean disabled) {
+    isDisabled = disabled;
+  }
 
-        VehicleSpatialIndexId that = (VehicleSpatialIndexId) o;
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
 
-        if (isReserved != that.isReserved) return false;
-        if (isDisabled != that.isDisabled) return false;
-        if (formFactor != that.formFactor) return false;
-        return propulsionType == that.propulsionType;
-    }
+    VehicleSpatialIndexId that = (VehicleSpatialIndexId) o;
 
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (formFactor != null ? formFactor.hashCode() : 0);
-        result = 31 * result + (propulsionType != null ? propulsionType.hashCode() : 0);
-        result = 31 * result + (isReserved ? 1 : 0);
-        result = 31 * result + (isDisabled ? 1 : 0);
-        return result;
-    }
+    if (isReserved != that.isReserved) return false;
+    if (isDisabled != that.isDisabled) return false;
+    if (formFactor != that.formFactor) return false;
+    return propulsionType == that.propulsionType;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = super.hashCode();
+    result = 31 * result + (formFactor != null ? formFactor.hashCode() : 0);
+    result = 31 * result + (propulsionType != null ? propulsionType.hashCode() : 0);
+    result = 31 * result + (isReserved ? 1 : 0);
+    result = 31 * result + (isDisabled ? 1 : 0);
+    return result;
+  }
 }

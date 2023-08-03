@@ -1,9 +1,8 @@
 package org.entur.lamassu.config.feedprovider;
 
+import java.util.List;
 import org.entur.lamassu.model.provider.FeedProvider;
 
-import java.util.List;
-
 public interface FeedProviderConfig {
-    List<FeedProvider> getProviders();
+  List<FeedProvider> getProviders();
 }

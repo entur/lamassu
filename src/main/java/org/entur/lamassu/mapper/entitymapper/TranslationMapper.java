@@ -18,32 +18,32 @@
 
 package org.entur.lamassu.mapper.entitymapper;
 
+import java.util.List;
 import org.entur.lamassu.model.entities.TranslatedString;
 import org.entur.lamassu.model.entities.Translation;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Component
 public class TranslationMapper {
-    public TranslatedString mapSingleTranslation(String language, String value) {
-        if (language == null || value == null) {
-            return null;
-        }
-        var translation = mapTranslation(language, value);
-        return mapTranslatedString(List.of(translation));
-    }
 
-    public TranslatedString mapTranslatedString(List<Translation> translations) {
-        var translatedString = new TranslatedString();
-        translatedString.setTranslation(translations);
-        return translatedString;
+  public TranslatedString mapSingleTranslation(String language, String value) {
+    if (language == null || value == null) {
+      return null;
     }
+    var translation = mapTranslation(language, value);
+    return mapTranslatedString(List.of(translation));
+  }
 
-    public Translation mapTranslation(String language, String value) {
-        var translation = new Translation();
-        translation.setLanguage(language);
-        translation.setValue(value);
-        return translation;
-    }
+  public TranslatedString mapTranslatedString(List<Translation> translations) {
+    var translatedString = new TranslatedString();
+    translatedString.setTranslation(translations);
+    return translatedString;
+  }
+
+  public Translation mapTranslation(String language, String value) {
+    var translation = new Translation();
+    translation.setLanguage(language);
+    translation.setValue(value);
+    return translation;
+  }
 }

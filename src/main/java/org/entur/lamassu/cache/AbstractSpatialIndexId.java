@@ -22,62 +22,63 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public abstract class AbstractSpatialIndexId implements Serializable {
-    private String id;
-    private String codespace;
-    private String systemId;
-    private String operatorId;
 
-    public String getId() {
-        return id;
-    }
+  private String id;
+  private String codespace;
+  private String systemId;
+  private String operatorId;
 
-    public void setId(String id) {
-        this.id = id;
-    }
+  public String getId() {
+    return id;
+  }
 
-    public String getCodespace() {
-        return codespace;
-    }
+  public void setId(String id) {
+    this.id = id;
+  }
 
-    public void setCodespace(String codespace) {
-        this.codespace = codespace;
-    }
+  public String getCodespace() {
+    return codespace;
+  }
 
-    public String getSystemId() {
-        return systemId;
-    }
+  public void setCodespace(String codespace) {
+    this.codespace = codespace;
+  }
 
-    public void setSystemId(String systemId) {
-        this.systemId = systemId;
-    }
+  public String getSystemId() {
+    return systemId;
+  }
 
-    public String getOperatorId() {
-        return operatorId;
-    }
+  public void setSystemId(String systemId) {
+    this.systemId = systemId;
+  }
 
-    public void setOperatorId(String operatorId) {
-        this.operatorId = operatorId;
-    }
+  public String getOperatorId() {
+    return operatorId;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+  public void setOperatorId(String operatorId) {
+    this.operatorId = operatorId;
+  }
 
-        AbstractSpatialIndexId that = (AbstractSpatialIndexId) o;
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
 
-        if (!Objects.equals(id, that.id)) return false;
-        if (!Objects.equals(codespace, that.codespace)) return false;
-        if (!Objects.equals(systemId, that.systemId)) return false;
-        return Objects.equals(operatorId, that.operatorId);
-    }
+    AbstractSpatialIndexId that = (AbstractSpatialIndexId) o;
 
-    @Override
-    public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (codespace != null ? codespace.hashCode() : 0);
-        result = 31 * result + (systemId != null ? systemId.hashCode() : 0);
-        result = 31 * result + (operatorId != null ? operatorId.hashCode() : 0);
-        return result;
-    }
+    if (!Objects.equals(id, that.id)) return false;
+    if (!Objects.equals(codespace, that.codespace)) return false;
+    if (!Objects.equals(systemId, that.systemId)) return false;
+    return Objects.equals(operatorId, that.operatorId);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = id != null ? id.hashCode() : 0;
+    result = 31 * result + (codespace != null ? codespace.hashCode() : 0);
+    result = 31 * result + (systemId != null ? systemId.hashCode() : 0);
+    result = 31 * result + (operatorId != null ? operatorId.hashCode() : 0);
+    return result;
+  }
 }

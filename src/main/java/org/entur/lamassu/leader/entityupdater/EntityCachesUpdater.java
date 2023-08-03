@@ -26,80 +26,89 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class EntityCachesUpdater {
-    private final VehiclesUpdater vehiclesUpdater;
-    private final StationsUpdater stationsUpdater;
-    private final GeofencingZonesUpdater geofencingZonesUpdater;
 
-    @Autowired
-    public EntityCachesUpdater(
-            VehiclesUpdater vehiclesUpdater,
-            StationsUpdater stationsUpdater,
-            GeofencingZonesUpdater geofencingZonesUpdater
+  private final VehiclesUpdater vehiclesUpdater;
+  private final StationsUpdater stationsUpdater;
+  private final GeofencingZonesUpdater geofencingZonesUpdater;
+
+  @Autowired
+  public EntityCachesUpdater(
+    VehiclesUpdater vehiclesUpdater,
+    StationsUpdater stationsUpdater,
+    GeofencingZonesUpdater geofencingZonesUpdater
+  ) {
+    this.vehiclesUpdater = vehiclesUpdater;
+    this.stationsUpdater = stationsUpdater;
+    this.geofencingZonesUpdater = geofencingZonesUpdater;
+  }
+
+  public void updateEntityCaches(
+    FeedProvider feedProvider,
+    GbfsDelivery delivery,
+    GbfsDelivery oldDelivery
+  ) {
+    if (canUpdateVehicles(delivery, feedProvider)) {
+      vehiclesUpdater.addOrUpdateVehicles(feedProvider, delivery, oldDelivery);
+    }
+
+    if (canUpdateStations(delivery, feedProvider)) {
+      stationsUpdater.addOrUpdateStations(feedProvider, delivery, oldDelivery);
+    }
+
+    if (delivery.getGeofencingZones() != null) {
+      if (
+        feedProvider.getExcludeFeeds() == null ||
+        !feedProvider.getExcludeFeeds().contains(GBFSFeedName.GeofencingZones)
+      ) {
+        geofencingZonesUpdater.addOrUpdateGeofencingZones(
+          feedProvider,
+          delivery.getGeofencingZones()
+        );
+      }
+    }
+  }
+
+  private boolean canUpdateVehicles(GbfsDelivery delivery, FeedProvider feedProvider) {
+    if (
+      feedProvider.getExcludeFeeds() != null &&
+      feedProvider.getExcludeFeeds().contains(GBFSFeedName.FreeBikeStatus)
     ) {
-        this.vehiclesUpdater = vehiclesUpdater;
-        this.stationsUpdater = stationsUpdater;
-        this.geofencingZonesUpdater = geofencingZonesUpdater;
+      return false;
     }
 
-    public void updateEntityCaches(FeedProvider feedProvider, GbfsDelivery delivery, GbfsDelivery oldDelivery) {
-        if (canUpdateVehicles(delivery, feedProvider)) {
-            vehiclesUpdater.addOrUpdateVehicles(
-                    feedProvider,
-                    delivery,
-                    oldDelivery
-            );
-        }
+    return (
+      delivery.getFreeBikeStatus() != null &&
+      delivery.getFreeBikeStatus().getData() != null &&
+      delivery.getSystemInformation() != null &&
+      delivery.getSystemInformation().getData() != null &&
+      delivery.getVehicleTypes() != null &&
+      delivery.getVehicleTypes().getData() != null &&
+      delivery.getSystemPricingPlans() != null &&
+      delivery.getSystemPricingPlans().getData() != null
+    );
+  }
 
-        if (canUpdateStations(delivery, feedProvider)) {
-            stationsUpdater.addOrUpdateStations(
-                    feedProvider,
-                    delivery,
-                    oldDelivery
-            );
-        }
-
-        if (delivery.getGeofencingZones() != null) {
-            if (feedProvider.getExcludeFeeds() == null || !feedProvider.getExcludeFeeds().contains(GBFSFeedName.GeofencingZones)) {
-                geofencingZonesUpdater.addOrUpdateGeofencingZones(
-                        feedProvider,
-                        delivery.getGeofencingZones()
-                );
-            }
-        }
+  private boolean canUpdateStations(GbfsDelivery delivery, FeedProvider feedProvider) {
+    if (feedProvider.getExcludeFeeds() != null) {
+      if (
+        feedProvider.getExcludeFeeds().contains(GBFSFeedName.StationInformation) ||
+        feedProvider.getExcludeFeeds().contains(GBFSFeedName.StationStatus)
+      ) {
+        return false;
+      }
     }
 
-    private boolean canUpdateVehicles(GbfsDelivery delivery, FeedProvider feedProvider) {
-        if (feedProvider.getExcludeFeeds() != null && feedProvider.getExcludeFeeds().contains(GBFSFeedName.FreeBikeStatus)) {
-            return false;
-        }
-
-        return delivery.getFreeBikeStatus() != null
-                && delivery.getFreeBikeStatus().getData() != null
-                && delivery.getSystemInformation() != null
-                && delivery.getSystemInformation().getData() != null
-                && delivery.getVehicleTypes() != null
-                && delivery.getVehicleTypes().getData() != null
-                && delivery.getSystemPricingPlans() != null
-                && delivery.getSystemPricingPlans().getData() != null;
-    }
-
-    private boolean canUpdateStations(GbfsDelivery delivery, FeedProvider feedProvider) {
-        if (feedProvider.getExcludeFeeds() != null) {
-            if (feedProvider.getExcludeFeeds().contains(GBFSFeedName.StationInformation)
-                    || feedProvider.getExcludeFeeds().contains(GBFSFeedName.StationStatus)) {
-                return false;
-            }
-        }
-
-        return delivery.getStationStatus() != null
-                && delivery.getStationInformation() != null
-                && delivery.getStationStatus().getData() != null
-                && delivery.getStationInformation().getData() != null
-                && delivery.getSystemInformation() != null
-                && delivery.getSystemInformation().getData() != null
-                && delivery.getVehicleTypes() != null
-                && delivery.getVehicleTypes().getData() != null
-                && delivery.getSystemPricingPlans() != null
-                && delivery.getSystemPricingPlans().getData() != null;
-    }
+    return (
+      delivery.getStationStatus() != null &&
+      delivery.getStationInformation() != null &&
+      delivery.getStationStatus().getData() != null &&
+      delivery.getStationInformation().getData() != null &&
+      delivery.getSystemInformation() != null &&
+      delivery.getSystemInformation().getData() != null &&
+      delivery.getVehicleTypes() != null &&
+      delivery.getVehicleTypes().getData() != null &&
+      delivery.getSystemPricingPlans() != null &&
+      delivery.getSystemPricingPlans().getData() != null
+    );
+  }
 }

@@ -47,3 +47,7 @@ GraphQL endpoint targeted at end-user clients. Documentation can be explored at 
 Requires a locally running redis instance. E.g.:
 
     docker run -p 127.0.0.1:6379:6379 -d redis redis-server
+
+## Codestyle
+Lamassu uses [Prettier Java](https://github.com/jhipster/prettier-java). Use `mvn prettier:write` to reformat code before
+pushing changes. You can also configure your IDE to reformat code when you save a file.

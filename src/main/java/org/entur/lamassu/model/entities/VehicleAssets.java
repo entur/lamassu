@@ -21,40 +21,49 @@ package org.entur.lamassu.model.entities;
 import java.io.Serializable;
 
 public class VehicleAssets implements Serializable {
-    private String iconUrl;
-    private String iconUrlDark;
-    private String iconLastModified;
 
-    public String getIconUrl() {
-        return iconUrl;
-    }
+  private String iconUrl;
+  private String iconUrlDark;
+  private String iconLastModified;
 
-    public void setIconUrl(String iconUrl) {
-        this.iconUrl = iconUrl;
-    }
+  public String getIconUrl() {
+    return iconUrl;
+  }
 
-    public String getIconUrlDark() {
-        return iconUrlDark;
-    }
+  public void setIconUrl(String iconUrl) {
+    this.iconUrl = iconUrl;
+  }
 
-    public void setIconUrlDark(String iconUrlDark) {
-        this.iconUrlDark = iconUrlDark;
-    }
+  public String getIconUrlDark() {
+    return iconUrlDark;
+  }
 
-    public String getIconLastModified() {
-        return iconLastModified;
-    }
+  public void setIconUrlDark(String iconUrlDark) {
+    this.iconUrlDark = iconUrlDark;
+  }
 
-    public void setIconLastModified(String iconLastModified) {
-        this.iconLastModified = iconLastModified;
-    }
+  public String getIconLastModified() {
+    return iconLastModified;
+  }
 
-    @Override
-    public String toString() {
-        return "VehicleAssets{" +
-                "iconUrl='" + iconUrl + '\'' +
-                ", iconUrlDark='" + iconUrlDark + '\'' +
-                ", iconLastModified='" + iconLastModified + '\'' +
-                '}';
-    }
+  public void setIconLastModified(String iconLastModified) {
+    this.iconLastModified = iconLastModified;
+  }
+
+  @Override
+  public String toString() {
+    return (
+      "VehicleAssets{" +
+      "iconUrl='" +
+      iconUrl +
+      '\'' +
+      ", iconUrlDark='" +
+      iconUrlDark +
+      '\'' +
+      ", iconLastModified='" +
+      iconLastModified +
+      '\'' +
+      '}'
+    );
+  }
 }

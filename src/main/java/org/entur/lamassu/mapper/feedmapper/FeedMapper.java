@@ -18,11 +18,10 @@
 
 package org.entur.lamassu.mapper.feedmapper;
 
+import java.util.function.Consumer;
 import org.entur.lamassu.model.provider.FeedProvider;
 
-import java.util.function.Consumer;
-
 public interface FeedMapper<T> {
-    T map(T source, FeedProvider feedProvider);
-    T map(T source, FeedProvider feedProvider, Consumer<T> postProcessor);
+  T map(T source, FeedProvider feedProvider);
+  T map(T source, FeedProvider feedProvider, Consumer<T> postProcessor);
 }

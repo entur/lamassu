@@ -18,75 +18,85 @@
 
 package org.entur.lamassu.model.validation;
 
+import java.util.List;
 import org.entur.gbfs.validation.model.FileValidationError;
 
-import java.util.List;
-
 public class ShortFileValidationResult {
-    private String file;
-    private boolean required;
-    private boolean exists;
-    private int errorsCount;
-    private String version;
-    private List<FileValidationError> errors;
 
-    public String getFile() {
-        return file;
-    }
+  private String file;
+  private boolean required;
+  private boolean exists;
+  private int errorsCount;
+  private String version;
+  private List<FileValidationError> errors;
 
-    public void setFile(String file) {
-        this.file = file;
-    }
+  public String getFile() {
+    return file;
+  }
 
-    public boolean isRequired() {
-        return required;
-    }
+  public void setFile(String file) {
+    this.file = file;
+  }
 
-    public void setRequired(boolean required) {
-        this.required = required;
-    }
+  public boolean isRequired() {
+    return required;
+  }
 
-    public boolean isExists() {
-        return exists;
-    }
+  public void setRequired(boolean required) {
+    this.required = required;
+  }
 
-    public void setExists(boolean exists) {
-        this.exists = exists;
-    }
+  public boolean isExists() {
+    return exists;
+  }
 
-    public int getErrorsCount() {
-        return errorsCount;
-    }
+  public void setExists(boolean exists) {
+    this.exists = exists;
+  }
 
-    public void setErrorsCount(int errorsCount) {
-        this.errorsCount = errorsCount;
-    }
+  public int getErrorsCount() {
+    return errorsCount;
+  }
 
-    public String getVersion() {
-        return version;
-    }
+  public void setErrorsCount(int errorsCount) {
+    this.errorsCount = errorsCount;
+  }
 
-    public void setVersion(String version) {
-        this.version = version;
-    }
+  public String getVersion() {
+    return version;
+  }
 
-    public List<FileValidationError> getErrors() {
-        return errors;
-    }
+  public void setVersion(String version) {
+    this.version = version;
+  }
 
-    public void setErrors(List<FileValidationError> errors) {
-        this.errors = errors;
-    }
+  public List<FileValidationError> getErrors() {
+    return errors;
+  }
 
-    @Override
-    public String toString() {
-        return "ShortFileValidationResult{" +
-                "file='" + file + '\'' +
-                ", required=" + required +
-                ", exists=" + exists +
-                ", errorsCount=" + errorsCount +
-                ", version='" + version + '\'' +
-                ", errors=" + errors +
-                '}';
-    }
+  public void setErrors(List<FileValidationError> errors) {
+    this.errors = errors;
+  }
+
+  @Override
+  public String toString() {
+    return (
+      "ShortFileValidationResult{" +
+      "file='" +
+      file +
+      '\'' +
+      ", required=" +
+      required +
+      ", exists=" +
+      exists +
+      ", errorsCount=" +
+      errorsCount +
+      ", version='" +
+      version +
+      '\'' +
+      ", errors=" +
+      errors +
+      '}'
+    );
+  }
 }

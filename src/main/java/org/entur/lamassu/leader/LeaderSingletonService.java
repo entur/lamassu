@@ -1,5 +1,7 @@
 package org.entur.lamassu.leader;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import org.entur.lamassu.service.GeoSearchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,43 +10,44 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-
 @Component
 @Profile("leader")
 public class LeaderSingletonService {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final FeedUpdater feedUpdater;
-    private final GeoSearchService geoSearchService;
 
-    public LeaderSingletonService(@Autowired FeedUpdater feedUpdater, @Autowired GeoSearchService geoSearchService) {
-        this.feedUpdater = feedUpdater;
-        this.geoSearchService = geoSearchService;
-    }
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
+  private final FeedUpdater feedUpdater;
+  private final GeoSearchService geoSearchService;
 
-    @PostConstruct
-    public void init() {
-        logger.info("Initializing leader");
-        feedUpdater.start();
-    }
+  public LeaderSingletonService(
+    @Autowired FeedUpdater feedUpdater,
+    @Autowired GeoSearchService geoSearchService
+  ) {
+    this.feedUpdater = feedUpdater;
+    this.geoSearchService = geoSearchService;
+  }
 
-    @PreDestroy
-    public void shutdown() {
-        logger.info("Shutting down leader");
-        feedUpdater.stop();
-    }
+  @PostConstruct
+  public void init() {
+    logger.info("Initializing leader");
+    feedUpdater.start();
+  }
 
-    @Scheduled(fixedRateString = "${org.entur.lamassu.feedupdateinterval:30000}")
-    public void update() {
-        feedUpdater.update();
-    }
+  @PreDestroy
+  public void shutdown() {
+    logger.info("Shutting down leader");
+    feedUpdater.stop();
+  }
 
-    @Scheduled(fixedRate = 60000)
-    public void removeOrphans() {
-        var removedOrphans = geoSearchService.removeVehicleSpatialIndexOrphans();
-        if (!removedOrphans.isEmpty()) {
-            logger.info("Removed {} orphans in vehicle spatial index", removedOrphans.size());
-        }
+  @Scheduled(fixedRateString = "${org.entur.lamassu.feedupdateinterval:30000}")
+  public void update() {
+    feedUpdater.update();
+  }
+
+  @Scheduled(fixedRate = 60000)
+  public void removeOrphans() {
+    var removedOrphans = geoSearchService.removeVehicleSpatialIndexOrphans();
+    if (!removedOrphans.isEmpty()) {
+      logger.info("Removed {} orphans in vehicle spatial index", removedOrphans.size());
     }
+  }
 }

@@ -25,7 +25,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class StationCacheImpl extends EntityCacheImpl<Station> implements StationCache {
-    protected StationCacheImpl(RMapCache<String, Station> cache) {
-        super(cache);
-    }
+
+  protected StationCacheImpl(RMapCache<String, Station> cache) {
+    super(cache);
+  }
 }

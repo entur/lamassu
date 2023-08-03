@@ -18,6 +18,16 @@
 
 package org.entur.lamassu.service;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.PrimitiveIterator;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.entur.lamassu.cache.StationCache;
 import org.entur.lamassu.cache.StationSpatialIndex;
 import org.entur.lamassu.cache.VehicleCache;
@@ -34,90 +44,92 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 
-import java.util.ArrayList;
-import java.util.PrimitiveIterator;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 public class GeoSearchServiceTest {
 
-    private final VehicleSpatialIndex vehicleSpatialIndex = mock(VehicleSpatialIndex.class);
-    private final StationSpatialIndex stationSpatialIndex = mock(StationSpatialIndex.class);
-    private final VehicleCache vehicleCache = new VehicleCacheStub();
-    private final StationCache stationCache = mock(StationCache.class);
-    private final FeedProvider feedProvider = getFeedProvider();
-    private final GeoSearchService service = new GeoSearchServiceImpl(
-        vehicleSpatialIndex,
-        stationSpatialIndex,
-        vehicleCache,
-        stationCache
+  private final VehicleSpatialIndex vehicleSpatialIndex = mock(VehicleSpatialIndex.class);
+  private final StationSpatialIndex stationSpatialIndex = mock(StationSpatialIndex.class);
+  private final VehicleCache vehicleCache = new VehicleCacheStub();
+  private final StationCache stationCache = mock(StationCache.class);
+  private final FeedProvider feedProvider = getFeedProvider();
+  private final GeoSearchService service = new GeoSearchServiceImpl(
+    vehicleSpatialIndex,
+    stationSpatialIndex,
+    vehicleCache,
+    stationCache
+  );
+
+  @Before
+  public void setup() {
+    var vehicles = new ArrayList<Vehicle>();
+
+    for (PrimitiveIterator.OfInt it = IntStream.range(0, 10).iterator(); it.hasNext();) {
+      vehicles.add(getVehicle(it.next()));
+    }
+
+    vehicleCache.updateAll(
+      vehicles.stream().collect(Collectors.toMap(Vehicle::getId, v -> v)),
+      0,
+      TimeUnit.SECONDS
     );
 
-    @Before
-    public void setup() {
-        var vehicles = new ArrayList<Vehicle>();
+    when(vehicleSpatialIndex.getAll())
+      .thenReturn(
+        vehicles
+          .stream()
+          .map(vehicle ->
+            SpatialIndexIdUtil.createVehicleSpatialIndexId(vehicle, feedProvider)
+          )
+          .collect(Collectors.toList())
+      );
+  }
 
-        for (PrimitiveIterator.OfInt it = IntStream.range(0, 10).iterator(); it.hasNext(); ) {
-            vehicles.add(getVehicle(it.next()));
-        }
+  @Test
+  public void sanityCheck() {
+    Assertions.assertTrue(vehicleCache.hasKey("foo_1"));
+  }
 
-        vehicleCache.updateAll(vehicles.stream().collect(Collectors.toMap(Vehicle::getId, v -> v)), 0, TimeUnit.SECONDS);
+  @Test
+  public void testGetVehicleOrphansIsEmpty() {
+    var orphans = service.getVehicleSpatialIndexOrphans();
+    Assertions.assertTrue(orphans.isEmpty());
+  }
 
-        when(vehicleSpatialIndex.getAll()).thenReturn(
-                vehicles.stream()
-                        .map(vehicle -> SpatialIndexIdUtil.createVehicleSpatialIndexId(vehicle, feedProvider))
-                        .collect(Collectors.toList())
-        );
-    }
+  @Test
+  public void testGetVehicleOrphansReturnsOrphanWhenRemovingVehicleFromCache() {
+    vehicleCache.removeAll(Set.of("foo_1"));
+    var orphans = service.getVehicleSpatialIndexOrphans();
+    Assertions.assertEquals(1, orphans.size());
+    Assertions.assertTrue(orphans.contains("foo_1"));
+  }
 
-    @Test
-    public void sanityCheck() {
-        Assertions.assertTrue(vehicleCache.hasKey("foo_1"));
-    }
+  @Test
+  public void testRemoveVehicleSpatialIndexOrphans() {
+    var vehicleToRemove = vehicleCache.get("foo_1");
+    vehicleCache.removeAll(Set.of("foo_1"));
+    var orphans = service.removeVehicleSpatialIndexOrphans();
+    verify(vehicleSpatialIndex)
+      .removeAll(
+        Set.of(
+          SpatialIndexIdUtil.createVehicleSpatialIndexId(vehicleToRemove, feedProvider)
+        )
+      );
+  }
 
-    @Test
-    public void testGetVehicleOrphansIsEmpty() {
-        var orphans = service.getVehicleSpatialIndexOrphans();
-        Assertions.assertTrue(orphans.isEmpty());
-    }
+  private Vehicle getVehicle(int i) {
+    var vehicle = new Vehicle();
+    vehicle.setId("foo_" + i);
+    var vehicleType = new VehicleType();
+    vehicleType.setFormFactor(FormFactor.SCOOTER);
+    vehicleType.setPropulsionType(PropulsionType.ELECTRIC);
+    vehicle.setVehicleType(vehicleType);
+    vehicle.setReserved(false);
+    vehicle.setDisabled(false);
+    return vehicle;
+  }
 
-    @Test
-    public void testGetVehicleOrphansReturnsOrphanWhenRemovingVehicleFromCache() {
-        vehicleCache.removeAll(Set.of("foo_1"));
-        var orphans = service.getVehicleSpatialIndexOrphans();
-        Assertions.assertEquals(1, orphans.size());
-        Assertions.assertTrue(orphans.contains("foo_1"));
-    }
-
-    @Test
-    public void testRemoveVehicleSpatialIndexOrphans() {
-        var vehicleToRemove = vehicleCache.get("foo_1");
-        vehicleCache.removeAll(Set.of("foo_1"));
-        var orphans = service.removeVehicleSpatialIndexOrphans();
-        verify(vehicleSpatialIndex).removeAll(Set.of(SpatialIndexIdUtil.createVehicleSpatialIndexId(vehicleToRemove, feedProvider)));
-    }
-
-    private Vehicle getVehicle(int i) {
-        var vehicle = new Vehicle();
-        vehicle.setId("foo_" + i);
-        var vehicleType = new VehicleType();
-        vehicleType.setFormFactor(FormFactor.SCOOTER);
-        vehicleType.setPropulsionType(PropulsionType.ELECTRIC);
-        vehicle.setVehicleType(vehicleType);
-        vehicle.setReserved(false);
-        vehicle.setDisabled(false);
-        return vehicle;
-    }
-
-    private FeedProvider getFeedProvider() {
-        var feedProvider = new FeedProvider();
-        feedProvider.setSystemId("bar");
-        return feedProvider;
-    }
+  private FeedProvider getFeedProvider() {
+    var feedProvider = new FeedProvider();
+    feedProvider.setSystemId("bar");
+    return feedProvider;
+  }
 }

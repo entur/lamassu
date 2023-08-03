@@ -21,30 +21,30 @@ package org.entur.lamassu.model.entities;
 import java.io.Serializable;
 
 public class VehicleTypeCapacity implements Serializable {
-    private VehicleType vehicleType;
-    private Integer count;
 
-    public VehicleType getVehicleType() {
-        return vehicleType;
-    }
+  private VehicleType vehicleType;
+  private Integer count;
 
-    public void setVehicleType(VehicleType vehicleType) {
-        this.vehicleType = vehicleType;
-    }
+  public VehicleType getVehicleType() {
+    return vehicleType;
+  }
 
-    public Integer getCount() {
-        return count;
-    }
+  public void setVehicleType(VehicleType vehicleType) {
+    this.vehicleType = vehicleType;
+  }
 
-    public void setCount(Integer count) {
-        this.count = count;
-    }
+  public Integer getCount() {
+    return count;
+  }
 
-    @Override
-    public String toString() {
-        return "VehicleTypeCapacity{" +
-                "vehicleType=" + vehicleType +
-                ", count=" + count +
-                '}';
-    }
+  public void setCount(Integer count) {
+    this.count = count;
+  }
+
+  @Override
+  public String toString() {
+    return (
+      "VehicleTypeCapacity{" + "vehicleType=" + vehicleType + ", count=" + count + '}'
+    );
+  }
 }

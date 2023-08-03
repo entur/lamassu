@@ -21,10 +21,11 @@ package org.entur.lamassu.util;
 import java.time.Instant;
 
 public class CacheUtil {
-    private CacheUtil() {}
 
-    public static int getTtl(int lastUpdated, int ttl, int minimumTtl) {
-        var now = (int) Instant.now().getEpochSecond();
-        return Math.max(lastUpdated + ttl - now, minimumTtl);
-    }
+  private CacheUtil() {}
+
+  public static int getTtl(int lastUpdated, int ttl, int minimumTtl) {
+    var now = (int) Instant.now().getEpochSecond();
+    return Math.max(lastUpdated + ttl - now, minimumTtl);
+  }
 }
