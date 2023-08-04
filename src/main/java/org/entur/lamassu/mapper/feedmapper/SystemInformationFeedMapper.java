@@ -35,6 +35,9 @@ public class SystemInformationFeedMapper
   @Value("${org.entur.lamassu.targetGbfsVersion:2.2}")
   private String targetGbfsVersion;
 
+  @Value("${org.entur.lamassu.defaultTimeZone:Europe/Oslo}")
+  private String defaultTimeZone;
+
   @Override
   public GBFSSystemInformation map(
     GBFSSystemInformation source,
@@ -74,7 +77,7 @@ public class SystemInformationFeedMapper
     mapped.setPhoneNumber(source.getPhoneNumber());
     mapped.setEmail(source.getEmail());
     mapped.setFeedContactEmail(source.getFeedContactEmail());
-    mapped.setTimezone(source.getTimezone());
+    mapped.setTimezone(source.getTimezone() != null ? source.getTimezone() : GBFSData.Timezone.fromValue(defaultTimeZone));
     mapped.setLicenseUrl(source.getLicenseUrl());
     mapped.setBrandAssets(source.getBrandAssets());
     mapped.setTermsUrl(source.getTermsUrl());
