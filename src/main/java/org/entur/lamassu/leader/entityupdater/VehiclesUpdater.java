@@ -19,6 +19,7 @@
 package org.entur.lamassu.leader.entityupdater;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -135,7 +136,7 @@ public class VehiclesUpdater {
       system.getLanguage()
     );
 
-    var vehicles = freeBikeStatusFeed
+    var vehicleList = freeBikeStatusFeed
       .getData()
       .getBikes()
       .stream()
@@ -148,6 +149,23 @@ public class VehiclesUpdater {
           system
         )
       )
+      .collect(Collectors.toList());
+
+    var duplicateVehicles = vehicleList
+      .stream()
+      .filter(i -> Collections.frequency(vehicleList, i) > 1)
+      .collect(Collectors.toSet());
+
+    if (!duplicateVehicles.isEmpty() && logger.isWarnEnabled()) {
+      logger.warn(
+        "Removed duplicate vehicles with ids: {}",
+        duplicateVehicles.stream().map(Vehicle::getId).collect(Collectors.joining(","))
+      );
+    }
+
+    var vehicles = vehicleList
+      .stream()
+      .filter(i -> Collections.frequency(vehicleList, i) == 1)
       .collect(Collectors.toMap(Vehicle::getId, v -> v));
 
     Set<VehicleSpatialIndexId> spatialIndicesToRemove = new java.util.HashSet<>(Set.of());
