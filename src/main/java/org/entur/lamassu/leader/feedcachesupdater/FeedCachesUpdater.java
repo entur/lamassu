@@ -33,6 +33,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class FeedCachesUpdater {
 
+  public static final int MINIMUM_TTL = 86400;
   private final GBFSFeedCache feedCache;
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -152,7 +153,7 @@ public class FeedCachesUpdater {
         feedProvider.getSystemId(),
         feed
       );
-      var ttl = getTtl(feedName.implementingClass(), feed, 3600);
+      var ttl = getTtl(feedName.implementingClass(), feed, MINIMUM_TTL);
       return feedCache.getAndUpdate(feedName, feedProvider, feed, ttl, TimeUnit.SECONDS);
     } else {
       logger.debug(
