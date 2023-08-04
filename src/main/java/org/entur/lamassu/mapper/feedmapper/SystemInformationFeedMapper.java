@@ -77,7 +77,11 @@ public class SystemInformationFeedMapper
     mapped.setPhoneNumber(source.getPhoneNumber());
     mapped.setEmail(source.getEmail());
     mapped.setFeedContactEmail(source.getFeedContactEmail());
-    mapped.setTimezone(source.getTimezone() != null ? source.getTimezone() : GBFSData.Timezone.fromValue(defaultTimeZone));
+    mapped.setTimezone(
+      source.getTimezone() != null
+        ? source.getTimezone()
+        : GBFSData.Timezone.fromValue(defaultTimeZone)
+    );
     mapped.setLicenseUrl(source.getLicenseUrl());
     mapped.setBrandAssets(source.getBrandAssets());
     mapped.setTermsUrl(source.getTermsUrl());
