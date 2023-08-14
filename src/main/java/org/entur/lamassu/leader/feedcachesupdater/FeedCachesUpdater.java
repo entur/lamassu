@@ -28,6 +28,7 @@ import org.entur.lamassu.util.CacheUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -36,6 +37,12 @@ public class FeedCachesUpdater {
   public static final int MINIMUM_TTL = 86400;
   private final GBFSFeedCache feedCache;
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+  @Value("${org.entur.lamassu.feedCacheTtlPadding:3600}")
+  private Integer feedCacheTtlPadding;
+
+  @Value("${org.entur.lamassu.feedCacheMinimumTtl:3600}")
+  private Integer feedCacheMinimumTtl;
 
   @Autowired
   public FeedCachesUpdater(GBFSFeedCache feedCache) {
@@ -110,8 +117,14 @@ public class FeedCachesUpdater {
         feedProvider.getSystemId(),
         feed
       );
-      var ttl = getTtl(feedName.implementingClass(), feed, 3600);
-      feedCache.update(feedName, feedProvider, feed, ttl, TimeUnit.SECONDS);
+      var ttl = getTtl(feedName.implementingClass(), feed, feedCacheMinimumTtl);
+      feedCache.update(
+        feedName,
+        feedProvider,
+        feed,
+        ttl + feedCacheTtlPadding,
+        TimeUnit.SECONDS
+      );
     } else {
       logger.debug(
         "no feed {} found for provider {}",
