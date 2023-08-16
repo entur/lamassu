@@ -65,7 +65,7 @@ public class AdminController {
     keys
       .getKeys()
       .forEach(key -> {
-        if (!key.endsWith("_" + serializationVersion)) {
+        if (!key.contains("_" + serializationVersion)) {
           keys.delete(key);
           deletedKeys.add(key);
         }
