@@ -66,6 +66,9 @@ public class FeedUpdater {
   @Value("${org.entur.lamassu.enableValidation:false}")
   private boolean enableValidation;
 
+  @Value("${org.entur.lamassu.maxValidationResultsPerSystem:10}")
+  private Integer maxValidationResultsPerSystem;
+
   private MetricsService metricsService;
 
   @Autowired
@@ -178,7 +181,7 @@ public class FeedUpdater {
       validationResults.add(validationResult);
 
       // Configurable maximum history?
-      if (validationResults.size() > 10) {
+      if (validationResults.size() > maxValidationResultsPerSystem) {
         validationResults.remove(0);
       }
     }
