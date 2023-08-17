@@ -205,21 +205,11 @@ public class StationsUpdater {
         spatialIndicesToRemove.size()
       );
       spatialIndex.removeAll(spatialIndicesToRemove);
-      metricsService.registerSpatialIndexEntryRemoved(
-        feedProvider,
-        MetricsService.ENTITY_STATION,
-        spatialIndicesToRemove.size()
-      );
     }
 
     if (!stationIdsToRemove.isEmpty()) {
       logger.debug("Removing {} stations from station cache", stationIdsToRemove.size());
       stationCache.removeAll(stationIdsToRemove);
-      metricsService.registerEntitiesRemoved(
-        feedProvider,
-        MetricsService.ENTITY_STATION,
-        stationIdsToRemove.size()
-      );
     }
 
     if (!stations.isEmpty()) {
@@ -231,30 +221,45 @@ public class StationsUpdater {
         CacheUtil.getTtl(lastUpdated, ttl, 300),
         TimeUnit.SECONDS
       );
-      metricsService.registerEntitiesUpdated(
-        feedProvider,
-        MetricsService.ENTITY_STATION,
-        stations.size()
-      );
     }
 
     if (!spatialIndexUpdateMap.isEmpty()) {
       logger.debug("Updating {} entries in spatial index", spatialIndexUpdateMap.size());
       spatialIndex.addAll(spatialIndexUpdateMap);
-      metricsService.registerSpatialIndexEntryUpdated(
-        feedProvider,
-        MetricsService.ENTITY_STATION,
-        spatialIndexUpdateMap.size()
-      );
     }
 
     metricsService.registerEntityCount(
       MetricsService.ENTITY_STATION,
       stationCache.count()
     );
+
+    metricsService.registerEntitiesUpdated(
+      feedProvider,
+      MetricsService.ENTITY_STATION,
+      stations.size()
+    );
+
+    metricsService.registerEntitiesRemoved(
+      feedProvider,
+      MetricsService.ENTITY_STATION,
+      stationIdsToRemove.size()
+    );
+
     metricsService.registerSpatialIndexEntryCount(
       MetricsService.ENTITY_STATION,
       spatialIndex.count()
+    );
+
+    metricsService.registerSpatialIndexEntryUpdated(
+      feedProvider,
+      MetricsService.ENTITY_STATION,
+      spatialIndexUpdateMap.size()
+    );
+
+    metricsService.registerSpatialIndexEntryRemoved(
+      feedProvider,
+      MetricsService.ENTITY_STATION,
+      spatialIndicesToRemove.size()
     );
   }
 
