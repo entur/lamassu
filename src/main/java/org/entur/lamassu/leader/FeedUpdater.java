@@ -164,7 +164,9 @@ public class FeedUpdater {
 
     var mappedDelivery = gbfsDeliveryMapper.mapGbfsDelivery(delivery, feedProvider);
     var oldDelivery = feedCachesUpdater.updateFeedCaches(feedProvider, mappedDelivery);
-    entityCachesUpdater.updateEntityCaches(feedProvider, mappedDelivery, oldDelivery);
+    if (Boolean.TRUE.equals(feedProvider.getAggregate())) {
+      entityCachesUpdater.updateEntityCaches(feedProvider, mappedDelivery, oldDelivery);
+    }
     cacheReady.set(true);
   }
 
