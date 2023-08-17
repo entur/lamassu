@@ -38,6 +38,7 @@ import org.entur.lamassu.mapper.entitymapper.PricingPlanMapper;
 import org.entur.lamassu.mapper.entitymapper.SystemMapper;
 import org.entur.lamassu.mapper.entitymapper.VehicleMapper;
 import org.entur.lamassu.mapper.entitymapper.VehicleTypeMapper;
+import org.entur.lamassu.metrics.MetricsService;
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.entities.VehicleType;
@@ -60,6 +61,8 @@ public class VehiclesUpdater {
   private final VehicleMapper vehicleMapper;
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+  private final MetricsService metricsService;
+
   @Autowired
   public VehiclesUpdater(
     VehicleCache vehicleCache,
@@ -67,7 +70,8 @@ public class VehiclesUpdater {
     VehicleMapper vehicleMapper,
     SystemMapper systemMapper,
     PricingPlanMapper pricingPlanMapper,
-    VehicleTypeMapper vehicleTypeMapper
+    VehicleTypeMapper vehicleTypeMapper,
+    MetricsService metricsService
   ) {
     this.vehicleCache = vehicleCache;
     this.spatialIndex = spatialIndex;
@@ -75,6 +79,7 @@ public class VehiclesUpdater {
     this.systemMapper = systemMapper;
     this.pricingPlanMapper = pricingPlanMapper;
     this.vehicleTypeMapper = vehicleTypeMapper;
+    this.metricsService = metricsService;
   }
 
   public void addOrUpdateVehicles(
@@ -211,11 +216,21 @@ public class VehiclesUpdater {
         spatialIndicesToRemove.size()
       );
       spatialIndex.removeAll(spatialIndicesToRemove);
+      metricsService.registerSpatialIndexEntryRemoved(
+        feedProvider,
+        MetricsService.ENTITY_VEHICLE,
+        spatialIndicesToRemove.size()
+      );
     }
 
     if (!vehicleIdsToRemove.isEmpty()) {
       logger.debug("Removing {} vehicles from vehicle cache", vehicleIdsToRemove.size());
       vehicleCache.removeAll(new HashSet<>(vehicleIdsToRemove));
+      metricsService.registerEntitiesRemoved(
+        feedProvider,
+        MetricsService.ENTITY_VEHICLE,
+        vehicleIdsToRemove.size()
+      );
     }
 
     if (!vehicles.isEmpty()) {
@@ -227,12 +242,31 @@ public class VehiclesUpdater {
         CacheUtil.getTtl(lastUpdated, ttl, 300),
         TimeUnit.SECONDS
       );
+      metricsService.registerEntitiesUpdated(
+        feedProvider,
+        MetricsService.ENTITY_VEHICLE,
+        vehicles.size()
+      );
     }
 
     if (!spatialIndexUpdateMap.isEmpty()) {
       logger.debug("Updating {} entries in spatial index", spatialIndexUpdateMap.size());
       spatialIndex.addAll(spatialIndexUpdateMap);
+      metricsService.registerSpatialIndexEntryUpdated(
+        feedProvider,
+        MetricsService.ENTITY_VEHICLE,
+        spatialIndexUpdateMap.size()
+      );
     }
+
+    metricsService.registerEntityCount(
+      MetricsService.ENTITY_VEHICLE,
+      vehicleCache.count()
+    );
+    metricsService.registerSpatialIndexEntryCount(
+      MetricsService.ENTITY_VEHICLE,
+      spatialIndex.count()
+    );
   }
 
   private Map<String, VehicleType> getVehicleTypes(

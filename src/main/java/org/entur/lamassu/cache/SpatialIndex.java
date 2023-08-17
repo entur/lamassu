@@ -37,4 +37,6 @@ public interface SpatialIndex<S extends SpatialIndexId, T extends LocationEntity
     GeoOrder geoOrder
   );
   Collection<S> getAll();
+
+  int count();
 }

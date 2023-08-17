@@ -40,6 +40,7 @@ import org.entur.lamassu.cache.StationSpatialIndexId;
 import org.entur.lamassu.mapper.entitymapper.PricingPlanMapper;
 import org.entur.lamassu.mapper.entitymapper.StationMapper;
 import org.entur.lamassu.mapper.entitymapper.SystemMapper;
+import org.entur.lamassu.metrics.MetricsService;
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.provider.FeedProvider;
@@ -48,7 +49,6 @@ import org.entur.lamassu.util.SpatialIndexIdUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -61,19 +61,23 @@ public class StationsUpdater {
   private final StationMapper stationMapper;
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+  private final MetricsService metricsService;
+
   @Autowired
   public StationsUpdater(
     StationCache stationCache,
     StationSpatialIndex spatialIndex,
     SystemMapper systemMapper,
     PricingPlanMapper pricingPlanMapper,
-    StationMapper stationMapper
+    StationMapper stationMapper,
+    MetricsService metricsService
   ) {
     this.stationCache = stationCache;
     this.spatialIndex = spatialIndex;
     this.systemMapper = systemMapper;
     this.pricingPlanMapper = pricingPlanMapper;
     this.stationMapper = stationMapper;
+    this.metricsService = metricsService;
   }
 
   public void addOrUpdateStations(
@@ -201,11 +205,21 @@ public class StationsUpdater {
         spatialIndicesToRemove.size()
       );
       spatialIndex.removeAll(spatialIndicesToRemove);
+      metricsService.registerSpatialIndexEntryRemoved(
+        feedProvider,
+        MetricsService.ENTITY_STATION,
+        spatialIndicesToRemove.size()
+      );
     }
 
     if (!stationIdsToRemove.isEmpty()) {
       logger.debug("Removing {} stations from station cache", stationIdsToRemove.size());
       stationCache.removeAll(stationIdsToRemove);
+      metricsService.registerEntitiesRemoved(
+        feedProvider,
+        MetricsService.ENTITY_STATION,
+        stationIdsToRemove.size()
+      );
     }
 
     if (!stations.isEmpty()) {
@@ -217,12 +231,31 @@ public class StationsUpdater {
         CacheUtil.getTtl(lastUpdated, ttl, 300),
         TimeUnit.SECONDS
       );
+      metricsService.registerEntitiesUpdated(
+        feedProvider,
+        MetricsService.ENTITY_STATION,
+        stations.size()
+      );
     }
 
     if (!spatialIndexUpdateMap.isEmpty()) {
       logger.debug("Updating {} entries in spatial index", spatialIndexUpdateMap.size());
       spatialIndex.addAll(spatialIndexUpdateMap);
+      metricsService.registerSpatialIndexEntryUpdated(
+        feedProvider,
+        MetricsService.ENTITY_STATION,
+        spatialIndexUpdateMap.size()
+      );
     }
+
+    metricsService.registerEntityCount(
+      MetricsService.ENTITY_STATION,
+      stationCache.count()
+    );
+    metricsService.registerSpatialIndexEntryCount(
+      MetricsService.ENTITY_STATION,
+      spatialIndex.count()
+    );
   }
 
   private List<PricingPlan> getPricingPlans(
