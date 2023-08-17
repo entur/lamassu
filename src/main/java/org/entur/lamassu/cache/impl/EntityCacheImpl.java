@@ -82,4 +82,8 @@ abstract class EntityCacheImpl<T extends Entity> implements EntityCache<T> {
     }
     return false;
   }
+
+  public int count() {
+    return cache.size();
+  }
 }

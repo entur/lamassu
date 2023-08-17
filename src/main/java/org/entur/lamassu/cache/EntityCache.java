@@ -14,4 +14,6 @@ public interface EntityCache<T extends Entity> {
   void updateAll(Map<String, T> entities, int ttl, TimeUnit timeUnit);
   void removeAll(Set<String> keys);
   boolean hasKey(String key);
+
+  int count();
 }

@@ -37,8 +37,13 @@ public class MetricsService {
   public static final String LABEL_SYSTEM = "system";
   public static final String LABEL_VERSION = "version";
   public static final String LABEL_FILE = "file";
+
   public static final String SUBSCRIPTION_FAILEDSETUP =
     "app.lamassu.gbfs.subscription.failedsetup";
+  public static final String LABEL_ENTITY = "entity";
+
+  public static final String ENTITY_VEHICLE = "vehicle";
+  public static final String ENTITY_STATION = "station";
 
   private final MeterRegistry meterRegistry;
 
@@ -94,5 +99,81 @@ public class MetricsService {
           );
         }
       });
+  }
+
+  public void registerEntitiesUpdated(
+    FeedProvider feedProvider,
+    String entity,
+    int entityCount
+  ) {
+    meterRegistry.gauge(
+      "app.lamassu.entity.updated",
+      List.of(
+        Tag.of(LABEL_SYSTEM, feedProvider.getSystemId()),
+        Tag.of(LABEL_ENTITY, entity)
+      ),
+      entityCount
+    );
+  }
+
+  public void registerEntitiesRemoved(
+    FeedProvider feedProvider,
+    String entity,
+    int entityCount
+  ) {
+    meterRegistry.gauge(
+      "app.lamassu.entity.removed",
+      List.of(
+        Tag.of(LABEL_SYSTEM, feedProvider.getSystemId()),
+        Tag.of(LABEL_ENTITY, entity)
+      ),
+      entityCount
+    );
+  }
+
+  public void registerEntityCount(String entity, int entityCount) {
+    meterRegistry.gauge(
+      "app.lamassu.entity.count",
+      List.of(Tag.of(LABEL_ENTITY, entity)),
+      entityCount
+    );
+  }
+
+  public void registerSpatialIndexEntryUpdated(
+    FeedProvider feedProvider,
+    String entity,
+    int entryCount
+  ) {
+    meterRegistry.gauge(
+      "app.lamassu.spatialindex.updated",
+      List.of(
+        Tag.of(LABEL_SYSTEM, feedProvider.getSystemId()),
+        Tag.of(LABEL_ENTITY, entity)
+      ),
+      entryCount
+    );
+  }
+
+  public void registerSpatialIndexEntryRemoved(
+    FeedProvider feedProvider,
+    String entity,
+    int entryCount
+  ) {
+    meterRegistry.gauge(
+      "app.lamassu.spatialindex.removed",
+      List.of(
+        Tag.of(LABEL_SYSTEM, feedProvider.getSystemId()),
+        Tag.of(LABEL_ENTITY, entity)
+      ),
+      entryCount
+    );
+  }
+
+  public void registerSpatialIndexEntryCount(String entity, int entryCount) {
+    meterRegistry.gauge(
+      "app.lamassu.vehiclespatialindex.count",
+      List.of(Tag.of(LABEL_ENTITY, entity)),
+      entryCount
+    );
   }
 }

@@ -97,4 +97,8 @@ public abstract class SpatialIndexImpl<S extends SpatialIndexId, T extends Locat
   public Collection<S> getAll() {
     return spatialIndex.readAll();
   }
+
+  public int count() {
+    return spatialIndex.size();
+  }
 }
