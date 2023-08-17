@@ -4,8 +4,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.service.GeoSearchService;
 import org.redisson.api.RFuture;
+import org.redisson.api.RMapCache;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +25,7 @@ public class AdminController {
 
   private final RedissonClient redissonClient;
   private final GeoSearchService geoSearchService;
+  RMapCache<String, Vehicle> vehicleCache;
 
   @Value("${org.entur.lamassu.serializationVersion}")
   private String serializationVersion;
@@ -30,10 +33,12 @@ public class AdminController {
   @Autowired
   public AdminController(
     RedissonClient redissonClient,
-    GeoSearchService geoSearchService
+    GeoSearchService geoSearchService,
+    RMapCache<String, Vehicle> vehicleCache
   ) {
     this.redissonClient = redissonClient;
     this.geoSearchService = geoSearchService;
+    this.vehicleCache = vehicleCache;
   }
 
   @GetMapping("/cache_keys")
@@ -41,6 +46,13 @@ public class AdminController {
     return StreamSupport
       .stream(redissonClient.getKeys().getKeys().spliterator(), false)
       .collect(Collectors.toList());
+  }
+
+  @PostMapping("/clear_vehicle_cache")
+  public Integer clearVehicleCache() {
+    var keys = vehicleCache.keySet();
+    keys.forEach(key -> vehicleCache.remove(key));
+    return keys.size();
   }
 
   @GetMapping("/vehicle_orphans")
