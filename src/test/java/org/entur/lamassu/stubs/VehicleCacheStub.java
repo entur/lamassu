@@ -64,4 +64,9 @@ public class VehicleCacheStub implements VehicleCache {
   public boolean hasKey(String key) {
     return map.containsKey(key);
   }
+
+  @Override
+  public int count() {
+    return 0;
+  }
 }
