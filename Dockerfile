@@ -17,7 +17,8 @@ RUN --mount=type=bind,source=pom.xml,target=pom.xml \
     --mount=type=bind,source=.mvn,target=.mvn \
     --mount=type=bind,source=mvnw,target=mvnw \
     --mount=type=cache,target=/root/.m2/ \
-    ./mvnw install -DskipTests
+    env CI=true \
+    ./mvnw install -DskipTests -Dprettier.skip
 
 FROM eclipse-temurin:17.0.8_7-jdk-alpine
 
