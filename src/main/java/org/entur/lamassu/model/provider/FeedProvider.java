@@ -34,6 +34,7 @@ public class FeedProvider {
   private Authentication authentication;
 
   private List<GBFSFeedName> excludeFeeds;
+  private Boolean aggregate = true;
   private List<GBFSVehicleType> vehicleTypes;
   private List<GBFSPlan> pricingPlans;
 
@@ -117,6 +118,14 @@ public class FeedProvider {
     this.excludeFeeds = excludeFeeds;
   }
 
+  public Boolean getAggregate() {
+    return aggregate;
+  }
+
+  public void setAggregate(Boolean aggregate) {
+    this.aggregate = aggregate;
+  }
+
   @Override
   public String toString() {
     return (
@@ -143,6 +152,8 @@ public class FeedProvider {
       authentication +
       ", excludeFeeds=" +
       excludeFeeds +
+      ", aggregate=" +
+      aggregate +
       ", vehicleTypes=" +
       vehicleTypes +
       ", pricingPlans=" +
