@@ -232,35 +232,6 @@ public class StationsUpdater {
       MetricsService.ENTITY_STATION,
       stationCache.count()
     );
-
-    metricsService.registerEntitiesUpdated(
-      feedProvider,
-      MetricsService.ENTITY_STATION,
-      stations.size()
-    );
-
-    metricsService.registerEntitiesRemoved(
-      feedProvider,
-      MetricsService.ENTITY_STATION,
-      stationIdsToRemove.size()
-    );
-
-    metricsService.registerSpatialIndexEntryCount(
-      MetricsService.ENTITY_STATION,
-      spatialIndex.count()
-    );
-
-    metricsService.registerSpatialIndexEntryUpdated(
-      feedProvider,
-      MetricsService.ENTITY_STATION,
-      spatialIndexUpdateMap.size()
-    );
-
-    metricsService.registerSpatialIndexEntryRemoved(
-      feedProvider,
-      MetricsService.ENTITY_STATION,
-      spatialIndicesToRemove.size()
-    );
   }
 
   private List<PricingPlan> getPricingPlans(

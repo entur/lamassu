@@ -18,11 +18,15 @@
 
 package org.entur.lamassu.metrics;
 
+import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.entur.gbfs.validation.model.ValidationResult;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -47,8 +51,35 @@ public class MetricsService {
 
   private final MeterRegistry meterRegistry;
 
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+  private final AtomicInteger vehicleEntityCount = new AtomicInteger();
+  private final Gauge vehicleEntityCountGauge;
+  private final AtomicInteger stationEntityCount = new AtomicInteger();
+  private final Gauge stationEntityCountGauge;
+
   public MetricsService(MeterRegistry meterRegistry) {
     this.meterRegistry = meterRegistry;
+    vehicleEntityCountGauge =
+      Gauge
+        .builder(
+          "app.lamassu.entity.count",
+          vehicleEntityCount,
+          AtomicInteger::doubleValue
+        )
+        .strongReference(true)
+        .tags(List.of(Tag.of(LABEL_ENTITY, ENTITY_VEHICLE)))
+        .register(meterRegistry);
+    stationEntityCountGauge =
+      Gauge
+        .builder(
+          "app.lamassu.entity.count",
+          stationEntityCount,
+          AtomicInteger::doubleValue
+        )
+        .strongReference(true)
+        .tags(List.of(Tag.of(LABEL_ENTITY, ENTITY_STATION)))
+        .register(meterRegistry);
   }
 
   public void registerSubscriptionSetup(FeedProvider feedProvider, boolean success) {
@@ -101,79 +132,13 @@ public class MetricsService {
       });
   }
 
-  public void registerEntitiesUpdated(
-    FeedProvider feedProvider,
-    String entity,
-    int entityCount
-  ) {
-    meterRegistry.gauge(
-      "app.lamassu.entity.updated",
-      List.of(
-        Tag.of(LABEL_SYSTEM, feedProvider.getSystemId()),
-        Tag.of(LABEL_ENTITY, entity)
-      ),
-      entityCount
-    );
-  }
-
-  public void registerEntitiesRemoved(
-    FeedProvider feedProvider,
-    String entity,
-    int entityCount
-  ) {
-    meterRegistry.gauge(
-      "app.lamassu.entity.removed",
-      List.of(
-        Tag.of(LABEL_SYSTEM, feedProvider.getSystemId()),
-        Tag.of(LABEL_ENTITY, entity)
-      ),
-      entityCount
-    );
-  }
-
   public void registerEntityCount(String entity, int entityCount) {
-    meterRegistry.gauge(
-      "app.lamassu.entity.count",
-      List.of(Tag.of(LABEL_ENTITY, entity)),
-      entityCount
-    );
-  }
-
-  public void registerSpatialIndexEntryUpdated(
-    FeedProvider feedProvider,
-    String entity,
-    int entryCount
-  ) {
-    meterRegistry.gauge(
-      "app.lamassu.spatialindex.updated",
-      List.of(
-        Tag.of(LABEL_SYSTEM, feedProvider.getSystemId()),
-        Tag.of(LABEL_ENTITY, entity)
-      ),
-      entryCount
-    );
-  }
-
-  public void registerSpatialIndexEntryRemoved(
-    FeedProvider feedProvider,
-    String entity,
-    int entryCount
-  ) {
-    meterRegistry.gauge(
-      "app.lamassu.spatialindex.removed",
-      List.of(
-        Tag.of(LABEL_SYSTEM, feedProvider.getSystemId()),
-        Tag.of(LABEL_ENTITY, entity)
-      ),
-      entryCount
-    );
-  }
-
-  public void registerSpatialIndexEntryCount(String entity, int entryCount) {
-    meterRegistry.gauge(
-      "app.lamassu.vehiclespatialindex.count",
-      List.of(Tag.of(LABEL_ENTITY, entity)),
-      entryCount
-    );
+    if (entity.equals(ENTITY_STATION)) {
+      this.stationEntityCount.set(entityCount);
+    } else if (entity.equals(ENTITY_VEHICLE)) {
+      this.vehicleEntityCount.set(entityCount);
+    } else {
+      logger.warn("entity unknown entity={}", entity);
+    }
   }
 }

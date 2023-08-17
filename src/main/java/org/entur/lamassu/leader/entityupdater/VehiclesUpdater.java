@@ -239,38 +239,9 @@ public class VehiclesUpdater {
       spatialIndex.addAll(spatialIndexUpdateMap);
     }
 
-    metricsService.registerSpatialIndexEntryCount(
-      MetricsService.ENTITY_VEHICLE,
-      spatialIndex.count()
-    );
-
-    metricsService.registerSpatialIndexEntryRemoved(
-      feedProvider,
-      MetricsService.ENTITY_VEHICLE,
-      spatialIndicesToRemove.size()
-    );
-
-    metricsService.registerSpatialIndexEntryUpdated(
-      feedProvider,
-      MetricsService.ENTITY_VEHICLE,
-      spatialIndexUpdateMap.size()
-    );
-
     metricsService.registerEntityCount(
       MetricsService.ENTITY_VEHICLE,
       vehicleCache.count()
-    );
-
-    metricsService.registerEntitiesRemoved(
-      feedProvider,
-      MetricsService.ENTITY_VEHICLE,
-      vehicleIdsToRemove.size()
-    );
-
-    metricsService.registerEntitiesUpdated(
-      feedProvider,
-      MetricsService.ENTITY_VEHICLE,
-      vehicles.size()
     );
   }
 
