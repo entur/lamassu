@@ -216,21 +216,11 @@ public class VehiclesUpdater {
         spatialIndicesToRemove.size()
       );
       spatialIndex.removeAll(spatialIndicesToRemove);
-      metricsService.registerSpatialIndexEntryRemoved(
-        feedProvider,
-        MetricsService.ENTITY_VEHICLE,
-        spatialIndicesToRemove.size()
-      );
     }
 
     if (!vehicleIdsToRemove.isEmpty()) {
       logger.debug("Removing {} vehicles from vehicle cache", vehicleIdsToRemove.size());
       vehicleCache.removeAll(new HashSet<>(vehicleIdsToRemove));
-      metricsService.registerEntitiesRemoved(
-        feedProvider,
-        MetricsService.ENTITY_VEHICLE,
-        vehicleIdsToRemove.size()
-      );
     }
 
     if (!vehicles.isEmpty()) {
@@ -242,30 +232,45 @@ public class VehiclesUpdater {
         CacheUtil.getTtl(lastUpdated, ttl, 300),
         TimeUnit.SECONDS
       );
-      metricsService.registerEntitiesUpdated(
-        feedProvider,
-        MetricsService.ENTITY_VEHICLE,
-        vehicles.size()
-      );
     }
 
     if (!spatialIndexUpdateMap.isEmpty()) {
       logger.debug("Updating {} entries in spatial index", spatialIndexUpdateMap.size());
       spatialIndex.addAll(spatialIndexUpdateMap);
-      metricsService.registerSpatialIndexEntryUpdated(
-        feedProvider,
-        MetricsService.ENTITY_VEHICLE,
-        spatialIndexUpdateMap.size()
-      );
     }
+
+    metricsService.registerSpatialIndexEntryCount(
+      MetricsService.ENTITY_VEHICLE,
+      spatialIndex.count()
+    );
+
+    metricsService.registerSpatialIndexEntryRemoved(
+      feedProvider,
+      MetricsService.ENTITY_VEHICLE,
+      spatialIndicesToRemove.size()
+    );
+
+    metricsService.registerSpatialIndexEntryUpdated(
+      feedProvider,
+      MetricsService.ENTITY_VEHICLE,
+      spatialIndexUpdateMap.size()
+    );
 
     metricsService.registerEntityCount(
       MetricsService.ENTITY_VEHICLE,
       vehicleCache.count()
     );
-    metricsService.registerSpatialIndexEntryCount(
+
+    metricsService.registerEntitiesRemoved(
+      feedProvider,
       MetricsService.ENTITY_VEHICLE,
-      spatialIndex.count()
+      vehicleIdsToRemove.size()
+    );
+
+    metricsService.registerEntitiesUpdated(
+      feedProvider,
+      MetricsService.ENTITY_VEHICLE,
+      vehicles.size()
     );
   }
 
