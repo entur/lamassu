@@ -28,4 +28,8 @@ public class CacheUtil {
     var now = (int) Instant.now().getEpochSecond();
     return Math.max(lastUpdated + ttl - now, minimumTtl);
   }
+
+  public static int getTtl(int lastUpdated, int ttl, int minimumTtl, int maximumTtl) {
+    return Math.min(getTtl(lastUpdated, ttl, minimumTtl), maximumTtl);
+  }
 }

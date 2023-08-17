@@ -48,6 +48,7 @@ import org.entur.lamassu.util.SpatialIndexIdUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -60,8 +61,13 @@ public class VehiclesUpdater {
   private final VehicleTypeMapper vehicleTypeMapper;
   private final VehicleMapper vehicleMapper;
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
   private final MetricsService metricsService;
+
+  @Value("${org.entur.lamassu.vehicleEntityCacheMinimumTtl:30}")
+  private Integer vehicleEntityCacheMinimumTtl;
+
+  @Value("${org.entur.lamassu.vehicleEntityCacheMaximumTtl:300}")
+  private Integer vehicleEntityCacheMaximumTtl;
 
   @Autowired
   public VehiclesUpdater(
@@ -229,7 +235,12 @@ public class VehiclesUpdater {
       var ttl = freeBikeStatusFeed.getTtl();
       vehicleCache.updateAll(
         vehicles,
-        CacheUtil.getTtl(lastUpdated, ttl, 300),
+        CacheUtil.getTtl(
+          lastUpdated,
+          ttl,
+          vehicleEntityCacheMinimumTtl,
+          vehicleEntityCacheMaximumTtl
+        ),
         TimeUnit.SECONDS
       );
     }
