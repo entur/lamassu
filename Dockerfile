@@ -1,5 +1,3 @@
-# syntax=docker/dockerfile:experimental
-
 FROM eclipse-temurin:17.0.8_7-jdk-alpine as builder
 
 # Cache-mount /root/.m2 to speed up subsequent builds.
