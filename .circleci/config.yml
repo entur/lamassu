@@ -28,7 +28,7 @@ aliases:
       echo 'export CIRCLE_PROJECT_REPONAME="$CIRCLE_PROJECT_REPONAME"' >> $BASH_ENV
        .circleci/trigger_build_v2.sh "entur/lamassu-deployment-config.git" "master" "$(git log -1 --pretty=%B)"
   - &docker-build
-    name: Docker build and push
+    name: Docker build
     command: |
       docker build .
 
@@ -116,7 +116,7 @@ jobs:
           password: $DOCKERHUB_PASSWORD
     steps:
       - setup_remote_docker:
-          version: 19.03.13
+          version: 20.10.24
       - checkout
       - run: *docker-build
 
