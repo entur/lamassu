@@ -30,6 +30,7 @@
 
         <prettier-java.version>2.1.0</prettier-java.version>
         <prettier-maven-plugin.version>0.20</prettier-maven-plugin.version>
+        <plugin.prettier.goal>write</plugin.prettier.goal>
     </properties>
 
     <distributionManagement>
@@ -266,6 +267,21 @@
                 <!-- But in our CI environment we want to validate that code is formatted -->
                 <plugin.prettier.goal>check</plugin.prettier.goal>
             </properties>
+        </profile>
+        <profile>
+            <id>prettierSkip</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.hubspot.maven.plugins</groupId>
+                        <artifactId>prettier-maven-plugin</artifactId>
+                        <version>${prettier-maven-plugin.version}</version>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 </project>

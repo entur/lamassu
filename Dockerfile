@@ -1,5 +1,4 @@
-FROM eclipse-temurin:17.0.8_7-jdk-alpine as build
-WORKDIR /app
+FROM eclipse-temurin:17.0.8_7-jdk-alpine as builder
 
 # Cache-mount /root/.m2 to speed up subsequent builds.
 # Bind-mount pom.xml, .mvn & mvnw to avoid having to copy it.
@@ -18,7 +17,7 @@ RUN --mount=type=bind,source=pom.xml,target=pom.xml \
     --mount=type=bind,source=mvnw,target=mvnw \
     --mount=type=cache,target=/root/.m2/ \
     env CI=true \
-    ./mvnw install -DskipTests -Dprettier.skip
+    ./mvnw install -DskipTests -P prettierSkip
 
 FROM eclipse-temurin:17.0.8_7-jdk-alpine
 
