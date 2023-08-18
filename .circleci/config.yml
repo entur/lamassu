@@ -30,7 +30,7 @@ aliases:
   - &docker-build
     name: Docker build
     command: |
-      docker build .
+      DOCKER_BUILDKIT=1 docker build .
 
 jobs:
   test:
