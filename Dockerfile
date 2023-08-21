@@ -19,7 +19,7 @@ RUN --mount=type=bind,source=pom.xml,target=pom.xml \
     env CI=true \
     ./mvnw install -DskipTests -P prettierSkip
 
-FROM eclipse-temurin:17.0.8_7-jdk-alpine
+FROM eclipse-temurin:17.0.8_7-jre-alpine
 
 RUN apk update && apk upgrade && apk add --no-cache \
     tini
