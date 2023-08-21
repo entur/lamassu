@@ -32,6 +32,9 @@ WORKDIR /home/appuser
 RUN chown -R appuser:appuser /home/appuser
 USER appuser
 
+EXPOSE 8080
+EXPOSE 9001
+
 # todo: don't hard-code lamassu's version here
 COPY --from=builder target/lamassu-0.0.1-SNAPSHOT.jar lamassu.jar
 
