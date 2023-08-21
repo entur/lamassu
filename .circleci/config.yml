@@ -27,6 +27,10 @@ aliases:
       echo 'export CIRCLE_SHA1="$CIRCLE_SHA1"' >> $BASH_ENV
       echo 'export CIRCLE_PROJECT_REPONAME="$CIRCLE_PROJECT_REPONAME"' >> $BASH_ENV
        .circleci/trigger_build_v2.sh "entur/lamassu-deployment-config.git" "master" "$(git log -1 --pretty=%B)"
+  - &docker-build
+    name: Docker build
+    command: |
+      DOCKER_BUILDKIT=1 docker build .
 
 jobs:
   test:
@@ -104,6 +108,17 @@ jobs:
       # Cannot use -o because of snapshot dependencies.
       - run: mvn deploy -s .circleci/settings.xml -DskipTests
       - run: *post_build
+  docker-build:
+    docker:
+      - image: cimg/openjdk:17.0.8
+        auth:
+          username: $DOCKERHUB_LOGIN
+          password: $DOCKERHUB_PASSWORD
+    steps:
+      - setup_remote_docker:
+          version: 20.10.24
+      - checkout
+      - run: *docker-build
 
 workflows:
   version: 2.1
@@ -121,3 +136,6 @@ workflows:
                 - master
           requires:
             - test-release
+      - docker-build:
+            name: docker-build
+            context: global
