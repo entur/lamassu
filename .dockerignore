@@ -1,8 +1,13 @@
 /.git
 
+/Dockerfile
+
 /target
 # !**/src/main/**/target/
 # !**/src/test/**/target/
+
+/.circleci
+/.github
 
 ### STS ###
 .apt_generated
