@@ -21,6 +21,8 @@ package org.entur.lamassu.util;
 import static org.mockito.Mockito.mockStatic;
 
 import java.time.Instant;
+import org.entur.gbfs.v2_3.gbfs.GBFS;
+import org.entur.gbfs.v2_3.gbfs.GBFSFeedName;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -65,5 +67,27 @@ class CacheUtilTest {
   @Test
   void getTtlReturnsCalculatedTtlWhenLargerThanMinimumTtl() {
     Assertions.assertEquals(20, CacheUtil.getTtl(now - 10, 30, 10));
+  }
+
+  @Test
+  void getMaxAgeWorks() {
+    Assertions.assertEquals(
+      60,
+      CacheUtil.getMaxAge(
+        GBFSFeedName.GBFS,
+        new GBFS().withLastUpdated(1640000000 - 60).withTtl(120)
+      )
+    );
+  }
+
+  @Test
+  void getMaxAgeReturnsZeroWhenCalculatedTtlIsInThePast() {
+    Assertions.assertEquals(
+      0,
+      CacheUtil.getMaxAge(
+        GBFSFeedName.GBFS,
+        new GBFS().withLastUpdated(1540000000).withTtl(60)
+      )
+    );
   }
 }

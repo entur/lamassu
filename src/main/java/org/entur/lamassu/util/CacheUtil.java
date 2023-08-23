@@ -18,7 +18,9 @@
 
 package org.entur.lamassu.util;
 
+import java.lang.reflect.InvocationTargetException;
 import java.time.Instant;
+import org.entur.gbfs.v2_3.gbfs.GBFSFeedName;
 
 public class CacheUtil {
 
@@ -31,5 +33,52 @@ public class CacheUtil {
 
   public static int getTtl(int lastUpdated, int ttl, int minimumTtl, int maximumTtl) {
     return Math.min(getTtl(lastUpdated, ttl, minimumTtl), maximumTtl);
+  }
+
+  public static int getMaxAge(GBFSFeedName feedName, Object data) {
+    int maxAge = 60;
+    try {
+      Integer lastUpdated = (Integer) feedName
+        .implementingClass()
+        .getMethod("getLastUpdated")
+        .invoke(data);
+      Integer ttl = (Integer) feedName
+        .implementingClass()
+        .getMethod("getTtl")
+        .invoke(data);
+
+      maxAge = getTtl(lastUpdated, ttl, 0);
+    } catch (
+      IllegalAccessException | InvocationTargetException | NoSuchMethodException e
+    ) {
+      // log something?
+    }
+
+    return maxAge;
+  }
+
+  public static int getMaxAge(
+    org.entur.gbfs.v3_0_RC.gbfs.GBFSFeed.Name feedName,
+    Object data
+  ) {
+    int maxAge = 60;
+    try {
+      Integer lastUpdated = (Integer) org.entur.gbfs.v3_0_RC.gbfs.GBFSFeedName
+        .implementingClass(feedName)
+        .getMethod("getLastUpdated")
+        .invoke(data);
+      Integer ttl = (Integer) org.entur.gbfs.v3_0_RC.gbfs.GBFSFeedName
+        .implementingClass(feedName)
+        .getMethod("getTtl")
+        .invoke(data);
+
+      maxAge = getTtl(lastUpdated, ttl, 0);
+    } catch (
+      IllegalAccessException | InvocationTargetException | NoSuchMethodException e
+    ) {
+      // log something?
+    }
+
+    return maxAge;
   }
 }

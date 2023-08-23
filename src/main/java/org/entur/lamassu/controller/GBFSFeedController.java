@@ -1,6 +1,5 @@
 package org.entur.lamassu.controller;
 
-import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -12,7 +11,6 @@ import org.entur.gbfs.v2_3.gbfs.GBFS;
 import org.entur.gbfs.v2_3.gbfs.GBFSFeed;
 import org.entur.gbfs.v2_3.gbfs.GBFSFeedName;
 import org.entur.gbfs.v2_3.gbfs.GBFSFeeds;
-import org.entur.gbfs.v2_3.gbfs.GBFSGbfs;
 import org.entur.gbfs.v2_3.geofencing_zones.GBFSGeofencingZones;
 import org.entur.gbfs.v2_3.station_information.GBFSStationInformation;
 import org.entur.gbfs.v2_3.station_status.GBFSStationStatus;
@@ -31,6 +29,7 @@ import org.entur.lamassu.model.discovery.SystemDiscovery;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.service.FeedProviderService;
 import org.entur.lamassu.service.SystemDiscoveryService;
+import org.entur.lamassu.util.CacheUtil;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -115,7 +114,9 @@ public class GBFSFeedController {
       return ResponseEntity
         .ok()
         .cacheControl(
-          CacheControl.maxAge(getMaxAge(feedName, data), TimeUnit.SECONDS).cachePublic()
+          CacheControl
+            .maxAge(CacheUtil.getMaxAge(feedName, data), TimeUnit.SECONDS)
+            .cachePublic()
         )
         .body(data);
     } catch (IllegalArgumentException e) {
@@ -145,7 +146,9 @@ public class GBFSFeedController {
       return ResponseEntity
         .ok()
         .cacheControl(
-          CacheControl.maxAge(getMaxAge(feedName, data), TimeUnit.SECONDS).cachePublic()
+          CacheControl
+            .maxAge(CacheUtil.getMaxAge(feedName, data), TimeUnit.SECONDS)
+            .cachePublic()
         )
         .body(data);
     } catch (IllegalArgumentException e) {
@@ -266,7 +269,9 @@ public class GBFSFeedController {
       return ResponseEntity
         .ok()
         .cacheControl(
-          CacheControl.maxAge(getMaxAge(feedName, mapped), TimeUnit.SECONDS).cachePublic()
+          CacheControl
+            .maxAge(CacheUtil.getMaxAge(feedName, mapped), TimeUnit.SECONDS)
+            .cachePublic()
         )
         .body(mapped);
     } catch (IllegalArgumentException e) {
@@ -274,58 +279,6 @@ public class GBFSFeedController {
     } catch (NoSuchElementException e) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
-  }
-
-  private int getMaxAge(GBFSFeedName feedName, Object data) {
-    int maxAge = 60;
-    try {
-      Integer lastUpdated = (Integer) feedName
-        .implementingClass()
-        .getMethod("getLastUpdated")
-        .invoke(data);
-      Integer ttl = (Integer) feedName
-        .implementingClass()
-        .getMethod("getTtl")
-        .invoke(data);
-
-      if (lastUpdated != null && ttl != null) {
-        maxAge = getCurrentTimeSeconds() - lastUpdated + ttl;
-      }
-    } catch (
-      IllegalAccessException | InvocationTargetException | NoSuchMethodException e
-    ) {
-      // log something?
-    }
-
-    return maxAge;
-  }
-
-  private int getMaxAge(org.entur.gbfs.v3_0_RC.gbfs.GBFSFeed.Name feedName, Object data) {
-    int maxAge = 60;
-    try {
-      Integer lastUpdated = (Integer) org.entur.gbfs.v3_0_RC.gbfs.GBFSFeedName
-        .implementingClass(feedName)
-        .getMethod("getLastUpdated")
-        .invoke(data);
-      Integer ttl = (Integer) org.entur.gbfs.v3_0_RC.gbfs.GBFSFeedName
-        .implementingClass(feedName)
-        .getMethod("getTtl")
-        .invoke(data);
-
-      if (lastUpdated != null && ttl != null) {
-        maxAge = getCurrentTimeSeconds() - lastUpdated + ttl;
-      }
-    } catch (
-      IllegalAccessException | InvocationTargetException | NoSuchMethodException e
-    ) {
-      // log something?
-    }
-
-    return maxAge;
-  }
-
-  private int getCurrentTimeSeconds() {
-    return (int) (java.lang.System.currentTimeMillis() / 1000L);
   }
 
   @NotNull
