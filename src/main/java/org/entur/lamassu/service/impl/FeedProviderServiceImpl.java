@@ -23,9 +23,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.mapper.entitymapper.TranslationMapper;
+import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.Operator;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.service.FeedProviderService;
+import org.entur.lamassu.util.OperatorFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -55,9 +57,10 @@ public class FeedProviderServiceImpl implements FeedProviderService {
   }
 
   @Override
-  public List<Operator> getOperators() {
+  public List<Operator> getOperators(OperatorFilter operatorFilter) {
     return getFeedProviders()
       .stream()
+      .filter(feedProvider -> operatorFilter.matches(feedProvider))
       .map(this::mapOperator)
       .distinct()
       .collect(Collectors.toList());
