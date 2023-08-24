@@ -35,7 +35,7 @@ aliases:
 jobs:
   test:
     docker:
-      - image: cimg/openjdk:17.0.8
+      - image: cimg/openjdk:17.0.8-node
         auth:
           username: $DOCKERHUB_LOGIN
           password: $DOCKERHUB_PASSWORD
@@ -61,7 +61,7 @@ jobs:
       # Cannot use -o because of snapshot dependencies.
       - run:
           name: Run Maven verify
-          command: mvn verify -s .circleci/settings.xml
+          command: mvn verify -s .circleci/settings.xml -Dprettier.nodePath=node -Dprettier.npmPath=npm
       - run: *sonar-scan
       - run:
           name: Save test results
@@ -82,7 +82,7 @@ jobs:
             - .circleci
   build:
     docker:
-      - image: cimg/openjdk:17.0.8
+      - image: cimg/openjdk:17.0.8-node
         auth:
           username: $DOCKERHUB_LOGIN
           password: $DOCKERHUB_PASSWORD
@@ -106,7 +106,7 @@ jobs:
             - ~/.m2
           key: dep-cache-v2-{{ checksum "pom.xml" }}
       # Cannot use -o because of snapshot dependencies.
-      - run: mvn deploy -s .circleci/settings.xml -DskipTests
+      - run: mvn deploy -s .circleci/settings.xml -P prettierSkip -DskipTests
       - run: *post_build
   docker-build:
     docker:
