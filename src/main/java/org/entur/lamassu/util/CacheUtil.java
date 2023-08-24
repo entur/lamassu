@@ -20,9 +20,12 @@ package org.entur.lamassu.util;
 
 import java.lang.reflect.InvocationTargetException;
 import java.time.Instant;
-import org.entur.gbfs.v2_3.gbfs.GBFSFeedName;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CacheUtil {
+
+  private static final Logger logger = LoggerFactory.getLogger(CacheUtil.class);
 
   private CacheUtil() {}
 
@@ -35,48 +38,20 @@ public class CacheUtil {
     return Math.min(getTtl(lastUpdated, ttl, minimumTtl), maximumTtl);
   }
 
-  public static int getMaxAge(GBFSFeedName feedName, Object data) {
+  public static int getMaxAge(Class<?> clazz, Object data) {
     int maxAge = 60;
     try {
-      Integer lastUpdated = (Integer) feedName
-        .implementingClass()
-        .getMethod("getLastUpdated")
-        .invoke(data);
-      Integer ttl = (Integer) feedName
-        .implementingClass()
-        .getMethod("getTtl")
-        .invoke(data);
+      Integer lastUpdated = (Integer) clazz.getMethod("getLastUpdated").invoke(data);
+      Integer ttl = (Integer) clazz.getMethod("getTtl").invoke(data);
 
       maxAge = getTtl(lastUpdated, ttl, 0);
     } catch (
-      IllegalAccessException | InvocationTargetException | NoSuchMethodException e
+      IllegalAccessException
+      | InvocationTargetException
+      | NoSuchMethodException
+      | NullPointerException e
     ) {
-      // log something?
-    }
-
-    return maxAge;
-  }
-
-  public static int getMaxAge(
-    org.entur.gbfs.v3_0_RC.gbfs.GBFSFeed.Name feedName,
-    Object data
-  ) {
-    int maxAge = 60;
-    try {
-      Integer lastUpdated = (Integer) org.entur.gbfs.v3_0_RC.gbfs.GBFSFeedName
-        .implementingClass(feedName)
-        .getMethod("getLastUpdated")
-        .invoke(data);
-      Integer ttl = (Integer) org.entur.gbfs.v3_0_RC.gbfs.GBFSFeedName
-        .implementingClass(feedName)
-        .getMethod("getTtl")
-        .invoke(data);
-
-      maxAge = getTtl(lastUpdated, ttl, 0);
-    } catch (
-      IllegalAccessException | InvocationTargetException | NoSuchMethodException e
-    ) {
-      // log something?
+      logger.warn("Unable to calculate maxAge", e);
     }
 
     return maxAge;

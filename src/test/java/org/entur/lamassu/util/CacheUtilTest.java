@@ -74,7 +74,7 @@ class CacheUtilTest {
     Assertions.assertEquals(
       60,
       CacheUtil.getMaxAge(
-        GBFSFeedName.GBFS,
+        GBFSFeedName.GBFS.implementingClass(),
         new GBFS().withLastUpdated(1640000000 - 60).withTtl(120)
       )
     );
@@ -85,9 +85,16 @@ class CacheUtilTest {
     Assertions.assertEquals(
       0,
       CacheUtil.getMaxAge(
-        GBFSFeedName.GBFS,
+        GBFSFeedName.GBFS.implementingClass(),
         new GBFS().withLastUpdated(1540000000).withTtl(60)
       )
+    );
+  }
+
+  @Test
+  void getMaxAgeDoesNotThrowWithNullLastUpdated() {
+    Assertions.assertDoesNotThrow(() ->
+      CacheUtil.getMaxAge(GBFSFeedName.GBFS.implementingClass(), new GBFS().withTtl(60))
     );
   }
 }

@@ -115,7 +115,10 @@ public class GBFSFeedController {
         .ok()
         .cacheControl(
           CacheControl
-            .maxAge(CacheUtil.getMaxAge(feedName, data), TimeUnit.SECONDS)
+            .maxAge(
+              CacheUtil.getMaxAge(feedName.implementingClass(), data),
+              TimeUnit.SECONDS
+            )
             .cachePublic()
         )
         .body(data);
@@ -147,7 +150,10 @@ public class GBFSFeedController {
         .ok()
         .cacheControl(
           CacheControl
-            .maxAge(CacheUtil.getMaxAge(feedName, data), TimeUnit.SECONDS)
+            .maxAge(
+              CacheUtil.getMaxAge(feedName.implementingClass(), data),
+              TimeUnit.SECONDS
+            )
             .cachePublic()
         )
         .body(data);
@@ -270,7 +276,13 @@ public class GBFSFeedController {
         .ok()
         .cacheControl(
           CacheControl
-            .maxAge(CacheUtil.getMaxAge(feedName, mapped), TimeUnit.SECONDS)
+            .maxAge(
+              CacheUtil.getMaxAge(
+                org.entur.gbfs.v3_0_RC.gbfs.GBFSFeedName.implementingClass(feedName),
+                mapped
+              ),
+              TimeUnit.SECONDS
+            )
             .cachePublic()
         )
         .body(mapped);
