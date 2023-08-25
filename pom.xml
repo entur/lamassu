@@ -26,7 +26,7 @@
         <gbfs-loader-java.version>2.0.5</gbfs-loader-java.version>
         <gbfs-validator-java.version>1.0.4</gbfs-validator-java.version>
         <gbfs-java-model.version>3.0.1</gbfs-java-model.version>
-        <netex-utils.version>1.43</netex-utils.version>
+        <netex-utils.version>1.44</netex-utils.version>
 
         <prettier-java.version>2.1.0</prettier-java.version>
         <prettier-maven-plugin.version>0.20</prettier-maven-plugin.version>
