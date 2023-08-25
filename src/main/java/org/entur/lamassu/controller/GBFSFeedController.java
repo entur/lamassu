@@ -121,6 +121,7 @@ public class GBFSFeedController {
             )
             .cachePublic()
         )
+        .lastModified(CacheUtil.getLastModified(feedName.implementingClass(), data))
         .body(data);
     } catch (IllegalArgumentException e) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -156,6 +157,7 @@ public class GBFSFeedController {
             )
             .cachePublic()
         )
+        .lastModified(CacheUtil.getLastModified(feedName.implementingClass(), data))
         .body(data);
     } catch (IllegalArgumentException e) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -284,6 +286,12 @@ public class GBFSFeedController {
               TimeUnit.SECONDS
             )
             .cachePublic()
+        )
+        .lastModified(
+          CacheUtil.getLastModified(
+            org.entur.gbfs.v3_0_RC.gbfs.GBFSFeedName.implementingClass(feedName),
+            data
+          )
         )
         .body(mapped);
     } catch (IllegalArgumentException e) {

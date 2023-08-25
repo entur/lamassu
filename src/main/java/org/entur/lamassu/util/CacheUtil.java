@@ -56,4 +56,19 @@ public class CacheUtil {
 
     return maxAge;
   }
+
+  public static long getLastModified(Class<?> clazz, Object data) {
+    try {
+      Integer lastUpdated = (Integer) clazz.getMethod("getLastUpdated").invoke(data);
+      return lastUpdated.longValue() * 1000L;
+    } catch (
+      IllegalAccessException
+      | InvocationTargetException
+      | NoSuchMethodException
+      | NullPointerException e
+    ) {
+      logger.warn("Unable to calculate lastModified", e);
+      return System.currentTimeMillis();
+    }
+  }
 }
