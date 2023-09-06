@@ -22,6 +22,36 @@ Every ID (except systemId, which (by GBFS convention) should already be globally
 At least every operator should be assigned its own unique codespace, assuming operators already maintain data / ID separation accross their feeds.
 The codespaced operatorId should comply with the following format `<codespace>:Operator:<operator>`.
 
+#### Configuring Authentication
+
+Some providers may require authentication, e.g. via bearer token, OAuth2 or custom http-headers.
+
+    lamassu:
+        providers:
+          - systemId: my_oauth2_secured_system
+            authentication:
+                scheme: oauth2ClientCredentialsGrant
+                properties:
+                    tokenUrl: "https://mytokenurl.example/"
+                    clientId: my-client-id
+                    clientPassword: my-client-password
+            ...
+           - systemId: my_bearer_secured_system
+            authentication:
+                scheme: bearerToken
+                properties:
+                    accessToken: my-access-token
+            ...
+          - systemId: my_http_headers_secured_system
+            authentication:
+                scheme: httpHeaders
+                properties:
+                    x-client-id: my-client-id 
+                    x-api-key: ${my-systemproperty-provided-secret-api-key}
+            ...
+
+Note: instead of providing credentials in the feedproviders.yml, you could also pass them via ENV variables/system properties.
+
 ### End-points
 
 #### `/gbfs`

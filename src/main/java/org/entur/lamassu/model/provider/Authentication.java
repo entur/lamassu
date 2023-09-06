@@ -21,6 +21,7 @@ package org.entur.lamassu.model.provider;
 import java.net.URI;
 import java.util.Map;
 import org.entur.gbfs.authentication.BearerTokenRequestAuthenticator;
+import org.entur.gbfs.authentication.HttpHeadersRequestAuthenticator;
 import org.entur.gbfs.authentication.Oauth2ClientCredentialsGrantRequestAuthenticator;
 import org.entur.gbfs.authentication.RequestAuthenticator;
 
@@ -38,6 +39,8 @@ public class Authentication {
       );
     } else if (scheme == AuthenticationScheme.BEARER_TOKEN) {
       return new BearerTokenRequestAuthenticator(properties.get("accessToken"));
+    } else if (scheme == AuthenticationScheme.HTTP_HEADERS) {
+      return new HttpHeadersRequestAuthenticator(properties);
     } else {
       return null;
     }
