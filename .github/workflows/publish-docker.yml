@@ -31,10 +31,10 @@ jobs:
     - name: build and push Docker image
       uses: docker/build-push-action@v4
       with:
-        push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+        push: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'ci-docker-push') }}
         tags: |
           entur/lamassu:latest
-        platforms: linux/amd64
+        platforms: linux/amd64,linux/arm64
         # https://docs.docker.com/build/ci/github-actions/cache/#cache-backend-api
         cache-from: type=gha
         cache-to: type=gha,mode=max
