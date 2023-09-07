@@ -1,0 +1,44 @@
+name: test
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      JFROG_USER: ${{ secrets.ARTIFACTORY_USER }}
+      JFROG_PASS: ${{ secrets.ARTIFACTORY_PASSWORD }}
+    steps:
+    - name: checkout
+      uses: actions/checkout@v4
+    - name: download Maven settings
+      run: |
+        wget https://raw.githubusercontent.com/entur/circleci-toolbox-image-java11/master/tools/m2/settings.xml -O mvn-settings.xml
+
+    - name: refresh Maven cache
+      run: |
+        mvn org.apache.maven.plugins:maven-dependency-plugin:3.1.0:go-offline -s settings.xml
+
+    # Cannot use -o because of snapshot dependencies.
+    - name: run Maven verify
+      run: |
+        mvn verify -s settings.xml
+
+    - name: Sonar scan
+      run: |
+        mvn -s settings.xml \
+          org.jacoco:jacoco-maven-plugin:prepare-agent verify \
+          org.jacoco:jacoco-maven-plugin:report sonar:sonar \
+          -Dmaven.main.skip \
+          -DskipTests \
+          -Dsonar.projectKey=entur_${{ github.event.repository.name }} \
+          -Dsonar.organization=${{ secrets.SONAR_ORG }} \
+          -Dsonar.projectName=${{ github.event.repository.name }} \
+          -Dsonar.host.url=https://sonarcloud.io \
+          -Dsonar.login=${{ secrets.SONAR_PASSWORD }}
