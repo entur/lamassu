@@ -30,21 +30,21 @@ Some providers may require authentication, e.g. via bearer token, OAuth2 or cust
         providers:
           - systemId: my_oauth2_secured_system
             authentication:
-                scheme: oauth2ClientCredentialsGrant
+                scheme: OAUTH2_CLIENT_CREDENTIALS_GRANT
                 properties:
                     tokenUrl: "https://mytokenurl.example/"
                     clientId: my-client-id
                     clientPassword: my-client-password
             ...
-           - systemId: my_bearer_secured_system
+          - systemId: my_bearer_secured_system
             authentication:
-                scheme: bearerToken
+                scheme: BEARER_TOKEN
                 properties:
                     accessToken: my-access-token
             ...
           - systemId: my_http_headers_secured_system
             authentication:
-                scheme: httpHeaders
+                scheme: HTTP_HEADERS
                 properties:
                     x-client-id: my-client-id 
                     x-api-key: ${my-systemproperty-provided-secret-api-key}
