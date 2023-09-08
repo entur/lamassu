@@ -38,7 +38,7 @@ public class CacheUtil {
     return Math.min(getTtl(lastUpdated, ttl, minimumTtl), maximumTtl);
   }
 
-  public static int getMaxAge(Class<?> clazz, Object data) {
+  public static int getMaxAge(Class<?> clazz, Object data, String systemId, String feed) {
     int maxAge = 60;
     try {
       Integer lastUpdated = (Integer) clazz.getMethod("getLastUpdated").invoke(data);
@@ -51,13 +51,18 @@ public class CacheUtil {
       | NoSuchMethodException
       | NullPointerException e
     ) {
-      logger.warn("Unable to calculate maxAge", e);
+      logger.warn("Unable to calculate maxAge systemId={} feed={}", systemId, feed, e);
     }
 
     return maxAge;
   }
 
-  public static long getLastModified(Class<?> clazz, Object data) {
+  public static long getLastModified(
+    Class<?> clazz,
+    Object data,
+    String systemId,
+    String feed
+  ) {
     try {
       Integer lastUpdated = (Integer) clazz.getMethod("getLastUpdated").invoke(data);
       return lastUpdated.longValue() * 1000L;
@@ -67,7 +72,12 @@ public class CacheUtil {
       | NoSuchMethodException
       | NullPointerException e
     ) {
-      logger.warn("Unable to calculate lastModified", e);
+      logger.warn(
+        "Unable to calculate lastModified systemId={} feed={}",
+        systemId,
+        feed,
+        e
+      );
       return System.currentTimeMillis();
     }
   }
