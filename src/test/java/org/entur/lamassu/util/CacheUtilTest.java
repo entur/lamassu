@@ -75,7 +75,9 @@ class CacheUtilTest {
       60,
       CacheUtil.getMaxAge(
         GBFSFeedName.GBFS.implementingClass(),
-        new GBFS().withLastUpdated(1640000000 - 60).withTtl(120)
+        new GBFS().withLastUpdated(1640000000 - 60).withTtl(120),
+        null,
+        null
       )
     );
   }
@@ -86,7 +88,9 @@ class CacheUtilTest {
       0,
       CacheUtil.getMaxAge(
         GBFSFeedName.GBFS.implementingClass(),
-        new GBFS().withLastUpdated(1540000000).withTtl(60)
+        new GBFS().withLastUpdated(1540000000).withTtl(60),
+        null,
+        null
       )
     );
   }
@@ -94,7 +98,12 @@ class CacheUtilTest {
   @Test
   void getMaxAgeDoesNotThrowWithNullLastUpdated() {
     Assertions.assertDoesNotThrow(() ->
-      CacheUtil.getMaxAge(GBFSFeedName.GBFS.implementingClass(), new GBFS().withTtl(60))
+      CacheUtil.getMaxAge(
+        GBFSFeedName.GBFS.implementingClass(),
+        new GBFS().withTtl(60),
+        null,
+        null
+      )
     );
   }
 
@@ -104,7 +113,9 @@ class CacheUtilTest {
       now * 1000L,
       CacheUtil.getLastModified(
         GBFSFeedName.GBFS.implementingClass(),
-        new GBFS().withLastUpdated(now)
+        new GBFS().withLastUpdated(now),
+        null,
+        null
       )
     );
   }
@@ -112,7 +123,12 @@ class CacheUtilTest {
   @Test
   void getLastModifiedWithNullLastUpdatedDoesNotThrow() {
     Assertions.assertDoesNotThrow(() ->
-      CacheUtil.getLastModified(GBFSFeedName.GBFS.implementingClass(), new GBFS())
+      CacheUtil.getLastModified(
+        GBFSFeedName.GBFS.implementingClass(),
+        new GBFS(),
+        null,
+        null
+      )
     );
   }
 }

@@ -116,12 +116,14 @@ public class GBFSFeedController {
         .cacheControl(
           CacheControl
             .maxAge(
-              CacheUtil.getMaxAge(feedName.implementingClass(), data),
+              CacheUtil.getMaxAge(feedName.implementingClass(), data, systemId, feed),
               TimeUnit.SECONDS
             )
             .cachePublic()
         )
-        .lastModified(CacheUtil.getLastModified(feedName.implementingClass(), data))
+        .lastModified(
+          CacheUtil.getLastModified(feedName.implementingClass(), data, systemId, feed)
+        )
         .body(data);
     } catch (IllegalArgumentException e) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -152,12 +154,14 @@ public class GBFSFeedController {
         .cacheControl(
           CacheControl
             .maxAge(
-              CacheUtil.getMaxAge(feedName.implementingClass(), data),
+              CacheUtil.getMaxAge(feedName.implementingClass(), data, systemId, feed),
               TimeUnit.SECONDS
             )
             .cachePublic()
         )
-        .lastModified(CacheUtil.getLastModified(feedName.implementingClass(), data))
+        .lastModified(
+          CacheUtil.getLastModified(feedName.implementingClass(), data, systemId, feed)
+        )
         .body(data);
     } catch (IllegalArgumentException e) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -281,7 +285,9 @@ public class GBFSFeedController {
             .maxAge(
               CacheUtil.getMaxAge(
                 org.entur.gbfs.v3_0_RC.gbfs.GBFSFeedName.implementingClass(feedName),
-                mapped
+                mapped,
+                systemId,
+                feed
               ),
               TimeUnit.SECONDS
             )
@@ -290,7 +296,9 @@ public class GBFSFeedController {
         .lastModified(
           CacheUtil.getLastModified(
             org.entur.gbfs.v3_0_RC.gbfs.GBFSFeedName.implementingClass(feedName),
-            data
+            data,
+            systemId,
+            feed
           )
         )
         .body(mapped);
