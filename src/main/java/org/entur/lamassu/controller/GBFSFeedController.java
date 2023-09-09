@@ -328,6 +328,8 @@ public class GBFSFeedController {
 
   private GBFS modifyDiscoveryUrls(FeedProvider feedProvider, GBFS data) {
     var gbfs = new GBFS();
+    gbfs.setLastUpdated(data.getLastUpdated());
+    gbfs.setTtl(data.getTtl());
     gbfs.setFeedsData(
       data
         .getFeedsData()
