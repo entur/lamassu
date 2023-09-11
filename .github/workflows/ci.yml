@@ -54,7 +54,7 @@ jobs:
           distribution: temurin
           cache: maven
 
-      - name: Build container image with Jib, push to Github Container Repo
+      - name: Build container image with Jib, push to container repo
         run: |
           image_date=`date +%Y-%m-%dT%H-%M`
           mvn --batch-mode compile com.google.cloud.tools:jib-maven-plugin:build -Djib.to.tags=latest,$image_date -Dmaven.test.skip -P prettierSkip
