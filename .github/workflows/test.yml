@@ -25,16 +25,16 @@ jobs:
 
     - name: refresh Maven cache
       run: |
-        mvn org.apache.maven.plugins:maven-dependency-plugin:3.1.0:go-offline -s settings.xml
+        mvn org.apache.maven.plugins:maven-dependency-plugin:3.1.0:go-offline -s mvn-settings.xml
 
     # Cannot use -o because of snapshot dependencies.
     - name: run Maven verify
       run: |
-        mvn verify -s settings.xml
+        mvn verify -s mvn-settings.xml
 
     - name: Sonar scan
       run: |
-        mvn -s settings.xml \
+        mvn -s mvn-settings.xml \
           org.jacoco:jacoco-maven-plugin:prepare-agent verify \
           org.jacoco:jacoco-maven-plugin:report sonar:sonar \
           -Dmaven.main.skip \
