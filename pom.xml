@@ -258,6 +258,9 @@
                 <artifactId>jib-maven-plugin</artifactId>
                 <version>3.3.2</version>
                 <configuration>
+                    <from>
+                        <image>eclipse-temurin:17.0.6_10-jdk-alpine</image>
+                    </from>
                     <to>
                         <image>${env.CONTAINER_REPO}</image>
                         <auth>
