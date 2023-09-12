@@ -34,6 +34,7 @@ jobs:
         run: |
           sudo timedatectl set-timezone "Europe/Oslo"
           mvn --batch-mode jacoco:prepare-agent test jacoco:report -Dprettier.nodePath=node -Dprettier.npmPath=npm
+          mvn --batch-mode jib:dockerBuild -Dmaven.test.skip -P prettierSkip
 
   image:
     # only build and push the image when it's a commit to master in Entur's repository
