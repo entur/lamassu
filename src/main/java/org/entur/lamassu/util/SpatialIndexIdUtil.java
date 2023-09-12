@@ -1,5 +1,6 @@
 package org.entur.lamassu.util;
 
+import java.util.Collections;
 import java.util.stream.Collectors;
 import org.entur.lamassu.cache.StationSpatialIndexId;
 import org.entur.lamassu.cache.VehicleSpatialIndexId;
@@ -37,20 +38,29 @@ public class SpatialIndexIdUtil {
     id.setCodespace(feedProvider.getCodespace());
     id.setSystemId(feedProvider.getSystemId());
     id.setOperatorId(feedProvider.getOperatorId());
-    id.setAvailableFormFactors(
-      station
-        .getVehicleTypesAvailable()
-        .stream()
-        .map(vta -> vta.getVehicleType().getFormFactor())
-        .collect(Collectors.toList())
-    );
-    id.setAvailablePropulsionTypes(
-      station
-        .getVehicleTypesAvailable()
-        .stream()
-        .map(vta -> vta.getVehicleType().getPropulsionType())
-        .collect(Collectors.toList())
-    );
+    if (station.getVehicleTypesAvailable() != null) {
+      id.setAvailableFormFactors(
+        station
+          .getVehicleTypesAvailable()
+          .stream()
+          .map(vta -> vta.getVehicleType().getFormFactor())
+          .collect(Collectors.toList())
+      );
+      id.setAvailablePropulsionTypes(
+        station
+          .getVehicleTypesAvailable()
+          .stream()
+          .map(vta -> vta.getVehicleType().getPropulsionType())
+          .collect(Collectors.toList())
+      );
+    } else {
+      // Note: in case no validation is activated, this issue would slip
+      // silently. On the other hand, logging it here for every station would
+      // be overwhelming...
+      id.setAvailableFormFactors(Collections.EMPTY_LIST);
+      id.setAvailablePropulsionTypes(Collections.EMPTY_LIST);
+    }
+
     return id;
   }
 }
