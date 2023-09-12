@@ -4,8 +4,6 @@ This directory contains docker-compose examples for lamassu.
 
 ## Usage
 
-Make sure you have built lamassu (check for jar file in `..target/`).
-
 Edit `application-config/feedproviders.yml` so that it contains at least one source feed.
 
 The run docker-compose:
