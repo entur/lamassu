@@ -48,19 +48,16 @@ import org.springframework.stereotype.Component;
 @Profile("leader")
 public class FeedUpdater {
 
+  private static final int NUM_CORES = Runtime.getRuntime().availableProcessors();
+  private static final int SUBSCRIPTION_SETUP_RETRY_DELAY_SECONDS = 60;
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
   private final FeedProviderConfig feedProviderConfig;
   private final GbfsDeliveryMapper gbfsDeliveryMapper;
   private final FeedCachesUpdater feedCachesUpdater;
   private final EntityCachesUpdater entityCachesUpdater;
   private final RBucket<Boolean> cacheReady;
-
-  private static final int NUM_CORES = Runtime.getRuntime().availableProcessors();
-
   private GbfsSubscriptionManager subscriptionManager;
   private ForkJoinPool updaterThreadPool;
-
   private final RListMultimap<String, ValidationResult> validationResultsCache;
 
   @Value("${org.entur.lamassu.enableValidation:false}")
@@ -131,12 +128,13 @@ public class FeedUpdater {
 
     if (id == null) {
       logger.warn(
-        "Failed to setup subscription, trying again in 5 seconds - systemId={}",
+        "Failed to setup subscription, trying again in {} seconds - systemId={}",
+        SUBSCRIPTION_SETUP_RETRY_DELAY_SECONDS,
         feedProvider.getSystemId()
       );
       metricsService.registerSubscriptionSetup(feedProvider, false);
       CompletableFuture
-        .delayedExecutor(60, TimeUnit.SECONDS)
+        .delayedExecutor(SUBSCRIPTION_SETUP_RETRY_DELAY_SECONDS, TimeUnit.SECONDS)
         .execute(() -> updaterThreadPool.execute(() -> createSubscription(feedProvider)));
     } else {
       logger.info("Setup subscription complete systemId={}", feedProvider.getSystemId());
