@@ -25,6 +25,14 @@ public class SpatialIndexIdFilterTest {
   }
 
   @Test
+  public void testNoFilterReturnsStationWithoutVehicleTypesAvailable() {
+    StationSpatialIndexId stationSpatialIndexId = SpatialIndexIdUtil.createStationSpatialIndexId(testStationWithoutVehicleTypeAvailability(), testProvider());
+    Assert.assertTrue(
+            SpatialIndexIdFilter.filterStation(stationSpatialIndexId, testStationFilterParams())
+    );
+  }
+
+  @Test
   public void testCodespaceFilter() {
     var testId = testVehicleId();
     var params = testVehicleFilterParams();
@@ -168,6 +176,12 @@ public class SpatialIndexIdFilterTest {
     return station;
   }
 
+  private Station testStationWithoutVehicleTypeAvailability() {
+    var station = new Station();
+    station.setId("TST:Station:no_vta");
+    return station;
+  }
+
   private VehicleType scooterVehicle() {
     var type = new VehicleType();
     type.setId("TST:VehicleType:Scooter");
@@ -189,6 +203,11 @@ public class SpatialIndexIdFilterTest {
     var params = new VehicleFilterParameters();
     params.setIncludeReserved(false);
     params.setIncludeDisabled(false);
+    return params;
+  }
+
+  private StationFilterParameters testStationFilterParams() {
+    var params = new StationFilterParameters();
     return params;
   }
 }
