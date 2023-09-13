@@ -51,7 +51,7 @@ Some providers may require authentication, e.g. via bearer token, OAuth2 or cust
                     x-api-key: ${my-systemproperty-provided-secret-api-key}
             ...
 
-Note: instead of providing credentials in the feedproviders.yml, you could also pass them via ENV variables/system properties.
+Note: Keep in mind you should be cautious about storing your credentials in plain text ! Instead of providing credentials in the feedproviders.yml, it might be more appropriate to provide them via ENV variables/system properties. 
 
 ### End-points
 
