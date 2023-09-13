@@ -26,9 +26,13 @@ public class SpatialIndexIdFilterTest {
 
   @Test
   public void testNoFilterReturnsStationWithoutVehicleTypesAvailable() {
-    StationSpatialIndexId stationSpatialIndexId = SpatialIndexIdUtil.createStationSpatialIndexId(testStationWithoutVehicleTypeAvailability(), testProvider());
+    StationSpatialIndexId stationSpatialIndexId =
+      SpatialIndexIdUtil.createStationSpatialIndexId(
+        testStationWithoutVehicleTypeAvailability(),
+        testProvider()
+      );
     Assert.assertTrue(
-            SpatialIndexIdFilter.filterStation(stationSpatialIndexId, testStationFilterParams())
+      SpatialIndexIdFilter.filterStation(stationSpatialIndexId, testStationFilterParams())
     );
   }
 
