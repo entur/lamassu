@@ -47,6 +47,7 @@ Some providers may require authentication, e.g. via bearer token, OAuth2 or cust
                 scheme: HTTP_HEADERS
                 properties:
                     x-client-id: my-client-id 
+                    # you can use a system variable or an environment variable here
                     x-api-key: ${my-systemproperty-provided-secret-api-key}
             ...
 
