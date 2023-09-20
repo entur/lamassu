@@ -1,6 +1,10 @@
-# Lamassu [![CircleCI](https://circleci.com/gh/entur/lamassu.svg?style=svg)](https://circleci.com/gh/entur/lamassu) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=entur_lamassu&metric=alert_status)](https://sonarcloud.io/dashboard?id=entur_lamassu)
+# Lamassu
 
-Mobility aggregation service based on the [General Bikeshare Feed Specification (GBFS) v2.2](https://github.com/NABSA/gbfs/blob/v2.2/gbfs.md).
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/entur/lamassu/tree/master.svg?style=svg&circle-token=8db82686d192e3712a3a92502477a5a7e72b7be1)](https://dl.circleci.com/status-badge/redirect/gh/entur/lamassu/tree/master)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=entur_lamassu&metric=alert_status)](https://sonarcloud.io/dashboard?id=entur_lamassu)
+![Github Workflow](https://github.com/entur/lamassu/actions/workflows/ci.yml/badge.svg)
+
+Mobility aggregation service based on the [General Bikeshare Feed Specification (GBFS)](https://github.com/MobilityData/gbfs).
 
 ### Configuration
 
