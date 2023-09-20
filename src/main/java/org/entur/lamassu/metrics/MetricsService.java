@@ -59,24 +59,16 @@ public class MetricsService {
   public MetricsService(MeterRegistry meterRegistry) {
     this.meterRegistry = meterRegistry;
     Gauge
-            .builder(
-                    "app.lamassu.entity.count",
-                    vehicleEntityCount,
-                    AtomicInteger::doubleValue
-            )
-            .strongReference(true)
-            .tags(List.of(Tag.of(LABEL_ENTITY, ENTITY_VEHICLE)))
-            .register(meterRegistry);
+      .builder("app.lamassu.entity.count", vehicleEntityCount, AtomicInteger::doubleValue)
+      .strongReference(true)
+      .tags(List.of(Tag.of(LABEL_ENTITY, ENTITY_VEHICLE)))
+      .register(meterRegistry);
 
     Gauge
-            .builder(
-                    "app.lamassu.entity.count",
-                    stationEntityCount,
-                    AtomicInteger::doubleValue
-            )
-            .strongReference(true)
-            .tags(List.of(Tag.of(LABEL_ENTITY, ENTITY_STATION)))
-            .register(meterRegistry);
+      .builder("app.lamassu.entity.count", stationEntityCount, AtomicInteger::doubleValue)
+      .strongReference(true)
+      .tags(List.of(Tag.of(LABEL_ENTITY, ENTITY_STATION)))
+      .register(meterRegistry);
   }
 
   public void registerSubscriptionSetup(FeedProvider feedProvider, boolean success) {
