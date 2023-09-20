@@ -257,6 +257,14 @@
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>jib-maven-plugin</artifactId>
                 <version>3.3.2</version>
+                <dependencies>
+                    <!-- Include jib-spring-boot-extension-maven to prevent spring-boot-devtools from being packaged.-->
+                    <dependency>
+                        <groupId>com.google.cloud.tools</groupId>
+                        <artifactId>jib-spring-boot-extension-maven</artifactId>
+                        <version>0.1.0</version>
+                    </dependency>
+                </dependencies>
                 <configuration>
                     <from>
                         <image>eclipse-temurin:17.0.6_10-jdk-alpine</image>
@@ -274,6 +282,11 @@
                             <port>8080</port>
                         </ports>
                     </container>
+                    <pluginExtensions>
+                        <pluginExtension>
+                            <implementation>com.google.cloud.tools.jib.maven.extension.springboot.JibSpringBootExtension</implementation>
+                        </pluginExtension>
+                    </pluginExtensions>
                 </configuration>
             </plugin>
         </plugins>
