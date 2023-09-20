@@ -6,7 +6,6 @@ import org.entur.lamassu.cache.StationSpatialIndexId;
 import org.entur.lamassu.cache.VehicleSpatialIndexId;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.Vehicle;
-import org.entur.lamassu.model.entities.VehicleTypeAvailability;
 import org.entur.lamassu.model.provider.FeedProvider;
 
 public class SpatialIndexIdUtil {
