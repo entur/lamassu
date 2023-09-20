@@ -57,8 +57,8 @@ public class SpatialIndexIdUtil {
       // Note: in case no validation is activated, this issue would slip
       // silently. On the other hand, logging it here for every station would
       // be overwhelming...
-      id.setAvailableFormFactors(Collections.EMPTY_LIST);
-      id.setAvailablePropulsionTypes(Collections.EMPTY_LIST);
+      id.setAvailableFormFactors(Collections.emptyList());
+      id.setAvailablePropulsionTypes(Collections.emptyList());
     }
 
     return id;
