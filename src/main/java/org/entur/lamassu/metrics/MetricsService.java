@@ -54,32 +54,29 @@ public class MetricsService {
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   private final AtomicInteger vehicleEntityCount = new AtomicInteger();
-  private final Gauge vehicleEntityCountGauge;
   private final AtomicInteger stationEntityCount = new AtomicInteger();
-  private final Gauge stationEntityCountGauge;
 
   public MetricsService(MeterRegistry meterRegistry) {
     this.meterRegistry = meterRegistry;
-    vehicleEntityCountGauge =
-      Gauge
-        .builder(
-          "app.lamassu.entity.count",
-          vehicleEntityCount,
-          AtomicInteger::doubleValue
-        )
-        .strongReference(true)
-        .tags(List.of(Tag.of(LABEL_ENTITY, ENTITY_VEHICLE)))
-        .register(meterRegistry);
-    stationEntityCountGauge =
-      Gauge
-        .builder(
-          "app.lamassu.entity.count",
-          stationEntityCount,
-          AtomicInteger::doubleValue
-        )
-        .strongReference(true)
-        .tags(List.of(Tag.of(LABEL_ENTITY, ENTITY_STATION)))
-        .register(meterRegistry);
+    Gauge
+            .builder(
+                    "app.lamassu.entity.count",
+                    vehicleEntityCount,
+                    AtomicInteger::doubleValue
+            )
+            .strongReference(true)
+            .tags(List.of(Tag.of(LABEL_ENTITY, ENTITY_VEHICLE)))
+            .register(meterRegistry);
+
+    Gauge
+            .builder(
+                    "app.lamassu.entity.count",
+                    stationEntityCount,
+                    AtomicInteger::doubleValue
+            )
+            .strongReference(true)
+            .tags(List.of(Tag.of(LABEL_ENTITY, ENTITY_STATION)))
+            .register(meterRegistry);
   }
 
   public void registerSubscriptionSetup(FeedProvider feedProvider, boolean success) {
