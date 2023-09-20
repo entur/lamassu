@@ -55,16 +55,14 @@ public class EntityCachesUpdater {
       stationsUpdater.addOrUpdateStations(feedProvider, delivery, oldDelivery);
     }
 
-    if (delivery.getGeofencingZones() != null) {
-      if (
+    if (delivery.getGeofencingZones() != null && (
         feedProvider.getExcludeFeeds() == null ||
         !feedProvider.getExcludeFeeds().contains(GBFSFeedName.GeofencingZones)
-      ) {
+      )) {
         geofencingZonesUpdater.addOrUpdateGeofencingZones(
           feedProvider,
           delivery.getGeofencingZones()
         );
-      }
     }
   }
 
@@ -89,13 +87,12 @@ public class EntityCachesUpdater {
   }
 
   private boolean canUpdateStations(GbfsDelivery delivery, FeedProvider feedProvider) {
-    if (feedProvider.getExcludeFeeds() != null) {
-      if (
+    if (feedProvider.getExcludeFeeds() != null && (
         feedProvider.getExcludeFeeds().contains(GBFSFeedName.StationInformation) ||
         feedProvider.getExcludeFeeds().contains(GBFSFeedName.StationStatus)
-      ) {
+      )) {
         return false;
-      }
+
     }
 
     return (
