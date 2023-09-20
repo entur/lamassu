@@ -20,7 +20,7 @@ public class SpatialIndexIdFilterTest {
   @Test
   public void testNoFilter() {
     Assert.assertTrue(
-      SpatialIndexIdFilter.filterVehicle(testVehicleId(), testVehicleFilterParams())
+      SpatialIndexIdFilter.filterVehicle(aVehicleId(), aVehicleFilterParams())
     );
   }
 
@@ -28,18 +28,18 @@ public class SpatialIndexIdFilterTest {
   public void testNoFilterReturnsStationWithoutVehicleTypesAvailable() {
     StationSpatialIndexId stationSpatialIndexId =
       SpatialIndexIdUtil.createStationSpatialIndexId(
-        testStationWithoutVehicleTypeAvailability(),
-        testProvider()
+        aStationWithoutVehicleTypeAvailability(),
+        aProvider()
       );
     Assert.assertTrue(
-      SpatialIndexIdFilter.filterStation(stationSpatialIndexId, testStationFilterParams())
+      SpatialIndexIdFilter.filterStation(stationSpatialIndexId, aStationFilterParams())
     );
   }
 
   @Test
   public void testCodespaceFilter() {
-    var testId = testVehicleId();
-    var params = testVehicleFilterParams();
+    var testId = aVehicleId();
+    var params = aVehicleFilterParams();
 
     params.setCodespaces(List.of("TST"));
     Assert.assertTrue(SpatialIndexIdFilter.filterVehicle(testId, params));
@@ -50,8 +50,8 @@ public class SpatialIndexIdFilterTest {
 
   @Test
   public void testSystemFilter() {
-    var testId = testVehicleId();
-    var params = testVehicleFilterParams();
+    var testId = aVehicleId();
+    var params = aVehicleFilterParams();
 
     params.setSystems(List.of("TST:System:testprovider"));
     Assert.assertTrue(SpatialIndexIdFilter.filterVehicle(testId, params));
@@ -62,8 +62,8 @@ public class SpatialIndexIdFilterTest {
 
   @Test
   public void testOperatorFilter() {
-    var testId = testVehicleId();
-    var params = testVehicleFilterParams();
+    var testId = aVehicleId();
+    var params = aVehicleFilterParams();
 
     params.setOperators(List.of("TST:Operator:test"));
     Assert.assertTrue(SpatialIndexIdFilter.filterVehicle(testId, params));
@@ -74,8 +74,8 @@ public class SpatialIndexIdFilterTest {
 
   @Test
   public void testFormFactorFilter() {
-    var testId = testVehicleId();
-    var params = testVehicleFilterParams();
+    var testId = aVehicleId();
+    var params = aVehicleFilterParams();
 
     params.setFormFactors(List.of(FormFactor.SCOOTER));
     Assert.assertTrue(SpatialIndexIdFilter.filterVehicle(testId, params));
@@ -86,8 +86,8 @@ public class SpatialIndexIdFilterTest {
 
   @Test
   public void testPropulsionTypeFilter() {
-    var testId = testVehicleId();
-    var params = testVehicleFilterParams();
+    var testId = aVehicleId();
+    var params = aVehicleFilterParams();
 
     params.setPropulsionTypes(List.of(PropulsionType.ELECTRIC));
     Assert.assertTrue(SpatialIndexIdFilter.filterVehicle(testId, params));
@@ -98,8 +98,8 @@ public class SpatialIndexIdFilterTest {
 
   @Test
   public void testIncludeReservedFilter() {
-    var testId = testReservedId();
-    var params = testVehicleFilterParams();
+    var testId = aReservedId();
+    var params = aVehicleFilterParams();
 
     params.setIncludeReserved(true);
     Assert.assertTrue(SpatialIndexIdFilter.filterVehicle(testId, params));
@@ -110,8 +110,8 @@ public class SpatialIndexIdFilterTest {
 
   @Test
   public void testIncludeDisabledFilter() {
-    var testId = testDisabledId();
-    var params = testVehicleFilterParams();
+    var testId = aDisabledId();
+    var params = aVehicleFilterParams();
 
     params.setIncludeDisabled(true);
     Assert.assertTrue(SpatialIndexIdFilter.filterVehicle(testId, params));
@@ -122,7 +122,7 @@ public class SpatialIndexIdFilterTest {
 
   @Test
   public void testVehicleTypesAvailableFilter() {
-    var testId = testStationId();
+    var testId = aStationId();
     var params = new StationFilterParameters();
 
     params.setAvailableFormFactors(List.of(FormFactor.SCOOTER));
@@ -141,52 +141,52 @@ public class SpatialIndexIdFilterTest {
     Assert.assertFalse(SpatialIndexIdFilter.filterStation(testId, params));
   }
 
-  private VehicleSpatialIndexId testVehicleId() {
-    return SpatialIndexIdUtil.createVehicleSpatialIndexId(testVehicle(), testProvider());
+  private VehicleSpatialIndexId aVehicleId() {
+    return SpatialIndexIdUtil.createVehicleSpatialIndexId(aVehicle(), aProvider());
   }
 
-  private StationSpatialIndexId testStationId() {
-    return SpatialIndexIdUtil.createStationSpatialIndexId(testStation(), testProvider());
+  private StationSpatialIndexId aStationId() {
+    return SpatialIndexIdUtil.createStationSpatialIndexId(aStation(), aProvider());
   }
 
-  private VehicleSpatialIndexId testReservedId() {
-    var vehicle = testVehicle();
+  private VehicleSpatialIndexId aReservedId() {
+    var vehicle = aVehicle();
     vehicle.setReserved(true);
-    return SpatialIndexIdUtil.createVehicleSpatialIndexId(vehicle, testProvider());
+    return SpatialIndexIdUtil.createVehicleSpatialIndexId(vehicle, aProvider());
   }
 
-  private VehicleSpatialIndexId testDisabledId() {
-    var vehicle = testVehicle();
+  private VehicleSpatialIndexId aDisabledId() {
+    var vehicle = aVehicle();
     vehicle.setDisabled(true);
-    return SpatialIndexIdUtil.createVehicleSpatialIndexId(vehicle, testProvider());
+    return SpatialIndexIdUtil.createVehicleSpatialIndexId(vehicle, aProvider());
   }
 
-  private Vehicle testVehicle() {
+  private Vehicle aVehicle() {
     var vehicle = new Vehicle();
     vehicle.setId("TST:Vehicle:abc123");
     vehicle.setReserved(false);
     vehicle.setDisabled(false);
-    vehicle.setVehicleType(scooterVehicle());
+    vehicle.setVehicleType(aScooterVehicle());
     return vehicle;
   }
 
-  private Station testStation() {
+  private Station aStation() {
     var station = new Station();
     station.setId("TST:Station:foobar");
     var vehicleTypeAvailability = new VehicleTypeAvailability();
-    vehicleTypeAvailability.setVehicleType(scooterVehicle());
+    vehicleTypeAvailability.setVehicleType(aScooterVehicle());
     vehicleTypeAvailability.setCount(1);
     station.setVehicleTypesAvailable(List.of(vehicleTypeAvailability));
     return station;
   }
 
-  private Station testStationWithoutVehicleTypeAvailability() {
+  private Station aStationWithoutVehicleTypeAvailability() {
     var station = new Station();
     station.setId("TST:Station:no_vta");
     return station;
   }
 
-  private VehicleType scooterVehicle() {
+  private VehicleType aScooterVehicle() {
     var type = new VehicleType();
     type.setId("TST:VehicleType:Scooter");
     type.setFormFactor(FormFactor.SCOOTER);
@@ -194,7 +194,7 @@ public class SpatialIndexIdFilterTest {
     return type;
   }
 
-  private FeedProvider testProvider() {
+  private FeedProvider aProvider() {
     var provider = new FeedProvider();
     provider.setCodespace("TST");
     provider.setSystemId("TST:System:testprovider");
@@ -203,14 +203,14 @@ public class SpatialIndexIdFilterTest {
     return provider;
   }
 
-  private VehicleFilterParameters testVehicleFilterParams() {
+  private VehicleFilterParameters aVehicleFilterParams() {
     var params = new VehicleFilterParameters();
     params.setIncludeReserved(false);
     params.setIncludeDisabled(false);
     return params;
   }
 
-  private StationFilterParameters testStationFilterParams() {
+  private StationFilterParameters aStationFilterParams() {
     var params = new StationFilterParameters();
     return params;
   }
