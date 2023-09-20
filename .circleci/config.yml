@@ -6,19 +6,6 @@ aliases:
       command: |
         echo "export JFROG_USER=$ARTIFACTORY_USER"  >> $BASH_ENV
         echo "export JFROG_PASS=$ARTIFACTORY_PASSWORD"  >> $BASH_ENV
-  - &sonar-scan
-    name: Sonar scan
-    command: |
-      mvn -s  .circleci/settings.xml \
-        org.jacoco:jacoco-maven-plugin:prepare-agent verify \
-        org.jacoco:jacoco-maven-plugin:report sonar:sonar \
-        -Dmaven.main.skip \
-        -DskipTests \
-        -Dsonar.projectKey=entur_${CIRCLE_PROJECT_REPONAME} \
-        -Dsonar.organization=${SONAR_ORG} \
-        -Dsonar.projectName=${CIRCLE_PROJECT_REPONAME} \
-        -Dsonar.host.url=https://sonarcloud.io \
-        -Dsonar.login=${ENTUR_SONAR_PASSWORD}
   - &post_build
     name: Trigger downstream builds
     command: |
@@ -58,7 +45,6 @@ jobs:
       - run:
           name: Run Maven verify
           command: mvn verify -s .circleci/settings.xml -Dprettier.nodePath=node -Dprettier.npmPath=npm
-      - run: *sonar-scan
       - run:
           name: Save test results
           command: |
