@@ -74,6 +74,12 @@ public class DiscoveryFeedMapper extends AbstractFeedMapper<GBFS> {
       .get(sourceLanguageCode)
       .getFeeds()
       .stream()
+      .filter(feed -> {
+        if (feed.getName() == null) {
+          logger.info("Skipped non-standard file {}", feed.getUrl());
+        }
+        return feed.getName() != null;
+      })
       .filter(feed ->
         feedProvider.getExcludeFeeds() == null ||
         feedProvider
