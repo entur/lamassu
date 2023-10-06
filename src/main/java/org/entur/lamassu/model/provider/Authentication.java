@@ -35,7 +35,8 @@ public class Authentication {
       return new Oauth2ClientCredentialsGrantRequestAuthenticator(
         URI.create(properties.get("tokenUrl")),
         properties.get("clientId"),
-        properties.get("clientPassword")
+        properties.get("clientPassword"),
+        properties.get("scope")
       );
     } else if (scheme == AuthenticationScheme.BEARER_TOKEN) {
       return new BearerTokenRequestAuthenticator(properties.get("accessToken"));
