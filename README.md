@@ -39,6 +39,7 @@ Some providers may require authentication, e.g. via bearer token, OAuth2 or cust
                     tokenUrl: "https://mytokenurl.example/"
                     clientId: my-client-id
                     clientPassword: my-client-password
+                    scope: optional-scope
             ...
           - systemId: my_bearer_secured_system
             authentication:
