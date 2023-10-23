@@ -36,17 +36,6 @@ jobs:
           mvn --batch-mode jacoco:prepare-agent test jacoco:report -Dprettier.nodePath=node -Dprettier.npmPath=npm
           mvn --batch-mode jib:dockerBuild -Dmaven.test.skip -P prettierSkip
 
-      - name: SonarQube Scan
-        run: |
-          mvn \
-          org.jacoco:jacoco-maven-plugin:prepare-agent verify \
-          org.jacoco:jacoco-maven-plugin:report sonar:sonar \
-          -Dmaven.main.skip \
-          -DskipTests \
-          -Dsonar.projectKey=entur_lamassu \
-          -Dsonar.organization=enturas-github \
-          -Dsonar.host.url=https://sonarcloud.io \
-          -Dsonar.login=${{ secrets.ENTUR_SONAR_PASSWORD }}
 
   image:
     # only build and push the image when it's a commit to master in Entur's repository
