@@ -19,7 +19,7 @@ jobs:
       # nodejs is needed because the dynamic download of it via the prettier maven plugin often
       # times out
       # Example: https://github.com/opentripplanner/OpenTripPlanner/actions/runs/4490450225/jobs/7897533439
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: 18
 
