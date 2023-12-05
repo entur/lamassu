@@ -16,7 +16,7 @@
     <description>Micro mobility aggregation</description>
 
     <properties>
-        <graphql-starter.version>14.1.0</graphql-starter.version>
+        <graphql-starter.version>15.0.0</graphql-starter.version>
         <entur.ror.helpers.version>1.101</entur.ror.helpers.version>
         <redisson.version>3.25.0</redisson.version>
         <embedded-redis.version>0.8.3</embedded-redis.version>
