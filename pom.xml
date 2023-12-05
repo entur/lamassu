@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.entur.ror</groupId>
         <artifactId>superpom</artifactId>
-        <version>1.68</version>
+        <version>2.5</version>
     </parent>
     <groupId>org.entur</groupId>
     <artifactId>lamassu</artifactId>
@@ -16,7 +16,9 @@
     <description>Micro mobility aggregation</description>
 
     <properties>
-        <graphql-starter.version>14.1.0</graphql-starter.version>
+        <java.version>21</java.version>
+
+        <graphql-starter.version>15.0.0</graphql-starter.version>
         <entur.ror.helpers.version>1.101</entur.ror.helpers.version>
         <redisson.version>3.25.0</redisson.version>
         <embedded-redis.version>0.8.3</embedded-redis.version>
@@ -41,8 +43,6 @@
         </snapshotRepository>
     </distributionManagement>
 
-
-
     <dependencies>
         <dependency>
             <groupId>org.entur.gbfs</groupId>
@@ -63,11 +63,6 @@
             <groupId>org.entur.gbfs</groupId>
             <artifactId>gbfs-mapper-java</artifactId>
             <version>1.0.22</version>
-        </dependency>
-        <dependency>
-            <groupId>org.entur.ror.helpers</groupId>
-            <artifactId>logging</artifactId>
-            <version>${entur.ror.helpers.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -120,8 +115,8 @@
             <version>${redisson.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
+            <groupId>com.fasterxml.jackson.jakarta.rs</groupId>
+            <artifactId>jackson-jakarta-rs-json-provider</artifactId>
             <version>${jackson.version}</version>
         </dependency>
         <dependency>
