@@ -18,6 +18,7 @@
 
 package org.entur.lamassu.leader.entityupdater;
 
+import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.entur.gbfs.v2_3.geofencing_zones.GBFSGeofencingZones;
@@ -56,7 +57,7 @@ public class GeofencingZonesUpdater {
 
     geofencingZonesCache.updateAll(
       Map.of(mapped.getId(), mapped),
-      CacheUtil.getTtl(lastUpdated, ttl, 3600),
+      CacheUtil.getTtl((int) Instant.now().getEpochSecond(), lastUpdated, ttl, 3600),
       TimeUnit.SECONDS
     );
   }

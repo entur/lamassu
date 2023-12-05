@@ -18,6 +18,7 @@
 
 package org.entur.lamassu.leader.entityupdater;
 
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -218,7 +219,7 @@ public class StationsUpdater {
       var ttl = stationStatusFeed.getTtl();
       stationCache.updateAll(
         stations,
-        CacheUtil.getTtl(lastUpdated, ttl, 300),
+        CacheUtil.getTtl((int) Instant.now().getEpochSecond(), lastUpdated, ttl, 300),
         TimeUnit.SECONDS
       );
     }
