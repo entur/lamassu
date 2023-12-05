@@ -262,7 +262,7 @@
                 </dependencies>
                 <configuration>
                     <from>
-                        <image>eclipse-temurin:17.0.6_10-jdk-alpine</image>
+                        <image>eclipse-temurin:21.0.1_12-jdk-alpine</image>
                     </from>
                     <to>
                         <image>${env.CONTAINER_REPO}</image>
