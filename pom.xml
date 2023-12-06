@@ -48,11 +48,23 @@
             <groupId>org.entur.gbfs</groupId>
             <artifactId>gbfs-loader-java</artifactId>
             <version>${gbfs-loader-java.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.entur.gbfs</groupId>
             <artifactId>gbfs-validator-java</artifactId>
             <version>${gbfs-validator-java.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.entur.gbfs</groupId>
