@@ -31,42 +31,24 @@ import org.mockito.MockedStatic;
 
 class CacheUtilTest {
 
-  private MockedStatic<Instant> instantMock;
-
   // 2021-12-20T11:33:20Z
   private final int now = 1640000000;
-
-  @BeforeEach
-  public void setup() {
-    mockInstant(now);
-  }
-
-  @AfterEach
-  public void destroy() {
-    instantMock.close();
-  }
-
-  private void mockInstant(long expected) {
-    final Instant instantExpected = Instant.ofEpochSecond(expected);
-    instantMock = mockStatic(Instant.class);
-    instantMock.when(Instant::now).thenReturn(instantExpected);
-  }
 
   @Test
   void getTtlReturnsMinimumTtlWhenExpired() {
     int expected = 3600;
-    Assertions.assertEquals(expected, CacheUtil.getTtl(now - 3600, 10, expected));
+    Assertions.assertEquals(expected, CacheUtil.getTtl(now, now - 3600, 10, expected));
   }
 
   @Test
   void getTtlReturnsMinimumTtlWhenLessThanMinimumTtl() {
     int expected = 3600;
-    Assertions.assertEquals(expected, CacheUtil.getTtl(now - 20, 10, expected));
+    Assertions.assertEquals(expected, CacheUtil.getTtl(now, now - 20, 10, expected));
   }
 
   @Test
   void getTtlReturnsCalculatedTtlWhenLargerThanMinimumTtl() {
-    Assertions.assertEquals(20, CacheUtil.getTtl(now - 10, 30, 10));
+    Assertions.assertEquals(20, CacheUtil.getTtl(now, now - 10, 30, 10));
   }
 
   @Test
@@ -77,7 +59,8 @@ class CacheUtilTest {
         GBFSFeedName.GBFS.implementingClass(),
         new GBFS().withLastUpdated(1640000000 - 60).withTtl(120),
         null,
-        null
+        null,
+        now
       )
     );
   }
@@ -90,7 +73,8 @@ class CacheUtilTest {
         GBFSFeedName.GBFS.implementingClass(),
         new GBFS().withLastUpdated(1540000000).withTtl(60),
         null,
-        null
+        null,
+        now
       )
     );
   }
@@ -102,7 +86,8 @@ class CacheUtilTest {
         GBFSFeedName.GBFS.implementingClass(),
         new GBFS().withTtl(60),
         null,
-        null
+        null,
+        now
       )
     );
   }

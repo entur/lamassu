@@ -19,6 +19,7 @@
 package org.entur.lamassu.leader.feedcachesupdater;
 
 import java.lang.reflect.InvocationTargetException;
+import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 import org.entur.gbfs.GbfsDelivery;
 import org.entur.gbfs.v2_3.gbfs.GBFSFeedName;
@@ -140,7 +141,12 @@ public class FeedCachesUpdater {
         .getMethod("getLastUpdated")
         .invoke(feed);
       Integer ttl = (Integer) implementingClass.getMethod("getTtl").invoke(feed);
-      return CacheUtil.getTtl(lastUpdated, ttl, minimumTtl);
+      return CacheUtil.getTtl(
+        (int) Instant.now().getEpochSecond(),
+        lastUpdated,
+        ttl,
+        minimumTtl
+      );
     } catch (
       NoSuchMethodException | InvocationTargetException | IllegalAccessException e
     ) {

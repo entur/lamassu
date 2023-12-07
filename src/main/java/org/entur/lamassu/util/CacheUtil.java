@@ -19,7 +19,6 @@
 package org.entur.lamassu.util;
 
 import java.lang.reflect.InvocationTargetException;
-import java.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,22 +28,33 @@ public class CacheUtil {
 
   private CacheUtil() {}
 
-  public static int getTtl(int lastUpdated, int ttl, int minimumTtl) {
-    var now = (int) Instant.now().getEpochSecond();
+  public static int getTtl(int now, int lastUpdated, int ttl, int minimumTtl) {
     return Math.max(lastUpdated + ttl - now, minimumTtl);
   }
 
-  public static int getTtl(int lastUpdated, int ttl, int minimumTtl, int maximumTtl) {
-    return Math.min(getTtl(lastUpdated, ttl, minimumTtl), maximumTtl);
+  public static int getTtl(
+    int now,
+    int lastUpdated,
+    int ttl,
+    int minimumTtl,
+    int maximumTtl
+  ) {
+    return Math.min(getTtl(now, lastUpdated, ttl, minimumTtl), maximumTtl);
   }
 
-  public static int getMaxAge(Class<?> clazz, Object data, String systemId, String feed) {
+  public static int getMaxAge(
+    Class<?> clazz,
+    Object data,
+    String systemId,
+    String feed,
+    int now
+  ) {
     int maxAge = 60;
     try {
       Integer lastUpdated = (Integer) clazz.getMethod("getLastUpdated").invoke(data);
       Integer ttl = (Integer) clazz.getMethod("getTtl").invoke(data);
 
-      maxAge = getTtl(lastUpdated, ttl, 0);
+      maxAge = getTtl(now, lastUpdated, ttl, 0);
     } catch (
       IllegalAccessException
       | InvocationTargetException

@@ -1,6 +1,7 @@
 package org.entur.lamassu.controller;
 
 import java.net.URI;
+import java.time.Instant;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
@@ -116,7 +117,13 @@ public class GBFSFeedController {
         .cacheControl(
           CacheControl
             .maxAge(
-              CacheUtil.getMaxAge(feedName.implementingClass(), data, systemId, feed),
+              CacheUtil.getMaxAge(
+                feedName.implementingClass(),
+                data,
+                systemId,
+                feed,
+                (int) Instant.now().getEpochSecond()
+              ),
               TimeUnit.SECONDS
             )
             .cachePublic()
@@ -154,7 +161,13 @@ public class GBFSFeedController {
         .cacheControl(
           CacheControl
             .maxAge(
-              CacheUtil.getMaxAge(feedName.implementingClass(), data, systemId, feed),
+              CacheUtil.getMaxAge(
+                feedName.implementingClass(),
+                data,
+                systemId,
+                feed,
+                (int) Instant.now().getEpochSecond()
+              ),
               TimeUnit.SECONDS
             )
             .cachePublic()
@@ -287,7 +300,8 @@ public class GBFSFeedController {
                 org.entur.gbfs.v3_0_RC.gbfs.GBFSFeedName.implementingClass(feedName),
                 mapped,
                 systemId,
-                feed
+                feed,
+                (int) Instant.now().getEpochSecond()
               ),
               TimeUnit.SECONDS
             )

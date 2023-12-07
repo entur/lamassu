@@ -20,8 +20,9 @@ package org.entur.lamassu;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 
-@SpringBootApplication
+@SpringBootApplication(exclude = { UserDetailsServiceAutoConfiguration.class })
 public class LamassuApplication {
 
   public static void main(String[] args) {
