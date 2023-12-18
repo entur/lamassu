@@ -4,6 +4,7 @@ import java.util.Set;
 import org.entur.gbfs.validation.model.ValidationResult;
 import org.entur.lamassu.cache.StationSpatialIndexId;
 import org.entur.lamassu.cache.VehicleSpatialIndexId;
+import org.entur.lamassu.config.project.LamassuProjectInfoConfiguration;
 import org.entur.lamassu.model.entities.GeofencingZones;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.Vehicle;
@@ -16,6 +17,7 @@ import org.redisson.api.RedissonClient;
 import org.redisson.codec.Kryo5Codec;
 import org.redisson.config.Config;
 import org.redisson.spring.data.connection.RedissonConnectionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,9 +35,7 @@ public class RedissonCacheConfig {
   public static final String VALIDATION_REPORTS_CACHE_KEY = "validationReportsCache";
   public static final String CACHE_READY_KEY = "cacheReady";
 
-  @Value("${org.entur.lamassu.serializationVersion}")
-  private String serializationVersion;
-
+  private final String serializationVersion;
   private final Config redissonConfig;
 
   public RedissonCacheConfig(
@@ -43,8 +43,11 @@ public class RedissonCacheConfig {
     @Value("${org.entur.lamassu.redis.master.port}") String masterPort,
     @Value("${org.entur.lamassu.redis.slave.enabled:false}") boolean slaveEnabled,
     @Value("${org.entur.lamassu.redis.slave.host:na}") String slaveHost,
-    @Value("${org.entur.lamassu.redis.slave.port:na}") String slavePort
+    @Value("${org.entur.lamassu.redis.slave.port:na}") String slavePort,
+    @Autowired LamassuProjectInfoConfiguration lamassuProjectInfoConfiguration
   ) {
+    serializationVersion = lamassuProjectInfoConfiguration.getSerializationVersion();
+
     redissonConfig = new Config();
 
     var codec = new Kryo5Codec(this.getClass().getClassLoader());
