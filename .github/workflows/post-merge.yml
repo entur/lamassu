@@ -1,0 +1,39 @@
+name: Post-merge
+on:
+  pull_request_target:
+    branches:
+      - master
+    types: [closed]
+
+jobs:
+  changelog-entry:
+    if: github.event.pull_request.merged && github.repository_owner == 'entur' && !contains(github.event.pull_request.labels.*.name, 'skip changelog')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3.1.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Configure git user
+        run: |
+          git config --global user.name 'Entur Changelog Bot'
+          git config --global user.email 'changelog-bot@entur.org'
+      - name: Generate changelog entry from PR information
+        run: |
+          # add a line above the one which contains AUTOMATIC_CHANGELOG_PLACEHOLDER
+          ITEM="${TITLE} [#${NUMBER}](${URL})"
+          TEMP_FILE=Changelog.generated.md
+          FILE=Changelog.md
+          awk "/CHANGELOG_PLACEHOLDER/{print \"- $ITEM\"}1" $FILE > $TEMP_FILE
+          mv $TEMP_FILE $FILE
+          git add $FILE
+          git commit -m "Add changelog entry for #${NUMBER} [ci skip]"
+          git pull --rebase origin master
+          git push ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}.git HEAD:master
+        env:
+          # Use environment variables to prevent injection attack
+          TITLE: ${{ github.event.pull_request.title }}
+          NUMBER: ${{ github.event.pull_request.number }}
+          URL: ${{ github.event.pull_request.html_url }}
