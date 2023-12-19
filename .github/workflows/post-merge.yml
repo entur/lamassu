@@ -16,6 +16,10 @@ jobs:
         uses: actions/checkout@v4.1.1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Configure git user
+        run: |
+          git config --global user.name 'Lamassu Changelog Bot'
+          git config --global user.email 'lamassu-changelog-bot@entur.org'
       - name: Generate changelog entry from PR information
         run: |
           # add a line above the one which contains AUTOMATIC_CHANGELOG_PLACEHOLDER
@@ -47,6 +51,10 @@ jobs:
       - name: Install xmllint
         run: |
           sudo apt-get install -y libxml2-utils
+      - name: Configure git user
+        run: |
+          git config --global user.name 'Lamassu Serialization Version Bot'
+          git config --global user.email 'lamassu-serialization-version-bot@entur.org'
       - name: Checkout
         uses: actions/checkout@v4.1.1
         with:
