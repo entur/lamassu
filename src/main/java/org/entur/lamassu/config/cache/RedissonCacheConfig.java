@@ -44,7 +44,7 @@ public class RedissonCacheConfig {
     @Value("${org.entur.lamassu.redis.slave.enabled:false}") boolean slaveEnabled,
     @Value("${org.entur.lamassu.redis.slave.host:na}") String slaveHost,
     @Value("${org.entur.lamassu.redis.slave.port:na}") String slavePort,
-    @Autowired LamassuProjectInfoConfiguration lamassuProjectInfoConfiguration
+    LamassuProjectInfoConfiguration lamassuProjectInfoConfiguration
   ) {
     serializationVersion = lamassuProjectInfoConfiguration.getSerializationVersion();
 

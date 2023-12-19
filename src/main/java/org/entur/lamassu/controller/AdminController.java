@@ -30,7 +30,6 @@ public class AdminController {
 
   private final String serializationVersion;
 
-  @Autowired
   public AdminController(
     RedissonClient redissonClient,
     GeoSearchService geoSearchService,
