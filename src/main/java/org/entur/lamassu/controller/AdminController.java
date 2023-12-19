@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import org.entur.lamassu.config.project.LamassuProjectInfoConfiguration;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.service.GeoSearchService;
 import org.redisson.api.RFuture;
@@ -27,18 +28,18 @@ public class AdminController {
   private final GeoSearchService geoSearchService;
   RMapCache<String, Vehicle> vehicleCache;
 
-  @Value("${org.entur.lamassu.serializationVersion}")
-  private String serializationVersion;
+  private final String serializationVersion;
 
-  @Autowired
   public AdminController(
     RedissonClient redissonClient,
     GeoSearchService geoSearchService,
-    RMapCache<String, Vehicle> vehicleCache
+    RMapCache<String, Vehicle> vehicleCache,
+    LamassuProjectInfoConfiguration lamassuProjectInfoConfiguration
   ) {
     this.redissonClient = redissonClient;
     this.geoSearchService = geoSearchService;
     this.vehicleCache = vehicleCache;
+    this.serializationVersion = lamassuProjectInfoConfiguration.getSerializationVersion();
   }
 
   @GetMapping("/cache_keys")
