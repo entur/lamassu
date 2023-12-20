@@ -1,3 +1,4 @@
 {
-  "extends": ["github>entur/ror-renovate-config"]
+  "extends": ["github>entur/ror-renovate-config"],
+  "labels": ["skip changelog"]
 }
