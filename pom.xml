@@ -26,7 +26,7 @@
         <embedded-redis.version>0.8.3</embedded-redis.version>
         <okhttp.version>4.12.0</okhttp.version>
         <kryo.version>5.5.0</kryo.version>
-        <jackson.version>2.16.0</jackson.version>
+        <jackson.version>2.16.1</jackson.version>
         <gbfs-loader-java.version>2.0.19</gbfs-loader-java.version>
         <gbfs-validator-java.version>1.0.16</gbfs-validator-java.version>
         <gbfs-java-model.version>3.0.17</gbfs-java-model.version>
