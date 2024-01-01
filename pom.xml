@@ -29,7 +29,7 @@
         <jackson.version>2.16.1</jackson.version>
         <gbfs-loader-java.version>2.0.20</gbfs-loader-java.version>
         <gbfs-validator-java.version>1.0.17</gbfs-validator-java.version>
-        <gbfs-java-model.version>3.0.18</gbfs-java-model.version>
+        <gbfs-java-model.version>3.0.19</gbfs-java-model.version>
         <netex-utils.version>1.44</netex-utils.version>
 
         <prettier-java.version>2.1.0</prettier-java.version>
