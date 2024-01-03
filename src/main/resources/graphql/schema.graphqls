@@ -1,7 +1,10 @@
 type Query {
     codespaces: [String]
 
-    operators: [Operator]
+    operators(
+        "Filter by form factors"
+        formFactors: [FormFactor]
+    ):[Operator]
 
     vehicle(id: String!): Vehicle
 
