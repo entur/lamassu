@@ -27,7 +27,7 @@
         <okhttp.version>4.12.0</okhttp.version>
         <kryo.version>5.6.0</kryo.version>
         <jackson.version>2.16.1</jackson.version>
-        <gbfs-loader-java.version>2.1.1</gbfs-loader-java.version>
+        <gbfs-loader-java.version>2.1.3</gbfs-loader-java.version>
         <gbfs-validator-java.version>1.0.21</gbfs-validator-java.version>
         <gbfs-java-model.version>3.0.23</gbfs-java-model.version>
         <netex-utils.version>1.44</netex-utils.version>
