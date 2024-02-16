@@ -2,6 +2,7 @@ package org.entur.lamassu.controller;
 
 import java.net.URI;
 import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
@@ -20,10 +21,10 @@ import org.entur.gbfs.v2_3.system_information.GBFSSystemInformation;
 import org.entur.gbfs.v2_3.system_pricing_plans.GBFSSystemPricingPlans;
 import org.entur.gbfs.v2_3.system_regions.GBFSSystemRegions;
 import org.entur.gbfs.v2_3.vehicle_types.GBFSVehicleTypes;
-import org.entur.gbfs.v3_0_RC.manifest.GBFSData;
-import org.entur.gbfs.v3_0_RC.manifest.GBFSDataset;
-import org.entur.gbfs.v3_0_RC.manifest.GBFSManifest;
-import org.entur.gbfs.v3_0_RC.manifest.GBFSVersion;
+import org.entur.gbfs.v3_0_RC2.manifest.GBFSData;
+import org.entur.gbfs.v3_0_RC2.manifest.GBFSDataset;
+import org.entur.gbfs.v3_0_RC2.manifest.GBFSManifest;
+import org.entur.gbfs.v3_0_RC2.manifest.GBFSVersion;
 import org.entur.lamassu.cache.GBFSFeedCache;
 import org.entur.lamassu.model.discovery.System;
 import org.entur.lamassu.model.discovery.SystemDiscovery;
@@ -188,8 +189,8 @@ public class GBFSFeedController {
     var data = systemDiscoveryService.getSystemDiscovery();
 
     var manifest = new GBFSManifest()
-      .withVersion(GBFSManifest.Version._3_0_RC)
-      .withLastUpdated((int) java.lang.System.currentTimeMillis() / 1000)
+      .withVersion(GBFSManifest.Version._3_0_RC_2)
+      .withLastUpdated(new Date())
       .withTtl(3600)
       .withData(
         new GBFSData()
@@ -206,7 +207,7 @@ public class GBFSFeedController {
                         .withVersion(GBFSVersion.Version._2_3)
                         .withUrl(system.getUrl()),
                       new GBFSVersion()
-                        .withVersion(GBFSVersion.Version._3_0_RC)
+                        .withVersion(GBFSVersion.Version._3_0_RC_2)
                         .withUrl(baseUrl + "/gbfs/v3beta/" + system.getId() + "/gbfs")
                     )
                   )
@@ -289,7 +290,7 @@ public class GBFSFeedController {
         throw new NoSuchElementException();
       }
 
-      var feedName = org.entur.gbfs.v3_0_RC.gbfs.GBFSFeed.Name.fromValue(feed);
+      var feedName = org.entur.gbfs.v3_0_RC2.gbfs.GBFSFeed.Name.fromValue(feed);
 
       return ResponseEntity
         .ok()
@@ -297,7 +298,7 @@ public class GBFSFeedController {
           CacheControl
             .maxAge(
               CacheUtil.getMaxAge(
-                org.entur.gbfs.v3_0_RC.gbfs.GBFSFeedName.implementingClass(feedName),
+                org.entur.gbfs.v3_0_RC2.gbfs.GBFSFeedName.implementingClass(feedName),
                 mapped,
                 systemId,
                 feed,
@@ -309,8 +310,8 @@ public class GBFSFeedController {
         )
         .lastModified(
           CacheUtil.getLastModified(
-            org.entur.gbfs.v3_0_RC.gbfs.GBFSFeedName.implementingClass(feedName),
-            data,
+            org.entur.gbfs.v3_0_RC2.gbfs.GBFSFeedName.implementingClass(feedName),
+            mapped,
             systemId,
             feed
           )

@@ -19,6 +19,7 @@
 package org.entur.lamassu.util;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +52,15 @@ public class CacheUtil {
   ) {
     int maxAge = 60;
     try {
-      Integer lastUpdated = (Integer) clazz.getMethod("getLastUpdated").invoke(data);
+      int lastUpdated;
+      Object lastUpdatedObject = clazz.getMethod("getLastUpdated").invoke(data);
+
+      if (lastUpdatedObject instanceof Date) {
+        lastUpdated = (int) ((Date) lastUpdatedObject).getTime() / 1000;
+      } else {
+        lastUpdated = (int) lastUpdatedObject;
+      }
+
       Integer ttl = (Integer) clazz.getMethod("getTtl").invoke(data);
 
       maxAge = getTtl(now, lastUpdated, ttl, 0);
@@ -74,8 +83,16 @@ public class CacheUtil {
     String feed
   ) {
     try {
-      Integer lastUpdated = (Integer) clazz.getMethod("getLastUpdated").invoke(data);
-      return lastUpdated.longValue() * 1000L;
+      int lastUpdated;
+      Object lastUpdatedObject = clazz.getMethod("getLastUpdated").invoke(data);
+
+      if (lastUpdatedObject instanceof Date) {
+        lastUpdated = (int) ((Date) lastUpdatedObject).getTime() / 1000;
+      } else {
+        lastUpdated = (int) lastUpdatedObject;
+      }
+
+      return lastUpdated * 1000L;
     } catch (
       IllegalAccessException
       | InvocationTargetException
