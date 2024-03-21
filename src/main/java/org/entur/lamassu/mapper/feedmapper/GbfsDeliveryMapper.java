@@ -18,7 +18,7 @@
 
 package org.entur.lamassu.mapper.feedmapper;
 
-import org.entur.gbfs.GbfsDelivery;
+import org.entur.gbfs.loader.v2.GbfsV2Delivery;
 import org.entur.gbfs.v2_3.free_bike_status.GBFSFreeBikeStatus;
 import org.entur.gbfs.v2_3.gbfs.GBFS;
 import org.entur.gbfs.v2_3.geofencing_zones.GBFSGeofencingZones;
@@ -80,52 +80,36 @@ public class GbfsDeliveryMapper {
     this.freeBikeStatusFeedMapper = freeBikeStatusFeedMapper;
   }
 
-  // Lamassu currently only support producing a single version of GBFS, therefore
-  // mapping of the versions file, if it exists, is intentionally skipped.
-  public GbfsDelivery mapGbfsDelivery(GbfsDelivery delivery, FeedProvider feedProvider) {
-    var mapped = new GbfsDelivery();
-    mapped.setDiscovery(discoveryFeedMapper.map(delivery.getDiscovery(), feedProvider));
-    mapped.setSystemInformation(
-      systemInformationFeedMapper.map(delivery.getSystemInformation(), feedProvider)
+  public GbfsV2Delivery mapGbfsDelivery(
+    GbfsV2Delivery delivery,
+    FeedProvider feedProvider
+  ) {
+    var mappedVehicleTypes = vehicleTypesFeedMapper.map(
+      delivery.vehicleTypes(),
+      feedProvider
     );
-    mapped.setSystemAlerts(
-      systemAlertsFeedMapper.map(delivery.getSystemAlerts(), feedProvider)
-    );
-    mapped.setSystemCalendar(
-      systemCalendarFeedMapper.map(delivery.getSystemCalendar(), feedProvider)
-    );
-    mapped.setSystemRegions(
-      systemRegionsFeedMapper.map(delivery.getSystemRegions(), feedProvider)
-    );
-    mapped.setSystemPricingPlans(
-      systemPricingPlansFeedMapper.map(delivery.getSystemPricingPlans(), feedProvider)
-    );
-    mapped.setSystemHours(
-      systemHoursFeedMapper.map(delivery.getSystemHours(), feedProvider)
-    );
-    mapped.setVehicleTypes(
-      vehicleTypesFeedMapper.map(delivery.getVehicleTypes(), feedProvider)
-    );
-    mapped.setGeofencingZones(
-      geofencingZonesFeedMapper.map(delivery.getGeofencingZones(), feedProvider)
-    );
-    mapped.setStationInformation(
-      stationInformationFeedMapper.map(delivery.getStationInformation(), feedProvider)
-    );
-    mapped.setStationStatus(
+    return new GbfsV2Delivery(
+      discoveryFeedMapper.map(delivery.discovery(), feedProvider),
+      // Lamassu currently only support producing a single version of GBFS, therefore
+      // mapping of the versions file, if it exists, is intentionally skipped.
+      null,
+      systemInformationFeedMapper.map(delivery.systemInformation(), feedProvider),
+      mappedVehicleTypes,
+      stationInformationFeedMapper.map(delivery.stationInformation(), feedProvider),
       stationStatusFeedMapper.map(
-        delivery.getStationStatus(),
+        delivery.stationStatus(),
         feedProvider,
         stationStatus ->
-          VehicleTypeCapacityProducer.addToStations(
-            stationStatus,
-            mapped.getVehicleTypes()
-          )
-      )
+          VehicleTypeCapacityProducer.addToStations(stationStatus, mappedVehicleTypes)
+      ),
+      freeBikeStatusFeedMapper.map(delivery.freeBikeStatus(), feedProvider),
+      systemHoursFeedMapper.map(delivery.systemHours(), feedProvider),
+      systemCalendarFeedMapper.map(delivery.systemCalendar(), feedProvider),
+      systemRegionsFeedMapper.map(delivery.systemRegions(), feedProvider),
+      systemPricingPlansFeedMapper.map(delivery.systemPricingPlans(), feedProvider),
+      systemAlertsFeedMapper.map(delivery.systemAlerts(), feedProvider),
+      geofencingZonesFeedMapper.map(delivery.geofencingZones(), feedProvider),
+      null
     );
-    mapped.setFreeBikeStatus(
-      freeBikeStatusFeedMapper.map(delivery.getFreeBikeStatus(), feedProvider)
-    );
-    return mapped;
   }
 }

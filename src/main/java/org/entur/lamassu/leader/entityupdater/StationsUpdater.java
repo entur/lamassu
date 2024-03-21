@@ -26,7 +26,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import org.entur.gbfs.GbfsDelivery;
+import org.entur.gbfs.loader.v2.GbfsV2Delivery;
 import org.entur.gbfs.v2_3.station_information.GBFSData;
 import org.entur.gbfs.v2_3.station_information.GBFSStationInformation;
 import org.entur.gbfs.v2_3.station_status.GBFSStation;
@@ -83,16 +83,16 @@ public class StationsUpdater {
 
   public void addOrUpdateStations(
     FeedProvider feedProvider,
-    GbfsDelivery delivery,
-    GbfsDelivery oldDelivery
+    GbfsV2Delivery delivery,
+    GbfsV2Delivery oldDelivery
   ) {
-    GBFSStationStatus stationStatusFeed = delivery.getStationStatus();
-    GBFSStationStatus oldStationStatusFeed = oldDelivery.getStationStatus();
-    GBFSStationInformation stationInformationFeed = delivery.getStationInformation();
-    GBFSSystemInformation systemInformationFeed = delivery.getSystemInformation();
-    GBFSSystemPricingPlans pricingPlansFeed = delivery.getSystemPricingPlans();
-    GBFSVehicleTypes vehicleTypesFeed = delivery.getVehicleTypes();
-    GBFSSystemRegions systemRegionsFeed = delivery.getSystemRegions();
+    GBFSStationStatus stationStatusFeed = delivery.stationStatus();
+    GBFSStationStatus oldStationStatusFeed = oldDelivery.stationStatus();
+    GBFSStationInformation stationInformationFeed = delivery.stationInformation();
+    GBFSSystemInformation systemInformationFeed = delivery.systemInformation();
+    GBFSSystemPricingPlans pricingPlansFeed = delivery.systemPricingPlans();
+    GBFSVehicleTypes vehicleTypesFeed = delivery.vehicleTypes();
+    GBFSSystemRegions systemRegionsFeed = delivery.systemRegions();
 
     var stationIds = stationStatusFeed
       .getData()

@@ -19,14 +19,14 @@
 package org.entur.lamassu.leader;
 
 import java.net.URI;
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
-import org.entur.gbfs.GbfsDelivery;
 import org.entur.gbfs.GbfsSubscriptionManager;
 import org.entur.gbfs.GbfsSubscriptionOptions;
+import org.entur.gbfs.loader.v2.GbfsV2Delivery;
+import org.entur.gbfs.loader.v3.GbfsV3Delivery;
+import org.entur.gbfs.mapper.GBFSMapper;
 import org.entur.gbfs.validation.model.ValidationResult;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.leader.entityupdater.EntityCachesUpdater;
@@ -36,7 +36,6 @@ import org.entur.lamassu.metrics.MetricsService;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.redisson.api.RBucket;
 import org.redisson.api.RListMultimap;
-import org.redisson.api.RMapCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,10 +120,23 @@ public class FeedUpdater {
       );
     }
     options.setEnableValidation(enableValidation);
-    String id = subscriptionManager.subscribe(
-      options,
-      delivery -> receiveUpdate(feedProvider, delivery)
-    );
+
+    String id = null;
+
+    if (feedProvider.getVersion() != null && feedProvider.getVersion().startsWith("3")) {
+      id =
+        subscriptionManager.subscribeV3(
+          options,
+          gbfsV3Delivery ->
+            receiveUpdate(feedProvider, map(gbfsV3Delivery, feedProvider.getLanguage()))
+        );
+    } else {
+      id =
+        subscriptionManager.subscribeV2(
+          options,
+          delivery -> receiveUpdate(feedProvider, delivery)
+        );
+    }
 
     if (id == null) {
       logger.warn(
@@ -142,9 +154,28 @@ public class FeedUpdater {
     }
   }
 
-  private void receiveUpdate(FeedProvider feedProvider, GbfsDelivery delivery) {
+  private GbfsV2Delivery map(GbfsV3Delivery source, String languageCode) {
+    return new GbfsV2Delivery(
+      GBFSMapper.INSTANCE.map(source.discovery(), languageCode),
+      null,
+      GBFSMapper.INSTANCE.map(source.systemInformation(), languageCode),
+      GBFSMapper.INSTANCE.map(source.vehicleTypes(), languageCode),
+      GBFSMapper.INSTANCE.map(source.stationInformation(), languageCode),
+      GBFSMapper.INSTANCE.map(source.stationStatus(), languageCode),
+      GBFSMapper.INSTANCE.map(source.vehicleStatus(), languageCode),
+      null,
+      null,
+      GBFSMapper.INSTANCE.map(source.systemRegions(), languageCode),
+      GBFSMapper.INSTANCE.map(source.systemPricingPlans(), languageCode),
+      GBFSMapper.INSTANCE.map(source.systemAlerts(), languageCode),
+      GBFSMapper.INSTANCE.map(source.geofencingZones(), languageCode),
+      source.validationResult()
+    );
+  }
+
+  private void receiveUpdate(FeedProvider feedProvider, GbfsV2Delivery delivery) {
     if (enableValidation) {
-      if (delivery.getValidationResult().getSummary().getErrorsCount() > 0) {
+      if (delivery.validationResult().getSummary().getErrorsCount() > 0) {
         logger.info(
           "Validation errors in feed update for system {}",
           feedProvider.getSystemId()
@@ -152,12 +183,9 @@ public class FeedUpdater {
       }
       updateValidationReportsCache(
         feedProvider.getSystemId(),
-        delivery.getValidationResult()
+        delivery.validationResult()
       );
-      metricsService.registerValidationResult(
-        feedProvider,
-        delivery.getValidationResult()
-      );
+      metricsService.registerValidationResult(feedProvider, delivery.validationResult());
     }
 
     var mappedDelivery = gbfsDeliveryMapper.mapGbfsDelivery(delivery, feedProvider);

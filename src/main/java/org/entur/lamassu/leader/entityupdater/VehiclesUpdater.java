@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import org.entur.gbfs.GbfsDelivery;
+import org.entur.gbfs.loader.v2.GbfsV2Delivery;
 import org.entur.gbfs.v2_3.free_bike_status.GBFSBike;
 import org.entur.gbfs.v2_3.free_bike_status.GBFSFreeBikeStatus;
 import org.entur.gbfs.v2_3.system_information.GBFSSystemInformation;
@@ -90,14 +90,14 @@ public class VehiclesUpdater {
 
   public void addOrUpdateVehicles(
     FeedProvider feedProvider,
-    GbfsDelivery delivery,
-    GbfsDelivery oldDelivery
+    GbfsV2Delivery delivery,
+    GbfsV2Delivery oldDelivery
   ) {
-    GBFSFreeBikeStatus freeBikeStatusFeed = delivery.getFreeBikeStatus();
-    GBFSFreeBikeStatus oldFreeBikeStatusFeed = oldDelivery.getFreeBikeStatus();
-    GBFSSystemInformation systemInformationFeed = delivery.getSystemInformation();
-    GBFSSystemPricingPlans pricingPlansFeed = delivery.getSystemPricingPlans();
-    GBFSVehicleTypes vehicleTypesFeed = delivery.getVehicleTypes();
+    GBFSFreeBikeStatus freeBikeStatusFeed = delivery.freeBikeStatus();
+    GBFSFreeBikeStatus oldFreeBikeStatusFeed = oldDelivery.freeBikeStatus();
+    GBFSSystemInformation systemInformationFeed = delivery.systemInformation();
+    GBFSSystemPricingPlans pricingPlansFeed = delivery.systemPricingPlans();
+    GBFSVehicleTypes vehicleTypesFeed = delivery.vehicleTypes();
 
     var vehicleIds = freeBikeStatusFeed
       .getData()

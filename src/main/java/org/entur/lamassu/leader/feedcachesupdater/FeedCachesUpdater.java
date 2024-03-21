@@ -21,7 +21,7 @@ package org.entur.lamassu.leader.feedcachesupdater;
 import java.lang.reflect.InvocationTargetException;
 import java.time.Instant;
 import java.util.concurrent.TimeUnit;
-import org.entur.gbfs.GbfsDelivery;
+import org.entur.gbfs.loader.v2.GbfsV2Delivery;
 import org.entur.gbfs.v2_3.gbfs.GBFSFeedName;
 import org.entur.lamassu.cache.GBFSFeedCache;
 import org.entur.lamassu.model.provider.FeedProvider;
@@ -50,54 +50,62 @@ public class FeedCachesUpdater {
     this.feedCache = feedCache;
   }
 
-  public GbfsDelivery updateFeedCaches(FeedProvider feedProvider, GbfsDelivery delivery) {
-    updateFeedCache(feedProvider, GBFSFeedName.GBFS, delivery.getDiscovery());
+  public GbfsV2Delivery updateFeedCaches(
+    FeedProvider feedProvider,
+    GbfsV2Delivery delivery
+  ) {
+    updateFeedCache(feedProvider, GBFSFeedName.GBFS, delivery.discovery());
     updateFeedCache(
       feedProvider,
       GBFSFeedName.SystemInformation,
-      delivery.getSystemInformation()
+      delivery.systemInformation()
     );
-    updateFeedCache(feedProvider, GBFSFeedName.SystemAlerts, delivery.getSystemAlerts());
-    updateFeedCache(
-      feedProvider,
-      GBFSFeedName.SystemCalendar,
-      delivery.getSystemCalendar()
-    );
-    updateFeedCache(
-      feedProvider,
-      GBFSFeedName.SystemRegions,
-      delivery.getSystemRegions()
-    );
+    updateFeedCache(feedProvider, GBFSFeedName.SystemAlerts, delivery.systemAlerts());
+    updateFeedCache(feedProvider, GBFSFeedName.SystemCalendar, delivery.systemCalendar());
+    updateFeedCache(feedProvider, GBFSFeedName.SystemRegions, delivery.systemRegions());
     updateFeedCache(
       feedProvider,
       GBFSFeedName.SystemPricingPlans,
-      delivery.getSystemPricingPlans()
+      delivery.systemPricingPlans()
     );
-    updateFeedCache(feedProvider, GBFSFeedName.SystemHours, delivery.getSystemHours());
-    updateFeedCache(feedProvider, GBFSFeedName.VehicleTypes, delivery.getVehicleTypes());
+    updateFeedCache(feedProvider, GBFSFeedName.SystemHours, delivery.systemHours());
+    updateFeedCache(feedProvider, GBFSFeedName.VehicleTypes, delivery.vehicleTypes());
     updateFeedCache(
       feedProvider,
       GBFSFeedName.GeofencingZones,
-      delivery.getGeofencingZones()
+      delivery.geofencingZones()
     );
     updateFeedCache(
       feedProvider,
       GBFSFeedName.StationInformation,
-      delivery.getStationInformation()
+      delivery.stationInformation()
     );
     var oldStationStatus = getAndUpdateFeedCache(
       feedProvider,
       GBFSFeedName.StationStatus,
-      delivery.getStationStatus()
+      delivery.stationStatus()
     );
     var oldFreeBikeStatus = getAndUpdateFeedCache(
       feedProvider,
       GBFSFeedName.FreeBikeStatus,
-      delivery.getFreeBikeStatus()
+      delivery.freeBikeStatus()
     );
-    var oldDelivery = new GbfsDelivery();
-    oldDelivery.setStationStatus(oldStationStatus);
-    oldDelivery.setFreeBikeStatus(oldFreeBikeStatus);
+    var oldDelivery = new GbfsV2Delivery(
+      null,
+      null,
+      null,
+      null,
+      null,
+      oldStationStatus,
+      oldFreeBikeStatus,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    );
     return oldDelivery;
   }
 
