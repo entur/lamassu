@@ -100,6 +100,7 @@ public class GbfsV2DeliveryMapper {
       discoveryFeedMapper.map(delivery.discovery(), feedProvider),
       // Lamassu currently only support producing a single version of GBFS, therefore
       // mapping of the versions file, if it exists, is intentionally skipped.
+      // TODO since we now produce v2.x and v3.x we can generate the versions feed
       null,
       systemInformationFeedMapper.map(delivery.systemInformation(), feedProvider),
       mappedVehicleTypes,

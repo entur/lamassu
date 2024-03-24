@@ -33,6 +33,7 @@ public class GbfsFeedVersionMappers {
   public static GbfsV2Delivery map(GbfsV3Delivery source, String languageCode) {
     return new GbfsV2Delivery(
       GBFSMapper.INSTANCE.map(source.discovery(), languageCode),
+      // TODO since we now produce v2.x and v3.x we can generate the versions feed
       null,
       GBFSMapper.INSTANCE.map(source.systemInformation(), languageCode),
       GBFSMapper.INSTANCE.map(source.vehicleTypes(), languageCode),
@@ -55,6 +56,7 @@ public class GbfsFeedVersionMappers {
   public static GbfsV3Delivery map(GbfsV2Delivery source, String languageCode) {
     return new GbfsV3Delivery(
       GBFSMapper.INSTANCE.map(source.discovery(), languageCode),
+      // TODO since we now produce v2.x and v3.x we can generate the versions feed
       null,
       GBFSMapper.INSTANCE.map(source.systemInformation(), languageCode),
       GBFSMapper.INSTANCE.map(source.vehicleTypes(), languageCode),

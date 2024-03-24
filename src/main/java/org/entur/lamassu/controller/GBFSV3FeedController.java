@@ -69,6 +69,7 @@ public class GBFSV3FeedController {
   public ResponseEntity<GBFSManifest> getV3Manifest() {
     var data = systemDiscoveryService.getSystemDiscovery();
 
+    // TODO this should be moved into system discovery service
     var manifest = new GBFSManifest()
       .withVersion(GBFSManifest.Version._3_0_RC_2)
       .withLastUpdated(new Date())

@@ -86,6 +86,7 @@ public class V3DiscoveryFeedMapper extends AbstractFeedMapper<GBFSGbfs> {
       })
       // Lamassu currently only support producing a single version of GBFS, therefore
       // the versions file, if it exists, is intentionally skipped.
+      // TODO since we now produce v2.x and v3.x we can generate the versions feed
       .filter(f -> !f.getName().equals(GBFSFeed.Name.GBFS_VERSIONS))
       .collect(Collectors.toList());
 
