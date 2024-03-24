@@ -27,6 +27,7 @@ import org.springframework.context.annotation.Profile;
 public class RedissonCacheConfig {
 
   public static final String GBFS_FEED_CACHE_KEY = "gbfsFeedCache";
+  public static final String GBFS_V3_FEED_CACHE_KEY = "gbfsV3FeedCache";
   public static final String VEHICLE_CACHE_KEY = "vehicleCache";
   public static final String STATION_CACHE_KEY = "stationCache";
   public static final String GEOFENCING_ZONES_CACHE_KEY = "geofencingZonesCache";
@@ -87,6 +88,13 @@ public class RedissonCacheConfig {
   @Bean
   public RMapCache<String, Object> feedCache(RedissonClient redissonClient) {
     return redissonClient.getMapCache(GBFS_FEED_CACHE_KEY + "_" + serializationVersion);
+  }
+
+  @Bean
+  RMapCache<String, Object> v3FeedCache(RedissonClient redissonClient) {
+    return redissonClient.getMapCache(
+      GBFS_V3_FEED_CACHE_KEY + "_" + serializationVersion
+    );
   }
 
   @Bean

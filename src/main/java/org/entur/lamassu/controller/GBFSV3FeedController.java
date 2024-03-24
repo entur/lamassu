@@ -24,25 +24,16 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import org.entur.gbfs.mapper.GBFSMapper;
-import org.entur.gbfs.v2_3.free_bike_status.GBFSFreeBikeStatus;
-import org.entur.gbfs.v2_3.gbfs.GBFS;
-import org.entur.gbfs.v2_3.geofencing_zones.GBFSGeofencingZones;
-import org.entur.gbfs.v2_3.station_information.GBFSStationInformation;
-import org.entur.gbfs.v2_3.station_status.GBFSStationStatus;
-import org.entur.gbfs.v2_3.system_alerts.GBFSSystemAlerts;
-import org.entur.gbfs.v2_3.system_information.GBFSSystemInformation;
-import org.entur.gbfs.v2_3.system_pricing_plans.GBFSSystemPricingPlans;
-import org.entur.gbfs.v2_3.system_regions.GBFSSystemRegions;
-import org.entur.gbfs.v2_3.vehicle_types.GBFSVehicleTypes;
+import org.entur.gbfs.v3_0_RC2.gbfs.GBFSFeed;
 import org.entur.gbfs.v3_0_RC2.manifest.GBFSData;
 import org.entur.gbfs.v3_0_RC2.manifest.GBFSDataset;
 import org.entur.gbfs.v3_0_RC2.manifest.GBFSManifest;
 import org.entur.gbfs.v3_0_RC2.manifest.GBFSVersion;
-import org.entur.lamassu.cache.GBFSFeedCache;
+import org.entur.lamassu.cache.GBFSV3FeedCache;
 import org.entur.lamassu.service.FeedProviderService;
 import org.entur.lamassu.service.SystemDiscoveryService;
 import org.entur.lamassu.util.CacheUtil;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.CacheControl;
@@ -54,10 +45,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-public class GBFSV3FeedController extends BaseGBFSFeedController {
+public class GBFSV3FeedController {
 
   private final SystemDiscoveryService systemDiscoveryService;
   private final FeedProviderService feedProviderService;
+  private final GBFSV3FeedCache v3FeedCache;
 
   @Value("${org.entur.lamassu.baseUrl}")
   private String baseUrl;
@@ -65,10 +57,10 @@ public class GBFSV3FeedController extends BaseGBFSFeedController {
   @Autowired
   public GBFSV3FeedController(
     SystemDiscoveryService systemDiscoveryService,
-    GBFSFeedCache feedCache,
+    GBFSV3FeedCache v3FeedCache,
     FeedProviderService feedProviderService
   ) {
-    super(feedCache, feedProviderService);
+    this.v3FeedCache = v3FeedCache;
     this.systemDiscoveryService = systemDiscoveryService;
     this.feedProviderService = feedProviderService;
   }
@@ -119,67 +111,9 @@ public class GBFSV3FeedController extends BaseGBFSFeedController {
     @PathVariable String feed
   ) {
     try {
-      Object mapped = null;
+      var feedName = GBFSFeed.Name.fromValue(feed);
 
-      var feedProvider = feedProviderService.getFeedProviderBySystemId(systemId);
-      var data = getFeed(
-        systemId,
-        feed.equals("vehicle_status") ? "free_bike_status" : feed
-      );
-
-      if (data instanceof GBFS) {
-        var tmp = GBFSMapper.INSTANCE.map((GBFS) data, feedProvider.getLanguage());
-        tmp
-          .getData()
-          .getFeeds()
-          .stream()
-          .forEach(localFeed -> {
-            localFeed.setUrl(
-              baseUrl + "/gbfs/v3beta/" + systemId + "/" + localFeed.getName()
-            );
-          });
-        mapped = tmp;
-      } else if (data instanceof GBFSVehicleTypes) {
-        mapped =
-          GBFSMapper.INSTANCE.map((GBFSVehicleTypes) data, feedProvider.getLanguage());
-      } else if (data instanceof GBFSSystemPricingPlans) {
-        mapped =
-          GBFSMapper.INSTANCE.map(
-            (GBFSSystemPricingPlans) data,
-            feedProvider.getLanguage()
-          );
-      } else if (data instanceof GBFSFreeBikeStatus) {
-        mapped =
-          GBFSMapper.INSTANCE.map((GBFSFreeBikeStatus) data, feedProvider.getLanguage());
-      } else if (data instanceof GBFSStationInformation) {
-        mapped =
-          GBFSMapper.INSTANCE.map(
-            (GBFSStationInformation) data,
-            feedProvider.getLanguage()
-          );
-      } else if (data instanceof GBFSStationStatus) {
-        mapped =
-          GBFSMapper.INSTANCE.map((GBFSStationStatus) data, feedProvider.getLanguage());
-      } else if (data instanceof GBFSSystemRegions) {
-        mapped =
-          GBFSMapper.INSTANCE.map((GBFSSystemRegions) data, feedProvider.getLanguage());
-      } else if (data instanceof GBFSSystemAlerts) {
-        mapped =
-          GBFSMapper.INSTANCE.map((GBFSSystemAlerts) data, feedProvider.getLanguage());
-      } else if (data instanceof GBFSGeofencingZones) {
-        mapped =
-          GBFSMapper.INSTANCE.map((GBFSGeofencingZones) data, feedProvider.getLanguage());
-      } else if (data instanceof GBFSSystemInformation) {
-        mapped =
-          GBFSMapper.INSTANCE.map(
-            (GBFSSystemInformation) data,
-            feedProvider.getLanguage()
-          );
-      } else {
-        throw new NoSuchElementException();
-      }
-
-      var feedName = org.entur.gbfs.v3_0_RC2.gbfs.GBFSFeed.Name.fromValue(feed);
+      var data = getFeed(systemId, feed);
 
       return ResponseEntity
         .ok()
@@ -188,7 +122,7 @@ public class GBFSV3FeedController extends BaseGBFSFeedController {
             .maxAge(
               CacheUtil.getMaxAge(
                 org.entur.gbfs.v3_0_RC2.gbfs.GBFSFeedName.implementingClass(feedName),
-                mapped,
+                data,
                 systemId,
                 feed,
                 (int) Instant.now().getEpochSecond()
@@ -200,16 +134,33 @@ public class GBFSV3FeedController extends BaseGBFSFeedController {
         .lastModified(
           CacheUtil.getLastModified(
             org.entur.gbfs.v3_0_RC2.gbfs.GBFSFeedName.implementingClass(feedName),
-            mapped,
+            data,
             systemId,
             feed
           )
         )
-        .body(mapped);
+        .body(data);
     } catch (IllegalArgumentException e) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     } catch (NoSuchElementException e) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
+  }
+
+  @NotNull
+  protected Object getFeed(String systemId, String feed) {
+    var feedName = GBFSFeed.Name.fromValue(feed);
+    var feedProvider = feedProviderService.getFeedProviderBySystemId(systemId);
+
+    if (feedProvider == null) {
+      throw new NoSuchElementException();
+    }
+
+    var data = v3FeedCache.find(feedName, feedProvider);
+
+    if (data == null) {
+      throw new NoSuchElementException();
+    }
+    return data;
   }
 }
