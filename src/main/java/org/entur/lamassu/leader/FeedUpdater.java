@@ -124,17 +124,19 @@ public class FeedUpdater {
   }
 
   private void createSubscription(FeedProvider feedProvider) {
-    var options = new GbfsSubscriptionOptions();
-    options.setDiscoveryURI(URI.create(feedProvider.getUrl()));
-    options.setLanguageCode(feedProvider.getLanguage());
-    if (feedProvider.getAuthentication() != null) {
-      options.setRequestAuthenticator(
-        feedProvider.getAuthentication().getRequestAuthenticator()
-      );
-    }
-    options.setEnableValidation(enableValidation);
+    var options = new GbfsSubscriptionOptions(
+      URI.create(feedProvider.getUrl()),
+      feedProvider.getLanguage(),
+      null,
+      null,
+      feedProvider.getAuthentication() != null
+        ? feedProvider.getAuthentication().getRequestAuthenticator()
+        : null,
+      null,
+      enableValidation
+    );
 
-    String id = null;
+    String id;
 
     if (feedProvider.getVersion() != null && feedProvider.getVersion().startsWith("3")) {
       id =
