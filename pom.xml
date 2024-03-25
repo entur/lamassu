@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.entur.ror</groupId>
         <artifactId>superpom</artifactId>
-        <version>2.10</version>
+        <version>2.11</version>
     </parent>
     <groupId>org.entur</groupId>
     <artifactId>lamassu</artifactId>
@@ -29,7 +29,7 @@
         <jackson.version>2.17.0</jackson.version>
         <gbfs-loader-java.version>3.0.0-SNAPSHOT</gbfs-loader-java.version>
         <gbfs-validator-java.version>1.0.24</gbfs-validator-java.version>
-        <gbfs-java-model.version>3.0.26</gbfs-java-model.version>
+        <gbfs-java-model.version>3.0.27</gbfs-java-model.version>
         <netex-utils.version>1.44</netex-utils.version>
 
         <prettier-java.version>2.1.0</prettier-java.version>
@@ -76,7 +76,7 @@
         <dependency>
             <groupId>org.entur.gbfs</groupId>
             <artifactId>gbfs-mapper-java</artifactId>
-            <version>1.0.31</version>
+            <version>1.0.32</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
