@@ -2,25 +2,50 @@ package org.entur.lamassu.leader.entityupdater;
 
 import java.util.HashMap;
 import org.entur.gbfs.v2_3.free_bike_status.GBFSBike;
-import org.entur.gbfs.v2_3.vehicle_types.GBFSVehicleType;
-import org.entur.gbfs.v2_3.vehicle_types.GBFSVehicleTypes;
+import org.entur.lamassu.model.entities.PricingPlan;
+import org.entur.lamassu.model.entities.VehicleType;
 import org.junit.Test;
 
 public class VehicleFilterTest {
 
-  @Test
-  public void testVehicleWithoutPricingPlanIsntSkipped() {
-    GBFSVehicleType vehicleType = new GBFSVehicleType();
-    vehicleType.setVehicleTypeId("vehicleTypeId");
-    HashMap vehicleTypes = new HashMap<String, GBFSVehicleTypes>();
-    vehicleTypes.put(vehicleType.getVehicleTypeId(), vehicleType);
+  private static String VEHICLE_TYPE_ID = "vehicleTypeId";
 
-    VehicleFilter filter = new VehicleFilter(new HashMap<>(), vehicleTypes);
+  private HashMap<String, VehicleType> vehicleTypesWithPricingPlan(
+    PricingPlan optionalPricingPlan
+  ) {
+    VehicleType vehicleType = new VehicleType();
+    vehicleType.setDefaultPricingPlan(optionalPricingPlan);
+    HashMap<String, VehicleType> vehicleTypes = new HashMap<>();
+    vehicleTypes.put(VEHICLE_TYPE_ID, vehicleType);
+
+    return vehicleTypes;
+  }
+
+  @Test
+  public void testVehicleWithoutPricingPlanButDefaultPricingPlanIsntSkipped() {
+    VehicleFilter filter = new VehicleFilter(
+      new HashMap<>(),
+      vehicleTypesWithPricingPlan(new PricingPlan())
+    );
 
     GBFSBike vehicle = new GBFSBike();
     vehicle.setBikeId("VehicleWithoutPricingPlan");
     vehicle.setVehicleTypeId("vehicleTypeId");
 
     assert filter.test(vehicle) == true;
+  }
+
+  @Test
+  public void testVehicleWithoutPricingPlanAndWithoutDefaultPricingPlanIsSkipped() {
+    VehicleFilter filter = new VehicleFilter(
+      new HashMap<>(),
+      vehicleTypesWithPricingPlan(null)
+    );
+
+    GBFSBike vehicle = new GBFSBike();
+    vehicle.setBikeId("VehicleWithoutPricingPlan");
+    vehicle.setVehicleTypeId("vehicleTypeId");
+
+    assert filter.test(vehicle) == false;
   }
 }
