@@ -16,22 +16,23 @@
  *
  */
 
-package org.entur.lamassu.mapper.feedmapper;
+package org.entur.lamassu.mapper.feedmapper.v3;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import org.entur.gbfs.v2_3.system_regions.GBFSData;
-import org.entur.gbfs.v2_3.system_regions.GBFSRegion;
-import org.entur.gbfs.v2_3.system_regions.GBFSSystemRegions;
+import org.entur.gbfs.v3_0_RC2.system_regions.GBFSData;
+import org.entur.gbfs.v3_0_RC2.system_regions.GBFSRegion;
+import org.entur.gbfs.v3_0_RC2.system_regions.GBFSSystemRegions;
+import org.entur.lamassu.mapper.feedmapper.AbstractFeedMapper;
+import org.entur.lamassu.mapper.feedmapper.IdMappers;
 import org.entur.lamassu.model.provider.FeedProvider;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SystemRegionsFeedMapper extends AbstractFeedMapper<GBFSSystemRegions> {
+public class V3SystemRegionsFeedMapper extends AbstractFeedMapper<GBFSSystemRegions> {
 
-  @Value("${org.entur.lamassu.targetGbfsVersion:2.2}")
-  private String targetGbfsVersion;
+  private static final GBFSSystemRegions.Version VERSION =
+    GBFSSystemRegions.Version._3_0_RC_2;
 
   @Override
   public GBFSSystemRegions map(GBFSSystemRegions source, FeedProvider feedProvider) {
@@ -40,7 +41,7 @@ public class SystemRegionsFeedMapper extends AbstractFeedMapper<GBFSSystemRegion
     }
 
     var mapped = new GBFSSystemRegions();
-    mapped.setVersion(targetGbfsVersion);
+    mapped.setVersion(VERSION);
     mapped.setTtl(source.getTtl());
     mapped.setLastUpdated(source.getLastUpdated());
     mapped.setData(mapData(source.getData(), feedProvider.getCodespace()));

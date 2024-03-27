@@ -22,7 +22,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.entur.gbfs.v2_3.gbfs.GBFSFeedName;
-import org.entur.lamassu.cache.GBFSFeedCache;
+import org.entur.lamassu.cache.GBFSV2FeedCache;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.redisson.api.RMapCache;
 import org.slf4j.Logger;
@@ -31,14 +31,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class GBFSFeedCacheImpl implements GBFSFeedCache {
+public class GBFSV2FeedCacheImpl implements GBFSV2FeedCache {
 
   private final RMapCache<String, Object> cache;
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   @Autowired
-  public GBFSFeedCacheImpl(RMapCache<String, Object> feedCache) {
+  public GBFSV2FeedCacheImpl(RMapCache<String, Object> feedCache) {
     this.cache = feedCache;
   }
 

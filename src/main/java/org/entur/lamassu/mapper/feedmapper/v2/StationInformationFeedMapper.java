@@ -16,7 +16,9 @@
  *
  */
 
-package org.entur.lamassu.mapper.feedmapper;
+package org.entur.lamassu.mapper.feedmapper.v2;
+
+import static org.entur.lamassu.mapper.feedmapper.IdMappers.mapRegionId;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,6 +27,8 @@ import org.entur.gbfs.v2_3.station_information.GBFSStation;
 import org.entur.gbfs.v2_3.station_information.GBFSStationInformation;
 import org.entur.gbfs.v2_3.station_information.GBFSVehicleCapacity;
 import org.entur.gbfs.v2_3.station_information.GBFSVehicleTypeCapacity;
+import org.entur.lamassu.mapper.feedmapper.AbstractFeedMapper;
+import org.entur.lamassu.mapper.feedmapper.IdMappers;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -136,13 +140,5 @@ public class StationInformationFeedMapper
         )
       );
     return mapped;
-  }
-
-  private String mapRegionId(String codespace, String regionId) {
-    if (regionId == null) {
-      return null;
-    }
-
-    return IdMappers.mapId(codespace, IdMappers.REGION_ID_TYPE, regionId);
   }
 }

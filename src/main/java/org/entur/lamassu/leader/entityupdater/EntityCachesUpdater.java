@@ -18,7 +18,7 @@
 
 package org.entur.lamassu.leader.entityupdater;
 
-import org.entur.gbfs.GbfsDelivery;
+import org.entur.gbfs.loader.v2.GbfsV2Delivery;
 import org.entur.gbfs.v2_3.gbfs.GBFSFeedName;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,8 +44,8 @@ public class EntityCachesUpdater {
 
   public void updateEntityCaches(
     FeedProvider feedProvider,
-    GbfsDelivery delivery,
-    GbfsDelivery oldDelivery
+    GbfsV2Delivery delivery,
+    GbfsV2Delivery oldDelivery
   ) {
     if (canUpdateVehicles(delivery, feedProvider)) {
       vehiclesUpdater.addOrUpdateVehicles(feedProvider, delivery, oldDelivery);
@@ -56,7 +56,7 @@ public class EntityCachesUpdater {
     }
 
     if (
-      delivery.getGeofencingZones() != null &&
+      delivery.geofencingZones() != null &&
       (
         feedProvider.getExcludeFeeds() == null ||
         !feedProvider.getExcludeFeeds().contains(GBFSFeedName.GeofencingZones)
@@ -64,12 +64,12 @@ public class EntityCachesUpdater {
     ) {
       geofencingZonesUpdater.addOrUpdateGeofencingZones(
         feedProvider,
-        delivery.getGeofencingZones()
+        delivery.geofencingZones()
       );
     }
   }
 
-  private boolean canUpdateVehicles(GbfsDelivery delivery, FeedProvider feedProvider) {
+  private boolean canUpdateVehicles(GbfsV2Delivery delivery, FeedProvider feedProvider) {
     if (
       feedProvider.getExcludeFeeds() != null &&
       feedProvider.getExcludeFeeds().contains(GBFSFeedName.FreeBikeStatus)
@@ -78,18 +78,18 @@ public class EntityCachesUpdater {
     }
 
     return (
-      delivery.getFreeBikeStatus() != null &&
-      delivery.getFreeBikeStatus().getData() != null &&
-      delivery.getSystemInformation() != null &&
-      delivery.getSystemInformation().getData() != null &&
-      delivery.getVehicleTypes() != null &&
-      delivery.getVehicleTypes().getData() != null &&
-      delivery.getSystemPricingPlans() != null &&
-      delivery.getSystemPricingPlans().getData() != null
+      delivery.freeBikeStatus() != null &&
+      delivery.freeBikeStatus().getData() != null &&
+      delivery.systemInformation() != null &&
+      delivery.systemInformation().getData() != null &&
+      delivery.vehicleTypes() != null &&
+      delivery.vehicleTypes().getData() != null &&
+      delivery.systemPricingPlans() != null &&
+      delivery.systemPricingPlans().getData() != null
     );
   }
 
-  private boolean canUpdateStations(GbfsDelivery delivery, FeedProvider feedProvider) {
+  private boolean canUpdateStations(GbfsV2Delivery delivery, FeedProvider feedProvider) {
     if (
       feedProvider.getExcludeFeeds() != null &&
       (
@@ -101,16 +101,16 @@ public class EntityCachesUpdater {
     }
 
     return (
-      delivery.getStationStatus() != null &&
-      delivery.getStationInformation() != null &&
-      delivery.getStationStatus().getData() != null &&
-      delivery.getStationInformation().getData() != null &&
-      delivery.getSystemInformation() != null &&
-      delivery.getSystemInformation().getData() != null &&
-      delivery.getVehicleTypes() != null &&
-      delivery.getVehicleTypes().getData() != null &&
-      delivery.getSystemPricingPlans() != null &&
-      delivery.getSystemPricingPlans().getData() != null
+      delivery.stationStatus() != null &&
+      delivery.stationInformation() != null &&
+      delivery.stationStatus().getData() != null &&
+      delivery.stationInformation().getData() != null &&
+      delivery.systemInformation() != null &&
+      delivery.systemInformation().getData() != null &&
+      delivery.vehicleTypes() != null &&
+      delivery.vehicleTypes().getData() != null &&
+      delivery.systemPricingPlans() != null &&
+      delivery.systemPricingPlans().getData() != null
     );
   }
 }

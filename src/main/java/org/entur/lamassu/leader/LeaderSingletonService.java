@@ -10,6 +10,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+/**
+ * This class orchestrates updates of GBFS feeds via the FeedUpdater, based on scheduling
+ */
 @Component
 @Profile("leader")
 public class LeaderSingletonService {

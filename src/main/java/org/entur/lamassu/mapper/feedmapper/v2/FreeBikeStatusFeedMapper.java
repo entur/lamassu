@@ -16,12 +16,18 @@
  *
  */
 
-package org.entur.lamassu.mapper.feedmapper;
+package org.entur.lamassu.mapper.feedmapper.v2;
+
+import static org.entur.lamassu.mapper.feedmapper.IdMappers.mapPricingPlanId;
+import static org.entur.lamassu.mapper.feedmapper.IdMappers.mapStationId;
+import static org.entur.lamassu.mapper.feedmapper.IdMappers.mapVehicleTypeId;
 
 import java.util.stream.Collectors;
 import org.entur.gbfs.v2_3.free_bike_status.GBFSBike;
 import org.entur.gbfs.v2_3.free_bike_status.GBFSData;
 import org.entur.gbfs.v2_3.free_bike_status.GBFSFreeBikeStatus;
+import org.entur.lamassu.mapper.feedmapper.AbstractFeedMapper;
+import org.entur.lamassu.mapper.feedmapper.IdMappers;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -84,57 +90,5 @@ public class FreeBikeStatusFeedMapper extends AbstractFeedMapper<GBFSFreeBikeSta
     mapped.setVehicleEquipment(bike.getVehicleEquipment());
     mapped.setAvailableUntil(bike.getAvailableUntil());
     return mapped;
-  }
-
-  private String mapVehicleTypeId(String vehicleTypeId, FeedProvider feedProvider) {
-    if (feedProvider.getVehicleTypes() != null) {
-      return IdMappers.mapId(
-        feedProvider.getCodespace(),
-        IdMappers.VEHICLE_TYPE_ID_TYPE,
-        feedProvider.getVehicleTypes().get(0).getVehicleTypeId()
-      );
-    }
-
-    if (vehicleTypeId == null) {
-      return null;
-    }
-
-    return IdMappers.mapId(
-      feedProvider.getCodespace(),
-      IdMappers.VEHICLE_TYPE_ID_TYPE,
-      vehicleTypeId
-    );
-  }
-
-  private String mapStationId(String stationId, FeedProvider feedProvider) {
-    if (stationId == null) {
-      return null;
-    }
-
-    return IdMappers.mapId(
-      feedProvider.getCodespace(),
-      IdMappers.STATION_ID_TYPE,
-      stationId
-    );
-  }
-
-  private String mapPricingPlanId(String pricingPlanId, FeedProvider feedProvider) {
-    if (feedProvider.getPricingPlans() != null) {
-      return IdMappers.mapId(
-        feedProvider.getCodespace(),
-        IdMappers.PRICING_PLAN_ID_TYPE,
-        feedProvider.getPricingPlans().get(0).getPlanId()
-      );
-    }
-
-    if (pricingPlanId == null) {
-      return null;
-    }
-
-    return IdMappers.mapId(
-      feedProvider.getCodespace(),
-      IdMappers.PRICING_PLAN_ID_TYPE,
-      pricingPlanId
-    );
   }
 }

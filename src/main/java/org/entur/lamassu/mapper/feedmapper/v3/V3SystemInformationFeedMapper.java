@@ -16,10 +16,13 @@
  *
  */
 
-package org.entur.lamassu.mapper.feedmapper;
+package org.entur.lamassu.mapper.feedmapper.v3;
 
-import org.entur.gbfs.v2_3.system_information.GBFSData;
-import org.entur.gbfs.v2_3.system_information.GBFSSystemInformation;
+import java.util.List;
+import org.entur.gbfs.v3_0_RC2.system_information.GBFSData;
+import org.entur.gbfs.v3_0_RC2.system_information.GBFSOperator;
+import org.entur.gbfs.v3_0_RC2.system_information.GBFSSystemInformation;
+import org.entur.lamassu.mapper.feedmapper.AbstractFeedMapper;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,13 +30,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SystemInformationFeedMapper
+public class V3SystemInformationFeedMapper
   extends AbstractFeedMapper<GBFSSystemInformation> {
 
+  public static final GBFSSystemInformation.Version TARGET_GBFS_VERSION =
+    GBFSSystemInformation.Version._3_0_RC_2;
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-  @Value("${org.entur.lamassu.targetGbfsVersion:2.2}")
-  private String targetGbfsVersion;
 
   @Value("${org.entur.lamassu.defaultTimeZone:Europe/Oslo}")
   private String defaultTimeZone;
@@ -49,7 +51,7 @@ public class SystemInformationFeedMapper
     }
 
     var mapped = new GBFSSystemInformation();
-    mapped.setVersion(targetGbfsVersion);
+    mapped.setVersion(TARGET_GBFS_VERSION);
     mapped.setLastUpdated(source.getLastUpdated());
     mapped.setTtl(source.getTtl());
     mapped.setData(mapData(source.getData(), feedProvider));
@@ -63,13 +65,17 @@ public class SystemInformationFeedMapper
 
     var mapped = new GBFSData();
     mapped.setSystemId(feedProvider.getSystemId());
-    mapped.setLanguage(source.getLanguage());
+    mapped.setLanguages(source.getLanguages());
     mapped.setName(source.getName());
     mapped.setShortName(source.getShortName());
     mapped.setOperator(
-      source.getOperator() != null && !source.getOperator().isBlank()
+      source.getOperator() != null
         ? source.getOperator()
-        : feedProvider.getOperatorName()
+        : List.of(
+          new GBFSOperator()
+            .withLanguage(feedProvider.getLanguage())
+            .withText(feedProvider.getOperatorName())
+        )
     );
     mapped.setUrl(source.getUrl());
     mapped.setPurchaseUrl(source.getPurchaseUrl());

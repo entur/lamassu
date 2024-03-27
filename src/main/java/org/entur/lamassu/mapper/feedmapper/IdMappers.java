@@ -23,6 +23,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import no.entur.abt.netex.id.NetexIdBuilder;
 import no.entur.abt.netex.id.predicate.NetexIdPredicateBuilder;
+import org.entur.lamassu.model.provider.FeedProvider;
 
 public class IdMappers {
 
@@ -32,6 +33,7 @@ public class IdMappers {
   public static final String PRICING_PLAN_ID_TYPE = "PricingPlan";
   public static final String VEHICLE_TYPE_ID_TYPE = "VehicleType";
   public static final String BIKE_ID_TYPE = "Vehicle";
+  public static final String VEHICLE_ID_TYPE = "Vehicle";
 
   private IdMappers() {}
 
@@ -68,5 +70,65 @@ public class IdMappers {
       .map(v ->
         v.stream().map(id -> mapId(codespace, type, id)).collect(Collectors.toList())
       );
+  }
+
+  public static String mapVehicleTypeId(String vehicleTypeId, FeedProvider feedProvider) {
+    if (feedProvider.getVehicleTypes() != null) {
+      return IdMappers.mapId(
+        feedProvider.getCodespace(),
+        IdMappers.VEHICLE_TYPE_ID_TYPE,
+        feedProvider.getVehicleTypes().get(0).getVehicleTypeId()
+      );
+    }
+
+    if (vehicleTypeId == null) {
+      return null;
+    }
+
+    return IdMappers.mapId(
+      feedProvider.getCodespace(),
+      IdMappers.VEHICLE_TYPE_ID_TYPE,
+      vehicleTypeId
+    );
+  }
+
+  public static String mapStationId(String stationId, FeedProvider feedProvider) {
+    if (stationId == null) {
+      return null;
+    }
+
+    return IdMappers.mapId(
+      feedProvider.getCodespace(),
+      IdMappers.STATION_ID_TYPE,
+      stationId
+    );
+  }
+
+  public static String mapPricingPlanId(String pricingPlanId, FeedProvider feedProvider) {
+    if (feedProvider.getPricingPlans() != null) {
+      return IdMappers.mapId(
+        feedProvider.getCodespace(),
+        IdMappers.PRICING_PLAN_ID_TYPE,
+        feedProvider.getPricingPlans().get(0).getPlanId()
+      );
+    }
+
+    if (pricingPlanId == null) {
+      return null;
+    }
+
+    return IdMappers.mapId(
+      feedProvider.getCodespace(),
+      IdMappers.PRICING_PLAN_ID_TYPE,
+      pricingPlanId
+    );
+  }
+
+  public static String mapRegionId(String codespace, String regionId) {
+    if (regionId == null) {
+      return null;
+    }
+
+    return IdMappers.mapId(codespace, IdMappers.REGION_ID_TYPE, regionId);
   }
 }

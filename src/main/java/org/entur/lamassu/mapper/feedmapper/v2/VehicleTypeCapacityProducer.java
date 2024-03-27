@@ -16,7 +16,7 @@
  *
  */
 
-package org.entur.lamassu.mapper.feedmapper;
+package org.entur.lamassu.mapper.feedmapper.v2;
 
 import java.util.List;
 import org.entur.gbfs.v2_3.station_status.GBFSStationStatus;

@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 import org.entur.gbfs.v2_3.gbfs.GBFSFeedName;
 import org.entur.lamassu.model.provider.FeedProvider;
 
-public interface GBFSFeedCache {
+public interface GBFSV2FeedCache {
   <T> T find(GBFSFeedName feedName, FeedProvider feedProvider);
   <T> void update(
     GBFSFeedName feedName,

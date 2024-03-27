@@ -16,7 +16,7 @@
  *
  */
 
-package org.entur.lamassu.mapper.feedmapper;
+package org.entur.lamassu.mapper.feedmapper.v3;
 
 import static org.entur.lamassu.mapper.feedmapper.IdMappers.ALERT_ID_TYPE;
 import static org.entur.lamassu.mapper.feedmapper.IdMappers.REGION_ID_TYPE;
@@ -24,18 +24,19 @@ import static org.entur.lamassu.mapper.feedmapper.IdMappers.STATION_ID_TYPE;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import org.entur.gbfs.v2_3.system_alerts.GBFSAlert;
-import org.entur.gbfs.v2_3.system_alerts.GBFSData;
-import org.entur.gbfs.v2_3.system_alerts.GBFSSystemAlerts;
+import org.entur.gbfs.v3_0_RC2.system_alerts.GBFSAlert;
+import org.entur.gbfs.v3_0_RC2.system_alerts.GBFSData;
+import org.entur.gbfs.v3_0_RC2.system_alerts.GBFSSystemAlerts;
+import org.entur.lamassu.mapper.feedmapper.AbstractFeedMapper;
+import org.entur.lamassu.mapper.feedmapper.IdMappers;
 import org.entur.lamassu.model.provider.FeedProvider;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SystemAlertsFeedMapper extends AbstractFeedMapper<GBFSSystemAlerts> {
+public class V3SystemAlertsFeedMapper extends AbstractFeedMapper<GBFSSystemAlerts> {
 
-  @Value("${org.entur.lamassu.targetGbfsVersion:2.2}")
-  private String targetGbfsVersion;
+  private static final GBFSSystemAlerts.Version VERSION =
+    GBFSSystemAlerts.Version._3_0_RC_2;
 
   public GBFSSystemAlerts map(GBFSSystemAlerts systemAlerts, FeedProvider feedProvider) {
     if (systemAlerts == null) {
@@ -44,7 +45,7 @@ public class SystemAlertsFeedMapper extends AbstractFeedMapper<GBFSSystemAlerts>
 
     var codespace = feedProvider.getCodespace();
     var mappedSystemAlerts = new GBFSSystemAlerts();
-    mappedSystemAlerts.setVersion(targetGbfsVersion);
+    mappedSystemAlerts.setVersion(VERSION);
     mappedSystemAlerts.setLastUpdated(systemAlerts.getLastUpdated());
     mappedSystemAlerts.setTtl(systemAlerts.getTtl());
     mappedSystemAlerts.setData(mapData(systemAlerts.getData(), codespace));

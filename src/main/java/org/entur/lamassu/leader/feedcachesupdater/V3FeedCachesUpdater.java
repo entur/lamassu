@@ -20,10 +20,13 @@ package org.entur.lamassu.leader.feedcachesupdater;
 
 import java.lang.reflect.InvocationTargetException;
 import java.time.Instant;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
-import org.entur.gbfs.GbfsDelivery;
-import org.entur.gbfs.v2_3.gbfs.GBFSFeedName;
-import org.entur.lamassu.cache.GBFSFeedCache;
+import org.entur.gbfs.loader.v3.GbfsV3Delivery;
+import org.entur.gbfs.v3_0_RC2.gbfs.GBFSFeed;
+import org.entur.gbfs.v3_0_RC2.gbfs.GBFSFeed.Name;
+import org.entur.gbfs.v3_0_RC2.gbfs.GBFSFeedName;
+import org.entur.lamassu.cache.GBFSV3FeedCache;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.util.CacheUtil;
 import org.slf4j.Logger;
@@ -32,11 +35,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+/**
+ * Class responsible for updating cache of GBFS v3 feeds
+ */
 @Component
-public class FeedCachesUpdater {
+public class V3FeedCachesUpdater {
 
   public static final int MINIMUM_TTL = 86400;
-  private final GBFSFeedCache feedCache;
+  private final GBFSV3FeedCache feedCache;
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   @Value("${org.entur.lamassu.feedCacheTtlPadding:3600}")
@@ -46,64 +52,59 @@ public class FeedCachesUpdater {
   private Integer feedCacheMinimumTtl;
 
   @Autowired
-  public FeedCachesUpdater(GBFSFeedCache feedCache) {
+  public V3FeedCachesUpdater(GBFSV3FeedCache feedCache) {
     this.feedCache = feedCache;
   }
 
-  public GbfsDelivery updateFeedCaches(FeedProvider feedProvider, GbfsDelivery delivery) {
-    updateFeedCache(feedProvider, GBFSFeedName.GBFS, delivery.getDiscovery());
+  public GbfsV3Delivery updateFeedCaches(
+    FeedProvider feedProvider,
+    GbfsV3Delivery delivery
+  ) {
+    updateFeedCache(feedProvider, GBFSFeed.Name.GBFS, delivery.discovery());
+    updateFeedCache(feedProvider, Name.SYSTEM_INFORMATION, delivery.systemInformation());
+    updateFeedCache(feedProvider, Name.SYSTEM_ALERTS, delivery.systemAlerts());
+    updateFeedCache(feedProvider, Name.SYSTEM_REGIONS, delivery.systemRegions());
     updateFeedCache(
       feedProvider,
-      GBFSFeedName.SystemInformation,
-      delivery.getSystemInformation()
+      Name.SYSTEM_PRICING_PLANS,
+      delivery.systemPricingPlans()
     );
-    updateFeedCache(feedProvider, GBFSFeedName.SystemAlerts, delivery.getSystemAlerts());
+    updateFeedCache(feedProvider, Name.VEHICLE_TYPES, delivery.vehicleTypes());
+    updateFeedCache(feedProvider, Name.GEOFENCING_ZONES, delivery.geofencingZones());
     updateFeedCache(
       feedProvider,
-      GBFSFeedName.SystemCalendar,
-      delivery.getSystemCalendar()
-    );
-    updateFeedCache(
-      feedProvider,
-      GBFSFeedName.SystemRegions,
-      delivery.getSystemRegions()
-    );
-    updateFeedCache(
-      feedProvider,
-      GBFSFeedName.SystemPricingPlans,
-      delivery.getSystemPricingPlans()
-    );
-    updateFeedCache(feedProvider, GBFSFeedName.SystemHours, delivery.getSystemHours());
-    updateFeedCache(feedProvider, GBFSFeedName.VehicleTypes, delivery.getVehicleTypes());
-    updateFeedCache(
-      feedProvider,
-      GBFSFeedName.GeofencingZones,
-      delivery.getGeofencingZones()
-    );
-    updateFeedCache(
-      feedProvider,
-      GBFSFeedName.StationInformation,
-      delivery.getStationInformation()
+      Name.STATION_INFORMATION,
+      delivery.stationInformation()
     );
     var oldStationStatus = getAndUpdateFeedCache(
       feedProvider,
-      GBFSFeedName.StationStatus,
-      delivery.getStationStatus()
+      Name.STATION_STATUS,
+      delivery.stationStatus()
     );
-    var oldFreeBikeStatus = getAndUpdateFeedCache(
+    var oldVehicleStatus = getAndUpdateFeedCache(
       feedProvider,
-      GBFSFeedName.FreeBikeStatus,
-      delivery.getFreeBikeStatus()
+      Name.VEHICLE_STATUS,
+      delivery.vehicleStatus()
     );
-    var oldDelivery = new GbfsDelivery();
-    oldDelivery.setStationStatus(oldStationStatus);
-    oldDelivery.setFreeBikeStatus(oldFreeBikeStatus);
-    return oldDelivery;
+    return new GbfsV3Delivery(
+      null,
+      null,
+      null,
+      null,
+      null,
+      oldStationStatus,
+      oldVehicleStatus,
+      null,
+      null,
+      null,
+      null,
+      null
+    );
   }
 
   private <T> void updateFeedCache(
     FeedProvider feedProvider,
-    GBFSFeedName feedName,
+    GBFSFeed.Name feedName,
     T feed
   ) {
     if (shouldIncludeFeed(feedProvider, feedName, feed)) {
@@ -118,7 +119,12 @@ public class FeedCachesUpdater {
         feedProvider.getSystemId(),
         feed
       );
-      var ttl = getTtl(feedName.implementingClass(), feed, feedCacheMinimumTtl);
+
+      var ttl = getTtl(
+        GBFSFeedName.implementingClass(feedName),
+        feed,
+        feedCacheMinimumTtl
+      );
       feedCache.update(
         feedName,
         feedProvider,
@@ -137,13 +143,13 @@ public class FeedCachesUpdater {
 
   private <T> int getTtl(Class<?> implementingClass, T feed, int minimumTtl) {
     try {
-      Integer lastUpdated = (Integer) implementingClass
+      Date lastUpdated = (Date) implementingClass
         .getMethod("getLastUpdated")
         .invoke(feed);
       Integer ttl = (Integer) implementingClass.getMethod("getTtl").invoke(feed);
       return CacheUtil.getTtl(
         (int) Instant.now().getEpochSecond(),
-        lastUpdated,
+        (int) (lastUpdated.getTime() / 1000),
         ttl,
         minimumTtl
       );
@@ -157,7 +163,7 @@ public class FeedCachesUpdater {
 
   private <T> T getAndUpdateFeedCache(
     FeedProvider feedProvider,
-    GBFSFeedName feedName,
+    GBFSFeed.Name feedName,
     T feed
   ) {
     if (shouldIncludeFeed(feedProvider, feedName, feed)) {
@@ -172,7 +178,7 @@ public class FeedCachesUpdater {
         feedProvider.getSystemId(),
         feed
       );
-      var ttl = getTtl(feedName.implementingClass(), feed, MINIMUM_TTL);
+      var ttl = getTtl(GBFSFeedName.implementingClass(feedName), feed, MINIMUM_TTL);
       return feedCache.getAndUpdate(feedName, feedProvider, feed, ttl, TimeUnit.SECONDS);
     } else {
       logger.debug(
@@ -186,14 +192,16 @@ public class FeedCachesUpdater {
 
   private <T> boolean shouldIncludeFeed(
     FeedProvider feedProvider,
-    GBFSFeedName feedName,
+    GBFSFeed.Name feedName,
     T feed
   ) {
     return (
       feed != null &&
       (
         feedProvider.getExcludeFeeds() == null ||
-        !feedProvider.getExcludeFeeds().contains(feedName)
+        !feedProvider
+          .getExcludeFeeds()
+          .contains(org.entur.gbfs.v2_3.gbfs.GBFSFeedName.fromValue(feedName.toString()))
       )
     );
   }

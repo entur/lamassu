@@ -16,25 +16,26 @@
  *
  */
 
-package org.entur.lamassu.mapper.feedmapper;
+package org.entur.lamassu.mapper.feedmapper.v3;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import org.entur.gbfs.v2_3.geofencing_zones.GBFSData;
-import org.entur.gbfs.v2_3.geofencing_zones.GBFSFeature;
-import org.entur.gbfs.v2_3.geofencing_zones.GBFSGeofencingZones;
-import org.entur.gbfs.v2_3.geofencing_zones.GBFSGeofencingZones__1;
-import org.entur.gbfs.v2_3.geofencing_zones.GBFSProperties;
-import org.entur.gbfs.v2_3.geofencing_zones.GBFSRule;
+import org.entur.gbfs.v3_0_RC2.geofencing_zones.GBFSData;
+import org.entur.gbfs.v3_0_RC2.geofencing_zones.GBFSFeature;
+import org.entur.gbfs.v3_0_RC2.geofencing_zones.GBFSGeofencingZones;
+import org.entur.gbfs.v3_0_RC2.geofencing_zones.GBFSGeofencingZones__1;
+import org.entur.gbfs.v3_0_RC2.geofencing_zones.GBFSProperties;
+import org.entur.gbfs.v3_0_RC2.geofencing_zones.GBFSRule;
+import org.entur.lamassu.mapper.feedmapper.AbstractFeedMapper;
+import org.entur.lamassu.mapper.feedmapper.IdMappers;
 import org.entur.lamassu.model.provider.FeedProvider;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class GeofencingZonesFeedMapper extends AbstractFeedMapper<GBFSGeofencingZones> {
+public class V3GeofencingZonesFeedMapper extends AbstractFeedMapper<GBFSGeofencingZones> {
 
-  @Value("${org.entur.lamassu.targetGbfsVersion:2.2}")
-  private String targetGbfsVersion;
+  private static final GBFSGeofencingZones.Version VERSION =
+    GBFSGeofencingZones.Version._3_0_RC_2;
 
   @Override
   public GBFSGeofencingZones map(GBFSGeofencingZones source, FeedProvider feedProvider) {
@@ -43,7 +44,7 @@ public class GeofencingZonesFeedMapper extends AbstractFeedMapper<GBFSGeofencing
     }
 
     var mapped = new GBFSGeofencingZones();
-    mapped.setVersion(targetGbfsVersion);
+    mapped.setVersion(VERSION);
     mapped.setLastUpdated(source.getLastUpdated());
     mapped.setTtl(source.getTtl());
     mapped.setData(mapData(source.getData(), feedProvider));
@@ -106,16 +107,17 @@ public class GeofencingZonesFeedMapper extends AbstractFeedMapper<GBFSGeofencing
 
   private GBFSRule mapRule(GBFSRule rule, FeedProvider feedProvider) {
     var mapped = new GBFSRule();
-    mapped.setVehicleTypeId(
+    mapped.setVehicleTypeIds(
       IdMappers
         .mapIds(
           feedProvider.getCodespace(),
           IdMappers.VEHICLE_TYPE_ID_TYPE,
-          rule.getVehicleTypeId()
+          rule.getVehicleTypeIds()
         )
         .orElse(null)
     );
-    mapped.setRideAllowed(rule.getRideAllowed());
+    mapped.setRideStartAllowed(rule.getRideStartAllowed());
+    mapped.setRideEndAllowed(rule.getRideEndAllowed());
     mapped.setMaximumSpeedKph(rule.getMaximumSpeedKph());
     mapped.setRideThroughAllowed(rule.getRideThroughAllowed());
     mapped.setStationParking(rule.getStationParking());

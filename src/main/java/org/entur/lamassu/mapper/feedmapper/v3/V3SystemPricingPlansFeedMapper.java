@@ -16,24 +16,27 @@
  *
  */
 
-package org.entur.lamassu.mapper.feedmapper;
+package org.entur.lamassu.mapper.feedmapper.v3;
 
 import static org.entur.lamassu.mapper.feedmapper.IdMappers.PRICING_PLAN_ID_TYPE;
 
-import java.time.Duration;
-import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.entur.gbfs.v2_3.system_pricing_plans.GBFSData;
-import org.entur.gbfs.v2_3.system_pricing_plans.GBFSPlan;
-import org.entur.gbfs.v2_3.system_pricing_plans.GBFSSystemPricingPlans;
+import org.entur.gbfs.v3_0_RC2.system_pricing_plans.GBFSData;
+import org.entur.gbfs.v3_0_RC2.system_pricing_plans.GBFSPlan;
+import org.entur.gbfs.v3_0_RC2.system_pricing_plans.GBFSSystemPricingPlans;
+import org.entur.lamassu.mapper.feedmapper.AbstractFeedMapper;
+import org.entur.lamassu.mapper.feedmapper.IdMappers;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SystemPricingPlansFeedMapper
+public class V3SystemPricingPlansFeedMapper
   extends AbstractFeedMapper<GBFSSystemPricingPlans> {
+
+  private static final GBFSSystemPricingPlans.Version VERSION =
+    GBFSSystemPricingPlans.Version._3_0_RC_2;
 
   @Value("${org.entur.lamassu.targetGbfsVersion:2.2}")
   private String targetGbfsVersion;
@@ -43,9 +46,10 @@ public class SystemPricingPlansFeedMapper
     GBFSSystemPricingPlans source,
     FeedProvider feedProvider
   ) {
-    if (feedProvider.getPricingPlans() != null) {
-      return customPricingPlans(feedProvider);
-    }
+    // TODO should we support custom pricing plans?
+    //if (feedProvider.getPricingPlans() != null) {
+    //  return customPricingPlans(feedProvider);
+    //}
 
     if (
       source == null || source.getData() == null || source.getData().getPlans() == null
@@ -54,22 +58,11 @@ public class SystemPricingPlansFeedMapper
     }
 
     var mapped = new GBFSSystemPricingPlans();
-    mapped.setVersion(targetGbfsVersion);
+    mapped.setVersion(VERSION);
     mapped.setTtl(source.getTtl());
     mapped.setLastUpdated(source.getLastUpdated());
     mapped.setData(mapData(source.getData(), feedProvider));
     return mapped;
-  }
-
-  private GBFSSystemPricingPlans customPricingPlans(FeedProvider feedProvider) {
-    var custom = new GBFSSystemPricingPlans();
-    custom.setVersion(targetGbfsVersion);
-    custom.setLastUpdated((int) Instant.now().getEpochSecond());
-    custom.setTtl((int) Duration.ofMinutes(5).toSeconds());
-    var data = new GBFSData();
-    data.setPlans(feedProvider.getPricingPlans());
-    custom.setData(mapData(data, feedProvider));
-    return custom;
   }
 
   private GBFSData mapData(GBFSData data, FeedProvider feedProvider) {

@@ -36,6 +36,17 @@ public class FeedUrlUtil {
     return URI.create(addToPath(feedUrl, feedName.value()).toLowerCase());
   }
 
+  public static String mapFeedUrl(
+    String baseUrl,
+    org.entur.gbfs.v3_0_RC2.gbfs.GBFSFeed.Name feedName,
+    FeedProvider feedProvider
+  ) {
+    var systemId = feedProvider.getSystemId();
+    var feedUrl = addToPath(baseUrl, "gbfs/v3beta");
+    feedUrl = addToPath(feedUrl, systemId);
+    return addToPath(feedUrl, feedName.value()).toLowerCase();
+  }
+
   private static String addToPath(String base, String toAdd) {
     return String.format("%s/%s", base, toAdd);
   }

@@ -16,15 +16,13 @@
  *
  */
 
-package org.entur.lamassu.mapper.feedmapper;
+package org.entur.lamassu.mapper.feedmapper.v3;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.stream.Collectors;
-import org.entur.gbfs.v2_3.gbfs.GBFS;
-import org.entur.gbfs.v2_3.gbfs.GBFSFeed;
-import org.entur.gbfs.v2_3.gbfs.GBFSFeedName;
-import org.entur.gbfs.v2_3.gbfs.GBFSFeeds;
+import org.entur.gbfs.v3_0_RC2.gbfs.GBFSData;
+import org.entur.gbfs.v3_0_RC2.gbfs.GBFSFeed;
+import org.entur.gbfs.v3_0_RC2.gbfs.GBFSGbfs;
+import org.entur.lamassu.mapper.feedmapper.AbstractFeedMapper;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.util.FeedUrlUtil;
 import org.slf4j.Logger;
@@ -33,45 +31,31 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DiscoveryFeedMapper extends AbstractFeedMapper<GBFS> {
+public class V3DiscoveryFeedMapper extends AbstractFeedMapper<GBFSGbfs> {
+
+  private static final GBFSGbfs.Version TARGET_GBFS_VERSION = GBFSGbfs.Version._3_0_RC_2;
 
   @Value("${org.entur.lamassu.baseUrl}")
   private String baseUrl;
 
-  @Value("${org.entur.lamassu.targetGbfsVersion:2.2}")
-  private String targetGbfsVersion;
-
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   @Override
-  public GBFS map(GBFS source, FeedProvider feedProvider) {
-    if (source.getFeedsData() == null) {
+  public GBFSGbfs map(GBFSGbfs source, FeedProvider feedProvider) {
+    if (source.getData() == null) {
       logger.warn("Missing discovery data for provider={} feed={}", feedProvider, source);
       return null;
     }
 
-    var mapped = new GBFS();
-    var mappedData = new GBFSFeeds();
-    Map<String, GBFSFeeds> dataWrapper = new HashMap<>();
+    var mapped = new GBFSGbfs();
+    var mappedData = new GBFSData();
+
     mapped.setLastUpdated(source.getLastUpdated());
     mapped.setTtl(source.getTtl());
-    mapped.setVersion(targetGbfsVersion);
-
-    String sourceLanguageCode;
-    if (source.getFeedsData().containsKey(feedProvider.getLanguage())) {
-      sourceLanguageCode = feedProvider.getLanguage();
-    } else {
-      sourceLanguageCode = source.getFeedsData().keySet().iterator().next();
-      logger.warn(
-        "Configured language code not found in discovery feed for provider {} - using {} instead",
-        feedProvider,
-        sourceLanguageCode
-      );
-    }
+    mapped.setVersion(TARGET_GBFS_VERSION);
 
     var feeds = source
-      .getFeedsData()
-      .get(sourceLanguageCode)
+      .getData()
       .getFeeds()
       .stream()
       .filter(feed -> {
@@ -85,7 +69,14 @@ public class DiscoveryFeedMapper extends AbstractFeedMapper<GBFS> {
         feedProvider
           .getExcludeFeeds()
           .stream()
-          .noneMatch(excluded -> excluded.equals(feed.getName()))
+          // TODO there should be a mapper between the GBFSFeedName and GBFSFeed.Name enums
+          // since this solution does not work for free_bike_status / vehicle_status
+          // and will possibly crash for system_calendar and system_hours
+          .noneMatch(excluded ->
+            excluded.equals(
+              org.entur.gbfs.v2_3.gbfs.GBFSFeedName.fromValue(feed.getName().toString())
+            )
+          )
       )
       .map(feed -> {
         var mappedFeed = new GBFSFeed();
@@ -95,36 +86,38 @@ public class DiscoveryFeedMapper extends AbstractFeedMapper<GBFS> {
       })
       // Lamassu currently only support producing a single version of GBFS, therefore
       // the versions file, if it exists, is intentionally skipped.
-      .filter(f -> !f.getName().equals(GBFSFeedName.GBFSVersions))
+      // TODO since we now produce v2.x and v3.x we can generate the versions feed
+      .filter(f -> !f.getName().equals(GBFSFeed.Name.GBFS_VERSIONS))
       .collect(Collectors.toList());
 
     if (
       feedProvider.getVehicleTypes() != null &&
-      feeds.stream().noneMatch(f -> f.getName().equals(GBFSFeedName.VehicleTypes))
+      feeds.stream().noneMatch(f -> f.getName().equals(GBFSFeed.Name.VEHICLE_TYPES))
     ) {
       var vehicleTypesFeed = new GBFSFeed();
-      vehicleTypesFeed.setName(GBFSFeedName.VehicleTypes);
+      vehicleTypesFeed.setName(GBFSFeed.Name.VEHICLE_TYPES);
       vehicleTypesFeed.setUrl(
-        FeedUrlUtil.mapFeedUrl(baseUrl, GBFSFeedName.VehicleTypes, feedProvider)
+        FeedUrlUtil.mapFeedUrl(baseUrl, GBFSFeed.Name.VEHICLE_TYPES, feedProvider)
       );
       feeds.add(vehicleTypesFeed);
     }
 
     if (
       feedProvider.getPricingPlans() != null &&
-      feeds.stream().noneMatch(f -> f.getName().equals(GBFSFeedName.SystemPricingPlans))
+      feeds
+        .stream()
+        .noneMatch(f -> f.getName().equals(GBFSFeed.Name.SYSTEM_PRICING_PLANS))
     ) {
       var pricingPlansFeed = new GBFSFeed();
-      pricingPlansFeed.setName(GBFSFeedName.SystemPricingPlans);
+      pricingPlansFeed.setName(GBFSFeed.Name.SYSTEM_PRICING_PLANS);
       pricingPlansFeed.setUrl(
-        FeedUrlUtil.mapFeedUrl(baseUrl, GBFSFeedName.SystemPricingPlans, feedProvider)
+        FeedUrlUtil.mapFeedUrl(baseUrl, GBFSFeed.Name.SYSTEM_PRICING_PLANS, feedProvider)
       );
       feeds.add(pricingPlansFeed);
     }
 
     mappedData.setFeeds(feeds);
-    dataWrapper.put(sourceLanguageCode, mappedData);
-    mapped.setFeedsData(dataWrapper);
+    mapped.setData(mappedData);
     return mapped;
   }
 }
