@@ -48,13 +48,36 @@ class VehicleFilter implements Predicate<GBFSBike> {
       return false;
     }
 
-    if (!pricingPlans.containsKey(vehicle.getPricingPlanId())) {
-      logger.info("Skipping vehicle with unknown pricing plan id {}", vehicle);
+    if (
+      vehicle.getPricingPlanId() != null &&
+      !pricingPlans.containsKey(vehicle.getPricingPlanId())
+    ) {
+      logger.info(
+        "Skipping vehicle with unknown pricing plan id {} (vehicle {})",
+        vehicle.getPricingPlanId(),
+        vehicle.getBikeId()
+      );
       return false;
     }
 
     if (!vehicleTypes.containsKey(vehicle.getVehicleTypeId())) {
-      logger.info("Skipping vehicle with unknown vehicle type id {}", vehicle);
+      logger.info(
+        "Skipping vehicle with unknown vehicle type id {} (vehicle {})",
+        vehicle.getVehicleTypeId(),
+        vehicle.getBikeId()
+      );
+      return false;
+    }
+
+    if (
+      vehicle.getPricingPlanId() == null &&
+      vehicleTypes.get(vehicle.getVehicleTypeId()).getDefaultPricingPlan() == null
+    ) {
+      logger.info(
+        "Skipping vehicle without pricing plan id and vehicle type {} without default pricing plan (vehicle {})",
+        vehicle.getVehicleTypeId(),
+        vehicle.getBikeId()
+      );
       return false;
     }
 
