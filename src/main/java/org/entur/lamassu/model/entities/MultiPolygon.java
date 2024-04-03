@@ -18,11 +18,11 @@
 
 package org.entur.lamassu.model.entities;
 
+import com.mapbox.geojson.Point;
+import com.mapbox.geojson.utils.PolylineUtils;
 import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
-import com.mapbox.geojson.Point;
-import com.mapbox.geojson.utils.PolylineUtils;
 
 public class MultiPolygon implements Serializable {
 
@@ -70,14 +70,23 @@ public class MultiPolygon implements Serializable {
       .collect(Collectors.toList());
     mapped.setCoordinates(mappedCoordinates);
 
-    var mappedEncodedCoordinates = coordinates.stream()
-            .map(polygon -> polygon.stream()
-                    .map(ring -> ring.stream()
-                            .map(lngLatAlt -> Point.fromLngLat(lngLatAlt.getLongitude(), lngLatAlt.getLatitude()))
-                            .collect(Collectors.toList()))
-                    .map(ring -> PolylineUtils.encode(ring, 5))
-                 .collect(Collectors.toList()))
-            .collect(Collectors.toList());
+    var mappedEncodedCoordinates = coordinates
+      .stream()
+      .map(polygon ->
+        polygon
+          .stream()
+          .map(ring ->
+            ring
+              .stream()
+              .map(lngLatAlt ->
+                Point.fromLngLat(lngLatAlt.getLongitude(), lngLatAlt.getLatitude())
+              )
+              .collect(Collectors.toList())
+          )
+          .map(ring -> PolylineUtils.encode(ring, 5))
+          .collect(Collectors.toList())
+      )
+      .collect(Collectors.toList());
 
     mapped.setEncodedCoordinates(mappedEncodedCoordinates);
 
