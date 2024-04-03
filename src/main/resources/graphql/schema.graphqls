@@ -354,6 +354,9 @@ type Feature {
 type MultiPolygon {
     type: String
     coordinates: [[[[Float]]]]
+
+    "coordinates encoded with mapbox polyline, precision 5"
+    encodedCoordinates: [[String]]
 }
 
 type GeofencingZoneProperties {

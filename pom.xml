@@ -213,6 +213,11 @@
             <classifier>osx-aarch_64</classifier>
             <version>4.1.108.Final</version>
         </dependency>
+        <dependency>
+            <groupId>com.mapbox.mapboxsdk</groupId>
+            <artifactId>mapbox-sdk-geojson</artifactId>
+            <version>5.8.0</version>
+        </dependency>
     </dependencies>
 
     <build>
