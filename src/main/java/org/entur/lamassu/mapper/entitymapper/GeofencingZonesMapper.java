@@ -31,8 +31,6 @@ import org.entur.lamassu.model.entities.MultiPolygon;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.springframework.stereotype.Component;
 
-
-
 @Component
 public class GeofencingZonesMapper {
 
@@ -52,24 +50,26 @@ public class GeofencingZonesMapper {
   private void addPolylineEncodedMultiPolygons(GeofencingZones geofencingZones) {
     for (GeofencingZones.Feature feature : geofencingZones.getGeojson().getFeatures()) {
       var mappedPolylineEncodedMultiPolygons = feature
-              .getGeometry()
-              .getCoordinates()
-              .stream()
-              .map(polygon ->
-                      polygon
-                              .stream()
-                              .map(ring ->
-                                      ring
-                                              .stream()
-                                              .map(coords -> Point.fromLngLat(coords.get(0), coords.get(1)))
-                                              .collect(Collectors.toList())
-                              )
-                              .map(ring -> PolylineUtils.encode(ring, 5))
-                              .collect(Collectors.toList())
-              )
-              .collect(Collectors.toList());
+        .getGeometry()
+        .getCoordinates()
+        .stream()
+        .map(polygon ->
+          polygon
+            .stream()
+            .map(ring ->
+              ring
+                .stream()
+                .map(coords -> Point.fromLngLat(coords.get(0), coords.get(1)))
+                .collect(Collectors.toList())
+            )
+            .map(ring -> PolylineUtils.encode(ring, 5))
+            .collect(Collectors.toList())
+        )
+        .collect(Collectors.toList());
 
-      feature.getProperties().setPolylineEncodedMultiPolygons(mappedPolylineEncodedMultiPolygons);
+      feature
+        .getProperties()
+        .setPolylineEncodedMultiPolygons(mappedPolylineEncodedMultiPolygons);
     }
   }
 
