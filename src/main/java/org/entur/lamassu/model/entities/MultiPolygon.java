@@ -79,7 +79,7 @@ public class MultiPolygon implements Serializable {
             ring
               .stream()
               .map(lngLatAlt ->
-                Point.fromLngLat(lngLatAlt.getLatitude(), lngLatAlt.getLongitude()) // because GeoJson is defined with [lon, lat] instead of [lat, lon] used by PolylineUtils.encode, the order is switched on purpose here
+                Point.fromLngLat(lngLatAlt.getLongitude(), lngLatAlt.getLatitude())
               )
               .collect(Collectors.toList())
           )
