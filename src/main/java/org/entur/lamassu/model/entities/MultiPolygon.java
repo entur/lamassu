@@ -28,7 +28,6 @@ public class MultiPolygon implements Serializable {
 
   private String type = "MultiPolygon";
   private List<List<List<List<Double>>>> coordinates;
-  private List<List<String>> encodedCoordinates;
 
   public String getType() {
     return type;
@@ -40,14 +39,6 @@ public class MultiPolygon implements Serializable {
 
   public void setCoordinates(List<List<List<List<Double>>>> coordinates) {
     this.coordinates = coordinates;
-  }
-
-  public List<List<String>> getEncodedCoordinates() {
-    return encodedCoordinates;
-  }
-
-  public void setEncodedCoordinates(List<List<String>> encodedCoordinates) {
-    this.encodedCoordinates = encodedCoordinates;
   }
 
   public static MultiPolygon fromGeoJson(org.geojson.MultiPolygon geometry) {
@@ -69,26 +60,6 @@ public class MultiPolygon implements Serializable {
       )
       .collect(Collectors.toList());
     mapped.setCoordinates(mappedCoordinates);
-
-    var mappedEncodedCoordinates = coordinates
-      .stream()
-      .map(polygon ->
-        polygon
-          .stream()
-          .map(ring ->
-            ring
-              .stream()
-              .map(lngLatAlt ->
-                Point.fromLngLat(lngLatAlt.getLongitude(), lngLatAlt.getLatitude())
-              )
-              .collect(Collectors.toList())
-          )
-          .map(ring -> PolylineUtils.encode(ring, 5))
-          .collect(Collectors.toList())
-      )
-      .collect(Collectors.toList());
-
-    mapped.setEncodedCoordinates(mappedEncodedCoordinates);
 
     return mapped;
   }

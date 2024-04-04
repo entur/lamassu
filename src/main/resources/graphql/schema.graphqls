@@ -353,10 +353,8 @@ type Feature {
 
 type MultiPolygon {
     type: String
+    "See properties.polylineEncodedMultiPolygons, and consider using that instead of coordinates"
     coordinates: [[[[Float]]]]
-
-    "coordinates encoded with mapbox polyline, precision 5"
-    encodedCoordinates: [[String]]
 }
 
 type GeofencingZoneProperties {
@@ -364,6 +362,8 @@ type GeofencingZoneProperties {
     start: Int
     end: Int
     rules: [GeofencingZoneRule]
+    "MultiPolygons where the lists of coordinates are encoded as polyline strings using precision of 5 decimals (see http://code.google.com/apis/maps/documentation/polylinealgorithm.html). Meant to be used instead of geometry.coordinates to minimize the response payload size."
+    polylineEncodedMultiPolygons: [[String]]
 }
 
 type GeofencingZoneRule {
