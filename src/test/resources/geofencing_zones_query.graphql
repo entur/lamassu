@@ -5,7 +5,6 @@
             features {
                 geometry {
                     coordinates
-                    encodedCoordinates
                 }
                 properties {
                     start
@@ -15,6 +14,7 @@
                         rideAllowed
                         rideThroughAllowed
                     }
+                    polylineEncodedMultiPolygons
                 }
             }
         }

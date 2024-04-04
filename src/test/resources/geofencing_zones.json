@@ -381,11 +381,13 @@
                 ]
               ]
             ],
-            "encodedCoordinates": [
-              [
-                "{_keAwq`nJ}SzGi`AlWudAt_@ciAhzAtR~QrEbHnVpc@fBJl@|@pOv@b@`@|eJ~b@xuDppCvQrs@kaAdVjy@|{AzaE`mAlcGfOj\\cPluAxMb`Aza@npCoq@fhBkEpiA}bBvrBqqAifAiv@ytBsd@dl@ybBq~Ak|AtBazBe~A__A~~B_GzMwa@FsMx@uD`QmAZmFyDmDkBcHiXoVqDa[hCuo@naAkdAtwBqPiRmm@c~Bid@gBiLvXwFtHy[pG_Otf@q`@`bAaHd_@ww@xlAbe@l`Dw~EmiIacByo@~o@ivAk^gcBLooFlfAmkErcB}fBdcBw\\oMb`B_rCaeBmvAd{CguCcY}yB_mD__CcwLfeCixOxfFnNrkCtxAbs@hBhgEvMrKuCbL~MDjBpBjHxBnJtH_EhEpfB`gBiYhf@ci@eT{_B|n@qHng@vtE`rAvsChjA"
+            "properties": {
+              "polylineEncodedMultiPolygons": [
+                [
+                  "{_keAwq`nJ}SzGi`AlWudAt_@ciAhzAtR~QrEbHnVpc@fBJl@|@pOv@b@`@|eJ~b@xuDppCvQrs@kaAdVjy@|{AzaE`mAlcGfOj\\cPluAxMb`Aza@npCoq@fhBkEpiA}bBvrBqqAifAiv@ytBsd@dl@ybBq~Ak|AtBazBe~A__A~~B_GzMwa@FsMx@uD`QmAZmFyDmDkBcHiXoVqDa[hCuo@naAkdAtwBqPiRmm@c~Bid@gBiLvXwFtHy[pG_Otf@q`@`bAaHd_@ww@xlAbe@l`Dw~EmiIacByo@~o@ivAk^gcBLooFlfAmkErcB}fBdcBw\\oMb`B_rCaeBmvAd{CguCcY}yB_mD__CcwLfeCixOxfFnNrkCtxAbs@hBhgEvMrKuCbL~MDjBpBjHxBnJtH_EhEpfB`gBiYhf@ci@eT{_B|n@qHng@vtE`rAvsChjA"
+                ]
               ]
-            ]
+            }
           }
         }
       ]
