@@ -60,10 +60,10 @@ public class GeofencingZonesMapper {
               ring
                 .stream()
                 .map(coords -> Point.fromLngLat(coords.get(0), coords.get(1)))
-                .collect(Collectors.toList())
+                      .toList()
             )
             .map(ring -> PolylineUtils.encode(ring, 6))
-            .collect(Collectors.toList())
+                  .toList()
         )
         .toList();
 
