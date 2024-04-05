@@ -124,6 +124,21 @@ public class GraphQLIntegrationTest extends AbstractIntegrationTestBase {
   }
 
   @Test
+  public void testPolylineEncodedMultiPolygon() throws IOException {
+    GraphQLResponse response = graphQLTestTemplate.postForResource(
+      "polyline_encoded_multi_polygon_query.graphql"
+    );
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(
+      "qznuqBsgw~TnwAepEpsFglSveIexThp[{cVj}DvcE|yA|`AvlJjjFnBj_@vRhM`PrdD`JlJxfJddoBpnl@bcx@hmOtzDzfFyvSb`\\pfQpkW|{{@~aDpkpAmjDndH|rCf_Zr{IdjSwwN|ml@q~@|{_@mf^jhVoxXrdc@ohPahUyvJqyc@ee^bcMud\\sz\\{me@tc@g_Swv\\unAv~f@{zIzsCeqCtA}w@`QeWlsDgiAtGgu@ux@mzAea@}iFy{F}wGsv@keN|i@utTdxSaoD~ud@aoMc`EitJkvf@idCe_@klAn`G{~Gp_B}~CxtAynI|kKsyAp}SovPz`I~{JxhWc|dAvmq@qg^ogfBrhNegNqxH{gZlCui^niU_djAfm^e{~@lh^wn_@yoCkhHc}l@lj]iiZq{^g}m@rxo@kle@edGc_g@_ku@h}h@ephCnmgAk|fDz|j@~yCrhOz_[pq}@~_@r}BprChbC}m@~@duChb@n`@~d@z|Ah`BjrBr}@k{@to_@~j_@rhKofGcsEcdLl~M{g]`tKo~Al}XxxaA`pVhnm@",
+      response.get(
+        "$.data.geofencingZones[0].geojson.features[0].properties.polylineEncodedMultiPolygon[0][0]"
+      )
+    );
+  }
+
+  @Test
   public void testUnknownOperatorDoesNotThrow() throws IOException {
     GraphQLResponse response = graphQLTestTemplate.postForResource(
       "stations_query_unknown_operator.graphql"

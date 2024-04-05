@@ -1,0 +1,11 @@
+{
+    geofencingZones(systemIds: ["testatlantis"]) {
+        geojson {
+            features {
+                properties {
+                    polylineEncodedMultiPolygon
+                }
+            }
+        }
+    }
+}
