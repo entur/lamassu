@@ -19,7 +19,6 @@
 package org.entur.lamassu.mapper.feedmapper.v3;
 
 import java.util.stream.Collectors;
-
 import org.entur.gbfs.mapper.GBFSFeedNameMapper;
 import org.entur.gbfs.v3_0_RC2.gbfs.GBFSData;
 import org.entur.gbfs.v3_0_RC2.gbfs.GBFSFeed;
@@ -72,9 +71,7 @@ public class V3DiscoveryFeedMapper extends AbstractFeedMapper<GBFSGbfs> {
           .getExcludeFeeds()
           .stream()
           .noneMatch(excluded ->
-            excluded.equals(
-              GBFSFeedNameMapper.INSTANCE.map(feed.getName())
-            )
+            excluded.equals(GBFSFeedNameMapper.INSTANCE.map(feed.getName()))
           )
       )
       .map(feed -> {

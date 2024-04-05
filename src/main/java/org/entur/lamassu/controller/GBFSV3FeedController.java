@@ -19,23 +19,16 @@
 package org.entur.lamassu.controller;
 
 import java.time.Instant;
-import java.util.Date;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 import org.entur.gbfs.v3_0_RC2.gbfs.GBFSFeed;
-import org.entur.gbfs.v3_0_RC2.manifest.GBFSData;
-import org.entur.gbfs.v3_0_RC2.manifest.GBFSDataset;
 import org.entur.gbfs.v3_0_RC2.manifest.GBFSManifest;
-import org.entur.gbfs.v3_0_RC2.manifest.GBFSVersion;
 import org.entur.lamassu.cache.GBFSV3FeedCache;
 import org.entur.lamassu.service.FeedProviderService;
 import org.entur.lamassu.service.SystemDiscoveryService;
 import org.entur.lamassu.util.CacheUtil;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,9 +44,6 @@ public class GBFSV3FeedController {
   private final FeedProviderService feedProviderService;
   private final GBFSV3FeedCache v3FeedCache;
 
-  @Value("${org.entur.lamassu.baseUrl}")
-  private String baseUrl;
-
   @Autowired
   public GBFSV3FeedController(
     SystemDiscoveryService systemDiscoveryService,
@@ -67,36 +57,7 @@ public class GBFSV3FeedController {
 
   @GetMapping("/gbfs/v3beta/manifest.json")
   public ResponseEntity<GBFSManifest> getV3Manifest() {
-    var data = systemDiscoveryService.getSystemDiscovery();
-
-    // TODO this should be moved into system discovery service
-    var manifest = new GBFSManifest()
-      .withVersion(GBFSManifest.Version._3_0_RC_2)
-      .withLastUpdated(new Date())
-      .withTtl(3600)
-      .withData(
-        new GBFSData()
-          .withDatasets(
-            data
-              .getSystems()
-              .stream()
-              .map(system ->
-                new GBFSDataset()
-                  .withSystemId(system.getId())
-                  .withVersions(
-                    List.of(
-                      new GBFSVersion()
-                        .withVersion(GBFSVersion.Version._2_3)
-                        .withUrl(system.getUrl()),
-                      new GBFSVersion()
-                        .withVersion(GBFSVersion.Version._3_0_RC_2)
-                        .withUrl(baseUrl + "/gbfs/v3beta/" + system.getId() + "/gbfs")
-                    )
-                  )
-              )
-              .collect(Collectors.toList())
-          )
-      );
+    var manifest = systemDiscoveryService.getGBFSManifest();
 
     return ResponseEntity
       .ok()
