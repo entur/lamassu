@@ -19,6 +19,8 @@
 package org.entur.lamassu.mapper.feedmapper.v3;
 
 import java.util.stream.Collectors;
+
+import org.entur.gbfs.mapper.GBFSFeedNameMapper;
 import org.entur.gbfs.v3_0_RC2.gbfs.GBFSData;
 import org.entur.gbfs.v3_0_RC2.gbfs.GBFSFeed;
 import org.entur.gbfs.v3_0_RC2.gbfs.GBFSGbfs;
@@ -69,12 +71,9 @@ public class V3DiscoveryFeedMapper extends AbstractFeedMapper<GBFSGbfs> {
         feedProvider
           .getExcludeFeeds()
           .stream()
-          // TODO there should be a mapper between the GBFSFeedName and GBFSFeed.Name enums
-          // since this solution does not work for free_bike_status / vehicle_status
-          // and will possibly crash for system_calendar and system_hours
           .noneMatch(excluded ->
             excluded.equals(
-              org.entur.gbfs.v2_3.gbfs.GBFSFeedName.fromValue(feed.getName().toString())
+              GBFSFeedNameMapper.INSTANCE.map(feed.getName())
             )
           )
       )
