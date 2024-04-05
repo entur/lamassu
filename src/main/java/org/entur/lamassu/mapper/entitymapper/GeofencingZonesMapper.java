@@ -62,10 +62,10 @@ public class GeofencingZonesMapper {
                 .map(coords -> Point.fromLngLat(coords.get(0), coords.get(1)))
                 .collect(Collectors.toList())
             )
-            .map(ring -> PolylineUtils.encode(ring, 5))
+            .map(ring -> PolylineUtils.encode(ring, 6))
             .collect(Collectors.toList())
         )
-              .toList();
+        .toList();
 
       feature
         .getProperties()
