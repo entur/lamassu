@@ -156,7 +156,10 @@ public class VehiclesUpdater {
         vehicleMapper.mapVehicle(
           vehicle,
           vehicleTypes.get(vehicle.getVehicleTypeId()),
-          pricingPlans.get(vehicle.getPricingPlanId()),
+          // pricingPlanId is optional for vehicles and defaults to it's vehicleType's default pricing plan
+          vehicle.getPricingPlanId() != null
+            ? pricingPlans.get(vehicle.getPricingPlanId())
+            : vehicleTypes.get(vehicle.getVehicleTypeId()).getDefaultPricingPlan(),
           system
         )
       )
