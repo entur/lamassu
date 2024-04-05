@@ -18,8 +18,6 @@
 
 package org.entur.lamassu.model.entities;
 
-import com.mapbox.geojson.Point;
-import com.mapbox.geojson.utils.PolylineUtils;
 import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
