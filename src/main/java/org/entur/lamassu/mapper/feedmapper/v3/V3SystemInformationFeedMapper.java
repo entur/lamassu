@@ -83,6 +83,8 @@ public class V3SystemInformationFeedMapper
     mapped.setPhoneNumber(source.getPhoneNumber());
     mapped.setEmail(source.getEmail());
     mapped.setFeedContactEmail(source.getFeedContactEmail());
+
+    // TODO should we continue to support default timezone?
     mapped.setTimezone(
       source.getTimezone() != null
         ? source.getTimezone()
