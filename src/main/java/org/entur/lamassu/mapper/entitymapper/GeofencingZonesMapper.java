@@ -42,14 +42,14 @@ public class GeofencingZonesMapper {
     mapped.setSystemId(feedProvider.getSystemId());
     mapped.setGeojson(mapGeojson(geofencingZones));
 
-    addPolylineEncodedMultiPolygons(mapped);
+    addPolylineEncodedMultiPolygon(mapped);
 
     return mapped;
   }
 
-  private void addPolylineEncodedMultiPolygons(GeofencingZones geofencingZones) {
+  private void addPolylineEncodedMultiPolygon(GeofencingZones geofencingZones) {
     for (GeofencingZones.Feature feature : geofencingZones.getGeojson().getFeatures()) {
-      var mappedPolylineEncodedMultiPolygons = feature
+      var mappedPolylineEncodedMultiPolygon = feature
         .getGeometry()
         .getCoordinates()
         .stream()
@@ -65,11 +65,11 @@ public class GeofencingZonesMapper {
             .map(ring -> PolylineUtils.encode(ring, 5))
             .collect(Collectors.toList())
         )
-        .collect(Collectors.toList());
+              .toList();
 
       feature
         .getProperties()
-        .setPolylineEncodedMultiPolygons(mappedPolylineEncodedMultiPolygons);
+        .setPolylineEncodedMultiPolygon(mappedPolylineEncodedMultiPolygon);
     }
   }
 

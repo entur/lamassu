@@ -99,7 +99,7 @@ public class GeofencingZones implements Entity {
     private Long end;
     private List<Rule> rules;
 
-    private List<List<String>> polylineEncodedMultiPolygons;
+    private List<List<String>> polylineEncodedMultiPolygon;
 
     public String getName() {
       return name;
@@ -133,14 +133,14 @@ public class GeofencingZones implements Entity {
       this.rules = rules;
     }
 
-    public List<List<String>> getPolylineEncodedMultiPolygons() {
-      return polylineEncodedMultiPolygons;
+    public List<List<String>> getPolylineEncodedMultiPolygon() {
+      return polylineEncodedMultiPolygon;
     }
 
-    public void setPolylineEncodedMultiPolygons(
-      List<List<String>> polylineEncodedMultiPolygons
+    public void setPolylineEncodedMultiPolygon(
+      List<List<String>> polylineEncodedMultiPolygon
     ) {
-      this.polylineEncodedMultiPolygons = polylineEncodedMultiPolygons;
+      this.polylineEncodedMultiPolygon = polylineEncodedMultiPolygon;
     }
   }
 
