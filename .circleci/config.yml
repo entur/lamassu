@@ -27,7 +27,7 @@ aliases:
         -Dsonar.organization=${SONAR_ORG} \
         -Dsonar.projectName=${CIRCLE_PROJECT_REPONAME} \
         -Dsonar.host.url=https://sonarcloud.io \
-        -Dsonar.login=${ENTUR_SONAR_PASSWORD}
+        -Dsonar.token=${ENTUR_SONAR_PASSWORD}
 jobs:
   test:
     docker:
