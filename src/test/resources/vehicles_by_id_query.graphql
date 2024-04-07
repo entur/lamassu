@@ -1,5 +1,5 @@
 {
-    vehicles(ids:["TST:Vehicle:1235"]) {
+    vehicles(ids:["TST:Vehicle:1235", "OZO:Vehicle:973a5c94-c288-4a2b-afa6-de8aeb6ae2e5"]) {
         id
         lat
         lon

@@ -1,0 +1,59 @@
+{
+  "last_updated": 1606727710,
+  "ttl": 300,
+  "version": "2.1",
+  "data": {
+    "en": {
+      "feeds": [
+        {
+          "name": "gbfs_versions",
+          "url": "http://localhost:8888/testatlantis/gbfs_versions"
+        },
+        {
+          "name": "system_information",
+          "url": "http://localhost:8888/testatlantis/system_information"
+        },
+        {
+          "name": "vehicle_types",
+          "url": "http://localhost:8888/testatlantis/vehicle_types"
+        },
+        {
+          "name": "station_information",
+          "url": "http://localhost:8888/testatlantis/station_information"
+        },
+        {
+          "name": "station_status",
+          "url": "http://localhost:8888/testatlantis/station_status"
+        },
+        {
+          "name": "free_bike_status",
+          "url": "http://localhost:8888/testatlantis/free_bike_status"
+        },
+        {
+          "name": "system_regions",
+          "url": "http://localhost:8888/testatlantis/system_regions"
+        },
+        {
+          "name": "system_pricing_plans",
+          "url": "http://localhost:8888/testatlantis/system_pricing_plans"
+        },
+        {
+          "name": "system_hours",
+          "url": "http://localhost:8888/testatlantis/system_hours"
+        },
+        {
+          "name": "system_calendar",
+          "url": "http://localhost:8888/testatlantis/system_calendar"
+        },
+        {
+          "name": "system_alerts",
+          "url": "http://localhost:8888/testatlantis/system_alerts"
+        },
+        {
+          "name": "geofencing_zones",
+          "url": "http://localhost:8888/testatlantis/geofencing_zones"
+        }
+      ]
+    }
+  }
+}
