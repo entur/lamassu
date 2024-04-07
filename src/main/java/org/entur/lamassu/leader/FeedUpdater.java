@@ -149,6 +149,7 @@ public class FeedUpdater {
               GbfsFeedVersionMappers.map(gbfsV3Delivery, feedProvider.getLanguage())
             );
             receiveV3Update(feedProvider, gbfsV3Delivery);
+            cacheReady.set(true);
           }
         );
     } else {
@@ -162,6 +163,7 @@ public class FeedUpdater {
               feedProvider,
               GbfsFeedVersionMappers.map(gbfsV2Delivery, feedProvider.getLanguage())
             );
+            cacheReady.set(true);
           }
         );
     }
@@ -254,7 +256,6 @@ public class FeedUpdater {
     if (Boolean.TRUE.equals(feedProvider.getAggregate())) {
       entityCachesUpdater.updateEntityCaches(feedProvider, mappedDelivery, oldDelivery);
     }
-    cacheReady.set(true);
   }
 
   private void receiveV3Update(FeedProvider feedProvider, GbfsV3Delivery gbfsV3Delivery) {
@@ -263,6 +264,5 @@ public class FeedUpdater {
       feedProvider
     );
     v3FeedCachesUpdater.updateFeedCaches(feedProvider, mappedDelivery);
-    cacheReady.set(true);
   }
 }
