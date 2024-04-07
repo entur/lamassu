@@ -91,6 +91,7 @@ public class V3VehicleTypesFeedMapper extends AbstractFeedMapper<GBFSVehicleType
     mapped.setMake(vehicleType.getMake());
     mapped.setModel(vehicleType.getModel());
     mapped.setColor(vehicleType.getColor());
+    mapped.setDescription(vehicleType.getDescription());
     mapped.setWheelCount(vehicleType.getWheelCount());
     mapped.setMaxPermittedSpeed(vehicleType.getMaxPermittedSpeed());
     mapped.setRatedPower(vehicleType.getRatedPower());

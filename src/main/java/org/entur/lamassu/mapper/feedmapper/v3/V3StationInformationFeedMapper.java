@@ -82,6 +82,7 @@ public class V3StationInformationFeedMapper
     mapped.setCrossStreet(gbfsStation.getCrossStreet());
     mapped.setRegionId(mapRegionId(codespace, gbfsStation.getRegionId()));
     mapped.setPostCode(gbfsStation.getPostCode());
+    mapped.setStationOpeningHours(gbfsStation.getStationOpeningHours());
     mapped.setRentalMethods(gbfsStation.getRentalMethods());
     mapped.setIsVirtualStation(gbfsStation.getIsVirtualStation());
     mapped.setStationArea(gbfsStation.getStationArea());

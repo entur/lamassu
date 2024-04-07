@@ -84,12 +84,14 @@ public class V3SystemPricingPlansFeedMapper
     mapped.setPlanId(
       IdMappers.mapId(feedProvider.getCodespace(), PRICING_PLAN_ID_TYPE, plan.getPlanId())
     );
+    mapped.setUrl(plan.getUrl());
     mapped.setName(plan.getName());
     mapped.setDescription(plan.getDescription());
     mapped.setCurrency(plan.getCurrency());
     mapped.setIsTaxable(plan.getIsTaxable());
     mapped.setPrice(plan.getPrice());
-    mapped.setUrl(plan.getUrl());
+    mapped.setReservationPricePerMin(plan.getReservationPricePerMin());
+    mapped.setReservationPriceFlatRate(plan.getReservationPriceFlatRate());
     mapped.setSurgePricing(plan.getSurgePricing());
     mapped.setPerKmPricing(plan.getPerKmPricing());
     mapped.setPerMinPricing(plan.getPerMinPricing());

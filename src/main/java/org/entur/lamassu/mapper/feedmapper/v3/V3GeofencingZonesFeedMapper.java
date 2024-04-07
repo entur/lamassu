@@ -24,6 +24,7 @@ import org.entur.gbfs.v3_0_RC2.geofencing_zones.GBFSData;
 import org.entur.gbfs.v3_0_RC2.geofencing_zones.GBFSFeature;
 import org.entur.gbfs.v3_0_RC2.geofencing_zones.GBFSGeofencingZones;
 import org.entur.gbfs.v3_0_RC2.geofencing_zones.GBFSGeofencingZones__1;
+import org.entur.gbfs.v3_0_RC2.geofencing_zones.GBFSGlobalRule;
 import org.entur.gbfs.v3_0_RC2.geofencing_zones.GBFSProperties;
 import org.entur.gbfs.v3_0_RC2.geofencing_zones.GBFSRule;
 import org.entur.lamassu.mapper.feedmapper.AbstractFeedMapper;
@@ -55,6 +56,13 @@ public class V3GeofencingZonesFeedMapper extends AbstractFeedMapper<GBFSGeofenci
     var mapped = new GBFSData();
     mapped.setGeofencingZones(
       mapGeofencingZones(data.getGeofencingZones(), feedProvider)
+    );
+    mapped.setGlobalRules(
+      data
+        .getGlobalRules()
+        .stream()
+        .map(rule -> mapGlobalRule(rule, feedProvider))
+        .toList()
     );
     return mapped;
   }
@@ -107,6 +115,25 @@ public class V3GeofencingZonesFeedMapper extends AbstractFeedMapper<GBFSGeofenci
 
   private GBFSRule mapRule(GBFSRule rule, FeedProvider feedProvider) {
     var mapped = new GBFSRule();
+    mapped.setVehicleTypeIds(
+      IdMappers
+        .mapIds(
+          feedProvider.getCodespace(),
+          IdMappers.VEHICLE_TYPE_ID_TYPE,
+          rule.getVehicleTypeIds()
+        )
+        .orElse(null)
+    );
+    mapped.setRideStartAllowed(rule.getRideStartAllowed());
+    mapped.setRideEndAllowed(rule.getRideEndAllowed());
+    mapped.setMaximumSpeedKph(rule.getMaximumSpeedKph());
+    mapped.setRideThroughAllowed(rule.getRideThroughAllowed());
+    mapped.setStationParking(rule.getStationParking());
+    return mapped;
+  }
+
+  private GBFSGlobalRule mapGlobalRule(GBFSGlobalRule rule, FeedProvider feedProvider) {
+    var mapped = new GBFSGlobalRule();
     mapped.setVehicleTypeIds(
       IdMappers
         .mapIds(

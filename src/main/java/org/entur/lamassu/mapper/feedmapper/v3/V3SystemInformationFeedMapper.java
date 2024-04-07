@@ -67,6 +67,7 @@ public class V3SystemInformationFeedMapper
     mapped.setSystemId(feedProvider.getSystemId());
     mapped.setLanguages(source.getLanguages());
     mapped.setName(source.getName());
+    mapped.setOpeningHours(source.getOpeningHours());
     mapped.setShortName(source.getShortName());
     mapped.setOperator(
       source.getOperator() != null
@@ -80,9 +81,14 @@ public class V3SystemInformationFeedMapper
     mapped.setUrl(source.getUrl());
     mapped.setPurchaseUrl(source.getPurchaseUrl());
     mapped.setStartDate(source.getStartDate());
+    mapped.setTerminationDate(source.getTerminationDate());
     mapped.setPhoneNumber(source.getPhoneNumber());
     mapped.setEmail(source.getEmail());
     mapped.setFeedContactEmail(source.getFeedContactEmail());
+
+    // This is intentionally skipped, we don't republish manifest.json
+    // of each system if there is one
+    // mapped.setManifestUrl();
 
     // TODO should we continue to support default timezone?
     mapped.setTimezone(
@@ -90,7 +96,10 @@ public class V3SystemInformationFeedMapper
         ? source.getTimezone()
         : GBFSData.Timezone.fromValue(defaultTimeZone)
     );
+    mapped.setLicenseId(source.getLicenseId());
     mapped.setLicenseUrl(source.getLicenseUrl());
+    mapped.setAttributionOrganizationName(source.getAttributionOrganizationName());
+    mapped.setAttributionUrl(source.getAttributionUrl());
     mapped.setBrandAssets(source.getBrandAssets());
     mapped.setTermsUrl(source.getTermsUrl());
     mapped.setTermsLastUpdated(source.getTermsLastUpdated());
