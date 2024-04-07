@@ -156,13 +156,6 @@ public class GBFSRestIntegrationTest extends AbstractIntegrationTestBase {
   }
 
   @Test
-  public void missingOptionalFeedResponds404() throws Exception {
-    mockMvc
-      .perform(get("/gbfs/testatlantis/foobar").contentType("application/json"))
-      .andExpect(status().isBadRequest());
-  }
-
-  @Test
   public void testUnsupportedFeedResponds400() throws Exception {
     mockMvc
       .perform(get("/gbfs/testatlantis/foobar").contentType("application/json"))
