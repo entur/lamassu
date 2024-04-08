@@ -1,0 +1,49 @@
+{
+  "last_updated": "2020-11-30T10:15:10+01:00",
+  "ttl": 300,
+  "version": "3.0-RC2",
+  "data": {
+    "feeds": [
+      {
+        "name": "gbfs_versions",
+        "url": "http://localhost:8888/testozon/gbfs_versions"
+      },
+      {
+        "name": "system_information",
+        "url": "http://localhost:8888/testozon/system_information"
+      },
+      {
+        "name": "vehicle_types",
+        "url": "http://localhost:8888/testozon/vehicle_types"
+      },
+      {
+        "name": "station_information",
+        "url": "http://localhost:8888/testozon/station_information"
+      },
+      {
+        "name": "station_status",
+        "url": "http://localhost:8888/testozon/station_status"
+      },
+      {
+        "name": "vehicle_status",
+        "url": "http://localhost:8888/testozon/vehicle_status"
+      },
+      {
+        "name": "system_regions",
+        "url": "http://localhost:8888/testozon/system_regions"
+      },
+      {
+        "name": "system_pricing_plans",
+        "url": "http://localhost:8888/testozon/system_pricing_plans"
+      },
+      {
+        "name": "system_alerts",
+        "url": "http://localhost:8888/testozon/system_alerts"
+      },
+      {
+        "name": "geofencing_zones",
+        "url": "http://localhost:8888/testozon/geofencing_zones"
+      }
+    ]
+  }
+}

@@ -3,8 +3,19 @@ lamassu:
     - systemId: testatlantis
       operatorId: TST:Operator:atlantis
       operatorName: Atlantis
-      url: http://localhost:8888/gbfs
+      url: http://localhost:8888/testatlantis/gbfs
       codespace: TST
+      language: en
+      authentication:
+        scheme: BearerToken
+        properties:
+          accessToken: fake_token
+    - systemId: testozon
+      operatorId: OZO:Operator:testozon
+      operatorName: Ozon
+      url: http://localhost:8888/testozon/gbfs
+      version: 3.0-RC2
+      codespace: OZO
       language: en
       authentication:
         scheme: BearerToken

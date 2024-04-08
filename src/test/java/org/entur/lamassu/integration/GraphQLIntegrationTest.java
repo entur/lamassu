@@ -51,12 +51,16 @@ public class GraphQLIntegrationTest extends AbstractIntegrationTestBase {
   }
 
   @Test
-  public void testVehiclesByIdQuery() throws IOException {
+  public void testVehiclesByIdQuery() throws IOException, InterruptedException {
     GraphQLResponse response = graphQLTestTemplate.postForResource(
       "vehicles_by_id_query.graphql"
     );
     assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertEquals("TST:Vehicle:1235", response.get("$.data.vehicles[0].id"));
+    assertEquals(
+      "OZO:Vehicle:973a5c94-c288-4a2b-afa6-de8aeb6ae2e5",
+      response.get("$.data.vehicles[0].id")
+    );
+    assertEquals("TST:Vehicle:1235", response.get("$.data.vehicles[1].id"));
   }
 
   @Test

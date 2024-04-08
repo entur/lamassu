@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.concurrent.CountDownLatch;
 import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -36,8 +35,6 @@ public abstract class AbstractIntegrationTestBase {
   @Autowired
   private LeaderSingletonService leaderSingletonService;
 
-  private final CountDownLatch waiter = new CountDownLatch(1);
-
   private static MockWebServer mockWebServer;
 
   @BeforeClass
@@ -49,32 +46,54 @@ public abstract class AbstractIntegrationTestBase {
       @Override
       public MockResponse dispatch(@NotNull RecordedRequest recordedRequest) {
         switch (recordedRequest.getPath()) {
-          case "/gbfs":
-            return getMockResponse("gbfs.json");
-          case "/gbfs_versions":
-            return getMockResponse("gbfs_versions.json");
-          case "/vehicle_types":
-            return getMockResponse("vehicle_types.json");
-          case "/station_information":
-            return getMockResponse("station_information.json");
-          case "/station_status":
-            return getMockResponse("station_status.json");
-          case "/system_information":
-            return getMockResponse("system_information.json");
-          case "/free_bike_status":
-            return getMockResponse("free_bike_status.json");
-          case "/system_regions":
-            return getMockResponse("system_regions.json");
-          case "/system_pricing_plans":
-            return getMockResponse("system_pricing_plans.json");
-          case "/system_hours":
-            return getMockResponse("system_hours.json");
-          case "/system_calendar":
-            return getMockResponse("system_calendar.json");
-          case "/system_alerts":
-            return getMockResponse("system_alerts.json");
-          case "/geofencing_zones":
-            return getMockResponse("geofencing_zones.json");
+          case "/testatlantis/gbfs":
+            return getMockResponse("v2/gbfs.json");
+          case "/testatlantis/gbfs_versions":
+            return getMockResponse("v2/gbfs_versions.json");
+          case "/testatlantis/vehicle_types":
+            return getMockResponse("v2/vehicle_types.json");
+          case "/testatlantis/station_information":
+            return getMockResponse("v2/station_information.json");
+          case "/testatlantis/station_status":
+            return getMockResponse("v2/station_status.json");
+          case "/testatlantis/system_information":
+            return getMockResponse("v2/system_information.json");
+          case "/testatlantis/free_bike_status":
+            return getMockResponse("v2/free_bike_status.json");
+          case "/testatlantis/system_regions":
+            return getMockResponse("v2/system_regions.json");
+          case "/testatlantis/system_pricing_plans":
+            return getMockResponse("v2/system_pricing_plans.json");
+          case "/testatlantis/system_hours":
+            return getMockResponse("v2/system_hours.json");
+          case "/testatlantis/system_calendar":
+            return getMockResponse("v2/system_calendar.json");
+          case "/testatlantis/system_alerts":
+            return getMockResponse("v2/system_alerts.json");
+          case "/testatlantis/geofencing_zones":
+            return getMockResponse("v2/geofencing_zones.json");
+          case "/testozon/gbfs":
+            return getMockResponse("v3/gbfs.json");
+          case "/testozon/gbfs_versions":
+            return getMockResponse("v3/gbfs_versions.json");
+          case "/testozon/vehicle_types":
+            return getMockResponse("v3/vehicle_types.json");
+          case "/testozon/station_information":
+            return getMockResponse("v3/station_information.json");
+          case "/testozon/station_status":
+            return getMockResponse("v3/station_status.json");
+          case "/testozon/system_information":
+            return getMockResponse("v3/system_information.json");
+          case "/testozon/vehicle_status":
+            return getMockResponse("v3/vehicle_status.json");
+          case "/testozon/system_regions":
+            return getMockResponse("v3/system_regions.json");
+          case "/testozon/system_pricing_plans":
+            return getMockResponse("v3/system_pricing_plans.json");
+          case "/testozon/system_alerts":
+            return getMockResponse("v3/system_alerts.json");
+          case "/testozon/geofencing_zones":
+            return getMockResponse("v3/geofencing_zones.json");
         }
 
         return new MockResponse().setResponseCode(404);

@@ -38,6 +38,8 @@ public class FeedProvider {
   private List<GBFSVehicleType> vehicleTypes;
   private List<GBFSPlan> pricingPlans;
 
+  private String version;
+
   public String getSystemId() {
     return systemId;
   }
@@ -126,6 +128,14 @@ public class FeedProvider {
     this.aggregate = aggregate;
   }
 
+  public String getVersion() {
+    return version;
+  }
+
+  public void setVersion(String version) {
+    this.version = version;
+  }
+
   @Override
   public String toString() {
     return (
@@ -158,6 +168,9 @@ public class FeedProvider {
       vehicleTypes +
       ", pricingPlans=" +
       pricingPlans +
+      ", version='" +
+      version +
+      '\'' +
       '}'
     );
   }

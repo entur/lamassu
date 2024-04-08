@@ -74,9 +74,34 @@ E.g.
 
 will return the free_bike_status feed for Bolt's scooter service in Oslo.
 
-### `/graphql`
+#### `/graphql`
 
 GraphQL endpoint targeted at end-user clients. Documentation can be explored at `/graphiql`.
+
+### GBFS v3.0
+
+Please note that GBFS v3.0 is still not official, but is in release candidate mode.
+The latest release candidate (v3.0-RC2) is expected to become official soon.
+
+#### Consuming
+
+Lamassu supports consuming v3.x. The version has to be marked in the feedprovider
+config, e.g.:
+
+    - systemId: testozon
+      operatorId: OZO:Operator:testozon
+      operatorName: Ozon
+      url: http://test.com/gbfs
+      version: 3.0-RC2
+      codespace: OZO
+      language: en
+
+#### Producing
+
+Lamassu produces v3.0-RC2 feeds under a beta-url: `/gbfs/v3beta/manifest.json`.
+`manifest.json` replaces the proprietary system discovery endpoint, which will 
+be deprecated when v3.0 is official. At the same time, the endpoint for v3 will be
+moved from `v3beta` to a yet-to-be-determined path.
 
 ### Development
 
