@@ -23,6 +23,7 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import org.entur.gbfs.loader.v3.GbfsV3Delivery;
+import org.entur.gbfs.mapper.GBFSFeedNameMapper;
 import org.entur.gbfs.v3_0_RC2.gbfs.GBFSFeed;
 import org.entur.gbfs.v3_0_RC2.gbfs.GBFSFeed.Name;
 import org.entur.gbfs.v3_0_RC2.gbfs.GBFSFeedName;
@@ -201,7 +202,7 @@ public class V3FeedCachesUpdater {
         feedProvider.getExcludeFeeds() == null ||
         !feedProvider
           .getExcludeFeeds()
-          .contains(org.entur.gbfs.v2_3.gbfs.GBFSFeedName.fromValue(feedName.toString()))
+          .contains(GBFSFeedNameMapper.INSTANCE.map(feedName))
       )
     );
   }
