@@ -22,16 +22,14 @@ public class SystemDiscoveryServiceImpl implements SystemDiscoveryService {
 
   private final GBFSManifest gbfsManifest;
 
-  @Value("${org.entur.lamassu.baseUrl}")
-  private String baseUrl;
-
   @Autowired
   public SystemDiscoveryServiceImpl(
     FeedProviderService feedProviderService,
-    SystemDiscoveryMapper systemDiscoveryMapper
+    SystemDiscoveryMapper systemDiscoveryMapper,
+    @Value("${org.entur.lamassu.baseUrl}") String baseUrl
   ) {
-    systemDiscovery = mapSystemDiscovery(feedProviderService, systemDiscoveryMapper);
-    gbfsManifest = mapGBFSManifest(systemDiscovery);
+    this.systemDiscovery = mapSystemDiscovery(feedProviderService, systemDiscoveryMapper);
+    this.gbfsManifest = mapGBFSManifest(systemDiscovery, baseUrl);
   }
 
   @Override
@@ -60,7 +58,10 @@ public class SystemDiscoveryServiceImpl implements SystemDiscoveryService {
     return mappedSystemDiscovery;
   }
 
-  public GBFSManifest mapGBFSManifest(SystemDiscovery mappedSystemDiscovery) {
+  public GBFSManifest mapGBFSManifest(
+    SystemDiscovery mappedSystemDiscovery,
+    String baseUrl
+  ) {
     return new GBFSManifest()
       .withVersion(GBFSManifest.Version._3_0_RC_2)
       .withLastUpdated(new Date())
