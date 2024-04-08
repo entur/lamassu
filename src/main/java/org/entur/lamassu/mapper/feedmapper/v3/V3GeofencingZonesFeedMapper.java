@@ -58,11 +58,13 @@ public class V3GeofencingZonesFeedMapper extends AbstractFeedMapper<GBFSGeofenci
       mapGeofencingZones(data.getGeofencingZones(), feedProvider)
     );
     mapped.setGlobalRules(
-      data
-        .getGlobalRules()
-        .stream()
-        .map(rule -> mapGlobalRule(rule, feedProvider))
-        .toList()
+      data.getGlobalRules() != null
+        ? data
+          .getGlobalRules()
+          .stream()
+          .map(rule -> mapGlobalRule(rule, feedProvider))
+          .toList()
+        : null
     );
     return mapped;
   }
