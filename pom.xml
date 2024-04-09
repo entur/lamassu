@@ -30,6 +30,7 @@
         <gbfs-loader-java.version>3.0.2</gbfs-loader-java.version>
         <gbfs-validator-java.version>1.0.26</gbfs-validator-java.version>
         <gbfs-java-model.version>3.0.28</gbfs-java-model.version>
+        <gbfs-mapper-java.version>1.0.35</gbfs-mapper-java.version>
         <netex-utils.version>1.46</netex-utils.version>
         <prettier-java.version>2.1.0</prettier-java.version>
         <prettier-maven-plugin.version>0.22</prettier-maven-plugin.version>
@@ -75,7 +76,7 @@
         <dependency>
             <groupId>org.entur.gbfs</groupId>
             <artifactId>gbfs-mapper-java</artifactId>
-            <version>1.0.35</version>
+            <version>${gbfs-mapper-java.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
