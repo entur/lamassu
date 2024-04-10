@@ -3,7 +3,9 @@
         systemId
         geojson {
             features {
-                geometry { coordinates }
+                geometry {
+                    coordinates
+                }
                 properties {
                     start
                     end

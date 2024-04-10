@@ -58,6 +58,7 @@ public class MultiPolygon implements Serializable {
       )
       .collect(Collectors.toList());
     mapped.setCoordinates(mappedCoordinates);
+
     return mapped;
   }
 }

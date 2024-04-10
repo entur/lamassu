@@ -18,12 +18,15 @@
 
 package org.entur.lamassu.mapper.entitymapper;
 
+import com.mapbox.geojson.Point;
+import com.mapbox.geojson.utils.PolylineUtils;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.entur.gbfs.v2_3.geofencing_zones.GBFSFeature;
 import org.entur.gbfs.v2_3.geofencing_zones.GBFSGeofencingZones__1;
 import org.entur.gbfs.v2_3.geofencing_zones.GBFSProperties;
 import org.entur.gbfs.v2_3.geofencing_zones.GBFSRule;
+import org.entur.lamassu.model.entities.GeofencingZones;
 import org.entur.lamassu.model.entities.MultiPolygon;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.springframework.stereotype.Component;
@@ -38,7 +41,36 @@ public class GeofencingZonesMapper {
     var mapped = new org.entur.lamassu.model.entities.GeofencingZones();
     mapped.setSystemId(feedProvider.getSystemId());
     mapped.setGeojson(mapGeojson(geofencingZones));
+
+    addPolylineEncodedMultiPolygon(mapped);
+
     return mapped;
+  }
+
+  private void addPolylineEncodedMultiPolygon(GeofencingZones geofencingZones) {
+    for (GeofencingZones.Feature feature : geofencingZones.getGeojson().getFeatures()) {
+      var mappedPolylineEncodedMultiPolygon = feature
+        .getGeometry()
+        .getCoordinates()
+        .stream()
+        .map(polygon ->
+          polygon
+            .stream()
+            .map(ring ->
+              ring
+                .stream()
+                .map(coords -> Point.fromLngLat(coords.get(0), coords.get(1)))
+                .toList()
+            )
+            .map(ring -> PolylineUtils.encode(ring, 6))
+            .toList()
+        )
+        .toList();
+
+      feature
+        .getProperties()
+        .setPolylineEncodedMultiPolygon(mappedPolylineEncodedMultiPolygon);
+    }
   }
 
   private org.entur.lamassu.model.entities.GeofencingZones.FeatureCollection mapGeojson(
