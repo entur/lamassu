@@ -34,7 +34,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class V3StationStatusFeedMapper extends AbstractFeedMapper<GBFSStationStatus> {
 
-    private static final String TARGET_GBFS_VERSION = "3.0";
+  private static final String TARGET_GBFS_VERSION = "3.0";
 
   @Override
   public GBFSStationStatus map(GBFSStationStatus source, FeedProvider feedProvider) {

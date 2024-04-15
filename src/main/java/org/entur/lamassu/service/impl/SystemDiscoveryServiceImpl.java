@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SystemDiscoveryServiceImpl implements SystemDiscoveryService {
+
   private final SystemDiscovery systemDiscovery;
 
   private final GBFSManifest gbfsManifest;
