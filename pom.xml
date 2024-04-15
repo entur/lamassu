@@ -211,7 +211,7 @@
             <groupId>io.netty</groupId>
             <artifactId>netty-resolver-dns-native-macos</artifactId>
             <classifier>osx-aarch_64</classifier>
-            <version>4.1.108.Final</version>
+            <version>4.1.109.Final</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
