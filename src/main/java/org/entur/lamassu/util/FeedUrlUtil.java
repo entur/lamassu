@@ -38,7 +38,7 @@ public class FeedUrlUtil {
 
   public static String mapFeedUrl(
     String baseUrl,
-    org.entur.gbfs.v3_0_RC2.gbfs.GBFSFeed.Name feedName,
+    org.entur.gbfs.v3_0.gbfs.GBFSFeed.Name feedName,
     FeedProvider feedProvider
   ) {
     var systemId = feedProvider.getSystemId();

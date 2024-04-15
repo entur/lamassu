@@ -1,11 +1,11 @@
 {
   "last_updated": "2015-06-11T22:31:18+02:00",
   "ttl": 0,
-  "version": "3.0-RC2",
+  "version": "3.0",
   "data": {
     "versions": [
       {
-        "version": "3.0-RC2",
+        "version": "3.0",
         "url": "http://localhost:8888/testozon/gbfs.json"
       }
     ]

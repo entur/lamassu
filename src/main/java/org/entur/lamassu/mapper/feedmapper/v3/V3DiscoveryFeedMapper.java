@@ -20,9 +20,9 @@ package org.entur.lamassu.mapper.feedmapper.v3;
 
 import java.util.stream.Collectors;
 import org.entur.gbfs.mapper.GBFSFeedNameMapper;
-import org.entur.gbfs.v3_0_RC2.gbfs.GBFSData;
-import org.entur.gbfs.v3_0_RC2.gbfs.GBFSFeed;
-import org.entur.gbfs.v3_0_RC2.gbfs.GBFSGbfs;
+import org.entur.gbfs.v3_0.gbfs.GBFSData;
+import org.entur.gbfs.v3_0.gbfs.GBFSFeed;
+import org.entur.gbfs.v3_0.gbfs.GBFSGbfs;
 import org.entur.lamassu.mapper.feedmapper.AbstractFeedMapper;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.util.FeedUrlUtil;
@@ -34,7 +34,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class V3DiscoveryFeedMapper extends AbstractFeedMapper<GBFSGbfs> {
 
-  private static final GBFSGbfs.Version TARGET_GBFS_VERSION = GBFSGbfs.Version._3_0_RC_2;
+  private static final String TARGET_GBFS_VERSION = "3.0";
 
   @Value("${org.entur.lamassu.baseUrl}")
   private String baseUrl;

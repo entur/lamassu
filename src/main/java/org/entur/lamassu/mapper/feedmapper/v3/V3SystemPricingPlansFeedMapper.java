@@ -22,9 +22,9 @@ import static org.entur.lamassu.mapper.feedmapper.IdMappers.PRICING_PLAN_ID_TYPE
 
 import java.util.List;
 import java.util.stream.Collectors;
-import org.entur.gbfs.v3_0_RC2.system_pricing_plans.GBFSData;
-import org.entur.gbfs.v3_0_RC2.system_pricing_plans.GBFSPlan;
-import org.entur.gbfs.v3_0_RC2.system_pricing_plans.GBFSSystemPricingPlans;
+import org.entur.gbfs.v3_0.system_pricing_plans.GBFSData;
+import org.entur.gbfs.v3_0.system_pricing_plans.GBFSPlan;
+import org.entur.gbfs.v3_0.system_pricing_plans.GBFSSystemPricingPlans;
 import org.entur.lamassu.mapper.feedmapper.AbstractFeedMapper;
 import org.entur.lamassu.mapper.feedmapper.IdMappers;
 import org.entur.lamassu.model.provider.FeedProvider;
@@ -35,8 +35,7 @@ import org.springframework.stereotype.Component;
 public class V3SystemPricingPlansFeedMapper
   extends AbstractFeedMapper<GBFSSystemPricingPlans> {
 
-  private static final GBFSSystemPricingPlans.Version VERSION =
-    GBFSSystemPricingPlans.Version._3_0_RC_2;
+  private static final String TARGET_GBFS_VERSION = "3.0";
 
   @Value("${org.entur.lamassu.targetGbfsVersion:2.2}")
   private String targetGbfsVersion;
@@ -58,7 +57,7 @@ public class V3SystemPricingPlansFeedMapper
     }
 
     var mapped = new GBFSSystemPricingPlans();
-    mapped.setVersion(VERSION);
+    mapped.setVersion(TARGET_GBFS_VERSION);
     mapped.setTtl(source.getTtl());
     mapped.setLastUpdated(source.getLastUpdated());
     mapped.setData(mapData(source.getData(), feedProvider));
@@ -90,8 +89,6 @@ public class V3SystemPricingPlansFeedMapper
     mapped.setCurrency(plan.getCurrency());
     mapped.setIsTaxable(plan.getIsTaxable());
     mapped.setPrice(plan.getPrice());
-    mapped.setReservationPricePerMin(plan.getReservationPricePerMin());
-    mapped.setReservationPriceFlatRate(plan.getReservationPriceFlatRate());
     mapped.setSurgePricing(plan.getSurgePricing());
     mapped.setPerKmPricing(plan.getPerKmPricing());
     mapped.setPerMinPricing(plan.getPerMinPricing());

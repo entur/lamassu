@@ -21,8 +21,8 @@ package org.entur.lamassu.controller;
 import java.time.Instant;
 import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
-import org.entur.gbfs.v3_0_RC2.gbfs.GBFSFeed;
-import org.entur.gbfs.v3_0_RC2.manifest.GBFSManifest;
+import org.entur.gbfs.v3_0.gbfs.GBFSFeed;
+import org.entur.gbfs.v3_0.manifest.GBFSManifest;
 import org.entur.lamassu.cache.GBFSV3FeedCache;
 import org.entur.lamassu.service.FeedProviderService;
 import org.entur.lamassu.service.SystemDiscoveryService;
@@ -83,7 +83,7 @@ public class GBFSV3FeedController {
           CacheControl
             .maxAge(
               CacheUtil.getMaxAge(
-                org.entur.gbfs.v3_0_RC2.gbfs.GBFSFeedName.implementingClass(feedName),
+                org.entur.gbfs.v3_0.gbfs.GBFSFeedName.implementingClass(feedName),
                 data,
                 systemId,
                 feed,
@@ -95,7 +95,7 @@ public class GBFSV3FeedController {
         )
         .lastModified(
           CacheUtil.getLastModified(
-            org.entur.gbfs.v3_0_RC2.gbfs.GBFSFeedName.implementingClass(feedName),
+            org.entur.gbfs.v3_0.gbfs.GBFSFeedName.implementingClass(feedName),
             data,
             systemId,
             feed

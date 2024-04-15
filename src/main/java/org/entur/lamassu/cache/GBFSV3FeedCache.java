@@ -19,7 +19,7 @@
 package org.entur.lamassu.cache;
 
 import java.util.concurrent.TimeUnit;
-import org.entur.gbfs.v3_0_RC2.gbfs.GBFSFeed;
+import org.entur.gbfs.v3_0.gbfs.GBFSFeed;
 import org.entur.lamassu.model.provider.FeedProvider;
 
 public interface GBFSV3FeedCache {

@@ -27,10 +27,10 @@
         <okhttp.version>4.12.0</okhttp.version>
         <kryo.version>5.6.0</kryo.version>
         <jackson.version>2.17.0</jackson.version>
-        <gbfs-loader-java.version>3.0.2</gbfs-loader-java.version>
-        <gbfs-validator-java.version>1.0.26</gbfs-validator-java.version>
-        <gbfs-java-model.version>3.0.28</gbfs-java-model.version>
-        <gbfs-mapper-java.version>1.0.35</gbfs-mapper-java.version>
+        <gbfs-loader-java.version>3.0.3</gbfs-loader-java.version>
+        <gbfs-validator-java.version>1.1.1</gbfs-validator-java.version>
+        <gbfs-java-model.version>3.1.1</gbfs-java-model.version>
+        <gbfs-mapper-java.version>1.1.1</gbfs-mapper-java.version>
         <netex-utils.version>1.46</netex-utils.version>
         <prettier-java.version>2.1.0</prettier-java.version>
         <prettier-maven-plugin.version>0.22</prettier-maven-plugin.version>
