@@ -22,11 +22,11 @@ import static org.entur.lamassu.mapper.feedmapper.IdMappers.mapRegionId;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import org.entur.gbfs.v3_0_RC2.station_information.GBFSData;
-import org.entur.gbfs.v3_0_RC2.station_information.GBFSStation;
-import org.entur.gbfs.v3_0_RC2.station_information.GBFSStationInformation;
-import org.entur.gbfs.v3_0_RC2.station_information.GBFSVehicleDocksCapacity;
-import org.entur.gbfs.v3_0_RC2.station_information.GBFSVehicleTypesCapacity;
+import org.entur.gbfs.v3_0.station_information.GBFSData;
+import org.entur.gbfs.v3_0.station_information.GBFSStation;
+import org.entur.gbfs.v3_0.station_information.GBFSStationInformation;
+import org.entur.gbfs.v3_0.station_information.GBFSVehicleDocksCapacity;
+import org.entur.gbfs.v3_0.station_information.GBFSVehicleTypesCapacity;
 import org.entur.lamassu.mapper.feedmapper.AbstractFeedMapper;
 import org.entur.lamassu.mapper.feedmapper.IdMappers;
 import org.entur.lamassu.model.provider.FeedProvider;
@@ -36,8 +36,7 @@ import org.springframework.stereotype.Component;
 public class V3StationInformationFeedMapper
   extends AbstractFeedMapper<GBFSStationInformation> {
 
-  private static final GBFSStationInformation.Version VERSION =
-    GBFSStationInformation.Version._3_0_RC_2;
+  private static final String TARGET_GBFS_VERSION = "3.0";
 
   @Override
   public GBFSStationInformation map(
@@ -49,7 +48,7 @@ public class V3StationInformationFeedMapper
     }
 
     var mapped = new GBFSStationInformation();
-    mapped.setVersion(VERSION);
+    mapped.setVersion(TARGET_GBFS_VERSION);
     mapped.setLastUpdated(source.getLastUpdated());
     mapped.setTtl(source.getTtl());
     mapped.setData(mapData(source.getData(), feedProvider.getCodespace()));

@@ -19,9 +19,9 @@
 package org.entur.lamassu.mapper.feedmapper.v3;
 
 import java.util.List;
-import org.entur.gbfs.v3_0_RC2.system_information.GBFSData;
-import org.entur.gbfs.v3_0_RC2.system_information.GBFSOperator;
-import org.entur.gbfs.v3_0_RC2.system_information.GBFSSystemInformation;
+import org.entur.gbfs.v3_0.system_information.GBFSData;
+import org.entur.gbfs.v3_0.system_information.GBFSOperator;
+import org.entur.gbfs.v3_0.system_information.GBFSSystemInformation;
 import org.entur.lamassu.mapper.feedmapper.AbstractFeedMapper;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.slf4j.Logger;
@@ -33,8 +33,7 @@ import org.springframework.stereotype.Component;
 public class V3SystemInformationFeedMapper
   extends AbstractFeedMapper<GBFSSystemInformation> {
 
-  public static final GBFSSystemInformation.Version TARGET_GBFS_VERSION =
-    GBFSSystemInformation.Version._3_0_RC_2;
+  private static final String TARGET_GBFS_VERSION = "3.0";
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   @Value("${org.entur.lamassu.defaultTimeZone:Europe/Oslo}")

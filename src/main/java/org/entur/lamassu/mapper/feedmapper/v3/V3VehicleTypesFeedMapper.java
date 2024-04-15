@@ -23,9 +23,9 @@ import static org.entur.lamassu.mapper.feedmapper.IdMappers.VEHICLE_TYPE_ID_TYPE
 
 import java.util.List;
 import java.util.stream.Collectors;
-import org.entur.gbfs.v3_0_RC2.vehicle_types.GBFSData;
-import org.entur.gbfs.v3_0_RC2.vehicle_types.GBFSVehicleType;
-import org.entur.gbfs.v3_0_RC2.vehicle_types.GBFSVehicleTypes;
+import org.entur.gbfs.v3_0.vehicle_types.GBFSData;
+import org.entur.gbfs.v3_0.vehicle_types.GBFSVehicleType;
+import org.entur.gbfs.v3_0.vehicle_types.GBFSVehicleTypes;
 import org.entur.lamassu.mapper.feedmapper.AbstractFeedMapper;
 import org.entur.lamassu.mapper.feedmapper.IdMappers;
 import org.entur.lamassu.model.provider.FeedProvider;
@@ -34,8 +34,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class V3VehicleTypesFeedMapper extends AbstractFeedMapper<GBFSVehicleTypes> {
 
-  private static final GBFSVehicleTypes.Version TARGET_GBFS_VERSION =
-    GBFSVehicleTypes.Version._3_0_RC_2;
+  private static final String TARGET_GBFS_VERSION = "3.0";
 
   @Override
   public GBFSVehicleTypes map(GBFSVehicleTypes source, FeedProvider feedProvider) {

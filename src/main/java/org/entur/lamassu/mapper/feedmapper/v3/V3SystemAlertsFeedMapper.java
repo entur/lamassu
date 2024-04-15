@@ -24,9 +24,9 @@ import static org.entur.lamassu.mapper.feedmapper.IdMappers.STATION_ID_TYPE;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import org.entur.gbfs.v3_0_RC2.system_alerts.GBFSAlert;
-import org.entur.gbfs.v3_0_RC2.system_alerts.GBFSData;
-import org.entur.gbfs.v3_0_RC2.system_alerts.GBFSSystemAlerts;
+import org.entur.gbfs.v3_0.system_alerts.GBFSAlert;
+import org.entur.gbfs.v3_0.system_alerts.GBFSData;
+import org.entur.gbfs.v3_0.system_alerts.GBFSSystemAlerts;
 import org.entur.lamassu.mapper.feedmapper.AbstractFeedMapper;
 import org.entur.lamassu.mapper.feedmapper.IdMappers;
 import org.entur.lamassu.model.provider.FeedProvider;
@@ -35,8 +35,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class V3SystemAlertsFeedMapper extends AbstractFeedMapper<GBFSSystemAlerts> {
 
-  private static final GBFSSystemAlerts.Version VERSION =
-    GBFSSystemAlerts.Version._3_0_RC_2;
+  private static final String TARGET_GBFS_VERSION = "3.0";
 
   public GBFSSystemAlerts map(GBFSSystemAlerts systemAlerts, FeedProvider feedProvider) {
     if (systemAlerts == null) {
@@ -45,7 +44,7 @@ public class V3SystemAlertsFeedMapper extends AbstractFeedMapper<GBFSSystemAlert
 
     var codespace = feedProvider.getCodespace();
     var mappedSystemAlerts = new GBFSSystemAlerts();
-    mappedSystemAlerts.setVersion(VERSION);
+    mappedSystemAlerts.setVersion(TARGET_GBFS_VERSION);
     mappedSystemAlerts.setLastUpdated(systemAlerts.getLastUpdated());
     mappedSystemAlerts.setTtl(systemAlerts.getTtl());
     mappedSystemAlerts.setData(mapData(systemAlerts.getData(), codespace));

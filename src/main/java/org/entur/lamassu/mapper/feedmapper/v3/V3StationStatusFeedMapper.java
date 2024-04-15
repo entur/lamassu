@@ -21,11 +21,11 @@ package org.entur.lamassu.mapper.feedmapper.v3;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.entur.gbfs.v3_0_RC2.station_status.GBFSData;
-import org.entur.gbfs.v3_0_RC2.station_status.GBFSStation;
-import org.entur.gbfs.v3_0_RC2.station_status.GBFSStationStatus;
-import org.entur.gbfs.v3_0_RC2.station_status.GBFSVehicleDocksAvailable;
-import org.entur.gbfs.v3_0_RC2.station_status.GBFSVehicleTypesAvailable;
+import org.entur.gbfs.v3_0.station_status.GBFSData;
+import org.entur.gbfs.v3_0.station_status.GBFSStation;
+import org.entur.gbfs.v3_0.station_status.GBFSStationStatus;
+import org.entur.gbfs.v3_0.station_status.GBFSVehicleDocksAvailable;
+import org.entur.gbfs.v3_0.station_status.GBFSVehicleTypesAvailable;
 import org.entur.lamassu.mapper.feedmapper.AbstractFeedMapper;
 import org.entur.lamassu.mapper.feedmapper.IdMappers;
 import org.entur.lamassu.model.provider.FeedProvider;
@@ -34,8 +34,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class V3StationStatusFeedMapper extends AbstractFeedMapper<GBFSStationStatus> {
 
-  private static final GBFSStationStatus.Version VERSION =
-    GBFSStationStatus.Version._3_0_RC_2;
+    private static final String TARGET_GBFS_VERSION = "3.0";
 
   @Override
   public GBFSStationStatus map(GBFSStationStatus source, FeedProvider feedProvider) {
@@ -44,7 +43,7 @@ public class V3StationStatusFeedMapper extends AbstractFeedMapper<GBFSStationSta
     }
 
     var mapped = new GBFSStationStatus();
-    mapped.setVersion(VERSION);
+    mapped.setVersion(TARGET_GBFS_VERSION);
     mapped.setLastUpdated(source.getLastUpdated());
     mapped.setTtl(source.getTtl());
     mapped.setData(mapData(source.getData(), feedProvider));

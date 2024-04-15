@@ -2,10 +2,10 @@ package org.entur.lamassu.service.impl;
 
 import java.util.Date;
 import java.util.List;
-import org.entur.gbfs.v3_0_RC2.manifest.GBFSData;
-import org.entur.gbfs.v3_0_RC2.manifest.GBFSDataset;
-import org.entur.gbfs.v3_0_RC2.manifest.GBFSManifest;
-import org.entur.gbfs.v3_0_RC2.manifest.GBFSVersion;
+import org.entur.gbfs.v3_0.manifest.GBFSData;
+import org.entur.gbfs.v3_0.manifest.GBFSDataset;
+import org.entur.gbfs.v3_0.manifest.GBFSManifest;
+import org.entur.gbfs.v3_0.manifest.GBFSVersion;
 import org.entur.lamassu.mapper.entitymapper.SystemDiscoveryMapper;
 import org.entur.lamassu.model.discovery.SystemDiscovery;
 import org.entur.lamassu.service.FeedProviderService;
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SystemDiscoveryServiceImpl implements SystemDiscoveryService {
-
   private final SystemDiscovery systemDiscovery;
 
   private final GBFSManifest gbfsManifest;
@@ -63,7 +62,7 @@ public class SystemDiscoveryServiceImpl implements SystemDiscoveryService {
     String baseUrl
   ) {
     return new GBFSManifest()
-      .withVersion(GBFSManifest.Version._3_0_RC_2)
+      .withVersion(GBFSVersion.Version._3_0.toString())
       .withLastUpdated(new Date())
       .withTtl(3600)
       .withData(
@@ -81,7 +80,7 @@ public class SystemDiscoveryServiceImpl implements SystemDiscoveryService {
                         .withVersion(GBFSVersion.Version._2_3)
                         .withUrl(system.getUrl()),
                       new GBFSVersion()
-                        .withVersion(GBFSVersion.Version._3_0_RC_2)
+                        .withVersion(GBFSVersion.Version._3_0)
                         .withUrl(baseUrl + "/gbfs/v3beta/" + system.getId() + "/gbfs")
                     )
                   )
