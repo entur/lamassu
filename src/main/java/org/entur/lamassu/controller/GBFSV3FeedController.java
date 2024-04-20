@@ -105,6 +105,12 @@ public class GBFSV3FeedController {
     } catch (IllegalArgumentException e) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     } catch (NoSuchElementException e) {
+      // if system_id is well known and feed is a required one, it should exist and
+      // is not available due to upstream issues.
+      // In this case, we should respond with 5xx and not 4xx
+      if (feedProviderService.getFeedProviderBySystemId(systemId) != null) {
+        throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE);
+      }
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
   }
