@@ -54,9 +54,12 @@ public class MetricsService {
   private final AtomicInteger vehicleEntityCount = new AtomicInteger();
   private final AtomicInteger stationEntityCount = new AtomicInteger();
 
-  private final Map<String, AtomicInteger> subscriptionFailedSetupCounters = new ConcurrentHashMap<>();
-  private final Map<String, AtomicInteger> validationFeedErrorsCounters = new ConcurrentHashMap<>();
-  private final Map<String, AtomicInteger> validationMissingRequiredFilesCounters = new ConcurrentHashMap<>();
+  private final Map<String, AtomicInteger> subscriptionFailedSetupCounters =
+    new ConcurrentHashMap<>();
+  private final Map<String, AtomicInteger> validationFeedErrorsCounters =
+    new ConcurrentHashMap<>();
+  private final Map<String, AtomicInteger> validationMissingRequiredFilesCounters =
+    new ConcurrentHashMap<>();
 
   public MetricsService(MeterRegistry meterRegistry) {
     this.meterRegistry = meterRegistry;
@@ -74,8 +77,7 @@ public class MetricsService {
   }
 
   public void registerSubscriptionSetup(FeedProvider feedProvider, boolean success) {
-    getSubscriptionFailedSetupCounter(feedProvider)
-            .set(success ? 0 : 1);
+    getSubscriptionFailedSetupCounter(feedProvider).set(success ? 0 : 1);
   }
 
   public void registerValidationResult(
@@ -83,11 +85,10 @@ public class MetricsService {
     ValidationResult validationResult
   ) {
     getValidationFeedErrorsCounter(feedProvider)
-            .set(validationResult.getSummary().getErrorsCount());
+      .set(validationResult.getSummary().getErrorsCount());
 
     getMissingRequiredFilesCounter(feedProvider)
-            .set(calculateMissingRequiredFiles(validationResult));
-
+      .set(calculateMissingRequiredFiles(validationResult));
   }
 
   public void registerEntityCount(String entity, int entityCount) {
@@ -101,43 +102,61 @@ public class MetricsService {
   }
 
   private AtomicInteger getSubscriptionFailedSetupCounter(FeedProvider feedProvider) {
-    return getCounter(feedProvider, subscriptionFailedSetupCounters, SUBSCRIPTION_FAILEDSETUP);
+    return getCounter(
+      feedProvider,
+      subscriptionFailedSetupCounters,
+      SUBSCRIPTION_FAILEDSETUP
+    );
   }
 
   private AtomicInteger getMissingRequiredFilesCounter(FeedProvider feedProvider) {
-    return getCounter(feedProvider, validationFeedErrorsCounters, VALIDATION_MISSING_REQUIRED_FILES);
+    return getCounter(
+      feedProvider,
+      validationFeedErrorsCounters,
+      VALIDATION_MISSING_REQUIRED_FILES
+    );
   }
 
   private AtomicInteger getValidationFeedErrorsCounter(FeedProvider feedProvider) {
-    return getCounter(feedProvider, validationMissingRequiredFilesCounters, VALIDATION_FEED_ERRORS);
+    return getCounter(
+      feedProvider,
+      validationMissingRequiredFilesCounters,
+      VALIDATION_FEED_ERRORS
+    );
   }
 
-  private AtomicInteger getCounter(FeedProvider feedProvider, Map<String, AtomicInteger> counterMap, String metricName) {
+  private AtomicInteger getCounter(
+    FeedProvider feedProvider,
+    Map<String, AtomicInteger> counterMap,
+    String metricName
+  ) {
     AtomicInteger counter;
     if (counterMap.containsKey(feedProvider.getSystemId())) {
       counter = counterMap.get(feedProvider.getSystemId());
     } else {
       counter = new AtomicInteger();
       counterMap.put(feedProvider.getSystemId(), counter);
-      Gauge.builder(metricName, counter, AtomicInteger::doubleValue)
-              .strongReference(true)
-              .tags(List.of(Tag.of(LABEL_SYSTEM, feedProvider.getSystemId())))
-              .register(meterRegistry);
+      Gauge
+        .builder(metricName, counter, AtomicInteger::doubleValue)
+        .strongReference(true)
+        .tags(List.of(Tag.of(LABEL_SYSTEM, feedProvider.getSystemId())))
+        .register(meterRegistry);
     }
     return counter;
   }
 
   private int calculateMissingRequiredFiles(ValidationResult validationResult) {
     return validationResult
-            .getFiles()
-            .values()
-            .stream().map(fileValidationResult -> {
-              if (fileValidationResult.isRequired() && !fileValidationResult.isExists()) {
-                return 1;
-              } else {
-                return 0;
-              }
-            })
-            .reduce(0, Integer::sum);
+      .getFiles()
+      .values()
+      .stream()
+      .map(fileValidationResult -> {
+        if (fileValidationResult.isRequired() && !fileValidationResult.isExists()) {
+          return 1;
+        } else {
+          return 0;
+        }
+      })
+      .reduce(0, Integer::sum);
   }
 }
