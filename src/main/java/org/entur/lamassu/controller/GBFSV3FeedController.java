@@ -109,7 +109,7 @@ public class GBFSV3FeedController {
       // is not available due to upstream issues.
       // In this case, we should respond with 5xx and not 4xx
       if (feedProviderService.getFeedProviderBySystemId(systemId) != null) {
-        throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE);
+        throw new ResponseStatusException(HttpStatus.BAD_GATEWAY);
       }
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }

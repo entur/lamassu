@@ -19,9 +19,16 @@
 package org.entur.lamassu.controller;
 
 import java.time.Instant;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
+import org.entur.gbfs.v2_3.gbfs.GBFS;
+import org.entur.gbfs.v2_3.gbfs.GBFSFeed;
 import org.entur.gbfs.v2_3.gbfs.GBFSFeedName;
+import org.entur.gbfs.v2_3.gbfs.GBFSFeeds;
 import org.entur.lamassu.cache.GBFSV2FeedCache;
 import org.entur.lamassu.model.discovery.SystemDiscovery;
 import org.entur.lamassu.service.FeedProviderService;
@@ -74,7 +81,6 @@ public class GBFSV2FeedController {
     try {
       var feedName = GBFSFeedName.fromValue(feed);
       Object data = getFeed(systemId, feed);
-
       return ResponseEntity
         .ok()
         .cacheControl(
@@ -98,13 +104,44 @@ public class GBFSV2FeedController {
     } catch (IllegalArgumentException e) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     } catch (NoSuchElementException e) {
-      // if system_id is well known and feed is a required one, it should exist and
-      // is not available due to upstream issues.
-      // In this case, we should respond with 5xx and not 4xx
+      // if system_id is well known, feed could exist according to the spec but
+      // is not available (e.g. due to upstream issues), we respond with 502 and not 4xx.
+      // In case the feed is initialised (gbfs feed is available),
+      // we throw 502 if the feed should exist according to the gbfs, else 404.
       if (feedProviderService.getFeedProviderBySystemId(systemId) != null) {
-        throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE);
+        if (mightOrShouldFeedExist(systemId, feed)) {
+          throw new ResponseStatusException(HttpStatus.BAD_GATEWAY);
+        }
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
       }
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    }
+  }
+
+  /*
+    Returns true, if either the discoveryFile (gbf file) is not yet cached,
+    or the requested feed is published in the discovery file.
+   */
+  protected boolean mightOrShouldFeedExist(String systemId, String feed) {
+    try {
+      GBFS discoveryFile = (GBFS) getFeed(systemId, "gbfs");
+      var feedName = GBFSFeedName.fromValue(feed);
+      List<GBFSFeedName> feedNames =
+        ((GBFS) discoveryFile).getFeedsData()
+          .values()
+          .stream()
+          .map(GBFSFeeds::getFeeds)
+          .flatMap(list -> list.stream())
+          .map(GBFSFeed::getName)
+          .toList();
+
+      return feedNames.contains(feedName);
+    } catch (NoSuchElementException e) {
+      return true;
+    } catch (NullPointerException e) {
+      // in case the gbfs is malformed, e.g. no languages are defined, or no feeds,
+      // this is an upstream error and the requested feed might exist
+      return true;
     }
   }
 
