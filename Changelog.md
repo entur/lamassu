@@ -8,6 +8,7 @@ based on merged pull requests. Search GitHub issues and pull requests for smalle
 - fix: do not skip vehicles without pricing plan id (fixes #396) [#397](https://github.com/entur/lamassu/pull/397)
 - Support consuming GBFS v3 [#389](https://github.com/entur/lamassu/pull/389)
 - Add polylineEncodedMultiPolygon to GeofencingZoneProperties [#403](https://github.com/entur/lamassu/pull/403)
+- fix: metrics were not registered correctly, this simplifies the setup [#439](https://github.com/entur/lamassu/pull/439)
   [](AUTOMATIC_CHANGELOG_PLACEHOLDER_DO_NOT_REMOVE)
   
 ## 1.0.0
