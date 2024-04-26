@@ -21,10 +21,7 @@ package org.entur.lamassu.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(
-  value = HttpStatus.BAD_GATEWAY,
-  reason = "Feed not (yet) available"
-) //
+@ResponseStatus(value = HttpStatus.BAD_GATEWAY, reason = "Feed not (yet) available")
 public class UpstreamFeedNotYetAvailableException extends RuntimeException {
 
   public UpstreamFeedNotYetAvailableException() {
