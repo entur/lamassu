@@ -66,8 +66,7 @@ public class GBFSV2FeedControllerTest {
     when(mockedFeedProviderService.getFeedProviderBySystemId(KNOWN_SYSTEM_ID))
       .thenReturn(feedProvider);
 
-    expectedException.expect(ResponseStatusException.class);
-    expectedException.expectMessage("502 BAD_GATEWAY");
+    expectedException.expect(UpstreamFeedNotYetAvailableException.class);
     feedController.getGbfsFeedForProvider(KNOWN_SYSTEM_ID, "gbfs");
   }
 
@@ -98,8 +97,7 @@ public class GBFSV2FeedControllerTest {
     when(mockedFeedCache.find(GBFSFeedName.GBFS, feedProvider)).thenReturn(gbfs);
     when(mockedFeedCache.find(GBFSFeedName.GeofencingZones, feedProvider))
       .thenReturn(null);
-    expectedException.expect(ResponseStatusException.class);
-    expectedException.expectMessage("502 BAD_GATEWAY");
+    expectedException.expect(UpstreamFeedNotYetAvailableException.class);
     feedController.getGbfsFeedForProvider(KNOWN_SYSTEM_ID, "geofencing_zones");
   }
 
@@ -115,8 +113,7 @@ public class GBFSV2FeedControllerTest {
     when(mockedFeedCache.find(GBFSFeedName.GBFS, feedProvider)).thenReturn(gbfs);
     when(mockedFeedCache.find(GBFSFeedName.GeofencingZones, feedProvider))
       .thenReturn(null);
-    expectedException.expect(ResponseStatusException.class);
-    expectedException.expectMessage("502 BAD_GATEWAY");
+    expectedException.expect(UpstreamFeedNotYetAvailableException.class);
     feedController.getGbfsFeedForProvider(KNOWN_SYSTEM_ID, "geofencing_zones");
   }
 
