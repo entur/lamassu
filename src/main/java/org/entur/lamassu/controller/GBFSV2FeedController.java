@@ -124,7 +124,7 @@ public class GBFSV2FeedController {
   }
 
   /*
-    Returns true, if either the discoveryFile (gbf file) is not yet cached,
+    Throws an UpstreamFeedNotYetAvailableException, if either the discoveryFile (gbf file) is not yet cached,
     the requested feed is published in the discovery file, or the discovery file is malformed.
    */
   protected void throwsIfFeedCouldOrShouldExist(

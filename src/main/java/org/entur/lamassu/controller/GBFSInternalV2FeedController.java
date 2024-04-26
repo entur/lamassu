@@ -127,12 +127,6 @@ public class GBFSInternalV2FeedController {
     } catch (IllegalArgumentException e) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     } catch (NoSuchElementException e) {
-      // if system_id is well known and feed is a required one, it should exist and
-      // is not available due to upstream issues.
-      // In this case, we should respond with 5xx and not 4xx
-      if (feedProviderService.getFeedProviderBySystemId(systemId) != null) {
-        throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE);
-      }
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
   }
@@ -205,8 +199,38 @@ public class GBFSInternalV2FeedController {
     var data = feedCache.find(feedName, feedProvider);
 
     if (data == null) {
+      throwsIfFeedCouldOrShouldExist(feedName, feedProvider);
       throw new NoSuchElementException();
     }
     return data;
+  }
+
+  /*
+      Throws an UpstreamFeedNotYetAvailableException, if either the discoveryFile (gbf file) is not yet cached,
+      the requested feed is published in the discovery file, or the discovery file is malformed.
+     */
+  protected void throwsIfFeedCouldOrShouldExist(
+    GBFSFeedName feedName,
+    FeedProvider feedProvider
+  ) {
+    try {
+      GBFS discoveryFile = (GBFS) feedCache.find(GBFSFeedName.GBFS, feedProvider);
+      if (
+        discoveryFile == null ||
+        ((GBFS) discoveryFile).getFeedsData()
+          .values()
+          .stream()
+          .map(GBFSFeeds::getFeeds)
+          .flatMap(list -> list.stream())
+          .map(GBFSFeed::getName)
+          .anyMatch(name -> name.equals(feedName))
+      ) {
+        throw new UpstreamFeedNotYetAvailableException();
+      }
+    } catch (NullPointerException e) {
+      // in case the gbfs is malformed, e.g. no languages are defined, or no feeds,
+      // this is an upstream error and the requested feed might exist
+      throw new UpstreamFeedNotYetAvailableException();
+    }
   }
 }
