@@ -21,9 +21,13 @@ package org.entur.lamassu.controller;
 import java.time.Instant;
 import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
+import org.entur.gbfs.v2_3.gbfs.GBFS;
+import org.entur.gbfs.v2_3.gbfs.GBFSFeed;
 import org.entur.gbfs.v2_3.gbfs.GBFSFeedName;
+import org.entur.gbfs.v2_3.gbfs.GBFSFeeds;
 import org.entur.lamassu.cache.GBFSV2FeedCache;
 import org.entur.lamassu.model.discovery.SystemDiscovery;
+import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.service.FeedProviderService;
 import org.entur.lamassu.service.SystemDiscoveryService;
 import org.entur.lamassu.util.CacheUtil;
@@ -74,7 +78,6 @@ public class GBFSV2FeedController {
     try {
       var feedName = GBFSFeedName.fromValue(feed);
       Object data = getFeed(systemId, feed);
-
       return ResponseEntity
         .ok()
         .cacheControl(
@@ -114,8 +117,38 @@ public class GBFSV2FeedController {
     var data = feedCache.find(feedName, feedProvider);
 
     if (data == null) {
+      throwsIfFeedCouldOrShouldExist(feedName, feedProvider);
       throw new NoSuchElementException();
     }
     return data;
+  }
+
+  /*
+    Throws an UpstreamFeedNotYetAvailableException, if either the discoveryFile (gbf file) is not yet cached,
+    the requested feed is published in the discovery file, or the discovery file is malformed.
+   */
+  protected void throwsIfFeedCouldOrShouldExist(
+    GBFSFeedName feedName,
+    FeedProvider feedProvider
+  ) {
+    try {
+      GBFS discoveryFile = (GBFS) feedCache.find(GBFSFeedName.GBFS, feedProvider);
+      if (
+        discoveryFile == null ||
+        ((GBFS) discoveryFile).getFeedsData()
+          .values()
+          .stream()
+          .map(GBFSFeeds::getFeeds)
+          .flatMap(list -> list.stream())
+          .map(GBFSFeed::getName)
+          .anyMatch(name -> name.equals(feedName))
+      ) {
+        throw new UpstreamFeedNotYetAvailableException();
+      }
+    } catch (NullPointerException e) {
+      // in case the gbfs is malformed, e.g. no languages are defined, or no feeds,
+      // this is an upstream error and the requested feed might exist
+      throw new UpstreamFeedNotYetAvailableException();
+    }
   }
 }

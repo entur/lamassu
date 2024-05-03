@@ -22,8 +22,10 @@ import java.time.Instant;
 import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 import org.entur.gbfs.v3_0.gbfs.GBFSFeed;
+import org.entur.gbfs.v3_0.gbfs.GBFSGbfs;
 import org.entur.gbfs.v3_0.manifest.GBFSManifest;
 import org.entur.lamassu.cache.GBFSV3FeedCache;
+import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.service.FeedProviderService;
 import org.entur.lamassu.service.SystemDiscoveryService;
 import org.entur.lamassu.util.CacheUtil;
@@ -121,8 +123,40 @@ public class GBFSV3FeedController {
     var data = v3FeedCache.find(feedName, feedProvider);
 
     if (data == null) {
+      throwsIfFeedCouldOrShouldExist(feedName, feedProvider);
       throw new NoSuchElementException();
     }
     return data;
+  }
+
+  /*
+    Throws an UpstreamFeedNotYetAvailableException, if either the discoveryFile (gbf file) is not yet cached,
+    the requested feed is published in the discovery file, or the discovery file is malformed.
+   */
+  protected void throwsIfFeedCouldOrShouldExist(
+    GBFSFeed.Name feedName,
+    FeedProvider feedProvider
+  ) {
+    try {
+      GBFSGbfs discoveryFile = (GBFSGbfs) v3FeedCache.find(
+        GBFSFeed.Name.GBFS,
+        feedProvider
+      );
+      if (
+        discoveryFile == null ||
+        discoveryFile
+          .getData()
+          .getFeeds()
+          .stream()
+          .map(GBFSFeed::getName)
+          .anyMatch(name -> name.equals(feedName))
+      ) {
+        throw new UpstreamFeedNotYetAvailableException();
+      }
+    } catch (NullPointerException e) {
+      // in case the gbfs is malformed, e.g. no languages are defined, or no feeds,
+      // this is an upstream error and the requested feed might exist
+      throw new UpstreamFeedNotYetAvailableException();
+    }
   }
 }
