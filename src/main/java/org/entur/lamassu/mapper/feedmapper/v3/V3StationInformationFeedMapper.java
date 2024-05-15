@@ -22,14 +22,14 @@ import static org.entur.lamassu.mapper.feedmapper.IdMappers.mapRegionId;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import org.entur.gbfs.v3_0.station_information.GBFSData;
-import org.entur.gbfs.v3_0.station_information.GBFSStation;
-import org.entur.gbfs.v3_0.station_information.GBFSStationInformation;
-import org.entur.gbfs.v3_0.station_information.GBFSVehicleDocksCapacity;
-import org.entur.gbfs.v3_0.station_information.GBFSVehicleTypesCapacity;
 import org.entur.lamassu.mapper.feedmapper.AbstractFeedMapper;
 import org.entur.lamassu.mapper.feedmapper.IdMappers;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.mobilitydata.gbfs.v3_0.station_information.GBFSData;
+import org.mobilitydata.gbfs.v3_0.station_information.GBFSStation;
+import org.mobilitydata.gbfs.v3_0.station_information.GBFSStationInformation;
+import org.mobilitydata.gbfs.v3_0.station_information.GBFSVehicleDocksCapacity;
+import org.mobilitydata.gbfs.v3_0.station_information.GBFSVehicleTypesCapacity;
 import org.springframework.stereotype.Component;
 
 @Component

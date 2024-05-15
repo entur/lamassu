@@ -1,2 +1,8 @@
 lamassu:
   providers:
+    - systemId: test
+      operatorId: TST:Operator:Test
+      operatorName: Test
+      codespace: TST
+      url: http://localhost:3001/gbfs.json
+      language: "no"

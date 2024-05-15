@@ -20,15 +20,15 @@ package org.entur.lamassu.mapper.feedmapper.v2;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import org.entur.gbfs.v2_3.geofencing_zones.GBFSData;
-import org.entur.gbfs.v2_3.geofencing_zones.GBFSFeature;
-import org.entur.gbfs.v2_3.geofencing_zones.GBFSGeofencingZones;
-import org.entur.gbfs.v2_3.geofencing_zones.GBFSGeofencingZones__1;
-import org.entur.gbfs.v2_3.geofencing_zones.GBFSProperties;
-import org.entur.gbfs.v2_3.geofencing_zones.GBFSRule;
 import org.entur.lamassu.mapper.feedmapper.AbstractFeedMapper;
 import org.entur.lamassu.mapper.feedmapper.IdMappers;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.mobilitydata.gbfs.v2_3.geofencing_zones.GBFSData;
+import org.mobilitydata.gbfs.v2_3.geofencing_zones.GBFSFeature;
+import org.mobilitydata.gbfs.v2_3.geofencing_zones.GBFSGeofencingZones;
+import org.mobilitydata.gbfs.v2_3.geofencing_zones.GBFSGeofencingZones__1;
+import org.mobilitydata.gbfs.v2_3.geofencing_zones.GBFSProperties;
+import org.mobilitydata.gbfs.v2_3.geofencing_zones.GBFSRule;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

@@ -20,9 +20,9 @@ package org.entur.lamassu.leader.entityupdater;
 
 import java.util.Map;
 import java.util.function.Predicate;
-import org.entur.gbfs.v2_3.free_bike_status.GBFSBike;
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.VehicleType;
+import org.mobilitydata.gbfs.v2_3.free_bike_status.GBFSBike;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

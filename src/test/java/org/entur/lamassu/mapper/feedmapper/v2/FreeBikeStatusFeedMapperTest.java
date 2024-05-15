@@ -19,14 +19,14 @@
 package org.entur.lamassu.mapper.feedmapper.v2;
 
 import java.util.List;
-import org.entur.gbfs.v2_3.free_bike_status.GBFSBike;
-import org.entur.gbfs.v2_3.system_pricing_plans.GBFSPerMinPricing;
-import org.entur.gbfs.v2_3.system_pricing_plans.GBFSPlan;
-import org.entur.gbfs.v2_3.vehicle_types.GBFSVehicleType;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mobilitydata.gbfs.v2_3.free_bike_status.GBFSBike;
+import org.mobilitydata.gbfs.v2_3.system_pricing_plans.GBFSPerMinPricing;
+import org.mobilitydata.gbfs.v2_3.system_pricing_plans.GBFSPlan;
+import org.mobilitydata.gbfs.v2_3.vehicle_types.GBFSVehicleType;
 
 class FreeBikeStatusFeedMapperTest {
 

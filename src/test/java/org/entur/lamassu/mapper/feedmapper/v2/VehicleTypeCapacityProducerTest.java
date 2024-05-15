@@ -19,12 +19,12 @@
 package org.entur.lamassu.mapper.feedmapper.v2;
 
 import java.util.List;
-import org.entur.gbfs.v2_3.station_status.GBFSStation;
-import org.entur.gbfs.v2_3.station_status.GBFSStationStatus;
-import org.entur.gbfs.v2_3.vehicle_types.GBFSVehicleType;
-import org.entur.gbfs.v2_3.vehicle_types.GBFSVehicleTypes;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mobilitydata.gbfs.v2_3.station_status.GBFSStation;
+import org.mobilitydata.gbfs.v2_3.station_status.GBFSStationStatus;
+import org.mobilitydata.gbfs.v2_3.vehicle_types.GBFSVehicleType;
+import org.mobilitydata.gbfs.v2_3.vehicle_types.GBFSVehicleTypes;
 
 class VehicleTypeCapacityProducerTest {
 
@@ -32,12 +32,12 @@ class VehicleTypeCapacityProducerTest {
   void testAddCustomVehicleTypeCapacityToStations() {
     var stationStatus = new GBFSStationStatus()
       .withData(
-        new org.entur.gbfs.v2_3.station_status.GBFSData()
+        new org.mobilitydata.gbfs.v2_3.station_status.GBFSData()
           .withStations(List.of(new GBFSStation().withNumBikesAvailable(2)))
       );
     var vehicleTypes = new GBFSVehicleTypes()
       .withData(
-        new org.entur.gbfs.v2_3.vehicle_types.GBFSData()
+        new org.mobilitydata.gbfs.v2_3.vehicle_types.GBFSData()
           .withVehicleTypes(
             List.of(new GBFSVehicleType().withVehicleTypeId("TST:VehicleType:1"))
           )

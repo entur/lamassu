@@ -19,9 +19,9 @@
 package org.entur.lamassu.cache.impl;
 
 import java.util.concurrent.TimeUnit;
-import org.entur.gbfs.v3_0.gbfs.GBFSFeed;
 import org.entur.lamassu.cache.GBFSV3FeedCache;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.mobilitydata.gbfs.v3_0.gbfs.GBFSFeed;
 import org.redisson.api.RMapCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -19,11 +19,11 @@
 package org.entur.lamassu.mapper.feedmapper.v3;
 
 import java.util.List;
-import org.entur.gbfs.v3_0.system_information.GBFSData;
-import org.entur.gbfs.v3_0.system_information.GBFSOperator;
-import org.entur.gbfs.v3_0.system_information.GBFSSystemInformation;
 import org.entur.lamassu.mapper.feedmapper.AbstractFeedMapper;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.mobilitydata.gbfs.v3_0.system_information.GBFSData;
+import org.mobilitydata.gbfs.v3_0.system_information.GBFSOperator;
+import org.mobilitydata.gbfs.v3_0.system_information.GBFSSystemInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;

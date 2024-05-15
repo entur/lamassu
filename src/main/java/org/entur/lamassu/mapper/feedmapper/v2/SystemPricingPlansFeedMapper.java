@@ -24,12 +24,12 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.entur.gbfs.v2_3.system_pricing_plans.GBFSData;
-import org.entur.gbfs.v2_3.system_pricing_plans.GBFSPlan;
-import org.entur.gbfs.v2_3.system_pricing_plans.GBFSSystemPricingPlans;
 import org.entur.lamassu.mapper.feedmapper.AbstractFeedMapper;
 import org.entur.lamassu.mapper.feedmapper.IdMappers;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.mobilitydata.gbfs.v2_3.system_pricing_plans.GBFSData;
+import org.mobilitydata.gbfs.v2_3.system_pricing_plans.GBFSPlan;
+import org.mobilitydata.gbfs.v2_3.system_pricing_plans.GBFSSystemPricingPlans;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

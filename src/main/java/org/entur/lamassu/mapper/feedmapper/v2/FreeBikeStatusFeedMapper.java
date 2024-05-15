@@ -23,12 +23,12 @@ import static org.entur.lamassu.mapper.feedmapper.IdMappers.mapStationId;
 import static org.entur.lamassu.mapper.feedmapper.IdMappers.mapVehicleTypeId;
 
 import java.util.stream.Collectors;
-import org.entur.gbfs.v2_3.free_bike_status.GBFSBike;
-import org.entur.gbfs.v2_3.free_bike_status.GBFSData;
-import org.entur.gbfs.v2_3.free_bike_status.GBFSFreeBikeStatus;
 import org.entur.lamassu.mapper.feedmapper.AbstractFeedMapper;
 import org.entur.lamassu.mapper.feedmapper.IdMappers;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.mobilitydata.gbfs.v2_3.free_bike_status.GBFSBike;
+import org.mobilitydata.gbfs.v2_3.free_bike_status.GBFSData;
+import org.mobilitydata.gbfs.v2_3.free_bike_status.GBFSFreeBikeStatus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

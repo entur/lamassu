@@ -5,10 +5,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Map;
-import org.entur.gbfs.v2_3.gbfs.GBFS;
-import org.entur.gbfs.v2_3.gbfs.GBFSFeed;
-import org.entur.gbfs.v2_3.gbfs.GBFSFeedName;
-import org.entur.gbfs.v2_3.gbfs.GBFSFeeds;
 import org.entur.lamassu.cache.GBFSV2FeedCache;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.service.FeedProviderService;
@@ -17,6 +13,10 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.mobilitydata.gbfs.v2_3.gbfs.GBFS;
+import org.mobilitydata.gbfs.v2_3.gbfs.GBFSFeed;
+import org.mobilitydata.gbfs.v2_3.gbfs.GBFSFeedName;
+import org.mobilitydata.gbfs.v2_3.gbfs.GBFSFeeds;
 import org.springframework.web.server.ResponseStatusException;
 
 public class GBFSV2FeedControllerTest {

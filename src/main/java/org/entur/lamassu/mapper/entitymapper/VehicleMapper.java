@@ -20,12 +20,12 @@ package org.entur.lamassu.mapper.entitymapper;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import org.entur.gbfs.v2_3.free_bike_status.GBFSBike;
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.System;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.entities.VehicleEquipment;
 import org.entur.lamassu.model.entities.VehicleType;
+import org.mobilitydata.gbfs.v2_3.free_bike_status.GBFSBike;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -63,7 +63,7 @@ public class VehicleMapper {
   }
 
   private List<VehicleEquipment> mapVehicleEquipment(
-    List<org.entur.gbfs.v2_3.free_bike_status.VehicleEquipment> vehicleEquipment
+    List<org.mobilitydata.gbfs.v2_3.free_bike_status.VehicleEquipment> vehicleEquipment
   ) {
     if (vehicleEquipment == null) {
       return null;

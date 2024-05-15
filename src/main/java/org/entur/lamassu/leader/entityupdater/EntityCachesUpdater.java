@@ -19,8 +19,8 @@
 package org.entur.lamassu.leader.entityupdater;
 
 import org.entur.gbfs.loader.v2.GbfsV2Delivery;
-import org.entur.gbfs.v2_3.gbfs.GBFSFeedName;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.mobilitydata.gbfs.v2_3.gbfs.GBFSFeedName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

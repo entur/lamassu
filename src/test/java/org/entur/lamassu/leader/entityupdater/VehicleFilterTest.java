@@ -1,10 +1,10 @@
 package org.entur.lamassu.leader.entityupdater;
 
 import java.util.HashMap;
-import org.entur.gbfs.v2_3.free_bike_status.GBFSBike;
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.VehicleType;
 import org.junit.Test;
+import org.mobilitydata.gbfs.v2_3.free_bike_status.GBFSBike;
 
 public class VehicleFilterTest {
 

@@ -21,15 +21,15 @@ package org.entur.lamassu.controller;
 import java.time.Instant;
 import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
-import org.entur.gbfs.v3_0.gbfs.GBFSFeed;
-import org.entur.gbfs.v3_0.gbfs.GBFSGbfs;
-import org.entur.gbfs.v3_0.manifest.GBFSManifest;
 import org.entur.lamassu.cache.GBFSV3FeedCache;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.service.FeedProviderService;
 import org.entur.lamassu.service.SystemDiscoveryService;
 import org.entur.lamassu.util.CacheUtil;
 import org.jetbrains.annotations.NotNull;
+import org.mobilitydata.gbfs.v3_0.gbfs.GBFSFeed;
+import org.mobilitydata.gbfs.v3_0.gbfs.GBFSGbfs;
+import org.mobilitydata.gbfs.v3_0.manifest.GBFSManifest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
@@ -85,7 +85,7 @@ public class GBFSV3FeedController {
           CacheControl
             .maxAge(
               CacheUtil.getMaxAge(
-                org.entur.gbfs.v3_0.gbfs.GBFSFeedName.implementingClass(feedName),
+                org.mobilitydata.gbfs.v3_0.gbfs.GBFSFeedName.implementingClass(feedName),
                 data,
                 systemId,
                 feed,
@@ -97,7 +97,7 @@ public class GBFSV3FeedController {
         )
         .lastModified(
           CacheUtil.getLastModified(
-            org.entur.gbfs.v3_0.gbfs.GBFSFeedName.implementingClass(feedName),
+            org.mobilitydata.gbfs.v3_0.gbfs.GBFSFeedName.implementingClass(feedName),
             data,
             systemId,
             feed

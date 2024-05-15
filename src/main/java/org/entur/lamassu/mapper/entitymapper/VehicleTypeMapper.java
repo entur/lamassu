@@ -20,9 +20,6 @@ package org.entur.lamassu.mapper.entitymapper;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import org.entur.gbfs.v2_3.vehicle_types.GBFSEcoLabel;
-import org.entur.gbfs.v2_3.vehicle_types.GBFSVehicleAssets;
-import org.entur.gbfs.v2_3.vehicle_types.GBFSVehicleType;
 import org.entur.lamassu.model.entities.EcoLabel;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PricingPlan;
@@ -31,6 +28,9 @@ import org.entur.lamassu.model.entities.ReturnConstraint;
 import org.entur.lamassu.model.entities.VehicleAccessory;
 import org.entur.lamassu.model.entities.VehicleAssets;
 import org.entur.lamassu.model.entities.VehicleType;
+import org.mobilitydata.gbfs.v2_3.vehicle_types.GBFSEcoLabel;
+import org.mobilitydata.gbfs.v2_3.vehicle_types.GBFSVehicleAssets;
+import org.mobilitydata.gbfs.v2_3.vehicle_types.GBFSVehicleType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -158,7 +158,7 @@ public class VehicleTypeMapper {
   }
 
   private List<VehicleAccessory> mapVehicleAccessories(
-    List<org.entur.gbfs.v2_3.vehicle_types.VehicleAccessory> vehicleAccessories
+    List<org.mobilitydata.gbfs.v2_3.vehicle_types.VehicleAccessory> vehicleAccessories
   ) {
     if (vehicleAccessories == null) {
       return null;

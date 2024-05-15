@@ -19,10 +19,10 @@
 package org.entur.lamassu.mapper.feedmapper.v2;
 
 import java.util.List;
-import org.entur.gbfs.v2_3.vehicle_types.GBFSVehicleType;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mobilitydata.gbfs.v2_3.vehicle_types.GBFSVehicleType;
 import org.springframework.test.util.ReflectionTestUtils;
 
 class VehicleTypesFeedMapperTest {
