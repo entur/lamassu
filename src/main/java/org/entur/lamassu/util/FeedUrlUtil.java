@@ -33,7 +33,7 @@ public class FeedUrlUtil {
     var systemId = feedProvider.getSystemId();
     var feedUrl = addToPath(baseUrl, "gbfs");
     feedUrl = addToPath(feedUrl, systemId);
-    return URI.create(addToPath(feedUrl, feedName.value()).toLowerCase());
+    return URI.create(addToPath(feedUrl, feedName.value()));
   }
 
   public static String mapFeedUrl(
@@ -44,7 +44,7 @@ public class FeedUrlUtil {
     var systemId = feedProvider.getSystemId();
     var feedUrl = addToPath(baseUrl, "gbfs/v3beta");
     feedUrl = addToPath(feedUrl, systemId);
-    return addToPath(feedUrl, feedName.value()).toLowerCase();
+    return addToPath(feedUrl, feedName.value());
   }
 
   private static String addToPath(String base, String toAdd) {
