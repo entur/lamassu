@@ -10,6 +10,7 @@ based on merged pull requests. Search GitHub issues and pull requests for smalle
 - Add polylineEncodedMultiPolygon to GeofencingZoneProperties [#403](https://github.com/entur/lamassu/pull/403)
 - fix: metrics were not registered correctly, this simplifies the setup [#439](https://github.com/entur/lamassu/pull/439)
 - Respond with status code 502 if configured feed not yet available [#432](https://github.com/entur/lamassu/pull/432)
+- Do not lowercase feed urls [#455](https://github.com/entur/lamassu/pull/455)
   [](AUTOMATIC_CHANGELOG_PLACEHOLDER_DO_NOT_REMOVE)
   
 ## 1.0.0
