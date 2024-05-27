@@ -20,12 +20,12 @@ package org.entur.lamassu.mapper.feedmapper.v2;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import org.entur.gbfs.v2_3.system_regions.GBFSData;
-import org.entur.gbfs.v2_3.system_regions.GBFSRegion;
-import org.entur.gbfs.v2_3.system_regions.GBFSSystemRegions;
 import org.entur.lamassu.mapper.feedmapper.AbstractFeedMapper;
 import org.entur.lamassu.mapper.feedmapper.IdMappers;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.mobilitydata.gbfs.v2_3.system_regions.GBFSData;
+import org.mobilitydata.gbfs.v2_3.system_regions.GBFSRegion;
+import org.mobilitydata.gbfs.v2_3.system_regions.GBFSSystemRegions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

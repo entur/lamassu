@@ -18,9 +18,9 @@
 
 package org.entur.lamassu.mapper.feedmapper.v2;
 
-import org.entur.gbfs.v2_3.system_hours.GBFSSystemHours;
 import org.entur.lamassu.mapper.feedmapper.AbstractFeedMapper;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.mobilitydata.gbfs.v2_3.system_hours.GBFSSystemHours;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

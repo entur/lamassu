@@ -18,17 +18,17 @@
 
 package org.entur.lamassu.mapper.entitymapper;
 
-import org.entur.gbfs.v2_3.system_information.GBFSAndroid;
-import org.entur.gbfs.v2_3.system_information.GBFSBrandAssets;
-import org.entur.gbfs.v2_3.system_information.GBFSData;
-import org.entur.gbfs.v2_3.system_information.GBFSIos;
-import org.entur.gbfs.v2_3.system_information.GBFSRentalApps;
 import org.entur.lamassu.model.entities.BrandAssets;
 import org.entur.lamassu.model.entities.Operator;
 import org.entur.lamassu.model.entities.RentalApp;
 import org.entur.lamassu.model.entities.RentalApps;
 import org.entur.lamassu.model.entities.System;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.mobilitydata.gbfs.v2_3.system_information.GBFSAndroid;
+import org.mobilitydata.gbfs.v2_3.system_information.GBFSBrandAssets;
+import org.mobilitydata.gbfs.v2_3.system_information.GBFSData;
+import org.mobilitydata.gbfs.v2_3.system_information.GBFSIos;
+import org.mobilitydata.gbfs.v2_3.system_information.GBFSRentalApps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

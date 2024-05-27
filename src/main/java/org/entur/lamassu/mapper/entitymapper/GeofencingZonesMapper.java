@@ -22,13 +22,13 @@ import com.mapbox.geojson.Point;
 import com.mapbox.geojson.utils.PolylineUtils;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.entur.gbfs.v2_3.geofencing_zones.GBFSFeature;
-import org.entur.gbfs.v2_3.geofencing_zones.GBFSGeofencingZones__1;
-import org.entur.gbfs.v2_3.geofencing_zones.GBFSProperties;
-import org.entur.gbfs.v2_3.geofencing_zones.GBFSRule;
 import org.entur.lamassu.model.entities.GeofencingZones;
 import org.entur.lamassu.model.entities.MultiPolygon;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.mobilitydata.gbfs.v2_3.geofencing_zones.GBFSFeature;
+import org.mobilitydata.gbfs.v2_3.geofencing_zones.GBFSGeofencingZones__1;
+import org.mobilitydata.gbfs.v2_3.geofencing_zones.GBFSProperties;
+import org.mobilitydata.gbfs.v2_3.geofencing_zones.GBFSRule;
 import org.springframework.stereotype.Component;
 
 @Component

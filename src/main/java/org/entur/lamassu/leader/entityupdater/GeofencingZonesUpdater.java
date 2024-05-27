@@ -21,11 +21,11 @@ package org.entur.lamassu.leader.entityupdater;
 import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import org.entur.gbfs.v2_3.geofencing_zones.GBFSGeofencingZones;
 import org.entur.lamassu.cache.GeofencingZonesCache;
 import org.entur.lamassu.mapper.entitymapper.GeofencingZonesMapper;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.util.CacheUtil;
+import org.mobilitydata.gbfs.v2_3.geofencing_zones.GBFSGeofencingZones;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

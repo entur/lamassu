@@ -23,13 +23,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.entur.gbfs.v2_3.station_information.GBFSStation;
-import org.entur.gbfs.v2_3.station_information.GBFSVehicleCapacity;
-import org.entur.gbfs.v2_3.station_information.GBFSVehicleTypeCapacity;
-import org.entur.gbfs.v2_3.station_status.GBFSVehicleDocksAvailable;
-import org.entur.gbfs.v2_3.station_status.GBFSVehicleTypesAvailable;
-import org.entur.gbfs.v2_3.system_regions.GBFSSystemRegions;
-import org.entur.gbfs.v2_3.vehicle_types.GBFSVehicleTypes;
 import org.entur.lamassu.model.entities.MultiPolygon;
 import org.entur.lamassu.model.entities.ParkingType;
 import org.entur.lamassu.model.entities.PricingPlan;
@@ -41,6 +34,13 @@ import org.entur.lamassu.model.entities.VehicleDocksAvailability;
 import org.entur.lamassu.model.entities.VehicleType;
 import org.entur.lamassu.model.entities.VehicleTypeAvailability;
 import org.entur.lamassu.model.entities.VehicleTypeCapacity;
+import org.mobilitydata.gbfs.v2_3.station_information.GBFSStation;
+import org.mobilitydata.gbfs.v2_3.station_information.GBFSVehicleCapacity;
+import org.mobilitydata.gbfs.v2_3.station_information.GBFSVehicleTypeCapacity;
+import org.mobilitydata.gbfs.v2_3.station_status.GBFSVehicleDocksAvailable;
+import org.mobilitydata.gbfs.v2_3.station_status.GBFSVehicleTypesAvailable;
+import org.mobilitydata.gbfs.v2_3.system_regions.GBFSSystemRegions;
+import org.mobilitydata.gbfs.v2_3.vehicle_types.GBFSVehicleTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +70,7 @@ public class StationMapper {
     System system,
     List<PricingPlan> pricingPlans,
     GBFSStation stationInformation,
-    org.entur.gbfs.v2_3.station_status.GBFSStation stationStatus,
+    org.mobilitydata.gbfs.v2_3.station_status.GBFSStation stationStatus,
     GBFSVehicleTypes vehicleTypesFeed,
     GBFSSystemRegions regions,
     String language
@@ -187,7 +187,7 @@ public class StationMapper {
   }
 
   private List<RentalMethod> mapRentalMethods(
-    List<org.entur.gbfs.v2_3.station_information.RentalMethod> rentalMethods
+    List<org.mobilitydata.gbfs.v2_3.station_information.RentalMethod> rentalMethods
   ) {
     return Optional
       .ofNullable(rentalMethods)

@@ -18,8 +18,8 @@
 
 package org.entur.lamassu.mapper.entitymapper;
 
-import org.entur.gbfs.v2_3.free_bike_status.GBFSRentalUris;
 import org.entur.lamassu.model.entities.RentalUris;
+import org.mobilitydata.gbfs.v2_3.free_bike_status.GBFSRentalUris;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -38,7 +38,7 @@ public class RentalUrisMapper {
   }
 
   public RentalUris mapRentalUris(
-    org.entur.gbfs.v2_3.station_information.GBFSRentalUris rentalUris
+    org.mobilitydata.gbfs.v2_3.station_information.GBFSRentalUris rentalUris
   ) {
     if (rentalUris == null) {
       return null;

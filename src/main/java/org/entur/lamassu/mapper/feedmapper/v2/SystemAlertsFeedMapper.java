@@ -24,12 +24,12 @@ import static org.entur.lamassu.mapper.feedmapper.IdMappers.STATION_ID_TYPE;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import org.entur.gbfs.v2_3.system_alerts.GBFSAlert;
-import org.entur.gbfs.v2_3.system_alerts.GBFSData;
-import org.entur.gbfs.v2_3.system_alerts.GBFSSystemAlerts;
 import org.entur.lamassu.mapper.feedmapper.AbstractFeedMapper;
 import org.entur.lamassu.mapper.feedmapper.IdMappers;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.mobilitydata.gbfs.v2_3.system_alerts.GBFSAlert;
+import org.mobilitydata.gbfs.v2_3.system_alerts.GBFSData;
+import org.mobilitydata.gbfs.v2_3.system_alerts.GBFSSystemAlerts;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

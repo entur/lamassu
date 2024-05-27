@@ -21,11 +21,11 @@ package org.entur.lamassu.mapper.entitymapper;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.entur.gbfs.v2_3.system_pricing_plans.GBFSPerKmPricing;
-import org.entur.gbfs.v2_3.system_pricing_plans.GBFSPerMinPricing;
-import org.entur.gbfs.v2_3.system_pricing_plans.GBFSPlan;
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.PricingSegment;
+import org.mobilitydata.gbfs.v2_3.system_pricing_plans.GBFSPerKmPricing;
+import org.mobilitydata.gbfs.v2_3.system_pricing_plans.GBFSPerMinPricing;
+import org.mobilitydata.gbfs.v2_3.system_pricing_plans.GBFSPlan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

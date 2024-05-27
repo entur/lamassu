@@ -21,17 +21,17 @@ package org.entur.lamassu.mapper.feedmapper.v2;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
-import org.entur.gbfs.v2_3.gbfs.GBFS;
-import org.entur.gbfs.v2_3.gbfs.GBFSFeed;
-import org.entur.gbfs.v2_3.gbfs.GBFSFeedName;
-import org.entur.gbfs.v2_3.gbfs.GBFSFeeds;
-import org.entur.gbfs.v2_3.system_pricing_plans.GBFSPerMinPricing;
-import org.entur.gbfs.v2_3.system_pricing_plans.GBFSPlan;
-import org.entur.gbfs.v2_3.vehicle_types.GBFSVehicleType;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mobilitydata.gbfs.v2_3.gbfs.GBFS;
+import org.mobilitydata.gbfs.v2_3.gbfs.GBFSFeed;
+import org.mobilitydata.gbfs.v2_3.gbfs.GBFSFeedName;
+import org.mobilitydata.gbfs.v2_3.gbfs.GBFSFeeds;
+import org.mobilitydata.gbfs.v2_3.system_pricing_plans.GBFSPerMinPricing;
+import org.mobilitydata.gbfs.v2_3.system_pricing_plans.GBFSPlan;
+import org.mobilitydata.gbfs.v2_3.vehicle_types.GBFSVehicleType;
 import org.springframework.test.util.ReflectionTestUtils;
 
 class DiscoveryFeedMapperTest {

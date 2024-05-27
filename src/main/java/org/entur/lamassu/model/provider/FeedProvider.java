@@ -19,9 +19,9 @@
 package org.entur.lamassu.model.provider;
 
 import java.util.List;
-import org.entur.gbfs.v2_3.gbfs.GBFSFeedName;
-import org.entur.gbfs.v2_3.system_pricing_plans.GBFSPlan;
-import org.entur.gbfs.v2_3.vehicle_types.GBFSVehicleType;
+import org.mobilitydata.gbfs.v2_3.gbfs.GBFSFeedName;
+import org.mobilitydata.gbfs.v2_3.system_pricing_plans.GBFSPlan;
+import org.mobilitydata.gbfs.v2_3.vehicle_types.GBFSVehicleType;
 
 public class FeedProvider {
 

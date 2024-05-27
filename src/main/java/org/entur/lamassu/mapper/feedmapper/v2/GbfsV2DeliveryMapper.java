@@ -19,20 +19,20 @@
 package org.entur.lamassu.mapper.feedmapper.v2;
 
 import org.entur.gbfs.loader.v2.GbfsV2Delivery;
-import org.entur.gbfs.v2_3.free_bike_status.GBFSFreeBikeStatus;
-import org.entur.gbfs.v2_3.gbfs.GBFS;
-import org.entur.gbfs.v2_3.geofencing_zones.GBFSGeofencingZones;
-import org.entur.gbfs.v2_3.station_information.GBFSStationInformation;
-import org.entur.gbfs.v2_3.station_status.GBFSStationStatus;
-import org.entur.gbfs.v2_3.system_alerts.GBFSSystemAlerts;
-import org.entur.gbfs.v2_3.system_calendar.GBFSSystemCalendar;
-import org.entur.gbfs.v2_3.system_hours.GBFSSystemHours;
-import org.entur.gbfs.v2_3.system_information.GBFSSystemInformation;
-import org.entur.gbfs.v2_3.system_pricing_plans.GBFSSystemPricingPlans;
-import org.entur.gbfs.v2_3.system_regions.GBFSSystemRegions;
-import org.entur.gbfs.v2_3.vehicle_types.GBFSVehicleTypes;
 import org.entur.lamassu.mapper.feedmapper.FeedMapper;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.mobilitydata.gbfs.v2_3.free_bike_status.GBFSFreeBikeStatus;
+import org.mobilitydata.gbfs.v2_3.gbfs.GBFS;
+import org.mobilitydata.gbfs.v2_3.geofencing_zones.GBFSGeofencingZones;
+import org.mobilitydata.gbfs.v2_3.station_information.GBFSStationInformation;
+import org.mobilitydata.gbfs.v2_3.station_status.GBFSStationStatus;
+import org.mobilitydata.gbfs.v2_3.system_alerts.GBFSSystemAlerts;
+import org.mobilitydata.gbfs.v2_3.system_calendar.GBFSSystemCalendar;
+import org.mobilitydata.gbfs.v2_3.system_hours.GBFSSystemHours;
+import org.mobilitydata.gbfs.v2_3.system_information.GBFSSystemInformation;
+import org.mobilitydata.gbfs.v2_3.system_pricing_plans.GBFSSystemPricingPlans;
+import org.mobilitydata.gbfs.v2_3.system_regions.GBFSSystemRegions;
+import org.mobilitydata.gbfs.v2_3.vehicle_types.GBFSVehicleTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

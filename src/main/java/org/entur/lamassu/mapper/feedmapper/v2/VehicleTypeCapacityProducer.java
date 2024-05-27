@@ -19,9 +19,9 @@
 package org.entur.lamassu.mapper.feedmapper.v2;
 
 import java.util.List;
-import org.entur.gbfs.v2_3.station_status.GBFSStationStatus;
-import org.entur.gbfs.v2_3.station_status.GBFSVehicleTypesAvailable;
-import org.entur.gbfs.v2_3.vehicle_types.GBFSVehicleTypes;
+import org.mobilitydata.gbfs.v2_3.station_status.GBFSStationStatus;
+import org.mobilitydata.gbfs.v2_3.station_status.GBFSVehicleTypesAvailable;
+import org.mobilitydata.gbfs.v2_3.vehicle_types.GBFSVehicleTypes;
 
 public class VehicleTypeCapacityProducer {
 

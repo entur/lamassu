@@ -19,8 +19,8 @@
 package org.entur.lamassu.cache;
 
 import java.util.concurrent.TimeUnit;
-import org.entur.gbfs.v2_3.gbfs.GBFSFeedName;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.mobilitydata.gbfs.v2_3.gbfs.GBFSFeedName;
 
 public interface GBFSV2FeedCache {
   <T> T find(GBFSFeedName feedName, FeedProvider feedProvider);

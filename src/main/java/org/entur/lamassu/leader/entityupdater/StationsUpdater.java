@@ -27,14 +27,6 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.entur.gbfs.loader.v2.GbfsV2Delivery;
-import org.entur.gbfs.v2_3.station_information.GBFSData;
-import org.entur.gbfs.v2_3.station_information.GBFSStationInformation;
-import org.entur.gbfs.v2_3.station_status.GBFSStation;
-import org.entur.gbfs.v2_3.station_status.GBFSStationStatus;
-import org.entur.gbfs.v2_3.system_information.GBFSSystemInformation;
-import org.entur.gbfs.v2_3.system_pricing_plans.GBFSSystemPricingPlans;
-import org.entur.gbfs.v2_3.system_regions.GBFSSystemRegions;
-import org.entur.gbfs.v2_3.vehicle_types.GBFSVehicleTypes;
 import org.entur.lamassu.cache.StationCache;
 import org.entur.lamassu.cache.StationSpatialIndex;
 import org.entur.lamassu.cache.StationSpatialIndexId;
@@ -47,6 +39,14 @@ import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.util.CacheUtil;
 import org.entur.lamassu.util.SpatialIndexIdUtil;
+import org.mobilitydata.gbfs.v2_3.station_information.GBFSData;
+import org.mobilitydata.gbfs.v2_3.station_information.GBFSStationInformation;
+import org.mobilitydata.gbfs.v2_3.station_status.GBFSStation;
+import org.mobilitydata.gbfs.v2_3.station_status.GBFSStationStatus;
+import org.mobilitydata.gbfs.v2_3.system_information.GBFSSystemInformation;
+import org.mobilitydata.gbfs.v2_3.system_pricing_plans.GBFSSystemPricingPlans;
+import org.mobilitydata.gbfs.v2_3.system_regions.GBFSSystemRegions;
+import org.mobilitydata.gbfs.v2_3.vehicle_types.GBFSVehicleTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -143,7 +143,7 @@ public class StationsUpdater {
       .stream()
       .collect(
         Collectors.toMap(
-          org.entur.gbfs.v2_3.station_information.GBFSStation::getStationId,
+          org.mobilitydata.gbfs.v2_3.station_information.GBFSStation::getStationId,
           s -> s
         )
       );

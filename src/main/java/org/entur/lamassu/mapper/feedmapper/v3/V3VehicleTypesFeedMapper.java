@@ -23,12 +23,12 @@ import static org.entur.lamassu.mapper.feedmapper.IdMappers.VEHICLE_TYPE_ID_TYPE
 
 import java.util.List;
 import java.util.stream.Collectors;
-import org.entur.gbfs.v3_0.vehicle_types.GBFSData;
-import org.entur.gbfs.v3_0.vehicle_types.GBFSVehicleType;
-import org.entur.gbfs.v3_0.vehicle_types.GBFSVehicleTypes;
 import org.entur.lamassu.mapper.feedmapper.AbstractFeedMapper;
 import org.entur.lamassu.mapper.feedmapper.IdMappers;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.mobilitydata.gbfs.v3_0.vehicle_types.GBFSData;
+import org.mobilitydata.gbfs.v3_0.vehicle_types.GBFSVehicleType;
+import org.mobilitydata.gbfs.v3_0.vehicle_types.GBFSVehicleTypes;
 import org.springframework.stereotype.Component;
 
 @Component

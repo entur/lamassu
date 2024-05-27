@@ -18,10 +18,10 @@
 
 package org.entur.lamassu.mapper.entitymapper;
 
-import org.entur.gbfs.v2_3.gbfs.GBFSFeedName;
 import org.entur.lamassu.model.discovery.System;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.util.FeedUrlUtil;
+import org.mobilitydata.gbfs.v2_3.gbfs.GBFSFeedName;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
