@@ -26,8 +26,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.entur.gbfs.validation.model.FileValidationResult;
 import org.entur.gbfs.validation.model.ValidationResult;
+import org.entur.gbfs.validation.model.ValidationSummary;
 import org.entur.lamassu.model.validation.ShortFileValidationResult;
 import org.entur.lamassu.model.validation.ShortValidationResult;
+import org.entur.lamassu.model.validation.ShortValidationSummary;
 import org.entur.lamassu.service.FeedProviderService;
 import org.redisson.api.RListMultimap;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,9 +96,17 @@ public class ValidationController {
     ValidationResult validationResult
   ) {
     ShortValidationResult shortResult = new ShortValidationResult();
-    shortResult.setSummary(validationResult.getSummary());
-    shortResult.setFiles(mapToShortFileValidationResults(validationResult.getFiles()));
+    shortResult.setSummary(mapToShortValidationSummary(validationResult.summary()));
+    shortResult.setFiles(mapToShortFileValidationResults(validationResult.files()));
     return shortResult;
+  }
+
+  private ShortValidationSummary mapToShortValidationSummary(ValidationSummary summary) {
+    ShortValidationSummary shortSummary = new ShortValidationSummary();
+    shortSummary.setTimestamp(summary.timestamp());
+    shortSummary.setVersion(summary.version());
+    shortSummary.setErrorsCount(summary.errorsCount());
+    return shortSummary;
   }
 
   private Map<String, ShortFileValidationResult> mapToShortFileValidationResults(
@@ -123,12 +133,12 @@ public class ValidationController {
     FileValidationResult value
   ) {
     ShortFileValidationResult shortFileValidationResult = new ShortFileValidationResult();
-    shortFileValidationResult.setFile(value.getFile());
-    shortFileValidationResult.setErrorsCount(value.getErrorsCount());
-    shortFileValidationResult.setErrors(value.getErrors());
-    shortFileValidationResult.setRequired(value.isRequired());
-    shortFileValidationResult.setExists(value.isExists());
-    shortFileValidationResult.setVersion(value.getVersion());
+    shortFileValidationResult.setFile(value.file());
+    shortFileValidationResult.setErrorsCount(value.errorsCount());
+    shortFileValidationResult.setErrors(value.errors());
+    shortFileValidationResult.setRequired(value.required());
+    shortFileValidationResult.setExists(value.exists());
+    shortFileValidationResult.setVersion(value.version());
     return shortFileValidationResult;
   }
 }

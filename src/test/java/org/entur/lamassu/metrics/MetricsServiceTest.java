@@ -21,6 +21,7 @@ package org.entur.lamassu.metrics;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
+import java.time.Instant;
 import java.util.Map;
 import org.entur.gbfs.validation.model.FileValidationResult;
 import org.entur.gbfs.validation.model.ValidationResult;
@@ -111,39 +112,46 @@ class MetricsServiceTest {
   }
 
   private static @NotNull ValidationResult getValidationResult(int errorCount) {
-    ValidationResult validationResult = new ValidationResult();
-    ValidationSummary validationSummary = new ValidationSummary();
-    validationSummary.setErrorsCount(errorCount);
-    validationSummary.setVersion("3.0");
+    ValidationSummary validationSummary = new ValidationSummary(
+      "3.0",
+      Instant.now().getEpochSecond(),
+      errorCount
+    );
 
-    FileValidationResult fileValidationResult = new FileValidationResult();
-    fileValidationResult.setFile("gbfs");
-    fileValidationResult.setRequired(true);
-    fileValidationResult.setVersion("3.0");
-    fileValidationResult.setExists(true);
-    fileValidationResult.setErrorsCount(errorCount);
+    FileValidationResult fileValidationResult = new FileValidationResult(
+      "gbfs",
+      true,
+      true,
+      errorCount,
+      null,
+      null,
+      "3.0",
+      null
+    );
 
-    validationResult.setFiles(Map.of("gbfs", fileValidationResult));
-
-    validationResult.setSummary(validationSummary);
-    return validationResult;
+    return new ValidationResult(validationSummary, Map.of("gbfs", fileValidationResult));
   }
 
   private static @NotNull ValidationResult getValidationResultWithMissingRequiredFile() {
-    ValidationResult validationResult = new ValidationResult();
-    ValidationSummary validationSummary = new ValidationSummary();
-    validationSummary.setErrorsCount(1);
-    validationSummary.setVersion("3.0");
+    ValidationSummary validationSummary = new ValidationSummary(
+      "3.0",
+      Instant.now().getEpochSecond(),
+      1
+    );
 
-    FileValidationResult fileValidationResult = new FileValidationResult();
-    fileValidationResult.setFile("gbfs");
-    fileValidationResult.setRequired(true);
-    fileValidationResult.setVersion("3.0");
-    fileValidationResult.setExists(false);
+    /*String file, boolean required, boolean exists, int errorsCount, String schema, String fileContents, String version, List<FileValidationError> errors*/
 
-    validationResult.setFiles(Map.of("gbfs", fileValidationResult));
+    FileValidationResult fileValidationResult = new FileValidationResult(
+      "gbfs",
+      true,
+      false,
+      1,
+      null,
+      null,
+      "3.0",
+      null
+    );
 
-    validationResult.setSummary(validationSummary);
-    return validationResult;
+    return new ValidationResult(validationSummary, Map.of("gbfs", fileValidationResult));
   }
 }

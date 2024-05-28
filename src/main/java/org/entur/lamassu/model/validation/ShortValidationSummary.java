@@ -18,33 +18,33 @@
 
 package org.entur.lamassu.model.validation;
 
-import java.util.HashMap;
-import java.util.Map;
-import org.entur.gbfs.validation.model.ValidationSummary;
+public class ShortValidationSummary {
 
-public class ShortValidationResult {
+  private String version;
+  private long timestamp;
+  private int errorsCount;
 
-  private ShortValidationSummary summary = null;
-  private Map<String, ShortFileValidationResult> files = new HashMap<>();
-
-  public ShortValidationSummary getSummary() {
-    return summary;
+  public String getVersion() {
+    return version;
   }
 
-  public void setSummary(ShortValidationSummary summary) {
-    this.summary = summary;
+  public void setVersion(String version) {
+    this.version = version;
   }
 
-  public Map<String, ShortFileValidationResult> getFiles() {
-    return files;
+  public long getTimestamp() {
+    return timestamp;
   }
 
-  public void setFiles(Map<String, ShortFileValidationResult> files) {
-    this.files = files;
+  public void setTimestamp(long timestamp) {
+    this.timestamp = timestamp;
   }
 
-  @Override
-  public String toString() {
-    return "ShortValidationResult{" + "summary=" + summary + ", files=" + files + '}';
+  public int getErrorsCount() {
+    return errorsCount;
+  }
+
+  public void setErrorsCount(int errorsCount) {
+    this.errorsCount = errorsCount;
   }
 }
