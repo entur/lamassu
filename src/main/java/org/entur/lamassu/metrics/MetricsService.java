@@ -85,7 +85,7 @@ public class MetricsService {
     ValidationResult validationResult
   ) {
     getValidationFeedErrorsCounter(feedProvider)
-      .set(validationResult.getSummary().getErrorsCount());
+      .set(validationResult.summary().errorsCount());
 
     getMissingRequiredFilesCounter(feedProvider)
       .set(calculateMissingRequiredFiles(validationResult));
@@ -147,11 +147,11 @@ public class MetricsService {
 
   private int calculateMissingRequiredFiles(ValidationResult validationResult) {
     return validationResult
-      .getFiles()
+      .files()
       .values()
       .stream()
       .map(fileValidationResult -> {
-        if (fileValidationResult.isRequired() && !fileValidationResult.isExists()) {
+        if (fileValidationResult.required() && !fileValidationResult.exists()) {
           return 1;
         } else {
           return 0;

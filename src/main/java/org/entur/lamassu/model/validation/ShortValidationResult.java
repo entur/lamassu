@@ -24,7 +24,7 @@ import org.entur.gbfs.validation.model.ValidationSummary;
 
 public class ShortValidationResult {
 
-  private ValidationSummary summary = new ValidationSummary();
+  private ValidationSummary summary = null;
   private Map<String, ShortFileValidationResult> files = new HashMap<>();
 
   public ValidationSummary getSummary() {

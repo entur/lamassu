@@ -189,7 +189,7 @@ public class FeedUpdater {
     GbfsV2Delivery gbfsV2Delivery
   ) {
     if (enableValidation) {
-      if (gbfsV2Delivery.validationResult().getSummary().getErrorsCount() > 0) {
+      if (gbfsV2Delivery.validationResult().summary().errorsCount() > 0) {
         logger.info(
           "Validation errors in feed update for system {}",
           feedProvider.getSystemId()
@@ -211,7 +211,7 @@ public class FeedUpdater {
     GbfsV3Delivery gbfsV3Delivery
   ) {
     if (enableValidation) {
-      if (gbfsV3Delivery.validationResult().getSummary().getErrorsCount() > 0) {
+      if (gbfsV3Delivery.validationResult().summary().errorsCount() > 0) {
         logger.info(
           "Validation errors in feed update for system {}",
           feedProvider.getSystemId()

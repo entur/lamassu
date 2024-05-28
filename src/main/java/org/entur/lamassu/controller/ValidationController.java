@@ -94,8 +94,8 @@ public class ValidationController {
     ValidationResult validationResult
   ) {
     ShortValidationResult shortResult = new ShortValidationResult();
-    shortResult.setSummary(validationResult.getSummary());
-    shortResult.setFiles(mapToShortFileValidationResults(validationResult.getFiles()));
+    shortResult.setSummary(validationResult.summary());
+    shortResult.setFiles(mapToShortFileValidationResults(validationResult.files()));
     return shortResult;
   }
 
@@ -123,12 +123,12 @@ public class ValidationController {
     FileValidationResult value
   ) {
     ShortFileValidationResult shortFileValidationResult = new ShortFileValidationResult();
-    shortFileValidationResult.setFile(value.getFile());
-    shortFileValidationResult.setErrorsCount(value.getErrorsCount());
-    shortFileValidationResult.setErrors(value.getErrors());
-    shortFileValidationResult.setRequired(value.isRequired());
-    shortFileValidationResult.setExists(value.isExists());
-    shortFileValidationResult.setVersion(value.getVersion());
+    shortFileValidationResult.setFile(value.file());
+    shortFileValidationResult.setErrorsCount(value.errorsCount());
+    shortFileValidationResult.setErrors(value.errors());
+    shortFileValidationResult.setRequired(value.required());
+    shortFileValidationResult.setExists(value.exists());
+    shortFileValidationResult.setVersion(value.version());
     return shortFileValidationResult;
   }
 }
