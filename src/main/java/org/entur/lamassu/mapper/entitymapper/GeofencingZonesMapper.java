@@ -20,15 +20,17 @@ package org.entur.lamassu.mapper.entitymapper;
 
 import com.mapbox.geojson.Point;
 import com.mapbox.geojson.utils.PolylineUtils;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 import org.entur.lamassu.model.entities.GeofencingZones;
 import org.entur.lamassu.model.entities.MultiPolygon;
 import org.entur.lamassu.model.provider.FeedProvider;
-import org.mobilitydata.gbfs.v2_3.geofencing_zones.GBFSFeature;
-import org.mobilitydata.gbfs.v2_3.geofencing_zones.GBFSGeofencingZones__1;
-import org.mobilitydata.gbfs.v2_3.geofencing_zones.GBFSProperties;
-import org.mobilitydata.gbfs.v2_3.geofencing_zones.GBFSRule;
+import org.mobilitydata.gbfs.v3_0.geofencing_zones.GBFSFeature;
+import org.mobilitydata.gbfs.v3_0.geofencing_zones.GBFSGeofencingZones__1;
+import org.mobilitydata.gbfs.v3_0.geofencing_zones.GBFSName;
+import org.mobilitydata.gbfs.v3_0.geofencing_zones.GBFSProperties;
+import org.mobilitydata.gbfs.v3_0.geofencing_zones.GBFSRule;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -40,7 +42,7 @@ public class GeofencingZonesMapper {
   ) {
     var mapped = new org.entur.lamassu.model.entities.GeofencingZones();
     mapped.setSystemId(feedProvider.getSystemId());
-    mapped.setGeojson(mapGeojson(geofencingZones));
+    mapped.setGeojson(mapGeojson(geofencingZones, feedProvider.getLanguage()));
 
     addPolylineEncodedMultiPolygon(mapped);
 
@@ -74,37 +76,52 @@ public class GeofencingZonesMapper {
   }
 
   private org.entur.lamassu.model.entities.GeofencingZones.FeatureCollection mapGeojson(
-    GBFSGeofencingZones__1 geofencingZones
+    GBFSGeofencingZones__1 geofencingZones,
+    String language
   ) {
     var mapped = new org.entur.lamassu.model.entities.GeofencingZones.FeatureCollection();
-    mapped.setFeatures(mapFeatures(geofencingZones.getFeatures()));
+    mapped.setFeatures(mapFeatures(geofencingZones.getFeatures(), language));
     return mapped;
   }
 
   private List<org.entur.lamassu.model.entities.GeofencingZones.Feature> mapFeatures(
-    List<GBFSFeature> features
+    List<GBFSFeature> features,
+    String language
   ) {
-    return features.stream().map(this::mapFeature).collect(Collectors.toList());
+    return features.stream().map(feature -> mapFeature(feature, language)).toList();
   }
 
   private org.entur.lamassu.model.entities.GeofencingZones.Feature mapFeature(
-    GBFSFeature feature
+    GBFSFeature feature,
+    String language
   ) {
     var mapped = new org.entur.lamassu.model.entities.GeofencingZones.Feature();
-    mapped.setProperties(mapProperties(feature.getProperties()));
+    mapped.setProperties(mapProperties(feature.getProperties(), language));
     mapped.setGeometry(MultiPolygon.fromGeoJson(feature.getGeometry()));
     return mapped;
   }
 
   private org.entur.lamassu.model.entities.GeofencingZones.Properties mapProperties(
-    GBFSProperties properties
+    GBFSProperties properties,
+    String language
   ) {
     var mapped = new org.entur.lamassu.model.entities.GeofencingZones.Properties();
-    mapped.setName(properties.getName());
-    mapped.setStart(
-      properties.getStart() != null ? properties.getStart().longValue() : null
+    mapped.setName(
+      Optional
+        .ofNullable(properties.getName())
+        .orElse(Collections.emptyList())
+        .stream()
+        .filter(name -> name.getLanguage().equals(language))
+        .map(GBFSName::getText)
+        .findFirst()
+        .orElse(null)
     );
-    mapped.setEnd(properties.getEnd() != null ? properties.getEnd().longValue() : null);
+    mapped.setStart(
+      properties.getStart() != null ? properties.getStart().getTime() / 1000 : null
+    );
+    mapped.setEnd(
+      properties.getEnd() != null ? properties.getEnd().getTime() / 1000 : null
+    );
     mapped.setRules(mapRules(properties.getRules()));
     return mapped;
   }
@@ -112,16 +129,16 @@ public class GeofencingZonesMapper {
   private List<org.entur.lamassu.model.entities.GeofencingZones.Rule> mapRules(
     List<GBFSRule> rules
   ) {
-    return rules.stream().map(this::mapRule).collect(Collectors.toList());
+    return rules.stream().map(this::mapRule).toList();
   }
 
   private org.entur.lamassu.model.entities.GeofencingZones.Rule mapRule(GBFSRule rule) {
     var mapped = new org.entur.lamassu.model.entities.GeofencingZones.Rule();
-    mapped.setVehicleTypeIds(rule.getVehicleTypeId());
-    mapped.setRideAllowed(rule.getRideAllowed());
+    mapped.setVehicleTypeIds(rule.getVehicleTypeIds());
+    mapped.setRideAllowed(rule.getRideStartAllowed() && rule.getRideEndAllowed());
     mapped.setRideThroughAllowed(rule.getRideThroughAllowed());
     mapped.setMaximumSpeedKph(
-      rule.getMaximumSpeedKph() != null ? rule.getMaximumSpeedKph().intValue() : null
+      rule.getMaximumSpeedKph() != null ? rule.getMaximumSpeedKph() : null
     );
     mapped.setStationParking(rule.getStationParking());
     return mapped;

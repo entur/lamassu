@@ -18,7 +18,7 @@
 
 package org.entur.lamassu.leader.entityupdater;
 
-import org.entur.gbfs.loader.v2.GbfsV2Delivery;
+import org.entur.gbfs.loader.v3.GbfsV3Delivery;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.mobilitydata.gbfs.v2_3.gbfs.GBFSFeedName;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,8 +44,8 @@ public class EntityCachesUpdater {
 
   public void updateEntityCaches(
     FeedProvider feedProvider,
-    GbfsV2Delivery delivery,
-    GbfsV2Delivery oldDelivery
+    GbfsV3Delivery delivery,
+    GbfsV3Delivery oldDelivery
   ) {
     if (canUpdateVehicles(delivery, feedProvider)) {
       vehiclesUpdater.addOrUpdateVehicles(feedProvider, delivery, oldDelivery);
@@ -69,7 +69,7 @@ public class EntityCachesUpdater {
     }
   }
 
-  private boolean canUpdateVehicles(GbfsV2Delivery delivery, FeedProvider feedProvider) {
+  private boolean canUpdateVehicles(GbfsV3Delivery delivery, FeedProvider feedProvider) {
     if (
       feedProvider.getExcludeFeeds() != null &&
       feedProvider.getExcludeFeeds().contains(GBFSFeedName.FreeBikeStatus)
@@ -78,8 +78,8 @@ public class EntityCachesUpdater {
     }
 
     return (
-      delivery.freeBikeStatus() != null &&
-      delivery.freeBikeStatus().getData() != null &&
+      delivery.vehicleStatus() != null &&
+      delivery.vehicleStatus().getData() != null &&
       delivery.systemInformation() != null &&
       delivery.systemInformation().getData() != null &&
       delivery.vehicleTypes() != null &&
@@ -89,7 +89,7 @@ public class EntityCachesUpdater {
     );
   }
 
-  private boolean canUpdateStations(GbfsV2Delivery delivery, FeedProvider feedProvider) {
+  private boolean canUpdateStations(GbfsV3Delivery delivery, FeedProvider feedProvider) {
     if (
       feedProvider.getExcludeFeeds() != null &&
       (

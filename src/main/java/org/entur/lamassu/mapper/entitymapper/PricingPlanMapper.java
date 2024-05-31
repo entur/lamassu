@@ -20,12 +20,11 @@ package org.entur.lamassu.mapper.entitymapper;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.PricingSegment;
-import org.mobilitydata.gbfs.v2_3.system_pricing_plans.GBFSPerKmPricing;
-import org.mobilitydata.gbfs.v2_3.system_pricing_plans.GBFSPerMinPricing;
-import org.mobilitydata.gbfs.v2_3.system_pricing_plans.GBFSPlan;
+import org.mobilitydata.gbfs.v3_0.system_pricing_plans.GBFSPerKmPricing;
+import org.mobilitydata.gbfs.v3_0.system_pricing_plans.GBFSPerMinPricing;
+import org.mobilitydata.gbfs.v3_0.system_pricing_plans.GBFSPlan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -39,12 +38,33 @@ public class PricingPlanMapper {
     this.translationMapper = translationMapper;
   }
 
-  public PricingPlan mapPricingPlan(GBFSPlan plan, String language) {
+  public PricingPlan mapPricingPlan(GBFSPlan plan) {
     var mapped = new PricingPlan();
     mapped.setId(plan.getPlanId());
-    mapped.setName(translationMapper.mapSingleTranslation(language, plan.getName()));
+    mapped.setName(
+      translationMapper.mapTranslatedString(
+        plan
+          .getName()
+          .stream()
+          .map(name ->
+            translationMapper.mapTranslation(name.getLanguage(), name.getText())
+          )
+          .toList()
+      )
+    );
     mapped.setDescription(
-      translationMapper.mapSingleTranslation(language, plan.getDescription())
+      translationMapper.mapTranslatedString(
+        plan
+          .getDescription()
+          .stream()
+          .map(description ->
+            translationMapper.mapTranslation(
+              description.getLanguage(),
+              description.getText()
+            )
+          )
+          .toList()
+      )
     );
     mapped.setUrl(plan.getUrl());
     mapped.setCurrency(plan.getCurrency());
@@ -72,7 +92,7 @@ public class PricingPlanMapper {
               pricingSegment.getEnd()
             )
           )
-          .collect(Collectors.toList())
+          .toList()
       );
   }
 
@@ -92,7 +112,7 @@ public class PricingPlanMapper {
               pricingSegment.getEnd()
             )
           )
-          .collect(Collectors.toList())
+          .toList()
       );
   }
 

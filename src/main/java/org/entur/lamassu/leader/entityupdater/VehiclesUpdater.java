@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import org.entur.gbfs.loader.v2.GbfsV2Delivery;
+import org.entur.gbfs.loader.v3.GbfsV3Delivery;
 import org.entur.lamassu.cache.VehicleCache;
 import org.entur.lamassu.cache.VehicleSpatialIndex;
 import org.entur.lamassu.cache.VehicleSpatialIndexId;
@@ -40,11 +40,11 @@ import org.entur.lamassu.model.entities.VehicleType;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.util.CacheUtil;
 import org.entur.lamassu.util.SpatialIndexIdUtil;
-import org.mobilitydata.gbfs.v2_3.free_bike_status.GBFSBike;
-import org.mobilitydata.gbfs.v2_3.free_bike_status.GBFSFreeBikeStatus;
-import org.mobilitydata.gbfs.v2_3.system_information.GBFSSystemInformation;
-import org.mobilitydata.gbfs.v2_3.system_pricing_plans.GBFSSystemPricingPlans;
-import org.mobilitydata.gbfs.v2_3.vehicle_types.GBFSVehicleTypes;
+import org.mobilitydata.gbfs.v3_0.system_information.GBFSSystemInformation;
+import org.mobilitydata.gbfs.v3_0.system_pricing_plans.GBFSSystemPricingPlans;
+import org.mobilitydata.gbfs.v3_0.vehicle_status.GBFSVehicle;
+import org.mobilitydata.gbfs.v3_0.vehicle_status.GBFSVehicleStatus;
+import org.mobilitydata.gbfs.v3_0.vehicle_types.GBFSVehicleTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,20 +90,20 @@ public class VehiclesUpdater {
 
   public void addOrUpdateVehicles(
     FeedProvider feedProvider,
-    GbfsV2Delivery delivery,
-    GbfsV2Delivery oldDelivery
+    GbfsV3Delivery delivery,
+    GbfsV3Delivery oldDelivery
   ) {
-    GBFSFreeBikeStatus freeBikeStatusFeed = delivery.freeBikeStatus();
-    GBFSFreeBikeStatus oldFreeBikeStatusFeed = oldDelivery.freeBikeStatus();
+    GBFSVehicleStatus vehicleStatusFeed = delivery.vehicleStatus();
+    GBFSVehicleStatus oldFreeBikeStatusFeed = oldDelivery.vehicleStatus();
     GBFSSystemInformation systemInformationFeed = delivery.systemInformation();
     GBFSSystemPricingPlans pricingPlansFeed = delivery.systemPricingPlans();
     GBFSVehicleTypes vehicleTypesFeed = delivery.vehicleTypes();
 
-    var vehicleIds = freeBikeStatusFeed
+    var vehicleIds = vehicleStatusFeed
       .getData()
-      .getBikes()
+      .getVehicles()
       .stream()
-      .map(GBFSBike::getBikeId)
+      .map(GBFSVehicle::getVehicleId)
       .collect(Collectors.toSet());
 
     Set<String> vehicleIdsToRemove = null;
@@ -112,9 +112,9 @@ public class VehiclesUpdater {
       vehicleIdsToRemove =
         oldFreeBikeStatusFeed
           .getData()
-          .getBikes()
+          .getVehicles()
           .stream()
-          .map(GBFSBike::getBikeId)
+          .map(GBFSVehicle::getVehicleId)
           .collect(Collectors.toSet());
 
       // Find vehicle ids in old feed not present in new feed
@@ -140,16 +140,16 @@ public class VehiclesUpdater {
 
     var currentVehicles = vehicleCache.getAllAsMap(new HashSet<>(vehicleIds));
     var system = getSystem(feedProvider, systemInformationFeed);
-    var pricingPlans = getPricingPlans(pricingPlansFeed, system.getLanguage());
+    var pricingPlans = getPricingPlans(pricingPlansFeed);
     var vehicleTypes = getVehicleTypes(
       vehicleTypesFeed,
       pricingPlans,
       system.getLanguage()
     );
 
-    var vehicleList = freeBikeStatusFeed
+    var vehicleList = vehicleStatusFeed
       .getData()
-      .getBikes()
+      .getVehicles()
       .stream()
       .filter(new VehicleFilter(pricingPlans, vehicleTypes))
       .map(vehicle ->
@@ -163,7 +163,7 @@ public class VehiclesUpdater {
           system
         )
       )
-      .collect(Collectors.toList());
+      .toList();
 
     var duplicateVehicles = vehicleList
       .stream()
@@ -234,12 +234,12 @@ public class VehiclesUpdater {
 
     if (!vehicles.isEmpty()) {
       logger.debug("Adding/updating {} vehicles in vehicle cache", vehicles.size());
-      var lastUpdated = freeBikeStatusFeed.getLastUpdated();
-      var ttl = freeBikeStatusFeed.getTtl();
+      var lastUpdated = vehicleStatusFeed.getLastUpdated();
+      var ttl = vehicleStatusFeed.getTtl();
       vehicleCache.updateAll(
         vehicles,
         CacheUtil.getTtl(
-          lastUpdated,
+          (int) (lastUpdated.getTime() / 1000),
           ttl,
           vehicleEntityCacheMinimumTtl,
           vehicleEntityCacheMaximumTtl
@@ -286,14 +286,13 @@ public class VehiclesUpdater {
   }
 
   private Map<String, PricingPlan> getPricingPlans(
-    GBFSSystemPricingPlans pricingPlansFeed,
-    String language
+    GBFSSystemPricingPlans pricingPlansFeed
   ) {
     return pricingPlansFeed
       .getData()
       .getPlans()
       .stream()
-      .map(pricingPlan -> pricingPlanMapper.mapPricingPlan(pricingPlan, language))
+      .map(pricingPlanMapper::mapPricingPlan)
       .collect(Collectors.toMap(PricingPlan::getId, i -> i));
   }
 }

@@ -26,7 +26,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import org.entur.gbfs.loader.v2.GbfsV2Delivery;
+import org.entur.gbfs.loader.v3.GbfsV3Delivery;
 import org.entur.lamassu.cache.StationCache;
 import org.entur.lamassu.cache.StationSpatialIndex;
 import org.entur.lamassu.cache.StationSpatialIndexId;
@@ -39,14 +39,14 @@ import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.util.CacheUtil;
 import org.entur.lamassu.util.SpatialIndexIdUtil;
-import org.mobilitydata.gbfs.v2_3.station_information.GBFSData;
-import org.mobilitydata.gbfs.v2_3.station_information.GBFSStationInformation;
-import org.mobilitydata.gbfs.v2_3.station_status.GBFSStation;
-import org.mobilitydata.gbfs.v2_3.station_status.GBFSStationStatus;
-import org.mobilitydata.gbfs.v2_3.system_information.GBFSSystemInformation;
-import org.mobilitydata.gbfs.v2_3.system_pricing_plans.GBFSSystemPricingPlans;
-import org.mobilitydata.gbfs.v2_3.system_regions.GBFSSystemRegions;
-import org.mobilitydata.gbfs.v2_3.vehicle_types.GBFSVehicleTypes;
+import org.mobilitydata.gbfs.v3_0.station_information.GBFSData;
+import org.mobilitydata.gbfs.v3_0.station_information.GBFSStationInformation;
+import org.mobilitydata.gbfs.v3_0.station_status.GBFSStation;
+import org.mobilitydata.gbfs.v3_0.station_status.GBFSStationStatus;
+import org.mobilitydata.gbfs.v3_0.system_information.GBFSSystemInformation;
+import org.mobilitydata.gbfs.v3_0.system_pricing_plans.GBFSSystemPricingPlans;
+import org.mobilitydata.gbfs.v3_0.system_regions.GBFSSystemRegions;
+import org.mobilitydata.gbfs.v3_0.vehicle_types.GBFSVehicleTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,8 +83,8 @@ public class StationsUpdater {
 
   public void addOrUpdateStations(
     FeedProvider feedProvider,
-    GbfsV2Delivery delivery,
-    GbfsV2Delivery oldDelivery
+    GbfsV3Delivery delivery,
+    GbfsV3Delivery oldDelivery
   ) {
     GBFSStationStatus stationStatusFeed = delivery.stationStatus();
     GBFSStationStatus oldStationStatusFeed = oldDelivery.stationStatus();
@@ -133,7 +133,7 @@ public class StationsUpdater {
     var originalStations = stationCache.getAllAsMap(stationIds);
 
     var system = getSystem(feedProvider, systemInformationFeed);
-    var pricingPlans = getPricingPlans(pricingPlansFeed, system.getLanguage());
+    var pricingPlans = getPricingPlans(pricingPlansFeed);
 
     var stationInfo = Optional
       .ofNullable(stationInformationFeed)
@@ -143,7 +143,7 @@ public class StationsUpdater {
       .stream()
       .collect(
         Collectors.toMap(
-          org.mobilitydata.gbfs.v2_3.station_information.GBFSStation::getStationId,
+          org.mobilitydata.gbfs.v3_0.station_information.GBFSStation::getStationId,
           s -> s
         )
       );
@@ -219,7 +219,12 @@ public class StationsUpdater {
       var ttl = stationStatusFeed.getTtl();
       stationCache.updateAll(
         stations,
-        CacheUtil.getTtl((int) Instant.now().getEpochSecond(), lastUpdated, ttl, 300),
+        CacheUtil.getTtl(
+          (int) Instant.now().getEpochSecond(),
+          (int) lastUpdated.getTime() / 1000,
+          ttl,
+          300
+        ),
         TimeUnit.SECONDS
       );
     }
@@ -235,15 +240,12 @@ public class StationsUpdater {
     );
   }
 
-  private List<PricingPlan> getPricingPlans(
-    GBFSSystemPricingPlans pricingPlansFeed,
-    String language
-  ) {
+  private List<PricingPlan> getPricingPlans(GBFSSystemPricingPlans pricingPlansFeed) {
     return pricingPlansFeed
       .getData()
       .getPlans()
       .stream()
-      .map(pricingPlan -> pricingPlanMapper.mapPricingPlan(pricingPlan, language))
+      .map(pricingPlanMapper::mapPricingPlan)
       .collect(Collectors.toList());
   }
 

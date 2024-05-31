@@ -18,6 +18,7 @@
 
 package org.entur.lamassu.mapper.entitymapper;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -34,13 +35,16 @@ import org.entur.lamassu.model.entities.VehicleDocksAvailability;
 import org.entur.lamassu.model.entities.VehicleType;
 import org.entur.lamassu.model.entities.VehicleTypeAvailability;
 import org.entur.lamassu.model.entities.VehicleTypeCapacity;
-import org.mobilitydata.gbfs.v2_3.station_information.GBFSStation;
-import org.mobilitydata.gbfs.v2_3.station_information.GBFSVehicleCapacity;
-import org.mobilitydata.gbfs.v2_3.station_information.GBFSVehicleTypeCapacity;
-import org.mobilitydata.gbfs.v2_3.station_status.GBFSVehicleDocksAvailable;
-import org.mobilitydata.gbfs.v2_3.station_status.GBFSVehicleTypesAvailable;
-import org.mobilitydata.gbfs.v2_3.system_regions.GBFSSystemRegions;
-import org.mobilitydata.gbfs.v2_3.vehicle_types.GBFSVehicleTypes;
+import org.jetbrains.annotations.NotNull;
+import org.mobilitydata.gbfs.v3_0.station_information.GBFSName;
+import org.mobilitydata.gbfs.v3_0.station_information.GBFSShortName;
+import org.mobilitydata.gbfs.v3_0.station_information.GBFSStation;
+import org.mobilitydata.gbfs.v3_0.station_information.GBFSVehicleDocksCapacity;
+import org.mobilitydata.gbfs.v3_0.station_information.GBFSVehicleTypesCapacity;
+import org.mobilitydata.gbfs.v3_0.station_status.GBFSVehicleDocksAvailable;
+import org.mobilitydata.gbfs.v3_0.station_status.GBFSVehicleTypesAvailable;
+import org.mobilitydata.gbfs.v3_0.system_regions.GBFSSystemRegions;
+import org.mobilitydata.gbfs.v3_0.vehicle_types.GBFSVehicleTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +74,7 @@ public class StationMapper {
     System system,
     List<PricingPlan> pricingPlans,
     GBFSStation stationInformation,
-    org.mobilitydata.gbfs.v2_3.station_status.GBFSStation stationStatus,
+    org.mobilitydata.gbfs.v3_0.station_status.GBFSStation stationStatus,
     GBFSVehicleTypes vehicleTypesFeed,
     GBFSSystemRegions regions,
     String language
@@ -78,10 +82,29 @@ public class StationMapper {
     var station = new Station();
     station.setId(stationStatus.getStationId());
     station.setName(
-      translationMapper.mapSingleTranslation(language, stationInformation.getName())
+      translationMapper.mapSingleTranslation(
+        language,
+        stationInformation
+          .getName()
+          .stream()
+          .filter(name -> name.getLanguage().equals(language))
+          .map(GBFSName::getText)
+          .findFirst()
+          .orElse(null)
+      )
     );
     station.setShortName(
-      translationMapper.mapSingleTranslation(language, stationInformation.getShortName())
+      translationMapper.mapSingleTranslation(
+        language,
+        Optional
+          .ofNullable(stationInformation.getShortName())
+          .orElse(Collections.emptyList())
+          .stream()
+          .filter(shortName -> shortName.getLanguage().equals(language))
+          .map(GBFSShortName::getText)
+          .findFirst()
+          .orElse(null)
+      )
     );
     station.setLat(stationInformation.getLat());
     station.setLon(stationInformation.getLon());
@@ -96,22 +119,20 @@ public class StationMapper {
     station.setParkingHoop(stationInformation.getParkingHoop());
     station.setContactPhone(stationInformation.getContactPhone());
     station.setCapacity(
-      stationInformation.getCapacity() != null
-        ? stationInformation.getCapacity().intValue()
-        : null
+      stationInformation.getCapacity() != null ? stationInformation.getCapacity() : null
     );
     station.setVehicleCapacity(
-      stationInformation.getVehicleCapacity() != null
+      stationInformation.getVehicleTypesCapacity() != null
         ? mapVehicleCapacities(
-          stationInformation.getVehicleCapacity(),
+          stationInformation.getVehicleTypesCapacity(),
           mapVehicleTypes(vehicleTypesFeed, pricingPlans, language)
         )
         : null
     );
     station.setVehicleTypeCapacity(
-      stationInformation.getVehicleTypeCapacity() != null
+      stationInformation.getVehicleDocksCapacity() != null
         ? mapVehicleTypeCapacities(
-          stationInformation.getVehicleTypeCapacity(),
+          stationInformation.getVehicleDocksCapacity(),
           mapVehicleTypes(vehicleTypesFeed, pricingPlans, language)
         )
         : null
@@ -122,8 +143,8 @@ public class StationMapper {
       rentalUrisMapper.mapRentalUris(stationInformation.getRentalUris())
     );
     station.setNumBikesAvailable(
-      stationStatus.getNumBikesAvailable() != null
-        ? stationStatus.getNumBikesAvailable().intValue()
+      stationStatus.getNumVehiclesAvailable() != null
+        ? stationStatus.getNumVehiclesAvailable()
         : null
     );
     station.setVehicleTypesAvailable(
@@ -137,13 +158,13 @@ public class StationMapper {
         : null
     );
     station.setNumBikesDisabled(
-      stationStatus.getNumBikesDisabled() != null
-        ? stationStatus.getNumBikesDisabled().intValue()
+      stationStatus.getNumVehiclesDisabled() != null
+        ? stationStatus.getNumVehiclesDisabled()
         : null
     );
     station.setNumDocksAvailable(
       stationStatus.getNumDocksAvailable() != null
-        ? stationStatus.getNumDocksAvailable().intValue()
+        ? stationStatus.getNumDocksAvailable()
         : null
     );
     station.setVehicleDocksAvailable(
@@ -162,7 +183,7 @@ public class StationMapper {
     station.setReturning(stationStatus.getIsReturning());
     station.setLastReported(
       stationStatus.getLastReported() != null
-        ? stationStatus.getLastReported().longValue()
+        ? stationStatus.getLastReported().getTime() / 1000
         : null
     );
     station.setSystem(system);
@@ -187,7 +208,7 @@ public class StationMapper {
   }
 
   private List<RentalMethod> mapRentalMethods(
-    List<org.mobilitydata.gbfs.v2_3.station_information.RentalMethod> rentalMethods
+    List<org.mobilitydata.gbfs.v3_0.station_information.RentalMethod> rentalMethods
   ) {
     return Optional
       .ofNullable(rentalMethods)
@@ -196,7 +217,7 @@ public class StationMapper {
           .stream()
           .filter(Objects::nonNull)
           .map(rentalMethod -> RentalMethod.valueOf(rentalMethod.name().toUpperCase()))
-          .collect(Collectors.toList())
+          .toList()
       )
       .orElse(null);
   }
@@ -221,7 +242,17 @@ public class StationMapper {
       var region = new Region();
       region.setId(regionId);
       region.setName(
-        translationMapper.mapSingleTranslation(language, sourceRegion.get().getName())
+        translationMapper.mapSingleTranslation(
+          language,
+          sourceRegion
+            .get()
+            .getName()
+            .stream()
+            .filter(name -> name.getLanguage().equals(language))
+            .map(org.mobilitydata.gbfs.v3_0.system_regions.GBFSName::getText)
+            .findFirst()
+            .orElse(null)
+        )
       );
       return region;
     } else {
@@ -234,41 +265,52 @@ public class StationMapper {
   }
 
   private List<VehicleTypeCapacity> mapVehicleCapacities(
-    GBFSVehicleCapacity vehicleCapacity,
+    List<GBFSVehicleTypesCapacity> vehicleCapacityList,
     Map<String, VehicleType> vehicleTypes
   ) {
-    return vehicleCapacity
-      .getAdditionalProperties()
-      .entrySet()
+    return vehicleCapacityList
       .stream()
-      .map(entry -> {
-        var mapped = new VehicleTypeCapacity();
-        mapped.setVehicleType(vehicleTypes.get(entry.getKey()));
-        mapped.setCount(entry.getValue().intValue());
-        return mapped;
-      })
-      .collect(Collectors.toList());
+      .map(vehicleCapacity -> mapVehicleTypeCapacity(vehicleTypes, vehicleCapacity))
+      .toList();
+  }
+
+  private static @NotNull VehicleTypeCapacity mapVehicleTypeCapacity(
+    Map<String, VehicleType> vehicleTypes,
+    GBFSVehicleTypesCapacity vehicleCapacity
+  ) {
+    var mapped = new VehicleTypeCapacity();
+    mapped.setVehicleType(
+      vehicleTypes.get(vehicleCapacity.getVehicleTypeIds().getFirst())
+    );
+    mapped.setVehicleTypes(
+      vehicleCapacity.getVehicleTypeIds().stream().map(vehicleTypes::get).toList()
+    );
+    mapped.setCount(vehicleCapacity.getCount());
+    return mapped;
   }
 
   private List<VehicleTypeCapacity> mapVehicleTypeCapacities(
-    GBFSVehicleTypeCapacity vehicleCapacity,
+    List<GBFSVehicleDocksCapacity> vehicleCapacity,
     Map<String, VehicleType> vehicleTypes
   ) {
     return vehicleCapacity
-      .getAdditionalProperties()
-      .entrySet()
       .stream()
-      .map(entry -> mapVehicleTypeCapacityFromMapEntry(entry, vehicleTypes))
-      .collect(Collectors.toList());
+      .map(entry -> mapVehicleDocksCapacity(entry, vehicleTypes))
+      .toList();
   }
 
-  private VehicleTypeCapacity mapVehicleTypeCapacityFromMapEntry(
-    Map.Entry<String, Double> entry,
+  private VehicleTypeCapacity mapVehicleDocksCapacity(
+    GBFSVehicleDocksCapacity vehicleDocksCapacity,
     Map<String, VehicleType> vehicleTypes
   ) {
     var mapped = new VehicleTypeCapacity();
-    mapped.setVehicleType(vehicleTypes.get(entry.getKey()));
-    mapped.setCount(entry.getValue().intValue());
+    mapped.setVehicleType(
+      vehicleTypes.get(vehicleDocksCapacity.getVehicleTypeIds().getFirst())
+    );
+    mapped.setVehicleTypes(
+      vehicleDocksCapacity.getVehicleTypeIds().stream().map(vehicleTypes::get).toList()
+    );
+    mapped.setCount(vehicleDocksCapacity.getCount());
     return mapped;
   }
 
@@ -354,7 +396,7 @@ public class StationMapper {
       .getVehicleTypeIds()
       .stream()
       .map(mappedVehicleTypes::get)
-      .collect(Collectors.toList());
+      .toList();
 
     var mapped = new VehicleDocksAvailability();
     mapped.setVehicleTypes(vehicleTypes);

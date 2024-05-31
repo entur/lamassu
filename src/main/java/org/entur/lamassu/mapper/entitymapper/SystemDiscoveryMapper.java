@@ -21,7 +21,7 @@ package org.entur.lamassu.mapper.entitymapper;
 import org.entur.lamassu.model.discovery.System;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.util.FeedUrlUtil;
-import org.mobilitydata.gbfs.v2_3.gbfs.GBFSFeedName;
+import org.mobilitydata.gbfs.v3_0.gbfs.GBFSFeed;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -34,9 +34,7 @@ public class SystemDiscoveryMapper {
   public System mapSystemDiscovery(FeedProvider feedProvider) {
     var mapped = new System();
     mapped.setId(feedProvider.getSystemId());
-    mapped.setUrl(
-      FeedUrlUtil.mapFeedUrl(baseUrl, GBFSFeedName.GBFS, feedProvider).toString()
-    );
+    mapped.setUrl(FeedUrlUtil.mapFeedUrl(baseUrl, GBFSFeed.Name.GBFS, feedProvider));
     return mapped;
   }
 }
