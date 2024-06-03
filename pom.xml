@@ -28,7 +28,7 @@
         <kryo.version>5.6.0</kryo.version>
         <jackson.version>2.17.1</jackson.version>
         <gbfs-loader-java.version>4.0.0</gbfs-loader-java.version>
-        <gbfs-validator-java.version>2.0.1</gbfs-validator-java.version>
+        <gbfs-validator-java.version>2.0.2</gbfs-validator-java.version>
         <gbfs-mapper-java.version>2.0.1</gbfs-mapper-java.version>
         <netex-utils.version>1.46</netex-utils.version>
         <prettier-java.version>2.1.0</prettier-java.version>
