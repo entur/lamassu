@@ -369,7 +369,9 @@ type GeofencingZoneProperties {
 
 type GeofencingZoneRule {
     vehicleTypeIds: [String]
-    rideAllowed: Boolean!
+    rideAllowed: Boolean! @deprecated(reason: "Use rideStartAllowed and rideEndAllowed")
+    rideStartAllowed: Boolean!
+    rideEndAllowed: Boolean!
     rideThroughAllowed: Boolean!
     maximumSpeedKph: Int
     stationParking: Boolean

@@ -12,6 +12,8 @@
                     name
                     rules {
                         rideAllowed
+                        rideStartAllowed
+                        rideEndAllowed
                         rideThroughAllowed
                     }
                 }

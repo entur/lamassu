@@ -125,6 +125,18 @@ public class GraphQLIntegrationTest extends AbstractIntegrationTestBase {
     );
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals("testatlantis", response.get("$.data.geofencingZones[0].systemId"));
+    assertEquals(
+      "true",
+      response.get(
+        "$.data.geofencingZones[0].geojson.features[0].properties.rules[0].rideStartAllowed"
+      )
+    );
+    assertEquals(
+      "true",
+      response.get(
+        "$.data.geofencingZones[0].geojson.features[0].properties.rules[0].rideEndAllowed"
+      )
+    );
   }
 
   @Test

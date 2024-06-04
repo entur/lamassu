@@ -136,6 +136,8 @@ public class GeofencingZonesMapper {
     var mapped = new org.entur.lamassu.model.entities.GeofencingZones.Rule();
     mapped.setVehicleTypeIds(rule.getVehicleTypeIds());
     mapped.setRideAllowed(rule.getRideStartAllowed() && rule.getRideEndAllowed());
+    mapped.setRideStartAllowed(rule.getRideStartAllowed());
+    mapped.setRideEndAllowed(rule.getRideEndAllowed());
     mapped.setRideThroughAllowed(rule.getRideThroughAllowed());
     mapped.setMaximumSpeedKph(
       rule.getMaximumSpeedKph() != null ? rule.getMaximumSpeedKph() : null
