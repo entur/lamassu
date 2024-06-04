@@ -71,6 +71,7 @@ public class SystemMapper {
     var system = new System();
     system.setId(systemInformation.getSystemId());
     system.setLanguage(feedProvider.getLanguage());
+    system.setLanguages(systemInformation.getLanguages());
     system.setName(
       translationMapper.mapTranslatedString(
         systemInformation

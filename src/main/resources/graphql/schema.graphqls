@@ -259,7 +259,8 @@ enum ParkingType {
 
 type System {
     id: ID!
-    language: String!
+    language: String! @deprecated(reason: "Use languages")
+    languages: [String!]!
     name: TranslatedString!
     shortName: TranslatedString
     operator: Operator!

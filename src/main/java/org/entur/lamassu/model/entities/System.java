@@ -1,9 +1,12 @@
 package org.entur.lamassu.model.entities;
 
+import java.util.List;
+
 public class System implements Entity {
 
   String id;
   String language;
+  List<String> languages;
   TranslatedString name;
   TranslatedString shortName;
   Operator operator;
@@ -37,6 +40,14 @@ public class System implements Entity {
 
   public void setLanguage(String language) {
     this.language = language;
+  }
+
+  public List<String> getLanguages() {
+    return languages;
+  }
+
+  public void setLanguages(List<String> languages) {
+    this.languages = languages;
   }
 
   public TranslatedString getName() {
