@@ -242,7 +242,7 @@ public class FeedUpdater {
 
       // Configurable maximum history?
       if (validationResults.size() > maxValidationResultsPerSystem) {
-        validationResults.remove(0);
+        validationResults.removeFirst();
       }
     }
   }
@@ -252,10 +252,7 @@ public class FeedUpdater {
       gbfsV2Delivery,
       feedProvider
     );
-    var oldDelivery = v2FeedCachesUpdater.updateFeedCaches(feedProvider, mappedDelivery);
-    if (Boolean.TRUE.equals(feedProvider.getAggregate())) {
-      entityCachesUpdater.updateEntityCaches(feedProvider, mappedDelivery, oldDelivery);
-    }
+    v2FeedCachesUpdater.updateFeedCaches(feedProvider, mappedDelivery);
   }
 
   private void receiveV3Update(FeedProvider feedProvider, GbfsV3Delivery gbfsV3Delivery) {
@@ -263,6 +260,9 @@ public class FeedUpdater {
       gbfsV3Delivery,
       feedProvider
     );
-    v3FeedCachesUpdater.updateFeedCaches(feedProvider, mappedDelivery);
+    var oldDelivery = v3FeedCachesUpdater.updateFeedCaches(feedProvider, mappedDelivery);
+    if (Boolean.TRUE.equals(feedProvider.getAggregate())) {
+      entityCachesUpdater.updateEntityCaches(feedProvider, mappedDelivery, oldDelivery);
+    }
   }
 }

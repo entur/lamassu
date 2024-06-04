@@ -321,7 +321,8 @@ type Operator {
 }
 
 type VehicleTypeCapacity {
-    vehicleType: VehicleType!
+    vehicleType: VehicleType! @deprecated(reason: "Use vehicleTypes instead")
+    vehicleTypes: [VehicleType!]!
     count: Int!
 }
 

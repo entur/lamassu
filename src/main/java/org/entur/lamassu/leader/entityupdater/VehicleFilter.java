@@ -22,11 +22,11 @@ import java.util.Map;
 import java.util.function.Predicate;
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.VehicleType;
-import org.mobilitydata.gbfs.v2_3.free_bike_status.GBFSBike;
+import org.mobilitydata.gbfs.v3_0.vehicle_status.GBFSVehicle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class VehicleFilter implements Predicate<GBFSBike> {
+class VehicleFilter implements Predicate<GBFSVehicle> {
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -42,7 +42,7 @@ class VehicleFilter implements Predicate<GBFSBike> {
   }
 
   @Override
-  public boolean test(GBFSBike vehicle) {
+  public boolean test(GBFSVehicle vehicle) {
     if (vehicle.getStationId() != null) {
       logger.info("Skipping hybrid-system vehicle {}", vehicle);
       return false;
@@ -55,7 +55,7 @@ class VehicleFilter implements Predicate<GBFSBike> {
       logger.info(
         "Skipping vehicle with unknown pricing plan id {} (vehicle {})",
         vehicle.getPricingPlanId(),
-        vehicle.getBikeId()
+        vehicle.getVehicleId()
       );
       return false;
     }
@@ -64,7 +64,7 @@ class VehicleFilter implements Predicate<GBFSBike> {
       logger.info(
         "Skipping vehicle with unknown vehicle type id {} (vehicle {})",
         vehicle.getVehicleTypeId(),
-        vehicle.getBikeId()
+        vehicle.getVehicleId()
       );
       return false;
     }
@@ -76,7 +76,7 @@ class VehicleFilter implements Predicate<GBFSBike> {
       logger.info(
         "Skipping vehicle without pricing plan id and vehicle type {} without default pricing plan (vehicle {})",
         vehicle.getVehicleTypeId(),
-        vehicle.getBikeId()
+        vehicle.getVehicleId()
       );
       return false;
     }

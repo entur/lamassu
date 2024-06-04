@@ -19,13 +19,12 @@
 package org.entur.lamassu.mapper.entitymapper;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.System;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.entities.VehicleEquipment;
 import org.entur.lamassu.model.entities.VehicleType;
-import org.mobilitydata.gbfs.v2_3.free_bike_status.GBFSBike;
+import org.mobilitydata.gbfs.v3_0.vehicle_status.GBFSVehicle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -40,30 +39,30 @@ public class VehicleMapper {
   }
 
   public Vehicle mapVehicle(
-    GBFSBike bike,
+    GBFSVehicle vehicle,
     VehicleType vehicleType,
     PricingPlan pricingPlan,
     System system
   ) {
-    var vehicle = new Vehicle();
-    vehicle.setId(bike.getBikeId());
-    vehicle.setLat(bike.getLat());
-    vehicle.setLon(bike.getLon());
-    vehicle.setReserved(bike.getIsReserved());
-    vehicle.setDisabled(bike.getIsDisabled());
-    vehicle.setCurrentRangeMeters(bike.getCurrentRangeMeters());
-    vehicle.setCurrentFuelPercent(bike.getCurrentFuelPercent());
-    vehicle.setVehicleType(vehicleType);
-    vehicle.setPricingPlan(pricingPlan);
-    vehicle.setVehicleEquipment(mapVehicleEquipment(bike.getVehicleEquipment()));
-    vehicle.setRentalUris(rentalUrisMapper.mapRentalUris(bike.getRentalUris()));
-    vehicle.setAvailableUntil(bike.getAvailableUntil());
-    vehicle.setSystem(system);
-    return vehicle;
+    var mappedVehicle = new Vehicle();
+    mappedVehicle.setId(vehicle.getVehicleId());
+    mappedVehicle.setLat(vehicle.getLat());
+    mappedVehicle.setLon(vehicle.getLon());
+    mappedVehicle.setReserved(vehicle.getIsReserved());
+    mappedVehicle.setDisabled(vehicle.getIsDisabled());
+    mappedVehicle.setCurrentRangeMeters(vehicle.getCurrentRangeMeters());
+    mappedVehicle.setCurrentFuelPercent(vehicle.getCurrentFuelPercent());
+    mappedVehicle.setVehicleType(vehicleType);
+    mappedVehicle.setPricingPlan(pricingPlan);
+    mappedVehicle.setVehicleEquipment(mapVehicleEquipment(vehicle.getVehicleEquipment()));
+    mappedVehicle.setRentalUris(rentalUrisMapper.mapRentalUris(vehicle.getRentalUris()));
+    mappedVehicle.setAvailableUntil(vehicle.getAvailableUntil());
+    mappedVehicle.setSystem(system);
+    return mappedVehicle;
   }
 
   private List<VehicleEquipment> mapVehicleEquipment(
-    List<org.mobilitydata.gbfs.v2_3.free_bike_status.VehicleEquipment> vehicleEquipment
+    List<org.mobilitydata.gbfs.v3_0.vehicle_status.VehicleEquipment> vehicleEquipment
   ) {
     if (vehicleEquipment == null) {
       return null;
@@ -74,6 +73,6 @@ public class VehicleMapper {
       .map(vehicleEquipmentEnum ->
         VehicleEquipment.valueOf(vehicleEquipmentEnum.value().toUpperCase())
       )
-      .collect(Collectors.toList());
+      .toList();
   }
 }

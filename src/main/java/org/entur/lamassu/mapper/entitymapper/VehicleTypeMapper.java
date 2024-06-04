@@ -18,8 +18,10 @@
 
 package org.entur.lamassu.mapper.entitymapper;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
+import java.util.Optional;
 import org.entur.lamassu.model.entities.EcoLabel;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PricingPlan;
@@ -28,9 +30,11 @@ import org.entur.lamassu.model.entities.ReturnConstraint;
 import org.entur.lamassu.model.entities.VehicleAccessory;
 import org.entur.lamassu.model.entities.VehicleAssets;
 import org.entur.lamassu.model.entities.VehicleType;
-import org.mobilitydata.gbfs.v2_3.vehicle_types.GBFSEcoLabel;
-import org.mobilitydata.gbfs.v2_3.vehicle_types.GBFSVehicleAssets;
-import org.mobilitydata.gbfs.v2_3.vehicle_types.GBFSVehicleType;
+import org.mobilitydata.gbfs.v3_0.vehicle_types.GBFSEcoLabel;
+import org.mobilitydata.gbfs.v3_0.vehicle_types.GBFSMake;
+import org.mobilitydata.gbfs.v3_0.vehicle_types.GBFSModel;
+import org.mobilitydata.gbfs.v3_0.vehicle_types.GBFSVehicleAssets;
+import org.mobilitydata.gbfs.v3_0.vehicle_types.GBFSVehicleType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -58,43 +62,57 @@ public class VehicleTypeMapper {
     mapped.setPropulsionType(
       PropulsionType.valueOf(vehicleType.getPropulsionType().name())
     );
-    mapped.setEcoLabel(mapEcoLabels(vehicleType.getEcoLabel()));
+    mapped.setEcoLabel(mapEcoLabels(vehicleType.getEcoLabels()));
     mapped.setMaxRangeMeters(vehicleType.getMaxRangeMeters());
     mapped.setName(
-      translationMapper.mapSingleTranslation(language, vehicleType.getName())
+      translationMapper.mapTranslatedString(
+        Optional
+          .ofNullable(vehicleType.getName())
+          .orElse(Collections.emptyList())
+          .stream()
+          .map(name ->
+            translationMapper.mapTranslation(name.getLanguage(), name.getText())
+          )
+          .toList()
+      )
     );
-
     mapped.setVehicleAccessories(
       mapVehicleAccessories(vehicleType.getVehicleAccessories())
     );
-
-    // TODO error in json schema
-    mapped.setgCO2km(
-      vehicleType.getgCO2Km() != null ? vehicleType.getgCO2Km().intValue() : null
-    );
-
+    mapped.setgCO2km(vehicleType.getgCO2Km() != null ? vehicleType.getgCO2Km() : null);
     mapped.setVehicleImage(vehicleType.getVehicleImage());
-    mapped.setMake(vehicleType.getMake());
-    mapped.setModel(vehicleType.getModel());
-    mapped.setColor(vehicleType.getColor());
-
-    // TODO error in json schema
-    mapped.setWheelCount(
-      vehicleType.getWheelCount() != null ? vehicleType.getWheelCount().intValue() : null
+    mapped.setMake(
+      Optional
+        .ofNullable(vehicleType.getMake())
+        .orElse(Collections.emptyList())
+        .stream()
+        .filter(make -> make.getLanguage().equals(language))
+        .map(GBFSMake::getText)
+        .findFirst()
+        .orElse(null)
     );
-
-    // TODO error in json schema
+    mapped.setModel(
+      Optional
+        .ofNullable(vehicleType.getModel())
+        .orElse(Collections.emptyList())
+        .stream()
+        .filter(model -> model.getLanguage().equals(language))
+        .map(GBFSModel::getText)
+        .findFirst()
+        .orElse(null)
+    );
+    mapped.setColor(vehicleType.getColor());
+    mapped.setWheelCount(
+      vehicleType.getWheelCount() != null ? vehicleType.getWheelCount() : null
+    );
     mapped.setMaxPermittedSpeed(
       vehicleType.getMaxPermittedSpeed() != null
-        ? vehicleType.getMaxPermittedSpeed().intValue()
+        ? vehicleType.getMaxPermittedSpeed()
         : null
     );
-
-    // TODO error in json schema
     mapped.setRatedPower(
-      vehicleType.getRatedPower() != null ? vehicleType.getRatedPower().intValue() : null
+      vehicleType.getRatedPower() != null ? vehicleType.getRatedPower() : null
     );
-
     mapped.setDefaultReserveTime(vehicleType.getDefaultReserveTime());
     mapped.setReturnConstraint(mapReturnConstraint(vehicleType.getReturnConstraint()));
     mapped.setVehicleAssets(mapVehicleAssets(vehicleType.getVehicleAssets()));
@@ -120,7 +138,8 @@ public class VehicleTypeMapper {
     return pricingPlanIds
       .stream()
       .map(id -> getPricingPlanWithId(pricingPlans, id))
-      .collect(Collectors.toList());
+      .filter(Objects::nonNull)
+      .toList();
   }
 
   private PricingPlan getPricingPlanWithId(List<PricingPlan> pricingPlans, String id) {
@@ -158,7 +177,7 @@ public class VehicleTypeMapper {
   }
 
   private List<VehicleAccessory> mapVehicleAccessories(
-    List<org.mobilitydata.gbfs.v2_3.vehicle_types.VehicleAccessory> vehicleAccessories
+    List<org.mobilitydata.gbfs.v3_0.vehicle_types.VehicleAccessory> vehicleAccessories
   ) {
     if (vehicleAccessories == null) {
       return null;
@@ -169,7 +188,7 @@ public class VehicleTypeMapper {
       .map(vehicleAccessory ->
         VehicleAccessory.valueOf(vehicleAccessory.value().toUpperCase())
       )
-      .collect(Collectors.toList());
+      .toList();
   }
 
   private List<EcoLabel> mapEcoLabels(List<GBFSEcoLabel> ecoLabel) {
@@ -177,7 +196,7 @@ public class VehicleTypeMapper {
       return null;
     }
 
-    return ecoLabel.stream().map(this::mapEcoLabel).collect(Collectors.toList());
+    return ecoLabel.stream().map(this::mapEcoLabel).toList();
   }
 
   private EcoLabel mapEcoLabel(GBFSEcoLabel gbfsEcoLabel) {

@@ -18,17 +18,23 @@
 
 package org.entur.lamassu.mapper.entitymapper;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import org.entur.lamassu.model.entities.BrandAssets;
 import org.entur.lamassu.model.entities.Operator;
 import org.entur.lamassu.model.entities.RentalApp;
 import org.entur.lamassu.model.entities.RentalApps;
 import org.entur.lamassu.model.entities.System;
 import org.entur.lamassu.model.provider.FeedProvider;
-import org.mobilitydata.gbfs.v2_3.system_information.GBFSAndroid;
-import org.mobilitydata.gbfs.v2_3.system_information.GBFSBrandAssets;
-import org.mobilitydata.gbfs.v2_3.system_information.GBFSData;
-import org.mobilitydata.gbfs.v2_3.system_information.GBFSIos;
-import org.mobilitydata.gbfs.v2_3.system_information.GBFSRentalApps;
+import org.mobilitydata.gbfs.v3_0.system_information.GBFSAndroid;
+import org.mobilitydata.gbfs.v3_0.system_information.GBFSBrandAssets;
+import org.mobilitydata.gbfs.v3_0.system_information.GBFSData;
+import org.mobilitydata.gbfs.v3_0.system_information.GBFSIos;
+import org.mobilitydata.gbfs.v3_0.system_information.GBFSOperator;
+import org.mobilitydata.gbfs.v3_0.system_information.GBFSPrivacyUrl;
+import org.mobilitydata.gbfs.v3_0.system_information.GBFSRentalApps;
+import org.mobilitydata.gbfs.v3_0.system_information.GBFSTermsUrl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -43,16 +49,19 @@ public class SystemMapper {
   }
 
   private Operator mapOperator(
-    String operatorName,
-    FeedProvider feedProvider,
-    String language
+    List<GBFSOperator> operatorName,
+    FeedProvider feedProvider
   ) {
     var operator = new Operator();
     operator.setId(feedProvider.getOperatorId());
     operator.setName(
-      translationMapper.mapSingleTranslation(
-        language,
-        operatorName != null ? operatorName : feedProvider.getOperatorName()
+      translationMapper.mapTranslatedString(
+        operatorName
+          .stream()
+          .map(name ->
+            translationMapper.mapTranslation(name.getLanguage(), name.getText())
+          )
+          .toList()
       )
     );
     return operator;
@@ -61,26 +70,31 @@ public class SystemMapper {
   public System mapSystem(GBFSData systemInformation, FeedProvider feedProvider) {
     var system = new System();
     system.setId(systemInformation.getSystemId());
-    system.setLanguage(systemInformation.getLanguage());
+    system.setLanguage(feedProvider.getLanguage());
     system.setName(
-      translationMapper.mapSingleTranslation(
-        systemInformation.getLanguage(),
-        systemInformation.getName()
+      translationMapper.mapTranslatedString(
+        systemInformation
+          .getName()
+          .stream()
+          .map(name ->
+            translationMapper.mapTranslation(name.getLanguage(), name.getText())
+          )
+          .toList()
       )
     );
     system.setShortName(
-      translationMapper.mapSingleTranslation(
-        systemInformation.getLanguage(),
-        systemInformation.getShortName()
+      translationMapper.mapTranslatedString(
+        Optional
+          .ofNullable(systemInformation.getShortName())
+          .orElse(Collections.emptyList())
+          .stream()
+          .map(shortName ->
+            translationMapper.mapTranslation(shortName.getLanguage(), shortName.getText())
+          )
+          .toList()
       )
     );
-    system.setOperator(
-      mapOperator(
-        systemInformation.getOperator(),
-        feedProvider,
-        systemInformation.getLanguage()
-      )
-    );
+    system.setOperator(mapOperator(systemInformation.getOperator(), feedProvider));
     system.setUrl(systemInformation.getUrl());
     system.setPurchaseUrl(systemInformation.getPurchaseUrl());
     system.setStartDate(systemInformation.getStartDate());
@@ -94,9 +108,27 @@ public class SystemMapper {
     );
     system.setLicenseUrl(systemInformation.getLicenseUrl());
     system.setBrandAssets(mapBrandAssets(systemInformation.getBrandAssets()));
-    system.setTermsUrl(systemInformation.getTermsUrl());
+    system.setTermsUrl(
+      Optional
+        .ofNullable(systemInformation.getTermsUrl())
+        .orElse(Collections.emptyList())
+        .stream()
+        .filter(termsUrl -> termsUrl.getLanguage().equals(feedProvider.getLanguage()))
+        .map(GBFSTermsUrl::getText)
+        .findFirst()
+        .orElse(null)
+    );
     system.setTermsLastUpdated(systemInformation.getTermsLastUpdated());
-    system.setPrivacyUrl(systemInformation.getPrivacyUrl());
+    system.setPrivacyUrl(
+      Optional
+        .ofNullable(systemInformation.getPrivacyUrl())
+        .orElse(Collections.emptyList())
+        .stream()
+        .filter(privacyUrl -> privacyUrl.getLanguage().equals(feedProvider.getLanguage()))
+        .map(GBFSPrivacyUrl::getText)
+        .findFirst()
+        .orElse(null)
+    );
     system.setPrivacyLastUpdated(systemInformation.getPrivacyLastUpdated());
     system.setRentalApps(mapRentalApps(systemInformation.getRentalApps()));
     return system;

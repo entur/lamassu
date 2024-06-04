@@ -4,7 +4,7 @@ import java.util.HashMap;
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.VehicleType;
 import org.junit.Test;
-import org.mobilitydata.gbfs.v2_3.free_bike_status.GBFSBike;
+import org.mobilitydata.gbfs.v3_0.vehicle_status.GBFSVehicle;
 
 public class VehicleFilterTest {
 
@@ -28,8 +28,8 @@ public class VehicleFilterTest {
       vehicleTypesWithPricingPlan(new PricingPlan())
     );
 
-    GBFSBike vehicle = new GBFSBike();
-    vehicle.setBikeId("VehicleWithoutPricingPlan");
+    GBFSVehicle vehicle = new GBFSVehicle();
+    vehicle.setVehicleId("VehicleWithoutPricingPlan");
     vehicle.setVehicleTypeId("vehicleTypeId");
 
     assert filter.test(vehicle) == true;
@@ -42,8 +42,8 @@ public class VehicleFilterTest {
       vehicleTypesWithPricingPlan(null)
     );
 
-    GBFSBike vehicle = new GBFSBike();
-    vehicle.setBikeId("VehicleWithoutPricingPlan");
+    GBFSVehicle vehicle = new GBFSVehicle();
+    vehicle.setVehicleId("VehicleWithoutPricingPlan");
     vehicle.setVehicleTypeId("vehicleTypeId");
 
     assert filter.test(vehicle) == false;
