@@ -4,26 +4,26 @@ import java.util.List;
 
 public class System implements Entity {
 
-  String id;
-  String language;
-  List<String> languages;
-  TranslatedString name;
-  TranslatedString shortName;
-  Operator operator;
-  String url;
-  String purchaseUrl;
-  String startDate;
-  String phoneNumber;
-  String email;
-  String feedContactEmail;
-  String timezone;
-  String licenseUrl;
-  BrandAssets brandAssets;
-  String termsUrl;
-  String termsLastUpdated;
-  String privacyUrl;
-  String privacyLastUpdated;
-  RentalApps rentalApps;
+  private String id;
+  private String language;
+  private List<String> languages;
+  private TranslatedString name;
+  private TranslatedString shortName;
+  private Operator operator;
+  private String url;
+  private String purchaseUrl;
+  private String startDate;
+  private String phoneNumber;
+  private String email;
+  private String feedContactEmail;
+  private String timezone;
+  private String licenseUrl;
+  private BrandAssets brandAssets;
+  private String termsUrl;
+  private String termsLastUpdated;
+  private String privacyUrl;
+  private String privacyLastUpdated;
+  private RentalApps rentalApps;
 
   @Override
   public String getId() {
