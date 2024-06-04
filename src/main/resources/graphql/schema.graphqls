@@ -233,9 +233,11 @@ type Station {
     isValetStation: Boolean
     isChargingStation: Boolean
     rentalUris: RentalUris
-    numBikesAvailable: Int!
+    numBikesAvailable: Int! @deprecated(reason: "Use numVehiclesAvailable")
+    numVehiclesAvailable: Int!
     vehicleTypesAvailable: [VehicleTypeAvailability]
-    numBikesDisabled: Int
+    numBikesDisabled: Int @deprecated(reason: "Use numVehiclesDisabled")
+    numVehiclesDisabled: Int
     numDocksAvailable: Int
     vehicleDocksAvailable: [VehicleDocksAvailability]
     numDocksDisabled: Int

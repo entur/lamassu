@@ -147,6 +147,11 @@ public class StationMapper {
         ? stationStatus.getNumVehiclesAvailable()
         : null
     );
+    station.setNumVehiclesAvailable(
+      stationStatus.getNumVehiclesAvailable() != null
+        ? stationStatus.getNumVehiclesAvailable()
+        : null
+    );
     station.setVehicleTypesAvailable(
       stationStatus.getVehicleTypesAvailable() != null
         ? mapVehicleTypesAvailable(
@@ -158,6 +163,11 @@ public class StationMapper {
         : null
     );
     station.setNumBikesDisabled(
+      stationStatus.getNumVehiclesDisabled() != null
+        ? stationStatus.getNumVehiclesDisabled()
+        : null
+    );
+    station.setNumVehiclesDisabled(
       stationStatus.getNumVehiclesDisabled() != null
         ? stationStatus.getNumVehiclesDisabled()
         : null

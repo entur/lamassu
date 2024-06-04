@@ -45,8 +45,10 @@ public class Station implements LocationEntity {
   private Boolean isChargingStation;
   private RentalUris rentalUris;
   private Integer numBikesAvailable;
+  private Integer numVehiclesAvailable;
   private List<VehicleTypeAvailability> vehicleTypesAvailable;
   private Integer numBikesDisabled;
+  private Integer numVehiclesDisabled;
   private Integer numDocksAvailable;
   private List<VehicleDocksAvailability> vehicleDocksAvailable;
   private Integer numDocksDisabled;
@@ -236,6 +238,14 @@ public class Station implements LocationEntity {
     this.numBikesAvailable = numBikesAvailable;
   }
 
+  public Integer getNumVehiclesAvailable() {
+    return numVehiclesAvailable;
+  }
+
+  public void setNumVehiclesAvailable(Integer numVehiclesAvailable) {
+    this.numVehiclesAvailable = numVehiclesAvailable;
+  }
+
   public List<VehicleTypeAvailability> getVehicleTypesAvailable() {
     return vehicleTypesAvailable;
   }
@@ -252,6 +262,14 @@ public class Station implements LocationEntity {
 
   public void setNumBikesDisabled(Integer numBikesDisabled) {
     this.numBikesDisabled = numBikesDisabled;
+  }
+
+  public Integer getNumVehiclesDisabled() {
+    return numVehiclesDisabled;
+  }
+
+  public void setNumVehiclesDisabled(Integer numVehiclesDisabled) {
+    this.numVehiclesDisabled = numVehiclesDisabled;
   }
 
   public Integer getNumDocksAvailable() {
