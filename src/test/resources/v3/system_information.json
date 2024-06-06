@@ -46,6 +46,13 @@
       }
     ],
     "privacy_last_updated": "2019-01-13",
+    "attribution_organization_name": [
+      {
+        "text": "Another company",
+        "language": "en"
+      }
+    ],
+    "attribution_url": "https://another.com",
     "rental_apps": {
       "android": {
         "discovery_uri": "com.example.android://",

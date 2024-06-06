@@ -277,6 +277,8 @@ type System {
     termsLastUpdated: String
     privacyUrl: String
     privacyLastUpdated: String
+    attributionOrganizationName: TranslatedString
+    attributionUrl: String
     rentalApps: RentalApps
 }
 

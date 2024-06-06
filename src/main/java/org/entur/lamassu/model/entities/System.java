@@ -23,6 +23,8 @@ public class System implements Entity {
   private String termsLastUpdated;
   private String privacyUrl;
   private String privacyLastUpdated;
+  private TranslatedString attributionOrganizationName;
+  private String attributionUrl;
   private RentalApps rentalApps;
 
   @Override
@@ -176,6 +178,24 @@ public class System implements Entity {
 
   public void setPrivacyLastUpdated(String privacyLastUpdated) {
     this.privacyLastUpdated = privacyLastUpdated;
+  }
+
+  public TranslatedString getAttributionOrganizationName() {
+    return attributionOrganizationName;
+  }
+
+  public void setAttributionOrganizationName(
+    TranslatedString attributionOrganizationName
+  ) {
+    this.attributionOrganizationName = attributionOrganizationName;
+  }
+
+  public String getAttributionUrl() {
+    return attributionUrl;
+  }
+
+  public void setAttributionUrl(String attributionUrl) {
+    this.attributionUrl = attributionUrl;
   }
 
   public RentalApps getRentalApps() {

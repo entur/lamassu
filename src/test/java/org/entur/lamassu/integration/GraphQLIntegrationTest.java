@@ -61,6 +61,12 @@ public class GraphQLIntegrationTest extends AbstractIntegrationTestBase {
       response.get("$.data.vehicles[0].id")
     );
     assertEquals("TST:Vehicle:1235", response.get("$.data.vehicles[1].id"));
+    assertEquals(
+      "Another company",
+      response.get(
+        "$.data.vehicles[0].system.attributionOrganizationName.translation[0].value"
+      )
+    );
   }
 
   @Test
