@@ -263,6 +263,7 @@ type System {
     languages: [String!]!
     name: TranslatedString!
     shortName: TranslatedString
+    openingHours: String
     operator: Operator!
     url: String
     purchaseUrl: String

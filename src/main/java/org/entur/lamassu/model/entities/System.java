@@ -9,6 +9,7 @@ public class System implements Entity {
   private List<String> languages;
   private TranslatedString name;
   private TranslatedString shortName;
+  private String openingHours;
   private Operator operator;
   private String url;
   private String purchaseUrl;
@@ -66,6 +67,14 @@ public class System implements Entity {
 
   public void setShortName(TranslatedString shortName) {
     this.shortName = shortName;
+  }
+
+  public String getOpeningHours() {
+    return openingHours;
+  }
+
+  public void setOpeningHours(String openingHours) {
+    this.openingHours = openingHours;
   }
 
   public Operator getOperator() {

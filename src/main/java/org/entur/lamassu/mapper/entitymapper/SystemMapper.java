@@ -97,6 +97,7 @@ public class SystemMapper {
           .toList()
       )
     );
+    system.setOpeningHours(systemInformation.getOpeningHours());
     system.setOperator(mapOperator(systemInformation.getOperator(), feedProvider));
     system.setUrl(systemInformation.getUrl());
     system.setPurchaseUrl(systemInformation.getPurchaseUrl());
