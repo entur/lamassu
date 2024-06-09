@@ -138,6 +138,7 @@ public class SystemMapper {
       mapAttributionOrganizationName(systemInformation.getAttributionOrganizationName())
     );
     system.setRentalApps(mapRentalApps(systemInformation.getRentalApps()));
+    system.setTerminationDate(systemInformation.getTerminationDate());
     return system;
   }
 

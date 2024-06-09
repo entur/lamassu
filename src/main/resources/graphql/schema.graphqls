@@ -285,6 +285,7 @@ type System {
     attributionOrganizationName: TranslatedString
     attributionUrl: String
     rentalApps: RentalApps
+    terminationDate: String
 }
 
 type RentalApps {

@@ -27,6 +27,7 @@ public class System implements Entity {
   private TranslatedString attributionOrganizationName;
   private String attributionUrl;
   private RentalApps rentalApps;
+  private String terminationDate;
 
   @Override
   public String getId() {
@@ -213,6 +214,14 @@ public class System implements Entity {
 
   public void setRentalApps(RentalApps rentalApps) {
     this.rentalApps = rentalApps;
+  }
+
+  public String getTerminationDate() {
+    return terminationDate;
+  }
+
+  public void setTerminationDate(String terminationDate) {
+    this.terminationDate = terminationDate;
   }
 
   @Override
