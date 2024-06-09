@@ -18,9 +18,10 @@
 
 package org.entur.lamassu.model.entities;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class VehicleDocksCapacity {
+public class VehicleDocksCapacity implements Serializable {
 
   private List<VehicleType> vehicleTypes;
   private Integer count;
