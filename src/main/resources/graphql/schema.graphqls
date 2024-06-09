@@ -139,7 +139,7 @@ enum FormFactor {
     CARGO_BICYCLE
     CAR
     MOPED
-    SCOOTER
+    SCOOTER @deprecated(reason: "Use SCOOTER_STANDING")
     SCOOTER_STANDING
     SCOOTER_SEATED
     OTHER
