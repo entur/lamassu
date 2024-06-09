@@ -113,7 +113,8 @@ type VehicleType {
     cargoVolumeCapacity: Int
     cargoLoadCapacity: Int
     propulsionType: PropulsionType!
-    ecoLabel: [EcoLabel]
+    ecoLabel: [EcoLabel] @deprecated(reason: "Use ecoLabels")
+    ecoLabels: [EcoLabel]
     maxRangeMeters: Float
     name: TranslatedString
     vehicleAccessories: [VehicleAccessory]
