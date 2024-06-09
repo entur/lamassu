@@ -40,7 +40,9 @@ public class Station implements LocationEntity {
   private String contactPhone;
   private Integer capacity;
   private List<VehicleTypeCapacity> vehicleCapacity;
+  private List<VehicleDocksCapacity> vehicleDocksCapacity;
   private List<VehicleTypeCapacity> vehicleTypeCapacity;
+  private List<VehicleTypesCapacity> vehicleTypesCapacity;
   private Boolean isValetStation;
   private Boolean isChargingStation;
   private RentalUris rentalUris;
@@ -198,12 +200,28 @@ public class Station implements LocationEntity {
     this.vehicleCapacity = vehicleCapacity;
   }
 
+  public List<VehicleDocksCapacity> getVehicleDocksCapacity() {
+    return vehicleDocksCapacity;
+  }
+
+  public void setVehicleDocksCapacity(List<VehicleDocksCapacity> vehicleDocksCapacity) {
+    this.vehicleDocksCapacity = vehicleDocksCapacity;
+  }
+
   public List<VehicleTypeCapacity> getVehicleTypeCapacity() {
     return vehicleTypeCapacity;
   }
 
   public void setVehicleTypeCapacity(List<VehicleTypeCapacity> vehicleTypeCapacity) {
     this.vehicleTypeCapacity = vehicleTypeCapacity;
+  }
+
+  public List<VehicleTypesCapacity> getVehicleTypesCapacity() {
+    return vehicleTypesCapacity;
+  }
+
+  public void setVehicleTypesCapacity(List<VehicleTypesCapacity> vehicleTypesCapacity) {
+    this.vehicleTypesCapacity = vehicleTypesCapacity;
   }
 
   public Boolean getValetStation() {

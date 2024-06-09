@@ -228,8 +228,10 @@ type Station {
     parkingHoop: Boolean
     contactPhone: String
     capacity: Int
-    vehicleCapacity: [VehicleTypeCapacity]
-    vehicleTypeCapacity: [VehicleTypeCapacity]
+    vehicleCapacity: [VehicleTypeCapacity] @deprecated(reason: "Use vehicleTypesCapacity")
+    vehicleTypesCapacity: [VehicleTypesCapacity]
+    vehicleTypeCapacity: [VehicleTypeCapacity] @deprecated(reason: "Use vehicleDocksCapacity")
+    vehicleDocksCapacity: [VehicleDocksCapacity]
     isValetStation: Boolean
     isChargingStation: Boolean
     rentalUris: RentalUris
@@ -327,7 +329,16 @@ type Operator {
 }
 
 type VehicleTypeCapacity {
-    vehicleType: VehicleType! @deprecated(reason: "Use vehicleTypes instead")
+    vehicleType: VehicleType!
+    count: Int!
+}
+
+type VehicleDocksCapacity {
+    vehicleTypes: [VehicleType!]!
+    count: Int!
+}
+
+type VehicleTypesCapacity {
     vehicleTypes: [VehicleType!]!
     count: Int!
 }

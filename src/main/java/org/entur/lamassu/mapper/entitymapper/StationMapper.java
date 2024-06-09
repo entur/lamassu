@@ -32,9 +32,11 @@ import org.entur.lamassu.model.entities.RentalMethod;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.System;
 import org.entur.lamassu.model.entities.VehicleDocksAvailability;
+import org.entur.lamassu.model.entities.VehicleDocksCapacity;
 import org.entur.lamassu.model.entities.VehicleType;
 import org.entur.lamassu.model.entities.VehicleTypeAvailability;
 import org.entur.lamassu.model.entities.VehicleTypeCapacity;
+import org.entur.lamassu.model.entities.VehicleTypesCapacity;
 import org.jetbrains.annotations.NotNull;
 import org.mobilitydata.gbfs.v3_0.station_information.GBFSName;
 import org.mobilitydata.gbfs.v3_0.station_information.GBFSShortName;
@@ -121,6 +123,7 @@ public class StationMapper {
     station.setCapacity(
       stationInformation.getCapacity() != null ? stationInformation.getCapacity() : null
     );
+
     station.setVehicleCapacity(
       stationInformation.getVehicleTypesCapacity() != null
         ? mapVehicleCapacities(
@@ -129,6 +132,15 @@ public class StationMapper {
         )
         : null
     );
+    station.setVehicleTypesCapacity(
+      stationInformation.getVehicleTypesCapacity() != null
+        ? mapVehicleTypesCapacity(
+          stationInformation.getVehicleTypesCapacity(),
+          mapVehicleTypes(vehicleTypesFeed, pricingPlans, language)
+        )
+        : null
+    );
+
     station.setVehicleTypeCapacity(
       stationInformation.getVehicleDocksCapacity() != null
         ? mapVehicleTypeCapacities(
@@ -137,6 +149,15 @@ public class StationMapper {
         )
         : null
     );
+    station.setVehicleDocksCapacity(
+      stationInformation.getVehicleDocksCapacity() != null
+        ? mapVehicleDocksCapacityToVehicleTypeCapacity(
+          stationInformation.getVehicleDocksCapacity(),
+          mapVehicleTypes(vehicleTypesFeed, pricingPlans, language)
+        )
+        : null
+    );
+
     station.setValetStation(stationInformation.getIsValetStation());
     station.setChargingStation(stationInformation.getIsChargingStation());
     station.setRentalUris(
@@ -292,10 +313,29 @@ public class StationMapper {
     mapped.setVehicleType(
       vehicleTypes.get(vehicleCapacity.getVehicleTypeIds().getFirst())
     );
-    mapped.setVehicleTypes(
-      vehicleCapacity.getVehicleTypeIds().stream().map(vehicleTypes::get).toList()
-    );
     mapped.setCount(vehicleCapacity.getCount());
+    return mapped;
+  }
+
+  private List<VehicleTypesCapacity> mapVehicleTypesCapacity(
+    List<GBFSVehicleTypesCapacity> vehicleTypesCapacity,
+    Map<String, VehicleType> vehicleTypes
+  ) {
+    return vehicleTypesCapacity
+      .stream()
+      .map(v -> mapVehicleTypeCapacity(v, vehicleTypes))
+      .toList();
+  }
+
+  private VehicleTypesCapacity mapVehicleTypeCapacity(
+    GBFSVehicleTypesCapacity vehicleTypesCapacity,
+    Map<String, VehicleType> vehicleTypes
+  ) {
+    var mapped = new VehicleTypesCapacity();
+    mapped.setVehicleTypes(
+      vehicleTypesCapacity.getVehicleTypeIds().stream().map(vehicleTypes::get).toList()
+    );
+    mapped.setCount(vehicleTypesCapacity.getCount());
     return mapped;
   }
 
@@ -305,11 +345,11 @@ public class StationMapper {
   ) {
     return vehicleCapacity
       .stream()
-      .map(entry -> mapVehicleDocksCapacity(entry, vehicleTypes))
+      .map(entry -> mapVehicleDocksCapacityToVehicleTypeCapacity(entry, vehicleTypes))
       .toList();
   }
 
-  private VehicleTypeCapacity mapVehicleDocksCapacity(
+  private VehicleTypeCapacity mapVehicleDocksCapacityToVehicleTypeCapacity(
     GBFSVehicleDocksCapacity vehicleDocksCapacity,
     Map<String, VehicleType> vehicleTypes
   ) {
@@ -317,6 +357,25 @@ public class StationMapper {
     mapped.setVehicleType(
       vehicleTypes.get(vehicleDocksCapacity.getVehicleTypeIds().getFirst())
     );
+    mapped.setCount(vehicleDocksCapacity.getCount());
+    return mapped;
+  }
+
+  private List<VehicleDocksCapacity> mapVehicleDocksCapacityToVehicleTypeCapacity(
+    List<GBFSVehicleDocksCapacity> vehicleDocksCapacity,
+    Map<String, VehicleType> vehicleTypes
+  ) {
+    return vehicleDocksCapacity
+      .stream()
+      .map(v -> mapVehicleDocksCapacity(v, vehicleTypes))
+      .toList();
+  }
+
+  private VehicleDocksCapacity mapVehicleDocksCapacity(
+    GBFSVehicleDocksCapacity vehicleDocksCapacity,
+    Map<String, VehicleType> vehicleTypes
+  ) {
+    var mapped = new VehicleDocksCapacity();
     mapped.setVehicleTypes(
       vehicleDocksCapacity.getVehicleTypeIds().stream().map(vehicleTypes::get).toList()
     );

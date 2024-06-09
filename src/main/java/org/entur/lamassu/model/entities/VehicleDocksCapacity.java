@@ -18,20 +18,19 @@
 
 package org.entur.lamassu.model.entities;
 
-import java.io.Serializable;
+import java.util.List;
 
-public class VehicleTypeCapacity implements Serializable {
+public class VehicleDocksCapacity {
 
-  private VehicleType vehicleType;
-
+  private List<VehicleType> vehicleTypes;
   private Integer count;
 
-  public VehicleType getVehicleType() {
-    return vehicleType;
+  public List<VehicleType> getVehicleTypes() {
+    return vehicleTypes;
   }
 
-  public void setVehicleType(VehicleType vehicleType) {
-    this.vehicleType = vehicleType;
+  public void setVehicleTypes(List<VehicleType> vehicleTypes) {
+    this.vehicleTypes = vehicleTypes;
   }
 
   public Integer getCount() {
@@ -40,12 +39,5 @@ public class VehicleTypeCapacity implements Serializable {
 
   public void setCount(Integer count) {
     this.count = count;
-  }
-
-  @Override
-  public String toString() {
-    return (
-      "VehicleTypeCapacity{" + "vehicleType=" + vehicleType + ", count=" + count + '}'
-    );
   }
 }
