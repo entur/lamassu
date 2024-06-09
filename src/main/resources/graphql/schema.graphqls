@@ -117,6 +117,7 @@ type VehicleType {
     ecoLabels: [EcoLabel]
     maxRangeMeters: Float
     name: TranslatedString
+    description: TranslatedString
     vehicleAccessories: [VehicleAccessory]
     gCO2km: Int
     vehicleImage: String

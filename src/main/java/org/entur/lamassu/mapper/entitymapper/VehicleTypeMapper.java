@@ -77,6 +77,21 @@ public class VehicleTypeMapper {
           .toList()
       )
     );
+    mapped.setDescription(
+      translationMapper.mapTranslatedString(
+        Optional
+          .ofNullable(vehicleType.getDescription())
+          .orElse(Collections.emptyList())
+          .stream()
+          .map(description ->
+            translationMapper.mapTranslation(
+              description.getLanguage(),
+              description.getText()
+            )
+          )
+          .toList()
+      )
+    );
     mapped.setVehicleAccessories(
       mapVehicleAccessories(vehicleType.getVehicleAccessories())
     );
