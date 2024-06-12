@@ -11,8 +11,10 @@ public class VehicleType implements Entity {
   private Integer cargoLoadCapacity;
   private PropulsionType propulsionType;
   private List<EcoLabel> ecoLabel;
+  private List<EcoLabel> ecoLabels;
   private Double maxRangeMeters;
   private TranslatedString name;
+  private TranslatedString description;
   private List<VehicleAccessory> vehicleAccessories;
   private Integer gCO2km;
   private String vehicleImage;
@@ -85,6 +87,14 @@ public class VehicleType implements Entity {
     this.ecoLabel = ecoLabel;
   }
 
+  public List<EcoLabel> getEcoLabels() {
+    return ecoLabels;
+  }
+
+  public void setEcoLabels(List<EcoLabel> ecoLabels) {
+    this.ecoLabels = ecoLabels;
+  }
+
   public Double getMaxRangeMeters() {
     return maxRangeMeters;
   }
@@ -99,6 +109,14 @@ public class VehicleType implements Entity {
 
   public void setName(TranslatedString name) {
     this.name = name;
+  }
+
+  public TranslatedString getDescription() {
+    return description;
+  }
+
+  public void setDescription(TranslatedString description) {
+    this.description = description;
   }
 
   public List<VehicleAccessory> getVehicleAccessories() {

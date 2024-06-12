@@ -63,6 +63,7 @@ public class VehicleTypeMapper {
       PropulsionType.valueOf(vehicleType.getPropulsionType().name())
     );
     mapped.setEcoLabel(mapEcoLabels(vehicleType.getEcoLabels()));
+    mapped.setEcoLabels(mapEcoLabels(vehicleType.getEcoLabels()));
     mapped.setMaxRangeMeters(vehicleType.getMaxRangeMeters());
     mapped.setName(
       translationMapper.mapTranslatedString(
@@ -72,6 +73,21 @@ public class VehicleTypeMapper {
           .stream()
           .map(name ->
             translationMapper.mapTranslation(name.getLanguage(), name.getText())
+          )
+          .toList()
+      )
+    );
+    mapped.setDescription(
+      translationMapper.mapTranslatedString(
+        Optional
+          .ofNullable(vehicleType.getDescription())
+          .orElse(Collections.emptyList())
+          .stream()
+          .map(description ->
+            translationMapper.mapTranslation(
+              description.getLanguage(),
+              description.getText()
+            )
           )
           .toList()
       )

@@ -148,6 +148,8 @@ public class GeofencingZones implements Entity {
 
     private List<String> vehicleTypeIds;
     private Boolean rideAllowed;
+    private Boolean rideStartAllowed;
+    private Boolean rideEndAllowed;
     private Boolean rideThroughAllowed;
     private Integer maximumSpeedKph;
     private Boolean stationParking;
@@ -166,6 +168,22 @@ public class GeofencingZones implements Entity {
 
     public void setRideAllowed(Boolean rideAllowed) {
       this.rideAllowed = rideAllowed;
+    }
+
+    public Boolean getRideStartAllowed() {
+      return rideStartAllowed;
+    }
+
+    public void setRideStartAllowed(Boolean rideStartAllowed) {
+      this.rideStartAllowed = rideStartAllowed;
+    }
+
+    public Boolean getRideEndAllowed() {
+      return rideEndAllowed;
+    }
+
+    public void setRideEndAllowed(Boolean rideEndAllowed) {
+      this.rideEndAllowed = rideEndAllowed;
     }
 
     public Boolean getRideThroughAllowed() {

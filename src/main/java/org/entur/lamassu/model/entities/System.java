@@ -1,26 +1,33 @@
 package org.entur.lamassu.model.entities;
 
+import java.util.List;
+
 public class System implements Entity {
 
-  String id;
-  String language;
-  TranslatedString name;
-  TranslatedString shortName;
-  Operator operator;
-  String url;
-  String purchaseUrl;
-  String startDate;
-  String phoneNumber;
-  String email;
-  String feedContactEmail;
-  String timezone;
-  String licenseUrl;
-  BrandAssets brandAssets;
-  String termsUrl;
-  String termsLastUpdated;
-  String privacyUrl;
-  String privacyLastUpdated;
-  RentalApps rentalApps;
+  private String id;
+  private String language;
+  private List<String> languages;
+  private TranslatedString name;
+  private TranslatedString shortName;
+  private String openingHours;
+  private Operator operator;
+  private String url;
+  private String purchaseUrl;
+  private String startDate;
+  private String phoneNumber;
+  private String email;
+  private String feedContactEmail;
+  private String timezone;
+  private String licenseUrl;
+  private BrandAssets brandAssets;
+  private String termsUrl;
+  private String termsLastUpdated;
+  private String privacyUrl;
+  private String privacyLastUpdated;
+  private TranslatedString attributionOrganizationName;
+  private String attributionUrl;
+  private RentalApps rentalApps;
+  private String terminationDate;
 
   @Override
   public String getId() {
@@ -39,6 +46,14 @@ public class System implements Entity {
     this.language = language;
   }
 
+  public List<String> getLanguages() {
+    return languages;
+  }
+
+  public void setLanguages(List<String> languages) {
+    this.languages = languages;
+  }
+
   public TranslatedString getName() {
     return name;
   }
@@ -53,6 +68,14 @@ public class System implements Entity {
 
   public void setShortName(TranslatedString shortName) {
     this.shortName = shortName;
+  }
+
+  public String getOpeningHours() {
+    return openingHours;
+  }
+
+  public void setOpeningHours(String openingHours) {
+    this.openingHours = openingHours;
   }
 
   public Operator getOperator() {
@@ -167,12 +190,38 @@ public class System implements Entity {
     this.privacyLastUpdated = privacyLastUpdated;
   }
 
+  public TranslatedString getAttributionOrganizationName() {
+    return attributionOrganizationName;
+  }
+
+  public void setAttributionOrganizationName(
+    TranslatedString attributionOrganizationName
+  ) {
+    this.attributionOrganizationName = attributionOrganizationName;
+  }
+
+  public String getAttributionUrl() {
+    return attributionUrl;
+  }
+
+  public void setAttributionUrl(String attributionUrl) {
+    this.attributionUrl = attributionUrl;
+  }
+
   public RentalApps getRentalApps() {
     return rentalApps;
   }
 
   public void setRentalApps(RentalApps rentalApps) {
     this.rentalApps = rentalApps;
+  }
+
+  public String getTerminationDate() {
+    return terminationDate;
+  }
+
+  public void setTerminationDate(String terminationDate) {
+    this.terminationDate = terminationDate;
   }
 
   @Override

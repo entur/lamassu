@@ -113,9 +113,11 @@ type VehicleType {
     cargoVolumeCapacity: Int
     cargoLoadCapacity: Int
     propulsionType: PropulsionType!
-    ecoLabel: [EcoLabel]
+    ecoLabel: [EcoLabel] @deprecated(reason: "Use ecoLabels")
+    ecoLabels: [EcoLabel]
     maxRangeMeters: Float
     name: TranslatedString
+    description: TranslatedString
     vehicleAccessories: [VehicleAccessory]
     gCO2km: Int
     vehicleImage: String
@@ -137,7 +139,7 @@ enum FormFactor {
     CARGO_BICYCLE
     CAR
     MOPED
-    SCOOTER
+    SCOOTER @deprecated(reason: "Use SCOOTER_STANDING")
     SCOOTER_STANDING
     SCOOTER_SEATED
     OTHER
@@ -228,14 +230,18 @@ type Station {
     parkingHoop: Boolean
     contactPhone: String
     capacity: Int
-    vehicleCapacity: [VehicleTypeCapacity]
-    vehicleTypeCapacity: [VehicleTypeCapacity]
+    vehicleCapacity: [VehicleTypeCapacity] @deprecated(reason: "Use vehicleTypesCapacity")
+    vehicleTypesCapacity: [VehicleTypesCapacity]
+    vehicleTypeCapacity: [VehicleTypeCapacity] @deprecated(reason: "Use vehicleDocksCapacity")
+    vehicleDocksCapacity: [VehicleDocksCapacity]
     isValetStation: Boolean
     isChargingStation: Boolean
     rentalUris: RentalUris
-    numBikesAvailable: Int!
+    numBikesAvailable: Int! @deprecated(reason: "Use numVehiclesAvailable")
+    numVehiclesAvailable: Int!
     vehicleTypesAvailable: [VehicleTypeAvailability]
-    numBikesDisabled: Int
+    numBikesDisabled: Int @deprecated(reason: "Use numVehiclesDisabled")
+    numVehiclesDisabled: Int
     numDocksAvailable: Int
     vehicleDocksAvailable: [VehicleDocksAvailability]
     numDocksDisabled: Int
@@ -257,9 +263,11 @@ enum ParkingType {
 
 type System {
     id: ID!
-    language: String!
+    language: String! @deprecated(reason: "Use languages")
+    languages: [String!]!
     name: TranslatedString!
     shortName: TranslatedString
+    openingHours: String
     operator: Operator!
     url: String
     purchaseUrl: String
@@ -274,7 +282,10 @@ type System {
     termsLastUpdated: String
     privacyUrl: String
     privacyLastUpdated: String
+    attributionOrganizationName: TranslatedString
+    attributionUrl: String
     rentalApps: RentalApps
+    terminationDate: String
 }
 
 type RentalApps {
@@ -321,7 +332,16 @@ type Operator {
 }
 
 type VehicleTypeCapacity {
-    vehicleType: VehicleType! @deprecated(reason: "Use vehicleTypes instead")
+    vehicleType: VehicleType!
+    count: Int!
+}
+
+type VehicleDocksCapacity {
+    vehicleTypes: [VehicleType!]!
+    count: Int!
+}
+
+type VehicleTypesCapacity {
     vehicleTypes: [VehicleType!]!
     count: Int!
 }
@@ -369,7 +389,9 @@ type GeofencingZoneProperties {
 
 type GeofencingZoneRule {
     vehicleTypeIds: [String]
-    rideAllowed: Boolean!
+    rideAllowed: Boolean! @deprecated(reason: "Use rideStartAllowed and rideEndAllowed")
+    rideStartAllowed: Boolean!
+    rideEndAllowed: Boolean!
     rideThroughAllowed: Boolean!
     maximumSpeedKph: Int
     stationParking: Boolean

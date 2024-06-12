@@ -61,6 +61,12 @@ public class GraphQLIntegrationTest extends AbstractIntegrationTestBase {
       response.get("$.data.vehicles[0].id")
     );
     assertEquals("TST:Vehicle:1235", response.get("$.data.vehicles[1].id"));
+    assertEquals(
+      "Another company",
+      response.get(
+        "$.data.vehicles[0].system.attributionOrganizationName.translation[0].value"
+      )
+    );
   }
 
   @Test
@@ -106,6 +112,8 @@ public class GraphQLIntegrationTest extends AbstractIntegrationTestBase {
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals("TST:Station:1", response.get("$.data.station.id"));
     assertEquals("2", response.get("$.data.station.vehicleDocksAvailable[0].count"));
+    assertEquals("1", response.get("$.data.station.numVehiclesAvailable"));
+    assertEquals("2", response.get("$.data.station.numVehiclesDisabled"));
   }
 
   @Test
@@ -125,6 +133,18 @@ public class GraphQLIntegrationTest extends AbstractIntegrationTestBase {
     );
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals("testatlantis", response.get("$.data.geofencingZones[0].systemId"));
+    assertEquals(
+      "true",
+      response.get(
+        "$.data.geofencingZones[0].geojson.features[0].properties.rules[0].rideStartAllowed"
+      )
+    );
+    assertEquals(
+      "true",
+      response.get(
+        "$.data.geofencingZones[0].geojson.features[0].properties.rules[0].rideEndAllowed"
+      )
+    );
   }
 
   @Test

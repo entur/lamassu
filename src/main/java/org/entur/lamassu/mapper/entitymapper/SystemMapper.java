@@ -26,8 +26,10 @@ import org.entur.lamassu.model.entities.Operator;
 import org.entur.lamassu.model.entities.RentalApp;
 import org.entur.lamassu.model.entities.RentalApps;
 import org.entur.lamassu.model.entities.System;
+import org.entur.lamassu.model.entities.TranslatedString;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.mobilitydata.gbfs.v3_0.system_information.GBFSAndroid;
+import org.mobilitydata.gbfs.v3_0.system_information.GBFSAttributionOrganizationName;
 import org.mobilitydata.gbfs.v3_0.system_information.GBFSBrandAssets;
 import org.mobilitydata.gbfs.v3_0.system_information.GBFSData;
 import org.mobilitydata.gbfs.v3_0.system_information.GBFSIos;
@@ -71,6 +73,7 @@ public class SystemMapper {
     var system = new System();
     system.setId(systemInformation.getSystemId());
     system.setLanguage(feedProvider.getLanguage());
+    system.setLanguages(systemInformation.getLanguages());
     system.setName(
       translationMapper.mapTranslatedString(
         systemInformation
@@ -94,6 +97,7 @@ public class SystemMapper {
           .toList()
       )
     );
+    system.setOpeningHours(systemInformation.getOpeningHours());
     system.setOperator(mapOperator(systemInformation.getOperator(), feedProvider));
     system.setUrl(systemInformation.getUrl());
     system.setPurchaseUrl(systemInformation.getPurchaseUrl());
@@ -130,7 +134,11 @@ public class SystemMapper {
         .orElse(null)
     );
     system.setPrivacyLastUpdated(systemInformation.getPrivacyLastUpdated());
+    system.setAttributionOrganizationName(
+      mapAttributionOrganizationName(systemInformation.getAttributionOrganizationName())
+    );
     system.setRentalApps(mapRentalApps(systemInformation.getRentalApps()));
+    system.setTerminationDate(systemInformation.getTerminationDate());
     return system;
   }
 
@@ -146,6 +154,23 @@ public class SystemMapper {
     mapped.setBrandImageUrlDark(brandAssets.getBrandImageUrlDark());
     mapped.setColor(brandAssets.getColor());
 
+    return mapped;
+  }
+
+  private TranslatedString mapAttributionOrganizationName(
+    List<GBFSAttributionOrganizationName> attributionOrganizationName
+  ) {
+    if (attributionOrganizationName == null) {
+      return null;
+    }
+
+    var mapped = new TranslatedString();
+    mapped.setTranslation(
+      attributionOrganizationName
+        .stream()
+        .map(name -> translationMapper.mapTranslation(name.getLanguage(), name.getText()))
+        .toList()
+    );
     return mapped;
   }
 

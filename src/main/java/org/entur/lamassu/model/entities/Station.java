@@ -40,13 +40,17 @@ public class Station implements LocationEntity {
   private String contactPhone;
   private Integer capacity;
   private List<VehicleTypeCapacity> vehicleCapacity;
+  private List<VehicleDocksCapacity> vehicleDocksCapacity;
   private List<VehicleTypeCapacity> vehicleTypeCapacity;
+  private List<VehicleTypesCapacity> vehicleTypesCapacity;
   private Boolean isValetStation;
   private Boolean isChargingStation;
   private RentalUris rentalUris;
   private Integer numBikesAvailable;
+  private Integer numVehiclesAvailable;
   private List<VehicleTypeAvailability> vehicleTypesAvailable;
   private Integer numBikesDisabled;
+  private Integer numVehiclesDisabled;
   private Integer numDocksAvailable;
   private List<VehicleDocksAvailability> vehicleDocksAvailable;
   private Integer numDocksDisabled;
@@ -196,12 +200,28 @@ public class Station implements LocationEntity {
     this.vehicleCapacity = vehicleCapacity;
   }
 
+  public List<VehicleDocksCapacity> getVehicleDocksCapacity() {
+    return vehicleDocksCapacity;
+  }
+
+  public void setVehicleDocksCapacity(List<VehicleDocksCapacity> vehicleDocksCapacity) {
+    this.vehicleDocksCapacity = vehicleDocksCapacity;
+  }
+
   public List<VehicleTypeCapacity> getVehicleTypeCapacity() {
     return vehicleTypeCapacity;
   }
 
   public void setVehicleTypeCapacity(List<VehicleTypeCapacity> vehicleTypeCapacity) {
     this.vehicleTypeCapacity = vehicleTypeCapacity;
+  }
+
+  public List<VehicleTypesCapacity> getVehicleTypesCapacity() {
+    return vehicleTypesCapacity;
+  }
+
+  public void setVehicleTypesCapacity(List<VehicleTypesCapacity> vehicleTypesCapacity) {
+    this.vehicleTypesCapacity = vehicleTypesCapacity;
   }
 
   public Boolean getValetStation() {
@@ -236,6 +256,14 @@ public class Station implements LocationEntity {
     this.numBikesAvailable = numBikesAvailable;
   }
 
+  public Integer getNumVehiclesAvailable() {
+    return numVehiclesAvailable;
+  }
+
+  public void setNumVehiclesAvailable(Integer numVehiclesAvailable) {
+    this.numVehiclesAvailable = numVehiclesAvailable;
+  }
+
   public List<VehicleTypeAvailability> getVehicleTypesAvailable() {
     return vehicleTypesAvailable;
   }
@@ -252,6 +280,14 @@ public class Station implements LocationEntity {
 
   public void setNumBikesDisabled(Integer numBikesDisabled) {
     this.numBikesDisabled = numBikesDisabled;
+  }
+
+  public Integer getNumVehiclesDisabled() {
+    return numVehiclesDisabled;
+  }
+
+  public void setNumVehiclesDisabled(Integer numVehiclesDisabled) {
+    this.numVehiclesDisabled = numVehiclesDisabled;
   }
 
   public Integer getNumDocksAvailable() {

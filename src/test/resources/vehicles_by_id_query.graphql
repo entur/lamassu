@@ -57,6 +57,13 @@
                     }
                 }
             }
+            attributionOrganizationName {
+                translation {
+                    language
+                    value
+                }
+            }
+            attributionUrl
             rentalApps {
                 android {
                     storeUri
