@@ -13,6 +13,7 @@ based on merged pull requests. Search GitHub issues and pull requests for smalle
 - Do not lowercase feed urls [#455](https://github.com/entur/lamassu/pull/455)
 - Switch to v3 as base model for entity mapping [#471](https://github.com/entur/lamassu/pull/471)
 - Add v3 fields [#475](https://github.com/entur/lamassu/pull/475)
+- fix: incorrect urls generated for system discovery (v2) [#481](https://github.com/entur/lamassu/pull/481)
   [](AUTOMATIC_CHANGELOG_PLACEHOLDER_DO_NOT_REMOVE)
   
 ## 1.0.0
