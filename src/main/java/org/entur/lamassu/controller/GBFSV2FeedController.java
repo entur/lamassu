@@ -38,10 +38,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
+@RequestMapping({ "/gbfs", "/gbfs/v2" })
 public class GBFSV2FeedController {
 
   private final SystemDiscoveryService systemDiscoveryService;
@@ -61,7 +63,7 @@ public class GBFSV2FeedController {
     this.feedProviderService = feedProviderService;
   }
 
-  @GetMapping("/gbfs")
+  @GetMapping({ "", "/" })
   public ResponseEntity<SystemDiscovery> getFeedProviderDiscovery() {
     var data = systemDiscoveryService.getSystemDiscovery();
     return ResponseEntity
@@ -70,7 +72,7 @@ public class GBFSV2FeedController {
       .body(data);
   }
 
-  @GetMapping(value = { "/gbfs/{systemId}/{feed}", "/gbfs/{systemId}/{feed}.json" })
+  @GetMapping(value = { "/{systemId}/{feed}", "/{systemId}/{feed}.json" })
   public ResponseEntity<Object> getGbfsFeedForProvider(
     @PathVariable String systemId,
     @PathVariable String feed
