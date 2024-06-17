@@ -36,10 +36,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
+@RequestMapping({ "/gbfs/v3" })
 public class GBFSV3FeedController {
 
   private final SystemDiscoveryService systemDiscoveryService;
@@ -57,7 +59,7 @@ public class GBFSV3FeedController {
     this.feedProviderService = feedProviderService;
   }
 
-  @GetMapping("/gbfs/v3beta/manifest.json")
+  @GetMapping("/manifest.json")
   public ResponseEntity<GBFSManifest> getV3Manifest() {
     var manifest = systemDiscoveryService.getGBFSManifest();
 
@@ -67,9 +69,7 @@ public class GBFSV3FeedController {
       .body(manifest);
   }
 
-  @GetMapping(
-    value = { "/gbfs/v3beta/{systemId}/{feed}", "/gbfs/v3beta/{systemId}/{feed}.json" }
-  )
+  @GetMapping(value = { "/{systemId}/{feed}", "/{systemId}/{feed}.json" })
   public ResponseEntity<Object> getV3Feed(
     @PathVariable String systemId,
     @PathVariable String feed
