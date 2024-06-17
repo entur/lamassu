@@ -42,7 +42,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class V3FeedCachesUpdater {
 
-  public static final int MINIMUM_TTL = 86400;
   private final GBFSV3FeedCache feedCache;
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -142,26 +141,6 @@ public class V3FeedCachesUpdater {
     }
   }
 
-  private <T> int getTtl(Class<?> implementingClass, T feed, int minimumTtl) {
-    try {
-      Date lastUpdated = (Date) implementingClass
-        .getMethod("getLastUpdated")
-        .invoke(feed);
-      Integer ttl = (Integer) implementingClass.getMethod("getTtl").invoke(feed);
-      return CacheUtil.getTtl(
-        (int) Instant.now().getEpochSecond(),
-        (int) (lastUpdated.getTime() / 1000),
-        ttl,
-        minimumTtl
-      );
-    } catch (
-      NoSuchMethodException | InvocationTargetException | IllegalAccessException e
-    ) {
-      logger.warn("Unable to determine ttl for feed, using default - {}", feed);
-      return minimumTtl;
-    }
-  }
-
   private <T> T getAndUpdateFeedCache(
     FeedProvider feedProvider,
     GBFSFeed.Name feedName,
@@ -179,8 +158,18 @@ public class V3FeedCachesUpdater {
         feedProvider.getSystemId(),
         feed
       );
-      var ttl = getTtl(GBFSFeedName.implementingClass(feedName), feed, MINIMUM_TTL);
-      return feedCache.getAndUpdate(feedName, feedProvider, feed, ttl, TimeUnit.SECONDS);
+      var ttl = getTtl(
+        GBFSFeedName.implementingClass(feedName),
+        feed,
+        feedCacheMinimumTtl
+      );
+      return feedCache.getAndUpdate(
+        feedName,
+        feedProvider,
+        feed,
+        ttl + feedCacheTtlPadding,
+        TimeUnit.SECONDS
+      );
     } else {
       logger.debug(
         "no feed {} found for provider {}",
@@ -188,6 +177,26 @@ public class V3FeedCachesUpdater {
         feedProvider.getSystemId()
       );
       return null;
+    }
+  }
+
+  private <T> int getTtl(Class<?> implementingClass, T feed, int minimumTtl) {
+    try {
+      Date lastUpdated = (Date) implementingClass
+        .getMethod("getLastUpdated")
+        .invoke(feed);
+      Integer ttl = (Integer) implementingClass.getMethod("getTtl").invoke(feed);
+      return CacheUtil.getTtl(
+        (int) Instant.now().getEpochSecond(),
+        (int) (lastUpdated.getTime() / 1000),
+        ttl,
+        minimumTtl
+      );
+    } catch (
+      NoSuchMethodException | InvocationTargetException | IllegalAccessException e
+    ) {
+      logger.warn("Unable to determine ttl for feed, using default - {}", feed);
+      return minimumTtl;
     }
   }
 
