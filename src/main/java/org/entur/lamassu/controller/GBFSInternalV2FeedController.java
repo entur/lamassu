@@ -141,7 +141,9 @@ public class GBFSInternalV2FeedController {
           var system = new System();
           system.setId(s.getId());
           system.setUrl(
-            s.getUrl().replace(baseUrl + "/gbfs", internalLoadBalancer + "/gbfs-internal")
+            s
+              .getUrl()
+              .replace(baseUrl + "/gbfs/v2", internalLoadBalancer + "/gbfs-internal")
           );
           return system;
         })
@@ -173,7 +175,10 @@ public class GBFSInternalV2FeedController {
                     f
                       .getUrl()
                       .toString()
-                      .replace(baseUrl + "/gbfs", internalLoadBalancer + "/gbfs-internal")
+                      .replace(
+                        baseUrl + "/gbfs/v2",
+                        internalLoadBalancer + "/gbfs-internal"
+                      )
                   )
                 );
                 return gbfsFeed;
