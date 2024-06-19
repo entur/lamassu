@@ -82,7 +82,7 @@ public class SystemDiscoveryServiceImpl implements SystemDiscoveryService {
                         .withUrl(system.getUrl()),
                       new GBFSVersion()
                         .withVersion(GBFSVersion.Version._3_0)
-                        .withUrl(baseUrl + "/gbfs/v3beta/" + system.getId() + "/gbfs")
+                        .withUrl(baseUrl + "/gbfs/v3/" + system.getId() + "/gbfs")
                     )
                   )
               )

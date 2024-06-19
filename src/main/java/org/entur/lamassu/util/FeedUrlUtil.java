@@ -31,7 +31,7 @@ public class FeedUrlUtil {
     FeedProvider feedProvider
   ) {
     var systemId = feedProvider.getSystemId();
-    var feedUrl = addToPath(baseUrl, "gbfs");
+    var feedUrl = addToPath(baseUrl, "gbfs/v2");
     feedUrl = addToPath(feedUrl, systemId);
     return URI.create(addToPath(feedUrl, feedName.value()));
   }
@@ -42,7 +42,7 @@ public class FeedUrlUtil {
     FeedProvider feedProvider
   ) {
     var systemId = feedProvider.getSystemId();
-    var feedUrl = addToPath(baseUrl, "gbfs/v3beta");
+    var feedUrl = addToPath(baseUrl, "gbfs/v3");
     feedUrl = addToPath(feedUrl, systemId);
     return addToPath(feedUrl, feedName.value());
   }
