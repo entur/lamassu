@@ -16,6 +16,7 @@ based on merged pull requests. Search GitHub issues and pull requests for smalle
 - fix: incorrect urls generated for system discovery (v2) [#481](https://github.com/entur/lamassu/pull/481)
 - feature: add v2 and v3 paths [#486](https://github.com/entur/lamassu/pull/486)
 - fix: remove hard-coded minimum ttl for feed caches [#485](https://github.com/entur/lamassu/pull/485)
+- Follow up v3 paths [#488](https://github.com/entur/lamassu/pull/488)
   [](AUTOMATIC_CHANGELOG_PLACEHOLDER_DO_NOT_REMOVE)
   
 ## 1.0.0
