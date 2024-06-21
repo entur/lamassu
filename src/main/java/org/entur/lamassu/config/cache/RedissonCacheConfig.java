@@ -15,7 +15,10 @@ import org.redisson.api.RListMultimap;
 import org.redisson.api.RMapCache;
 import org.redisson.api.RedissonClient;
 import org.redisson.codec.Kryo5Codec;
+import org.redisson.config.BaseConfig;
 import org.redisson.config.Config;
+import org.redisson.config.MasterSlaveServersConfig;
+import org.redisson.config.SingleServerConfig;
 import org.redisson.spring.data.connection.RedissonConnectionFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -42,8 +45,11 @@ public class RedissonCacheConfig {
     @Value("${org.entur.lamassu.redis.master.host}") String masterHost,
     @Value("${org.entur.lamassu.redis.master.port}") String masterPort,
     @Value("${org.entur.lamassu.redis.slave.enabled:false}") boolean slaveEnabled,
-    @Value("${org.entur.lamassu.redis.slave.host:na}") String slaveHost,
-    @Value("${org.entur.lamassu.redis.slave.port:na}") String slavePort,
+    @Value("${org.entur.lamassu.redis.slave.host:}") String slaveHost,
+    @Value("${org.entur.lamassu.redis.slave.port:}") String slavePort,
+    @Value(
+      "${org.entur.lamassu.redis.authentication.string:}"
+    ) String authenticationString,
     LamassuProjectInfoConfiguration lamassuProjectInfoConfiguration
   ) {
     serializationVersion = lamassuProjectInfoConfiguration.getSerializationVersion();
@@ -58,13 +64,25 @@ public class RedissonCacheConfig {
 
     if (slaveEnabled) {
       var slaveAddress = String.format("redis://%s:%s", slaveHost, slavePort);
-
-      redissonConfig
-        .useMasterSlaveServers()
+      MasterSlaveServersConfig masterSlaveServersConfig =
+        redissonConfig.useMasterSlaveServers();
+      masterSlaveServersConfig
         .setMasterAddress(masterAddress)
         .setSlaveAddresses(Set.of(slaveAddress));
+      configureRedisAuthentication(masterSlaveServersConfig, authenticationString);
     } else {
-      redissonConfig.useSingleServer().setAddress(masterAddress);
+      SingleServerConfig singleServerConfig = redissonConfig.useSingleServer();
+      singleServerConfig.setAddress(masterAddress);
+      configureRedisAuthentication(singleServerConfig, authenticationString);
+    }
+  }
+
+  private <T extends BaseConfig<T>> void configureRedisAuthentication(
+    BaseConfig<T> config,
+    String authenticationString
+  ) {
+    if (!authenticationString.isEmpty()) {
+      config.setPassword(authenticationString);
     }
   }
 
