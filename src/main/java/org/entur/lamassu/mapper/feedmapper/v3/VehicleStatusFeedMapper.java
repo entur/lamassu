@@ -78,9 +78,7 @@ public class VehicleStatusFeedMapper extends AbstractFeedMapper<GBFSVehicleStatu
     mapped.setRentalUris(vehicle.getRentalUris());
     mapped.setVehicleTypeId(mapVehicleTypeId(vehicle.getVehicleTypeId(), feedProvider));
     mapped.setLastReported(vehicle.getLastReported());
-    mapped.setCurrentRangeMeters(
-      vehicle.getCurrentRangeMeters() != null ? vehicle.getCurrentRangeMeters() : 0
-    );
+    mapped.setCurrentRangeMeters(vehicle.getCurrentRangeMeters());
     mapped.setCurrentFuelPercent(vehicle.getCurrentFuelPercent());
     mapped.setStationId(mapStationId(vehicle.getStationId(), feedProvider));
     mapped.setHomeStationId(mapStationId(vehicle.getHomeStationId(), feedProvider));

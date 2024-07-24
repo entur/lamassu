@@ -41,7 +41,8 @@ class FreeBikeStatusFeedMapperTest {
   void testMissingCurrentRangeMeters() {
     var feedProvider = getTestProvider();
     var mapped = mapper.mapBike(new GBFSBike(), feedProvider);
-    Assertions.assertNotNull(mapped.getCurrentRangeMeters());
+    // if no current_range_meters is provided, we explicitly don't want Lamassu to fill it in
+    Assertions.assertNull(mapped.getCurrentRangeMeters());
   }
 
   @Test
