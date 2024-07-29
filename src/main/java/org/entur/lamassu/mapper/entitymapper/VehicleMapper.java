@@ -50,7 +50,9 @@ public class VehicleMapper {
     mappedVehicle.setLon(vehicle.getLon());
     mappedVehicle.setReserved(vehicle.getIsReserved());
     mappedVehicle.setDisabled(vehicle.getIsDisabled());
-    mappedVehicle.setCurrentRangeMeters(vehicle.getCurrentRangeMeters());
+    mappedVehicle.setCurrentRangeMeters(
+      vehicle.getCurrentRangeMeters() == null ? 0.0 : vehicle.getCurrentRangeMeters()
+    );
     mappedVehicle.setCurrentFuelPercent(vehicle.getCurrentFuelPercent());
     mappedVehicle.setVehicleType(vehicleType);
     mappedVehicle.setPricingPlan(pricingPlan);
