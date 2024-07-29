@@ -104,7 +104,16 @@ public class FeedUpdater {
       new ForkJoinPool(
         NUM_CORES * 2,
         ForkJoinPool.defaultForkJoinWorkerThreadFactory,
-        (thread, exception) -> logger.warn("Caught exception in ForkJoinPool", exception),
+        (thread, exception) -> {
+          if (exception instanceof LamassuUpdaterException updaterException) {
+            logger.warn(
+              "Caught LamassuUpdaterException system={}",
+              updaterException.getFeedProvider().getSystemId(),
+              exception
+            );
+          }
+          logger.warn("Caught exception in ForkJoinPool", exception);
+        },
         true
       );
     subscriptionManager = new GbfsSubscriptionManager(updaterThreadPool);
@@ -247,22 +256,34 @@ public class FeedUpdater {
     }
   }
 
-  private void receiveV2Update(FeedProvider feedProvider, GbfsV2Delivery gbfsV2Delivery) {
-    var mappedDelivery = gbfsV2DeliveryMapper.mapGbfsDelivery(
-      gbfsV2Delivery,
-      feedProvider
-    );
-    v2FeedCachesUpdater.updateFeedCaches(feedProvider, mappedDelivery);
+  private void receiveV2Update(FeedProvider feedProvider, GbfsV2Delivery gbfsV2Delivery)
+    throws LamassuUpdaterException {
+    try {
+      var mappedDelivery = gbfsV2DeliveryMapper.mapGbfsDelivery(
+        gbfsV2Delivery,
+        feedProvider
+      );
+      v2FeedCachesUpdater.updateFeedCaches(feedProvider, mappedDelivery);
+    } catch (Exception cause) {
+      throw new LamassuUpdaterException(feedProvider, cause);
+    }
   }
 
   private void receiveV3Update(FeedProvider feedProvider, GbfsV3Delivery gbfsV3Delivery) {
-    var mappedDelivery = gbfsV3DeliveryMapper.mapGbfsDelivery(
-      gbfsV3Delivery,
-      feedProvider
-    );
-    var oldDelivery = v3FeedCachesUpdater.updateFeedCaches(feedProvider, mappedDelivery);
-    if (Boolean.TRUE.equals(feedProvider.getAggregate())) {
-      entityCachesUpdater.updateEntityCaches(feedProvider, mappedDelivery, oldDelivery);
+    try {
+      var mappedDelivery = gbfsV3DeliveryMapper.mapGbfsDelivery(
+        gbfsV3Delivery,
+        feedProvider
+      );
+      var oldDelivery = v3FeedCachesUpdater.updateFeedCaches(
+        feedProvider,
+        mappedDelivery
+      );
+      if (Boolean.TRUE.equals(feedProvider.getAggregate())) {
+        entityCachesUpdater.updateEntityCaches(feedProvider, mappedDelivery, oldDelivery);
+      }
+    } catch (Exception cause) {
+      throw new LamassuUpdaterException(feedProvider, cause);
     }
   }
 }
