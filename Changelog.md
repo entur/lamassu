@@ -19,6 +19,7 @@ based on merged pull requests. Search GitHub issues and pull requests for smalle
 - Follow up v3 paths [#488](https://github.com/entur/lamassu/pull/488)
 - feature: support authenticated redis connection [#487](https://github.com/entur/lamassu/pull/487)
 - CI: build & publish linux/arm64 images [#253](https://github.com/entur/lamassu/pull/253)
+- Map current_range_meters as provided instead of setting a missing value to 0.0 [#512](https://github.com/entur/lamassu/pull/512)
   [](AUTOMATIC_CHANGELOG_PLACEHOLDER_DO_NOT_REMOVE)
   
 ## 1.0.0
