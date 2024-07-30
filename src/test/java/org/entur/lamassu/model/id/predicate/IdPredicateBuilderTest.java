@@ -65,7 +65,7 @@ class IdPredicateBuilderTest {
   }
 
   @Test
-  public void testCodespaceAndType() {
+  void testCodespaceAndType() {
     IdPredicate predicate = IdPredicateBuilder
       .newInstance()
       .withCodespace("AAA")
@@ -144,7 +144,7 @@ class IdPredicateBuilderTest {
 
     List<String> names = Arrays.asList("AAA:B:C", "BBB:B:C");
 
-    List<String> result = names.stream().filter(predicate).collect(Collectors.toList());
+    List<String> result = names.stream().filter(predicate).toList();
 
     assertEquals(1, result.size());
     assertTrue(result.contains("AAA:B:C"));
