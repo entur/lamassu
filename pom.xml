@@ -30,7 +30,6 @@
         <gbfs-loader-java.version>4.0.7</gbfs-loader-java.version>
         <gbfs-validator-java.version>2.0.6</gbfs-validator-java.version>
         <gbfs-mapper-java.version>2.0.6</gbfs-mapper-java.version>
-        <netex-utils.version>1.46</netex-utils.version>
         <prettier-java.version>2.1.0</prettier-java.version>
         <prettier-maven-plugin.version>0.22</prettier-maven-plugin.version>
         <plugin.prettier.goal>write</plugin.prettier.goal>
@@ -149,11 +148,6 @@
             <groupId>com.esotericsoftware</groupId>
             <artifactId>kryo</artifactId>
             <version>${kryo.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>no.entur.abt</groupId>
-            <artifactId>netex-utils</artifactId>
-            <version>${netex-utils.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
