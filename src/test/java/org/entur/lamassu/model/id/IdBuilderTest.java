@@ -18,85 +18,211 @@
 
 package org.entur.lamassu.model.id;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import org.junit.jupiter.api.Test;
+
 class IdBuilderTest {
-    @Test
-    void testCodespace() {
-        String build = IdBuilder.newInstance().withCodespace("AAA").withType("Network").withValue("123").build();
-        assertEquals("AAA:Network:123", build);
-    }
 
-    @Test
-    void testInvalidCodespaceInput() {
-        assertThrows(IllegalStateException.class, () -> {
-            IdBuilder.newInstance().withType("Network").withValue("123").build();
-        });
-        assertThrows(IllegalStateException.class, () -> {
-            IdBuilder.newInstance().withCodespace("AAA").withValue("123").build();
-        });
-        assertThrows(IllegalStateException.class, () -> {
-            IdBuilder.newInstance().withCodespace("AAA").withType("Network").build();
-        });
-        assertThrows(IllegalStateException.class, () -> {
-            IdBuilder.newInstance().withCodespace("AA").withType("Network").withValue("123").build();
-        });
-        assertThrows(IllegalStateException.class, () -> {
-            IdBuilder.newInstance().withCodespace("AAAA").withType("Network").withValue("123").build();
-        });
-        assertThrows(IllegalStateException.class, () -> {
-            IdBuilder.newInstance().withCodespace("AAA").withType("").withValue("123").build();
-        });
-        assertThrows(IllegalStateException.class, () -> {
-            IdBuilder.newInstance().withCodespace("AAA").withType("Network").withValue("").build();
-        });
-        assertThrows(IllegalStateException.class, () -> {
-            IdBuilder.newInstance().withCodespace("AAA").withType("Network!").build();
-        });
-    }
+  @Test
+  void testCodespace() {
+    String build = IdBuilder
+      .newInstance()
+      .withCodespace("AAA")
+      .withType("Network")
+      .withValue("123")
+      .build();
+    assertEquals("AAA:Network:123", build);
+  }
 
-    @Test
-    void testValidValueInput() {
-        assertDoesNotThrow(() -> {
-            IdBuilder.newInstance().withCodespace("AAA").withType("Vehicle").withValue("ValidString123@").build();
-        });
-        assertDoesNotThrow(() -> {
-            IdBuilder.newInstance().withCodespace("AAA").withType("Vehicle").withValue("Another:Valid/String_-").build();
-        });
-        assertDoesNotThrow(() -> {
-            IdBuilder.newInstance().withCodespace("AAA").withType("Vehicle").withValue("EdgeCase").build();
-        });
-        assertDoesNotThrow(() -> {
-            IdBuilder.newInstance().withCodespace("AAA").withType("Vehicle").withValue("Another.Valid@String:/_-").build();
-        });
-    }
+  @Test
+  void testInvalidCodespaceInput() {
+    assertThrows(
+      IllegalStateException.class,
+      () -> {
+        IdBuilder.newInstance().withType("Network").withValue("123").build();
+      }
+    );
+    assertThrows(
+      IllegalStateException.class,
+      () -> {
+        IdBuilder.newInstance().withCodespace("AAA").withValue("123").build();
+      }
+    );
+    assertThrows(
+      IllegalStateException.class,
+      () -> {
+        IdBuilder.newInstance().withCodespace("AAA").withType("Network").build();
+      }
+    );
+    assertThrows(
+      IllegalStateException.class,
+      () -> {
+        IdBuilder
+          .newInstance()
+          .withCodespace("AA")
+          .withType("Network")
+          .withValue("123")
+          .build();
+      }
+    );
+    assertThrows(
+      IllegalStateException.class,
+      () -> {
+        IdBuilder
+          .newInstance()
+          .withCodespace("AAAA")
+          .withType("Network")
+          .withValue("123")
+          .build();
+      }
+    );
+    assertThrows(
+      IllegalStateException.class,
+      () -> {
+        IdBuilder
+          .newInstance()
+          .withCodespace("AAA")
+          .withType("")
+          .withValue("123")
+          .build();
+      }
+    );
+    assertThrows(
+      IllegalStateException.class,
+      () -> {
+        IdBuilder
+          .newInstance()
+          .withCodespace("AAA")
+          .withType("Network")
+          .withValue("")
+          .build();
+      }
+    );
+    assertThrows(
+      IllegalStateException.class,
+      () -> {
+        IdBuilder.newInstance().withCodespace("AAA").withType("Network!").build();
+      }
+    );
+  }
 
-    @Test
-    void testInvalidValueInput() {
-        assertThrows(IllegalStateException.class, () -> {
-            IdBuilder.newInstance().withCodespace("AAA").withType("Vehicle").withValue("Invalid String with space").build();
-        });
-        assertThrows(IllegalStateException.class, () -> {
-            IdBuilder.newInstance().withCodespace("AAA").withType("Vehicle").withValue("StringWith\\tTab").build();
-        });
-        assertThrows(IllegalStateException.class, () -> {
-            IdBuilder.newInstance().withCodespace("AAA").withType("Vehicle").withValue("StringWith\\nNewline").build();
-        });
-        assertThrows(IllegalStateException.class, () -> {
-            IdBuilder.newInstance().withCodespace("AAA").withType("Vehicle").withValue("NonPrintable\\u0001").build();
-        });
-        assertThrows(IllegalStateException.class, () -> {
-            IdBuilder.newInstance().withCodespace("AAA").withType("Vehicle").withValue("Invalid String!").build();
-        });
-        assertThrows(IllegalStateException.class, () -> {
-            IdBuilder.newInstance().withCodespace("AAA").withType("Vehicle").withValue("AnotherInvalid#String$").build();
-        });
-        assertThrows(IllegalStateException.class, () -> {
-            IdBuilder.newInstance().withCodespace("AAA").withType("Vehicle").withValue("Invalid%String^&*()").build();
-        });
-    }
+  @Test
+  void testValidValueInput() {
+    assertDoesNotThrow(() -> {
+      IdBuilder
+        .newInstance()
+        .withCodespace("AAA")
+        .withType("Vehicle")
+        .withValue("ValidString123@")
+        .build();
+    });
+    assertDoesNotThrow(() -> {
+      IdBuilder
+        .newInstance()
+        .withCodespace("AAA")
+        .withType("Vehicle")
+        .withValue("Another:Valid/String_-")
+        .build();
+    });
+    assertDoesNotThrow(() -> {
+      IdBuilder
+        .newInstance()
+        .withCodespace("AAA")
+        .withType("Vehicle")
+        .withValue("EdgeCase")
+        .build();
+    });
+    assertDoesNotThrow(() -> {
+      IdBuilder
+        .newInstance()
+        .withCodespace("AAA")
+        .withType("Vehicle")
+        .withValue("Another.Valid@String:/_-")
+        .build();
+    });
+  }
+
+  @Test
+  void testInvalidValueInput() {
+    assertThrows(
+      IllegalStateException.class,
+      () -> {
+        IdBuilder
+          .newInstance()
+          .withCodespace("AAA")
+          .withType("Vehicle")
+          .withValue("Invalid String with space")
+          .build();
+      }
+    );
+    assertThrows(
+      IllegalStateException.class,
+      () -> {
+        IdBuilder
+          .newInstance()
+          .withCodespace("AAA")
+          .withType("Vehicle")
+          .withValue("StringWith\\tTab")
+          .build();
+      }
+    );
+    assertThrows(
+      IllegalStateException.class,
+      () -> {
+        IdBuilder
+          .newInstance()
+          .withCodespace("AAA")
+          .withType("Vehicle")
+          .withValue("StringWith\\nNewline")
+          .build();
+      }
+    );
+    assertThrows(
+      IllegalStateException.class,
+      () -> {
+        IdBuilder
+          .newInstance()
+          .withCodespace("AAA")
+          .withType("Vehicle")
+          .withValue("NonPrintable\\u0001")
+          .build();
+      }
+    );
+    assertThrows(
+      IllegalStateException.class,
+      () -> {
+        IdBuilder
+          .newInstance()
+          .withCodespace("AAA")
+          .withType("Vehicle")
+          .withValue("Invalid String!")
+          .build();
+      }
+    );
+    assertThrows(
+      IllegalStateException.class,
+      () -> {
+        IdBuilder
+          .newInstance()
+          .withCodespace("AAA")
+          .withType("Vehicle")
+          .withValue("AnotherInvalid#String$")
+          .build();
+      }
+    );
+    assertThrows(
+      IllegalStateException.class,
+      () -> {
+        IdBuilder
+          .newInstance()
+          .withCodespace("AAA")
+          .withType("Vehicle")
+          .withValue("Invalid%String^&*()")
+          .build();
+      }
+    );
+  }
 }

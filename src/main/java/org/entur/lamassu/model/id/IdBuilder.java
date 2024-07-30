@@ -19,54 +19,62 @@
 package org.entur.lamassu.model.id;
 
 public class IdBuilder {
-    public static IdBuilder newInstance() {
-        return new IdBuilder();
+
+  public static IdBuilder newInstance() {
+    return new IdBuilder();
+  }
+
+  protected static final String ID_SEPARATOR_CHAR = ":";
+
+  private static final IdValidator defaultValidator = DefaultIdValidator.getInstance();
+
+  private final IdValidator validator;
+
+  protected String codespace;
+  protected String type;
+  protected String value;
+
+  public IdBuilder() {
+    this(defaultValidator);
+  }
+
+  public IdBuilder(IdValidator validator) {
+    this.validator = validator;
+  }
+
+  public IdBuilder withCodespace(String codespace) {
+    this.codespace = codespace;
+    return this;
+  }
+
+  public IdBuilder withType(String type) {
+    this.type = type;
+    return this;
+  }
+
+  public IdBuilder withValue(String value) {
+    this.value = value;
+
+    return this;
+  }
+
+  public String build() {
+    if (codespace == null || !validator.validateCodespace(codespace)) {
+      throw new IllegalStateException(
+        "Expected codespace (size 3 with characters A-Z), found " + codespace
+      );
     }
-
-    protected static final String ID_SEPARATOR_CHAR = ":";
-
-    private static final IdValidator defaultValidator = DefaultIdValidator.getInstance();
-
-    private final IdValidator validator;
-
-    protected String codespace;
-    protected String type;
-    protected String value;
-
-    public IdBuilder() {
-        this(defaultValidator);
+    if (type == null || !validator.validateType(type)) {
+      throw new IllegalStateException(
+        "Expected type (nonempty with characters A-Z), found " + type
+      );
     }
-
-    public IdBuilder(IdValidator validator) {
-        this.validator = validator;
+    if (value == null || !validator.validateValue(value)) {
+      throw new IllegalStateException(
+        "Expected value (nonempty with characters A-Z, a-z, ø, Ø, æ, Æ, å, Å, underscore, \\ and -), found " +
+        value
+      );
     }
-
-    public IdBuilder withCodespace(String codespace) {
-        this.codespace = codespace;
-        return this;
-    }
-
-    public IdBuilder withType(String type) {
-        this.type = type;
-        return this;
-    }
-
-    public IdBuilder withValue(String value) {
-        this.value = value;
-
-        return this;
-    }
-
-    public String build() {
-        if (codespace == null || !validator.validateCodespace(codespace)) {
-            throw new IllegalStateException("Expected codespace (size 3 with characters A-Z), found " + codespace);
-        }
-        if (type == null || !validator.validateType(type)) {
-            throw new IllegalStateException("Expected type (nonempty with characters A-Z), found " + type);
-        }
-        if (value == null || !validator.validateValue(value)) {
-            throw new IllegalStateException("Expected value (nonempty with characters A-Z, a-z, ø, Ø, æ, Æ, å, Å, underscore, \\ and -), found " + value);
-        }
-        return String.join(ID_SEPARATOR_CHAR, codespace, type, value);
-    }
+    return String.join(ID_SEPARATOR_CHAR, codespace, type, value);
+  }
 }

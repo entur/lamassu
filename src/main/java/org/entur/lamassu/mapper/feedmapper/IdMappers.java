@@ -21,7 +21,6 @@ package org.entur.lamassu.mapper.feedmapper;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import org.entur.lamassu.model.id.DefaultIdValidator;
 import org.entur.lamassu.model.id.IdBuilder;
 import org.entur.lamassu.model.id.predicate.IdPredicateBuilder;

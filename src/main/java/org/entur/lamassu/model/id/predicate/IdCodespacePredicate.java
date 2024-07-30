@@ -21,13 +21,26 @@ package org.entur.lamassu.model.id.predicate;
 import org.entur.lamassu.model.id.DefaultIdValidator;
 
 public class IdCodespacePredicate implements IdPredicate {
-    private final char[] prefix;
 
-    public IdCodespacePredicate(CharSequence codespace) {
-        prefix = new char[] { codespace.charAt(0), codespace.charAt(1), codespace.charAt(2), DefaultIdValidator.ID_SEPARATOR_CHAR};
-    }
+  private final char[] prefix;
 
-    public boolean test(CharSequence t) {
-        return t.length() > 4 && t.charAt(0) == prefix[0] && t.charAt(1) == prefix[1] && t.charAt(2) == prefix[2] && t.charAt(3) == prefix[3];
-    }
+  public IdCodespacePredicate(CharSequence codespace) {
+    prefix =
+      new char[] {
+        codespace.charAt(0),
+        codespace.charAt(1),
+        codespace.charAt(2),
+        DefaultIdValidator.ID_SEPARATOR_CHAR,
+      };
+  }
+
+  public boolean test(CharSequence t) {
+    return (
+      t.length() > 4 &&
+      t.charAt(0) == prefix[0] &&
+      t.charAt(1) == prefix[1] &&
+      t.charAt(2) == prefix[2] &&
+      t.charAt(3) == prefix[3]
+    );
+  }
 }

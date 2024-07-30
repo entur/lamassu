@@ -20,5 +20,4 @@ package org.entur.lamassu.model.id.predicate;
 
 import java.util.function.Predicate;
 
-public interface IdPredicate extends Predicate<CharSequence> {
-}
+public interface IdPredicate extends Predicate<CharSequence> {}

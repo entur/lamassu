@@ -21,44 +21,45 @@ package org.entur.lamassu.model.id.predicate;
 import org.entur.lamassu.model.id.DefaultIdValidator;
 
 public class IdCodespaceTypePredicate implements IdPredicate {
-    protected final char[] codespaceColonType;
 
-    public IdCodespaceTypePredicate(CharSequence codespace, CharSequence type) {
-        if (codespace.length() != DefaultIdValidator.ID_CODESPACE_LENGTH) {
-            throw new IllegalArgumentException();
-        }
-        if (type.length() == 0) {
-            throw new IllegalArgumentException();
-        }
+  protected final char[] codespaceColonType;
 
-        char[] chars = new char[1 + codespace.length() + type.length()];
-
-        for (int i = 0; i < codespace.length(); i++) {
-            chars[i] = codespace.charAt(i);
-        }
-        chars[DefaultIdValidator.ID_CODESPACE_LENGTH] = DefaultIdValidator.ID_SEPARATOR_CHAR;
-        for (int i = 0; i < type.length(); i++) {
-            chars[DefaultIdValidator.ID_CODESPACE_LENGTH + 1 + i] = type.charAt(i);
-        }
-        this.codespaceColonType = chars;
+  public IdCodespaceTypePredicate(CharSequence codespace, CharSequence type) {
+    if (codespace.length() != DefaultIdValidator.ID_CODESPACE_LENGTH) {
+      throw new IllegalArgumentException();
+    }
+    if (type.length() == 0) {
+      throw new IllegalArgumentException();
     }
 
-    public boolean test(CharSequence t) {
-        // must contain all chars, plus an additional colon
-        if (t.length() < codespaceColonType.length + 1) {
-            return false;
-        }
+    char[] chars = new char[1 + codespace.length() + type.length()];
 
-        if (t.charAt(codespaceColonType.length) != DefaultIdValidator.ID_SEPARATOR_CHAR) {
-            return false;
-        }
-
-        for (int i = 0; i < codespaceColonType.length; i++) {
-            if (codespaceColonType[i] != t.charAt(i)) {
-                return false;
-            }
-        }
-
-        return true;
+    for (int i = 0; i < codespace.length(); i++) {
+      chars[i] = codespace.charAt(i);
     }
+    chars[DefaultIdValidator.ID_CODESPACE_LENGTH] = DefaultIdValidator.ID_SEPARATOR_CHAR;
+    for (int i = 0; i < type.length(); i++) {
+      chars[DefaultIdValidator.ID_CODESPACE_LENGTH + 1 + i] = type.charAt(i);
+    }
+    this.codespaceColonType = chars;
+  }
+
+  public boolean test(CharSequence t) {
+    // must contain all chars, plus an additional colon
+    if (t.length() < codespaceColonType.length + 1) {
+      return false;
+    }
+
+    if (t.charAt(codespaceColonType.length) != DefaultIdValidator.ID_SEPARATOR_CHAR) {
+      return false;
+    }
+
+    for (int i = 0; i < codespaceColonType.length; i++) {
+      if (codespaceColonType[i] != t.charAt(i)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
 }

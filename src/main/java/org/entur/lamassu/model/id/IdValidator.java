@@ -19,27 +19,27 @@
 package org.entur.lamassu.model.id;
 
 public interface IdValidator {
-    default boolean validate(CharSequence id) {
-        return validate(id, 0, id.length());
-    }
+  default boolean validate(CharSequence id) {
+    return validate(id, 0, id.length());
+  }
 
-    boolean validate(CharSequence id, int offset, int length);
+  boolean validate(CharSequence id, int offset, int length);
 
-    default boolean validateCodespace(CharSequence codespace) {
-        return validateCodespace(codespace, 0, codespace.length());
-    }
+  default boolean validateCodespace(CharSequence codespace) {
+    return validateCodespace(codespace, 0, codespace.length());
+  }
 
-    boolean validateCodespace(CharSequence codespace, int offset, int length);
+  boolean validateCodespace(CharSequence codespace, int offset, int length);
 
-    default boolean validateType(CharSequence type) {
-        return validateType(type, 0, type.length());
-    }
+  default boolean validateType(CharSequence type) {
+    return validateType(type, 0, type.length());
+  }
 
-    boolean validateType(CharSequence type, int offset, int length);
+  boolean validateType(CharSequence type, int offset, int length);
 
-    default boolean validateValue(CharSequence value) {
-        return validateValue(value, 0, value.length());
-    }
+  default boolean validateValue(CharSequence value) {
+    return validateValue(value, 0, value.length());
+  }
 
-    boolean validateValue(CharSequence value, int offset, int length);
+  boolean validateValue(CharSequence value, int offset, int length);
 }

@@ -18,107 +18,135 @@
 
 package org.entur.lamassu.model.id.predicate;
 
-import org.junit.jupiter.api.Test;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.junit.jupiter.api.Test;
+
 class IdPredicateBuilderTest {
-    @Test
-    void testCodespace() {
-        IdPredicate predicate = IdPredicateBuilder.newInstance().withCodespace("AAA").build();
 
-        assertTrue(predicate.test("AAA:Network:123"));
-        assertFalse(predicate.test("BBB:Network:123"));
-        assertTrue(predicate.test("AAA:xyz:123"));
-        assertFalse(predicate.test("CCC:z:123"));
+  @Test
+  void testCodespace() {
+    IdPredicate predicate = IdPredicateBuilder.newInstance().withCodespace("AAA").build();
 
-        assertFalse(predicate.test("AAAANetwork:123"));
+    assertTrue(predicate.test("AAA:Network:123"));
+    assertFalse(predicate.test("BBB:Network:123"));
+    assertTrue(predicate.test("AAA:xyz:123"));
+    assertFalse(predicate.test("CCC:z:123"));
 
-        // non-validating
-        assertTrue(predicate.test("AAA:X"));
+    assertFalse(predicate.test("AAAANetwork:123"));
 
-        assertFalse(predicate.test("AAB:Network:123"));
-        assertFalse(predicate.test("ABA:Network:123"));
-        assertFalse(predicate.test("BAA:Network:123"));
-    }
+    // non-validating
+    assertTrue(predicate.test("AAA:X"));
 
-    @Test
-    void testType() {
-        IdPredicate predicate = IdPredicateBuilder.newInstance().withType("Network").build();
+    assertFalse(predicate.test("AAB:Network:123"));
+    assertFalse(predicate.test("ABA:Network:123"));
+    assertFalse(predicate.test("BAA:Network:123"));
+  }
 
-        assertTrue(predicate.test("AAA:Network:123"));
-        assertTrue(predicate.test("BBB:Network:123"));
-        assertFalse(predicate.test("BBB:Netzork:123"));
-        assertFalse(predicate.test("AAA:xyz:1234567"));
-        assertFalse(predicate.test("CCC:z:123"));
+  @Test
+  void testType() {
+    IdPredicate predicate = IdPredicateBuilder.newInstance().withType("Network").build();
 
-        // partical validation
-        assertFalse(predicate.test("AA:Network:123"));
-        assertFalse(predicate.test(":Network:123"));
-    }
+    assertTrue(predicate.test("AAA:Network:123"));
+    assertTrue(predicate.test("BBB:Network:123"));
+    assertFalse(predicate.test("BBB:Netzork:123"));
+    assertFalse(predicate.test("AAA:xyz:1234567"));
+    assertFalse(predicate.test("CCC:z:123"));
 
-    @Test
-    public void testCodespaceAndType() {
-        IdPredicate predicate = IdPredicateBuilder.newInstance().withCodespace("AAA").withType("Network").build();
+    // partical validation
+    assertFalse(predicate.test("AA:Network:123"));
+    assertFalse(predicate.test(":Network:123"));
+  }
 
-        assertTrue(predicate.test("AAA:Network:123"));
-        assertFalse(predicate.test("BBB:Network:123"));
-        assertFalse(predicate.test("AAA:xyz:123"));
-        assertFalse(predicate.test("CCC:z:123"));
+  @Test
+  public void testCodespaceAndType() {
+    IdPredicate predicate = IdPredicateBuilder
+      .newInstance()
+      .withCodespace("AAA")
+      .withType("Network")
+      .build();
 
-        // partical validation
-        assertFalse(predicate.test("AA:Network:123"));
-        assertFalse(predicate.test(":Network:123"));
-    }
+    assertTrue(predicate.test("AAA:Network:123"));
+    assertFalse(predicate.test("BBB:Network:123"));
+    assertFalse(predicate.test("AAA:xyz:123"));
+    assertFalse(predicate.test("CCC:z:123"));
 
-    @Test
-    void testInvalidCodespaceInput() {
-        assertThrows(IllegalStateException.class, () -> {
-            IdPredicateBuilder.newInstance().withCodespace(null).build();
-        });
-        assertThrows(IllegalStateException.class, () -> {
-            IdPredicateBuilder.newInstance().withCodespace("").build();
-        });
-        assertThrows(IllegalStateException.class, () -> {
-            IdPredicateBuilder.newInstance().withCodespace("AA").build();
-        });
-        assertThrows(IllegalStateException.class, () -> {
-            IdPredicateBuilder.newInstance().withCodespace("AAAA").build();
-        });
-        assertThrows(IllegalStateException.class, () -> {
-            IdPredicateBuilder.newInstance().withCodespace("aaa").build();
-        });
-    }
+    // partical validation
+    assertFalse(predicate.test("AA:Network:123"));
+    assertFalse(predicate.test(":Network:123"));
+  }
 
-    @Test
-    void testInvalidTypeInput() {
-        assertThrows(IllegalStateException.class, () -> {
-            IdPredicateBuilder.newInstance().withType(null).build();
-        });
-        assertThrows(IllegalStateException.class, () -> {
-            IdPredicateBuilder.newInstance().withType("").build();
-        });
-        assertThrows(IllegalStateException.class, () -> {
-            IdPredicateBuilder.newInstance().withType("Network!").build();
-        });
-    }
+  @Test
+  void testInvalidCodespaceInput() {
+    assertThrows(
+      IllegalStateException.class,
+      () -> {
+        IdPredicateBuilder.newInstance().withCodespace(null).build();
+      }
+    );
+    assertThrows(
+      IllegalStateException.class,
+      () -> {
+        IdPredicateBuilder.newInstance().withCodespace("").build();
+      }
+    );
+    assertThrows(
+      IllegalStateException.class,
+      () -> {
+        IdPredicateBuilder.newInstance().withCodespace("AA").build();
+      }
+    );
+    assertThrows(
+      IllegalStateException.class,
+      () -> {
+        IdPredicateBuilder.newInstance().withCodespace("AAAA").build();
+      }
+    );
+    assertThrows(
+      IllegalStateException.class,
+      () -> {
+        IdPredicateBuilder.newInstance().withCodespace("aaa").build();
+      }
+    );
+  }
 
-    @Test
-    void testStream() {
-        IdPredicate predicate = IdPredicateBuilder.newInstance().withCodespace("AAA").build();
+  @Test
+  void testInvalidTypeInput() {
+    assertThrows(
+      IllegalStateException.class,
+      () -> {
+        IdPredicateBuilder.newInstance().withType(null).build();
+      }
+    );
+    assertThrows(
+      IllegalStateException.class,
+      () -> {
+        IdPredicateBuilder.newInstance().withType("").build();
+      }
+    );
+    assertThrows(
+      IllegalStateException.class,
+      () -> {
+        IdPredicateBuilder.newInstance().withType("Network!").build();
+      }
+    );
+  }
 
-        List<String> names = Arrays.asList("AAA:B:C", "BBB:B:C");
+  @Test
+  void testStream() {
+    IdPredicate predicate = IdPredicateBuilder.newInstance().withCodespace("AAA").build();
 
-        List<String> result = names.stream().filter(predicate).collect(Collectors.toList());
+    List<String> names = Arrays.asList("AAA:B:C", "BBB:B:C");
 
-        assertEquals(1, result.size());
-        assertTrue(result.contains("AAA:B:C"));
-    }
+    List<String> result = names.stream().filter(predicate).collect(Collectors.toList());
+
+    assertEquals(1, result.size());
+    assertTrue(result.contains("AAA:B:C"));
+  }
 }

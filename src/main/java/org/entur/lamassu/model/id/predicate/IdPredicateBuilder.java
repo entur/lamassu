@@ -23,40 +23,44 @@ import org.entur.lamassu.model.id.IdValidator;
 
 public class IdPredicateBuilder {
 
-    private final static IdValidator validator = DefaultIdValidator.getInstance();
+  private static final IdValidator validator = DefaultIdValidator.getInstance();
 
-    public static IdPredicateBuilder newInstance() {
-        return new IdPredicateBuilder();
+  public static IdPredicateBuilder newInstance() {
+    return new IdPredicateBuilder();
+  }
+
+  protected String codespace;
+  protected String type;
+
+  public IdPredicateBuilder withCodespace(String codespace) {
+    this.codespace = codespace;
+    return this;
+  }
+
+  public IdPredicateBuilder withType(String type) {
+    this.type = type;
+    return this;
+  }
+
+  public IdPredicate build() {
+    if (codespace != null && !validator.validateCodespace(codespace)) {
+      throw new IllegalStateException(
+        "Expected codespace (size 3 with characters A-Z), found " + codespace
+      );
     }
-
-    protected String codespace;
-    protected String type;
-
-    public IdPredicateBuilder withCodespace(String codespace) {
-        this.codespace = codespace;
-        return this;
+    if (type != null && !validator.validateType(type)) {
+      throw new IllegalStateException(
+        "Expected type (nonempty with characters A-Z), found " + type
+      );
     }
-
-    public IdPredicateBuilder withType(String type) {
-        this.type = type;
-        return this;
+    if (codespace != null && type != null) {
+      return new IdCodespaceTypePredicate(codespace, type);
+    } else if (codespace != null) {
+      return new IdCodespacePredicate(codespace);
+    } else if (type != null) {
+      return new IdTypePredicate(type);
+    } else {
+      throw new IllegalStateException("Expected codespace and/or type");
     }
-
-    public IdPredicate build() {
-        if (codespace != null && !validator.validateCodespace(codespace)) {
-            throw new IllegalStateException("Expected codespace (size 3 with characters A-Z), found " + codespace);
-        }
-        if (type != null && !validator.validateType(type)) {
-            throw new IllegalStateException("Expected type (nonempty with characters A-Z), found " + type);
-        }
-        if (codespace != null && type != null) {
-            return new IdCodespaceTypePredicate(codespace, type);
-        } else if (codespace != null) {
-            return new IdCodespacePredicate(codespace);
-        } else if (type != null) {
-            return new IdTypePredicate(type);
-        } else {
-            throw new IllegalStateException("Expected codespace and/or type");
-        }
-    }
+  }
 }
