@@ -99,23 +99,17 @@ public class DefaultIdValidator implements IdValidator {
     }
 
     protected static boolean isValueCharacter(char c) {
+        if (c < 0x21 || c > 0x7E) {
+            return false; // Not in the ASCII printable range
+        }
+
         if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9')) {
             return true;
         }
 
-        switch (c) {
-            case 'Æ':
-            case 'Ø':
-            case 'Å':
-            case 'æ':
-            case 'ø':
-            case 'å':
-            case '_':
-            case '\\':
-            case '-':
-                return true;
-            default:
-                return false;
-        }
+        return switch (c) {
+            case '.', '@', ':', '/', '_', '-' -> true;
+            default -> false;
+        };
     }
 }
