@@ -136,6 +136,8 @@ public class FeedUpdater {
       enableValidation
     );
 
+    var interceptor = new LoggingSubscriptionUpdateInterceptor(feedProvider);
+
     String id;
 
     if (feedProvider.getVersion() != null && feedProvider.getVersion().startsWith("3")) {
@@ -150,7 +152,8 @@ public class FeedUpdater {
             );
             receiveV3Update(feedProvider, gbfsV3Delivery);
             cacheReady.set(true);
-          }
+          },
+          interceptor
         );
     } else {
       id =
@@ -164,7 +167,8 @@ public class FeedUpdater {
               GbfsFeedVersionMappers.map(gbfsV2Delivery, feedProvider.getLanguage())
             );
             cacheReady.set(true);
-          }
+          },
+          interceptor
         );
     }
 
