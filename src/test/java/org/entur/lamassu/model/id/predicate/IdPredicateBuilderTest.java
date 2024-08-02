@@ -82,6 +82,17 @@ class IdPredicateBuilderTest {
   }
 
   @Test
+  void testValueWithColon() {
+    IdPredicate predicate = IdPredicateBuilder
+      .newInstance()
+      .withCodespace("AAA")
+      .withType("Network")
+      .build();
+
+    assertTrue(predicate.test("AAA:Network:12:3"));
+  }
+
+  @Test
   void testInvalidCodespaceInput() {
     assertThrows(
       IllegalStateException.class,
