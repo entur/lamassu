@@ -43,7 +43,7 @@ public class DefaultIdValidator implements IdValidator {
     if (string.charAt(offset + ID_CODESPACE_LENGTH) != ':') {
       return false;
     }
-    int last = getLastSeperatorIndex(string, ID_CODESPACE_LENGTH + 1, length);
+    int last = getLastSeparatorIndex(string, ID_CODESPACE_LENGTH + 1, length);
     if (last == -1) {
       return false;
     }
@@ -54,7 +54,7 @@ public class DefaultIdValidator implements IdValidator {
     );
   }
 
-  protected static int getLastSeperatorIndex(
+  protected static int getLastSeparatorIndex(
     CharSequence string,
     int startIndex,
     int endIndex
