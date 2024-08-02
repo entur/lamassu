@@ -215,7 +215,7 @@ class IdBuilderTest {
         .newInstance()
         .withCodespace("AAA")
         .withType("Vehicle")
-        .withValue("AnotherInvalid#String$")
+        .withValue("Discouraged#String$")
         .build();
     });
     assertDoesNotThrow(() -> {
@@ -223,7 +223,7 @@ class IdBuilderTest {
         .newInstance()
         .withCodespace("AAA")
         .withType("Vehicle")
-        .withValue("Invalid%String^&*()")
+        .withValue("AnotherDiscouraged%String^&*()")
         .build();
     });
   }
