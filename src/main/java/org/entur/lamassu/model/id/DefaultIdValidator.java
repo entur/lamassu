@@ -43,23 +43,27 @@ public class DefaultIdValidator implements IdValidator {
     if (string.charAt(offset + ID_CODESPACE_LENGTH) != ':') {
       return false;
     }
-    int last = getLastSeparatorIndex(string, ID_CODESPACE_LENGTH + 1, length);
-    if (last == -1) {
+    int nextSeparatorIndex = getNextSeparatorIndex(
+      string,
+      ID_CODESPACE_LENGTH + 1,
+      length
+    );
+    if (nextSeparatorIndex == -1) {
       return false;
     }
     return (
       validateCodespace(string, 0, ID_CODESPACE_LENGTH) &&
-      validateType(string, ID_CODESPACE_LENGTH + 1, last) &&
-      validateValue(string, last + 1, string.length())
+      validateType(string, ID_CODESPACE_LENGTH + 1, nextSeparatorIndex) &&
+      validateValue(string, nextSeparatorIndex + 1, string.length())
     );
   }
 
-  protected static int getLastSeparatorIndex(
+  protected static int getNextSeparatorIndex(
     CharSequence string,
     int startIndex,
     int endIndex
   ) {
-    for (int i = endIndex - 1; i >= startIndex; i--) {
+    for (int i = startIndex; i < endIndex; i++) {
       if (string.charAt(i) == ID_SEPARATOR_CHAR) {
         return i;
       }
