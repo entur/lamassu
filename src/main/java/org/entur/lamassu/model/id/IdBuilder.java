@@ -71,8 +71,7 @@ public class IdBuilder {
     }
     if (value == null || !validator.validateValue(value)) {
       throw new IllegalStateException(
-        "Expected value (nonempty with characters A-Z, a-z, ø, Ø, æ, Æ, å, Å, underscore, \\ and -), found " +
-        value
+        "Expected value (ASCII printable character), found " + value
       );
     }
     return String.join(ID_SEPARATOR_CHAR, codespace, type, value);

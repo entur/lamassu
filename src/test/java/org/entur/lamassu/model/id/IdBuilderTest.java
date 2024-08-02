@@ -158,39 +158,7 @@ class IdBuilderTest {
           .build();
       }
     );
-    assertThrows(
-      IllegalStateException.class,
-      () -> {
-        IdBuilder
-          .newInstance()
-          .withCodespace("AAA")
-          .withType("Vehicle")
-          .withValue("StringWith\\tTab")
-          .build();
-      }
-    );
-    assertThrows(
-      IllegalStateException.class,
-      () -> {
-        IdBuilder
-          .newInstance()
-          .withCodespace("AAA")
-          .withType("Vehicle")
-          .withValue("StringWith\\nNewline")
-          .build();
-      }
-    );
-    assertThrows(
-      IllegalStateException.class,
-      () -> {
-        IdBuilder
-          .newInstance()
-          .withCodespace("AAA")
-          .withType("Vehicle")
-          .withValue("NonPrintable\\u0001")
-          .build();
-      }
-    );
+
     assertThrows(
       IllegalStateException.class,
       () -> {
@@ -202,27 +170,53 @@ class IdBuilderTest {
           .build();
       }
     );
-    assertThrows(
-      IllegalStateException.class,
-      () -> {
-        IdBuilder
-          .newInstance()
-          .withCodespace("AAA")
-          .withType("Vehicle")
-          .withValue("AnotherInvalid#String$")
-          .build();
-      }
-    );
-    assertThrows(
-      IllegalStateException.class,
-      () -> {
-        IdBuilder
-          .newInstance()
-          .withCodespace("AAA")
-          .withType("Vehicle")
-          .withValue("Invalid%String^&*()")
-          .build();
-      }
-    );
+  }
+
+  @Test
+  void testValidButDiscouragedValueInput() {
+    // TODO: are these actually allowed?
+    assertDoesNotThrow(() -> {
+      IdBuilder
+        .newInstance()
+        .withCodespace("AAA")
+        .withType("Vehicle")
+        .withValue("StringWith\\tTab")
+        .build();
+    });
+
+    // TODO: are these actually allowed?
+    assertDoesNotThrow(() -> {
+      IdBuilder
+        .newInstance()
+        .withCodespace("AAA")
+        .withType("Vehicle")
+        .withValue("StringWith\\nNewline")
+        .build();
+    });
+    assertDoesNotThrow(() -> {
+      IdBuilder
+        .newInstance()
+        .withCodespace("AAA")
+        .withType("Vehicle")
+        .withValue("NonPrintable\\u0001")
+        .build();
+    });
+
+    assertDoesNotThrow(() -> {
+      IdBuilder
+        .newInstance()
+        .withCodespace("AAA")
+        .withType("Vehicle")
+        .withValue("AnotherInvalid#String$")
+        .build();
+    });
+    assertDoesNotThrow(() -> {
+      IdBuilder
+        .newInstance()
+        .withCodespace("AAA")
+        .withType("Vehicle")
+        .withValue("Invalid%String^&*()")
+        .build();
+    });
   }
 }

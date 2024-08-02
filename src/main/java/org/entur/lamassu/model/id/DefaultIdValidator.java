@@ -18,6 +18,10 @@
 
 package org.entur.lamassu.model.id;
 
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class DefaultIdValidator implements IdValidator {
 
   public static final char ID_SEPARATOR_CHAR = ':';
@@ -25,6 +29,7 @@ public class DefaultIdValidator implements IdValidator {
   public static final int ID_MINIMUM_LENGTH = 6;
 
   protected static final DefaultIdValidator instance = new DefaultIdValidator();
+  private static final Logger log = LoggerFactory.getLogger(DefaultIdValidator.class);
 
   public static DefaultIdValidator getInstance() {
     return instance;
@@ -111,13 +116,15 @@ public class DefaultIdValidator implements IdValidator {
       return false; // Not in the ASCII printable range
     }
 
-    if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9')) {
-      return true;
+    if (
+      (c >= 'A' && c <= 'Z') ||
+      (c >= 'a' && c <= 'z') ||
+      (c >= '0' && c <= '9') ||
+      !List.of('.', '@', ':', '/', '_', '-').contains(c)
+    ) {
+      log.warn("SHOULD be restricted to `A-Z`, `a-z`, `0-9` and `.@:/_-` *(as of v3.0)*");
     }
 
-    return switch (c) {
-      case '.', '@', ':', '/', '_', '-' -> true;
-      default -> false;
-    };
+    return true;
   }
 }
