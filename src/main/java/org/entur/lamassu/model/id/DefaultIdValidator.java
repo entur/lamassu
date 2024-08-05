@@ -116,19 +116,6 @@ public class DefaultIdValidator implements IdValidator {
   }
 
   protected static boolean isValueCharacter(char c) {
-    if (c < 0x21 || c > 0x7E) {
-      return false; // Not in the ASCII printable range
-    }
-
-    if (
-      (c >= 'A' && c <= 'Z') ||
-      (c >= 'a' && c <= 'z') ||
-      (c >= '0' && c <= '9') ||
-      !List.of('.', '@', ':', '/', '_', '-').contains(c)
-    ) {
-      log.warn("SHOULD be restricted to `A-Z`, `a-z`, `0-9` and `.@:/_-` *(as of v3.0)*");
-    }
-
-    return true;
+    return c >= 0x21 && c <= 0x7E; // Not in the ASCII printable range
   }
 }
