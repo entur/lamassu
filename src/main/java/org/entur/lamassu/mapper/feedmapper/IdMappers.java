@@ -21,8 +21,8 @@ package org.entur.lamassu.mapper.feedmapper;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import no.entur.abt.netex.id.NetexIdBuilder;
-import no.entur.abt.netex.id.predicate.NetexIdPredicateBuilder;
+import org.entur.lamassu.model.id.IdBuilder;
+import org.entur.lamassu.model.id.predicate.IdPredicateBuilder;
 import org.entur.lamassu.model.provider.FeedProvider;
 
 public class IdMappers {
@@ -43,7 +43,7 @@ public class IdMappers {
       return value;
     }
 
-    var predicate = NetexIdPredicateBuilder
+    var predicate = IdPredicateBuilder
       .newInstance()
       .withCodespace(codespace)
       .withType(type)
@@ -51,7 +51,7 @@ public class IdMappers {
     if (predicate.test(value)) {
       return value;
     } else {
-      return NetexIdBuilder
+      return IdBuilder
         .newInstance()
         .withCodespace(codespace)
         .withType(type)
