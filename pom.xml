@@ -29,7 +29,7 @@
         <jackson.version>2.17.2</jackson.version>
         <gbfs-loader-java.version>4.0.8</gbfs-loader-java.version>
         <gbfs-validator-java.version>2.0.6</gbfs-validator-java.version>
-        <gbfs-mapper-java.version>2.0.6</gbfs-mapper-java.version>
+        <gbfs-mapper-java.version>2.0.7</gbfs-mapper-java.version>
         <prettier-java.version>2.1.0</prettier-java.version>
         <prettier-maven-plugin.version>0.22</prettier-maven-plugin.version>
         <plugin.prettier.goal>write</plugin.prettier.goal>
