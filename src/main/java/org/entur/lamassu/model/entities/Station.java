@@ -60,6 +60,7 @@ public class Station implements LocationEntity {
   private Long lastReported;
   private System system;
   private List<PricingPlan> pricingPlans;
+  private List<List<String>> polylineEncodedMultiPolygon;
 
   @Override
   public String getId() {
@@ -362,6 +363,16 @@ public class Station implements LocationEntity {
 
   public void setPricingPlans(List<PricingPlan> pricingPlans) {
     this.pricingPlans = pricingPlans;
+  }
+
+  public void setPolylineEncodedMultiPolygon(
+    List<List<String>> polylineEncodedMultiPolygon
+  ) {
+    this.polylineEncodedMultiPolygon = polylineEncodedMultiPolygon;
+  }
+
+  public List<List<String>> getPolylineEncodedMultiPolygon() {
+    return polylineEncodedMultiPolygon;
   }
 
   @Override

@@ -251,6 +251,8 @@ type Station {
     lastReported: Int!
     system: System!
     pricingPlans: [PricingPlan]!
+    "MultiPolygon where the lists of coordinates are encoded as polyline strings using precision of 6 decimals (see http://code.google.com/apis/maps/documentation/polylinealgorithm.html). Meant to be used instead of geometry.coordinates to minimize the response payload size."
+    polylineEncodedMultiPolygon: [[String]]
 }
 
 enum ParkingType {
