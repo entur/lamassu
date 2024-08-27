@@ -105,7 +105,7 @@ public class GraphQLIntegrationTest extends AbstractIntegrationTestBase {
   }
 
   @Test
-  public void testStationstPolylineEncodedMultiPolygon() throws IOException {
+  public void testStationsPolylineEncodedMultiPolygon() throws IOException {
     GraphQLResponse response = graphQLTestTemplate.postForResource(
       "stations_polyline_encoded_multi_polygon_query.graphql"
     );
