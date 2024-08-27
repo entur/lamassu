@@ -93,7 +93,6 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
     queryParams.setLat(lat);
     queryParams.setLon(lon);
     queryParams.setRange(range);
-    queryParams.setCount(count);
 
     var filterParams = new VehicleFilterParameters();
     filterParams.setCodespaces(codespaces);
@@ -103,6 +102,7 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
     filterParams.setPropulsionTypes(propulsionTypes);
     filterParams.setIncludeReserved(includeReserved);
     filterParams.setIncludeDisabled(includeDisabled);
+    filterParams.setCount(count);
 
     logger.debug("getVehicles called query={} filter={}", queryParams, filterParams);
 
@@ -138,7 +138,6 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
     queryParams.setLat(lat);
     queryParams.setLon(lon);
     queryParams.setRange(range);
-    queryParams.setCount(count);
 
     var filterParams = new StationFilterParameters();
     filterParams.setCodespaces(codespaces);
@@ -146,6 +145,7 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
     filterParams.setOperators(operators);
     filterParams.setAvailableFormFactors(availableFormFactors);
     filterParams.setAvailablePropulsionTypes(availablePropulsionTypes);
+    filterParams.setCount(count);
 
     logger.debug("getStations called query={} filter={}", queryParams, filterParams);
 

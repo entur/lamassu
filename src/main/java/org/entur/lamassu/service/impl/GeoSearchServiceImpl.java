@@ -52,7 +52,6 @@ public class GeoSearchServiceImpl implements GeoSearchService {
     Double longitude = rangeQueryParameters.getLon();
     Double latitude = rangeQueryParameters.getLat();
     Double range = rangeQueryParameters.getRange();
-    Integer count = rangeQueryParameters.getCount();
 
     List<VehicleSpatialIndexId> indexIds = vehicleSpatialIndex.radius(
       longitude,
@@ -66,6 +65,8 @@ public class GeoSearchServiceImpl implements GeoSearchService {
       .stream()
       .filter(Objects::nonNull)
       .filter(id -> SpatialIndexIdFilter.filterVehicle(id, vehicleFilterParameters));
+
+    Integer count = vehicleFilterParameters.getCount();
 
     if (count != null) {
       stream = stream.limit(count.longValue());
@@ -86,7 +87,6 @@ public class GeoSearchServiceImpl implements GeoSearchService {
     Double longitude = rangeQueryParameters.getLon();
     Double latitude = rangeQueryParameters.getLat();
     Double range = rangeQueryParameters.getRange();
-    Integer count = rangeQueryParameters.getCount();
 
     List<StationSpatialIndexId> indexIds = stationSpatialIndex.radius(
       longitude,
@@ -100,6 +100,8 @@ public class GeoSearchServiceImpl implements GeoSearchService {
       .stream()
       .filter(Objects::nonNull)
       .filter(id -> SpatialIndexIdFilter.filterStation(id, filterParameters));
+
+    Integer count = filterParameters.getCount();
 
     if (count != null) {
       stream = stream.limit(count.longValue());
