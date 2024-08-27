@@ -45,7 +45,7 @@ public class GeoSearchServiceImpl implements GeoSearchService {
   }
 
   @Override
-  public List<Vehicle> getVehiclesNearby(
+  public List<Vehicle> getVehiclesWithinRange(
     RangeQueryParameters rangeQueryParameters,
     VehicleFilterParameters vehicleFilterParameters
   ) {
@@ -80,7 +80,7 @@ public class GeoSearchServiceImpl implements GeoSearchService {
   }
 
   @Override
-  public List<Station> getStationsNearby(
+  public List<Station> getStationsWithinRange(
     RangeQueryParameters rangeQueryParameters,
     StationFilterParameters filterParameters
   ) {

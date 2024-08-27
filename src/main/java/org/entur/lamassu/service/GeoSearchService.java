@@ -6,11 +6,11 @@ import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.Vehicle;
 
 public interface GeoSearchService {
-  List<Vehicle> getVehiclesNearby(
+  List<Vehicle> getVehiclesWithinRange(
     RangeQueryParameters rangeQueryParameters,
     VehicleFilterParameters vehicleFilterParameters
   );
-  List<Station> getStationsNearby(
+  List<Station> getStationsWithinRange(
     RangeQueryParameters rangeQueryParameters,
     StationFilterParameters stationFilterParameters
   );

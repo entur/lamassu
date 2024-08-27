@@ -106,7 +106,7 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
 
     logger.debug("getVehicles called query={} filter={}", queryParams, filterParams);
 
-    return geoSearchService.getVehiclesNearby(queryParams, filterParams);
+    return geoSearchService.getVehiclesWithinRange(queryParams, filterParams);
   }
 
   public Vehicle getVehicle(String id) {
@@ -149,7 +149,7 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
 
     logger.debug("getStations called query={} filter={}", queryParams, filterParams);
 
-    return geoSearchService.getStationsNearby(queryParams, filterParams);
+    return geoSearchService.getStationsWithinRange(queryParams, filterParams);
   }
 
   public Station getStation(String id) {
