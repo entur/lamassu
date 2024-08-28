@@ -3,7 +3,7 @@
         ids: ["TST:Station:1"]
     ) {
         id,
-        polylineEncodedMultiPolygon
+        stationAreaPolylineEncodedMultiPolygon
     }
 }
 ,
