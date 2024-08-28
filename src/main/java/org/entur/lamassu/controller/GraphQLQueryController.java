@@ -18,6 +18,7 @@ import org.entur.lamassu.model.entities.PropulsionType;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.entur.lamassu.service.BoundingBoxQueryParameters;
 import org.entur.lamassu.service.FeedProviderService;
 import org.entur.lamassu.service.GeoSearchService;
 import org.entur.lamassu.service.RangeQueryParameters;
@@ -71,6 +72,10 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
     Double lat,
     Double lon,
     Double range,
+    Double minimumLatitude,
+    Double minimumLongitude,
+    Double maximumLatitude,
+    Double maximumLongitude,
     Integer count,
     List<String> codespaces,
     List<String> systems,
@@ -84,15 +89,9 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
       return vehicleCache.getAll(ids);
     }
 
-    validateRange(range);
     validateCount(count);
     validateCodespaces(codespaces);
     validateSystems(systems);
-
-    var queryParams = new RangeQueryParameters();
-    queryParams.setLat(lat);
-    queryParams.setLon(lon);
-    queryParams.setRange(range);
 
     var filterParams = new VehicleFilterParameters();
     filterParams.setCodespaces(codespaces);
@@ -104,9 +103,53 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
     filterParams.setIncludeDisabled(includeDisabled);
     filterParams.setCount(count);
 
-    logger.debug("getVehicles called query={} filter={}", queryParams, filterParams);
+    if (
+      isBoundingBoxSearch(
+        minimumLatitude,
+        minimumLongitude,
+        maximumLatitude,
+        maximumLongitude
+      )
+    ) {
+      var boundingBoxQueryParameters = new BoundingBoxQueryParameters();
+      boundingBoxQueryParameters.setMinimumLatitude(minimumLatitude);
+      boundingBoxQueryParameters.setMinimumLongitude(minimumLongitude);
+      boundingBoxQueryParameters.setMaximumLatitude(maximumLatitude);
+      boundingBoxQueryParameters.setMaximumLongitude(maximumLongitude);
 
-    return geoSearchService.getVehiclesWithinRange(queryParams, filterParams);
+      logger.debug(
+        "getVehicles called boundingBoxQueryParameters={} filter={}",
+        boundingBoxQueryParameters,
+        filterParams
+      );
+
+      return geoSearchService.getVehiclesInBoundingBox(
+        boundingBoxQueryParameters,
+        filterParams
+      );
+    } else if (range != null && lat != null && lon != null) {
+      // add conditional to verify range search
+      validateRange(range);
+
+      var rangeQueryParameters = new RangeQueryParameters();
+      rangeQueryParameters.setLat(lat);
+      rangeQueryParameters.setLon(lon);
+      rangeQueryParameters.setRange(range);
+
+      logger.debug(
+        "getVehicles called rangeQueryParameters={} filter={}",
+        rangeQueryParameters,
+        filterParams
+      );
+
+      return geoSearchService.getVehiclesWithinRange(rangeQueryParameters, filterParams);
+    } else {
+      throw new GraphqlErrorException.Builder()
+        .message(
+          "You must either specify lat, lon and range OR minimumLatitude, minimumLongitude, maximumLatitude and maximumLongitude"
+        )
+        .build();
+    }
   }
 
   public Vehicle getVehicle(String id) {
@@ -118,6 +161,10 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
     Double lat,
     Double lon,
     Double range,
+    Double minimumLatitude,
+    Double minimumLongitude,
+    Double maximumLatitude,
+    Double maximumLongitude,
     Integer count,
     List<String> codespaces,
     List<String> systems,
@@ -129,15 +176,9 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
       return stationCache.getAll(ids);
     }
 
-    validateRange(range);
     validateCount(count);
     validateCodespaces(codespaces);
     validateSystems(systems);
-
-    var queryParams = new RangeQueryParameters();
-    queryParams.setLat(lat);
-    queryParams.setLon(lon);
-    queryParams.setRange(range);
 
     var filterParams = new StationFilterParameters();
     filterParams.setCodespaces(codespaces);
@@ -147,9 +188,66 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
     filterParams.setAvailablePropulsionTypes(availablePropulsionTypes);
     filterParams.setCount(count);
 
-    logger.debug("getStations called query={} filter={}", queryParams, filterParams);
+    if (
+      isBoundingBoxSearch(
+        minimumLatitude,
+        minimumLongitude,
+        maximumLatitude,
+        maximumLongitude
+      )
+    ) {
+      // TODO validate params, e.g.  [(170,60), (-170,70)]
+      var boundingBoxQueryParameters = new BoundingBoxQueryParameters();
+      boundingBoxQueryParameters.setMinimumLatitude(minimumLatitude);
+      boundingBoxQueryParameters.setMinimumLongitude(minimumLongitude);
+      boundingBoxQueryParameters.setMaximumLatitude(maximumLatitude);
+      boundingBoxQueryParameters.setMaximumLongitude(maximumLongitude);
+      logger.debug(
+        "getStations called boundingBoxQueryParameters={} filter={}",
+        boundingBoxQueryParameters,
+        filterParams
+      );
+      return geoSearchService.getStationsInBoundingBox(
+        boundingBoxQueryParameters,
+        filterParams
+      );
+    } else if (isRangeSearch(range, lat, lon)) {
+      validateRange(range);
+      var rangeQueryParameters = new RangeQueryParameters();
+      rangeQueryParameters.setLat(lat);
+      rangeQueryParameters.setLon(lon);
+      rangeQueryParameters.setRange(range);
+      logger.debug(
+        "getStations called rangeQueryParameters={} filter={}",
+        rangeQueryParameters,
+        filterParams
+      );
+      return geoSearchService.getStationsWithinRange(rangeQueryParameters, filterParams);
+    } else {
+      throw new GraphqlErrorException.Builder()
+        .message(
+          "You must either specify lat, lon and range OR minimumLatitude, minimumLongitude, maximumLatitude and maximumLongitude"
+        )
+        .build();
+    }
+  }
 
-    return geoSearchService.getStationsWithinRange(queryParams, filterParams);
+  private boolean isRangeSearch(Double range, Double lat, Double lon) {
+    return range != null && lat != null && lon != null;
+  }
+
+  private boolean isBoundingBoxSearch(
+    Double minimumLatitude,
+    Double minimumLongitude,
+    Double maximumLatitude,
+    Double maximumLongitude
+  ) {
+    return (
+      minimumLatitude != null &&
+      minimumLongitude != null &&
+      maximumLatitude != null &&
+      maximumLongitude != null
+    );
   }
 
   public Station getStation(String id) {
