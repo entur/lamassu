@@ -58,8 +58,14 @@ public class GeoUtils {
     ReferencedEnvelope envelope
   ) {
     RangeQueryParameters rangeQueryParameters = new RangeQueryParameters();
+
+    // The center of the circle that encloses the envelope is equal to the center
+    // of the envelope itself
     rangeQueryParameters.setLon(envelope.getCenterX());
     rangeQueryParameters.setLat(envelope.getCenterY());
+
+    // The diameter of the circle that encloses the envelope is equal to the diameter
+    // of the envelope itself, hence half the diameter equals the circle's radius
     rangeQueryParameters.setRange(getDiameter(envelope) / 2.0);
     return rangeQueryParameters;
   }
