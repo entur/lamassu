@@ -113,7 +113,7 @@ public class GraphQLIntegrationTest extends AbstractIntegrationTestBase {
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(
       "gxk~wBiiiyRdBM@oHaBLEnH",
-      response.get("$.data.stations[0].polylineEncodedMultiPolygon[0][0]")
+      response.get("$.data.stations[0].stationAreaPolylineEncodedMultiPolygon[0][0]")
     );
   }
 
