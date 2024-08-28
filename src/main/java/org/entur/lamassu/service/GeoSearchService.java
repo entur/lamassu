@@ -10,8 +10,16 @@ public interface GeoSearchService {
     RangeQueryParameters rangeQueryParameters,
     VehicleFilterParameters vehicleFilterParameters
   );
+  List<Vehicle> getVehiclesInBoundingBox(
+    BoundingBoxQueryParameters boundingBoxQueryParameters,
+    VehicleFilterParameters vehicleFilterParameters
+  );
   List<Station> getStationsWithinRange(
     RangeQueryParameters rangeQueryParameters,
+    StationFilterParameters stationFilterParameters
+  );
+  List<Station> getStationsInBoundingBox(
+    BoundingBoxQueryParameters boundingBoxQueryParameters,
     StationFilterParameters stationFilterParameters
   );
   Collection<String> getVehicleSpatialIndexOrphans();

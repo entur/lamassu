@@ -29,5 +29,4 @@ public class RangeQueryParameters {
   public void setRange(Double range) {
     this.range = range;
   }
-
 }

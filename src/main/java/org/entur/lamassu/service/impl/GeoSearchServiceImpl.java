@@ -13,11 +13,13 @@ import org.entur.lamassu.cache.VehicleSpatialIndex;
 import org.entur.lamassu.cache.VehicleSpatialIndexId;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.Vehicle;
+import org.entur.lamassu.service.BoundingBoxQueryParameters;
 import org.entur.lamassu.service.GeoSearchService;
 import org.entur.lamassu.service.RangeQueryParameters;
 import org.entur.lamassu.service.StationFilterParameters;
 import org.entur.lamassu.service.VehicleFilterParameters;
 import org.entur.lamassu.util.SpatialIndexIdFilter;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.redisson.api.GeoOrder;
 import org.redisson.api.GeoUnit;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,6 +82,27 @@ public class GeoSearchServiceImpl implements GeoSearchService {
   }
 
   @Override
+  public List<Vehicle> getVehiclesInBoundingBox(
+    BoundingBoxQueryParameters boundingBoxQueryParameters,
+    VehicleFilterParameters vehicleFilterParameters
+  ) {
+    ReferencedEnvelope envelope = GeoUtils.mapToEnvelope(boundingBoxQueryParameters);
+    RangeQueryParameters rangeQueryParameters = GeoUtils.mapToRangeQueryParameters(
+      envelope
+    );
+
+    List<Vehicle> vehicles = getVehiclesWithinRange(
+      rangeQueryParameters,
+      vehicleFilterParameters
+    );
+
+    return vehicles
+      .stream()
+      .filter(vehicle -> envelope.contains(vehicle.getLon(), vehicle.getLat()))
+      .toList();
+  }
+
+  @Override
   public List<Station> getStationsWithinRange(
     RangeQueryParameters rangeQueryParameters,
     StationFilterParameters filterParameters
@@ -112,6 +135,25 @@ public class GeoSearchServiceImpl implements GeoSearchService {
       .collect(Collectors.toSet());
 
     return stationCache.getAll(stationIds);
+  }
+
+  @Override
+  public List<Station> getStationsInBoundingBox(
+    BoundingBoxQueryParameters boundingBoxQueryParameters,
+    StationFilterParameters stationFilterParameters
+  ) {
+    ReferencedEnvelope envelope = GeoUtils.mapToEnvelope(boundingBoxQueryParameters);
+    RangeQueryParameters rangeQueryParameters = GeoUtils.mapToRangeQueryParameters(
+      envelope
+    );
+    List<Station> stations = getStationsWithinRange(
+      rangeQueryParameters,
+      stationFilterParameters
+    );
+    return stations
+      .stream()
+      .filter(station -> envelope.contains(station.getLon(), station.getLat()))
+      .toList();
   }
 
   @Override
