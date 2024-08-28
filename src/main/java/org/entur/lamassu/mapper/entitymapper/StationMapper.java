@@ -221,7 +221,7 @@ public class StationMapper {
     );
     station.setSystem(system);
     station.setPricingPlans(pricingPlans);
-    station.setPolylineEncodedMultiPolygon(
+    station.setStationAreaPolylineEncodedMultiPolygon(
       station.getStationArea() != null
         ? station
           .getStationArea()
