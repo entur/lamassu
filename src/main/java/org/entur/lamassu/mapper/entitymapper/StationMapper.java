@@ -18,6 +18,8 @@
 
 package org.entur.lamassu.mapper.entitymapper;
 
+import com.mapbox.geojson.Point;
+import com.mapbox.geojson.utils.PolylineUtils;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -219,6 +221,28 @@ public class StationMapper {
     );
     station.setSystem(system);
     station.setPricingPlans(pricingPlans);
+    station.setStationAreaPolylineEncodedMultiPolygon(
+      station.getStationArea() != null
+        ? station
+          .getStationArea()
+          .getCoordinates()
+          .stream()
+          .map(polygon ->
+            polygon
+              .stream()
+              .map(ring ->
+                ring
+                  .stream()
+                  .map(coords -> Point.fromLngLat(coords.get(0), coords.get(1)))
+                  .toList()
+              )
+              .map(ring -> PolylineUtils.encode(ring, 6))
+              .toList()
+          )
+          .toList()
+        : Collections.emptyList()
+    );
+
     return station;
   }
 

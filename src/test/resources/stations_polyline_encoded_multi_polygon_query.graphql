@@ -1,0 +1,9 @@
+{
+    stations(
+        ids: ["TST:Station:1"]
+    ) {
+        id,
+        stationAreaPolylineEncodedMultiPolygon
+    }
+}
+,
