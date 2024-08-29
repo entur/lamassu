@@ -30,6 +30,7 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateXY;
 
 public class GeoUtils {
+  private GeoUtils() {}
 
   /**
    * Map the bounding box parameters to a geometric envelope
