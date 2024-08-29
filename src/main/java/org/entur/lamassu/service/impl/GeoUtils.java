@@ -78,8 +78,7 @@ public class GeoUtils {
    */
   private static double getDiameter(ReferencedEnvelope envelope) {
     try {
-      // TODO GeodeticCalculator not thread-safe, should be pooled
-      GeodeticCalculator gc = new GeodeticCalculator(DefaultGeographicCRS.WGS84);
+      GeodeticCalculator gc = GeodeticCalculatorSingleton.getInstance();
       Coordinate start = new CoordinateXY(envelope.getMinX(), envelope.getMinY());
       Coordinate end = new CoordinateXY(envelope.getMaxX(), envelope.getMaxY());
       gc.setStartingPosition(JTS.toDirectPosition(start, DefaultGeographicCRS.WGS84));
@@ -87,6 +86,19 @@ public class GeoUtils {
       return gc.getOrthodromicDistance();
     } catch (TransformException e) {
       throw new IllegalArgumentException(e);
+    }
+  }
+
+  // GeodeticCalculator not thread-safe, so we make thread-local singletons
+  private static class GeodeticCalculatorSingleton {
+
+    private GeodeticCalculatorSingleton() {}
+
+    private static final ThreadLocal<GeodeticCalculator> _threadLocal =
+      ThreadLocal.withInitial(() -> new GeodeticCalculator(DefaultGeographicCRS.WGS84));
+
+    public static GeodeticCalculator getInstance() {
+      return _threadLocal.get();
     }
   }
 }
