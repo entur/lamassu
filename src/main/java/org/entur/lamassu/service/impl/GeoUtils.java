@@ -68,15 +68,15 @@ public class GeoUtils {
     rangeQueryParameters.setLon(envelope.getCenterX());
     rangeQueryParameters.setLat(envelope.getCenterY());
 
-    // The diameter of the circle that encloses the envelope is equal to the diameter
-    // of the envelope itself, hence half the diameter equals the circle's radius
+    // The diameter of the circle that encloses the envelope is equal to the length
+    // of the diagonal of the envelope, hence half this length equals the circle's radius
     rangeQueryParameters.setRange(getDiagonalLength(envelope) / 2.0);
     return rangeQueryParameters;
   }
 
   /**
    * Find the great circle distance between the southwest and northeast corners of the envelope,
-   * which we called the diameter of the envelope.
+   * which we called the diagonal length of the envelope.
    * @param envelope
    * @return
    */
