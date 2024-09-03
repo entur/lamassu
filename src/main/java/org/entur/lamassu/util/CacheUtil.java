@@ -50,6 +50,17 @@ public class CacheUtil {
     String feed,
     int now
   ) {
+    return getMaxAge(clazz, data, systemId, feed, now, 0);
+  }
+
+  public static int getMaxAge(
+    Class<?> clazz,
+    Object data,
+    String systemId,
+    String feed,
+    int now,
+    int minimumTtl
+  ) {
     int maxAge = 60;
     try {
       int lastUpdated;
@@ -63,7 +74,7 @@ public class CacheUtil {
 
       Integer ttl = (Integer) clazz.getMethod("getTtl").invoke(data);
 
-      maxAge = getTtl(now, lastUpdated, ttl, 0);
+      maxAge = getTtl(now, lastUpdated, ttl, minimumTtl);
     } catch (
       IllegalAccessException
       | InvocationTargetException
