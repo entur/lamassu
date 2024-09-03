@@ -18,6 +18,8 @@
 
 package org.entur.lamassu.service.impl;
 
+import java.util.LinkedList;
+import java.util.Queue;
 import org.entur.lamassu.service.BoundingBoxQueryParameters;
 import org.entur.lamassu.service.RangeQueryParameters;
 import org.geotools.api.referencing.operation.TransformException;
@@ -30,6 +32,7 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateXY;
 
 public class GeoUtils {
+
   private GeoUtils() {}
 
   /**
@@ -78,28 +81,53 @@ public class GeoUtils {
    * @return
    */
   private static double getDiameter(ReferencedEnvelope envelope) {
+    double distance = 0.0;
     try {
-      GeodeticCalculator gc = GeodeticCalculatorSingleton.getInstance();
+      GeodeticCalculator gc = GeodeticCalculatorPoolManager.get();
       Coordinate start = new CoordinateXY(envelope.getMinX(), envelope.getMinY());
       Coordinate end = new CoordinateXY(envelope.getMaxX(), envelope.getMaxY());
       gc.setStartingPosition(JTS.toDirectPosition(start, DefaultGeographicCRS.WGS84));
       gc.setDestinationPosition(JTS.toDirectPosition(end, DefaultGeographicCRS.WGS84));
-      return gc.getOrthodromicDistance();
+      distance = gc.getOrthodromicDistance();
+      GeodeticCalculatorPoolManager.release(gc);
     } catch (TransformException e) {
       throw new IllegalArgumentException(e);
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
     }
+
+    if (distance == 0.0) {
+      throw new IllegalStateException();
+    }
+
+    return distance;
   }
 
-  // GeodeticCalculator not thread-safe, so we make thread-local singletons
-  private static class GeodeticCalculatorSingleton {
+  private static class GeodeticCalculatorPoolManager {
 
-    private GeodeticCalculatorSingleton() {}
+    private static final Queue<GeodeticCalculator> QUEUE = new LinkedList<>();
+    private static final int POOL_SIZE = 10;
 
-    private static final ThreadLocal<GeodeticCalculator> _threadLocal =
-      ThreadLocal.withInitial(() -> new GeodeticCalculator(DefaultGeographicCRS.WGS84));
+    static {
+      for (int i = 0; i < POOL_SIZE; i++) {
+        QUEUE.add(new GeodeticCalculator(DefaultGeographicCRS.WGS84));
+      }
+    }
 
-    public static GeodeticCalculator getInstance() {
-      return _threadLocal.get();
+    private static GeodeticCalculator get() throws InterruptedException {
+      synchronized (QUEUE) {
+        while (QUEUE.isEmpty()) {
+          QUEUE.wait();
+        }
+        return QUEUE.poll();
+      }
+    }
+
+    private static void release(GeodeticCalculator gc) {
+      synchronized (QUEUE) {
+        QUEUE.offer(gc);
+        QUEUE.notifyAll();
+      }
     }
   }
 }
