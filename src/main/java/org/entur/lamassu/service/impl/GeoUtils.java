@@ -70,7 +70,7 @@ public class GeoUtils {
 
     // The diameter of the circle that encloses the envelope is equal to the diameter
     // of the envelope itself, hence half the diameter equals the circle's radius
-    rangeQueryParameters.setRange(getDiameter(envelope) / 2.0);
+    rangeQueryParameters.setRange(getDiagonalLength(envelope) / 2.0);
     return rangeQueryParameters;
   }
 
@@ -80,7 +80,7 @@ public class GeoUtils {
    * @param envelope
    * @return
    */
-  private static double getDiameter(ReferencedEnvelope envelope) {
+  private static double getDiagonalLength(ReferencedEnvelope envelope) {
     double distance = 0.0;
     try {
       GeodeticCalculator gc = GeodeticCalculatorPoolManager.get();
