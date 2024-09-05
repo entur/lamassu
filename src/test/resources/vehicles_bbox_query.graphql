@@ -1,0 +1,14 @@
+{
+    vehicles(
+        minimumLongitude: 10.0,
+        minimumLatitude: 59.0,
+        maximumLongitude: 11.0
+        maximumLatitude: 60.0
+        count: 2,
+        includeDisabled: true
+    ) {
+        id
+        lat
+        lon
+    }
+}
