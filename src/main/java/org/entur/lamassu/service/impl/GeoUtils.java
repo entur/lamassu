@@ -93,7 +93,10 @@ public class GeoUtils {
       throw new IllegalArgumentException(e);
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
-      throw new IllegalStateException("Unable to calculate diagonal length of envelope", e);
+      throw new IllegalStateException(
+        "Unable to calculate diagonal length of envelope",
+        e
+      );
     } finally {
       GeodeticCalculatorPoolManager.release(gc);
     }
