@@ -18,8 +18,9 @@
 
 package org.entur.lamassu.service.impl;
 
-import java.util.LinkedList;
-import java.util.Queue;
+import org.apache.commons.pool.BasePoolableObjectFactory;
+import org.apache.commons.pool.PoolableObjectFactory;
+import org.apache.commons.pool.impl.GenericObjectPool;
 import org.entur.lamassu.service.BoundingBoxQueryParameters;
 import org.entur.lamassu.service.RangeQueryParameters;
 import org.geotools.api.referencing.operation.TransformException;
@@ -83,7 +84,7 @@ public class GeoUtils {
   private static double getDiagonalLength(ReferencedEnvelope envelope) {
     GeodeticCalculator gc = null;
     try {
-      gc = GeodeticCalculatorPoolManager.get();
+      gc = GeodeticCalculatorPoolManager.getInstance().get();
       Coordinate start = new CoordinateXY(envelope.getMinX(), envelope.getMinY());
       Coordinate end = new CoordinateXY(envelope.getMaxX(), envelope.getMaxY());
       gc.setStartingPosition(JTS.toDirectPosition(start, DefaultGeographicCRS.WGS84));
@@ -97,37 +98,49 @@ public class GeoUtils {
         "Unable to calculate diagonal length of envelope",
         e
       );
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     } finally {
-      GeodeticCalculatorPoolManager.release(gc);
+      GeodeticCalculatorPoolManager.getInstance().release(gc);
     }
   }
 
   private static class GeodeticCalculatorPoolManager {
 
-    private static final Queue<GeodeticCalculator> QUEUE = new LinkedList<>();
-    private static final int POOL_SIZE = 10;
+    // pool size can be high, purpose is to not share instances between threads
+    private static final int POOL_SIZE = 100;
+    private static final GeodeticCalculatorPoolManager INSTANCE =
+      new GeodeticCalculatorPoolManager();
 
-    static {
-      for (int i = 0; i < POOL_SIZE; i++) {
-        QUEUE.add(new GeodeticCalculator(DefaultGeographicCRS.WGS84));
-      }
+    private final GenericObjectPool<GeodeticCalculator> pool;
+
+    private GeodeticCalculatorPoolManager() {
+      GenericObjectPool.Config config = new GenericObjectPool.Config();
+      config.maxActive = POOL_SIZE;
+      PoolableObjectFactory<GeodeticCalculator> geodeticCalculatorFactory =
+        new BasePoolableObjectFactory<>() {
+          @Override
+          public GeodeticCalculator makeObject() {
+            return new GeodeticCalculator(DefaultGeographicCRS.WGS84);
+          }
+        };
+
+      pool = new GenericObjectPool<>(geodeticCalculatorFactory, config);
     }
 
-    private static GeodeticCalculator get() throws InterruptedException {
-      synchronized (QUEUE) {
-        while (QUEUE.isEmpty()) {
-          QUEUE.wait();
-        }
-        return QUEUE.poll();
-      }
+    public static GeodeticCalculatorPoolManager getInstance() {
+      return INSTANCE;
     }
 
-    private static void release(GeodeticCalculator gc) {
-      if (gc != null) {
-        synchronized (QUEUE) {
-          QUEUE.offer(gc);
-          QUEUE.notifyAll();
-        }
+    private GeodeticCalculator get() throws Exception {
+      return pool.borrowObject();
+    }
+
+    private void release(GeodeticCalculator gc) {
+      try {
+        pool.returnObject(gc);
+      } catch (Exception e) {
+        throw new RuntimeException(e);
       }
     }
   }
