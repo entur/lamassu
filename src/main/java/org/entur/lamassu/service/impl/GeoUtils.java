@@ -82,16 +82,18 @@ public class GeoUtils {
    * @return
    */
   private static double getDiagonalLength(ReferencedEnvelope envelope) {
-    GeodeticCalculator gc = null;
+    GeodeticCalculator geodeticCalculator = null;
     try {
-      gc = GeodeticCalculatorPoolManager.getInstance().get();
+      geodeticCalculator = GeodeticCalculatorPoolManager.getInstance().get();
       Coordinate start = new CoordinateXY(envelope.getMinX(), envelope.getMinY());
       Coordinate end = new CoordinateXY(envelope.getMaxX(), envelope.getMaxY());
-      gc.setStartingPosition(JTS.toDirectPosition(start, DefaultGeographicCRS.WGS84));
-      gc.setDestinationPosition(JTS.toDirectPosition(end, DefaultGeographicCRS.WGS84));
-      return gc.getOrthodromicDistance();
-    } catch (TransformException e) {
-      throw new IllegalArgumentException(e);
+      geodeticCalculator.setStartingPosition(
+        JTS.toDirectPosition(start, DefaultGeographicCRS.WGS84)
+      );
+      geodeticCalculator.setDestinationPosition(
+        JTS.toDirectPosition(end, DefaultGeographicCRS.WGS84)
+      );
+      return geodeticCalculator.getOrthodromicDistance();
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       throw new IllegalStateException(
@@ -99,9 +101,12 @@ public class GeoUtils {
         e
       );
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      throw new IllegalStateException(
+        "Unable to calculate diagonal length of envelope",
+        e
+      );
     } finally {
-      GeodeticCalculatorPoolManager.getInstance().release(gc);
+      GeodeticCalculatorPoolManager.getInstance().release(geodeticCalculator);
     }
   }
 
