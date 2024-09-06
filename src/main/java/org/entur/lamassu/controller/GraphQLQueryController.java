@@ -127,8 +127,7 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
         boundingBoxQueryParameters,
         filterParams
       );
-    } else if (range != null && lat != null && lon != null) {
-      // add conditional to verify range search
+    } else if (isRangeSearch(range, lat, lon)) {
       validateRange(range);
 
       var rangeQueryParameters = new RangeQueryParameters();
@@ -196,7 +195,6 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
         maximumLongitude
       )
     ) {
-      // TODO validate params, e.g.  [(170,60), (-170,70)]
       var boundingBoxQueryParameters = new BoundingBoxQueryParameters();
       boundingBoxQueryParameters.setMinimumLatitude(minimumLatitude);
       boundingBoxQueryParameters.setMinimumLongitude(minimumLongitude);
