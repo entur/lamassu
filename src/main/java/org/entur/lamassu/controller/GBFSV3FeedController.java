@@ -31,6 +31,7 @@ import org.mobilitydata.gbfs.v3_0.gbfs.GBFSFeed;
 import org.mobilitydata.gbfs.v3_0.gbfs.GBFSGbfs;
 import org.mobilitydata.gbfs.v3_0.manifest.GBFSManifest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +44,9 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 @RequestMapping({ "/gbfs/v3" })
 public class GBFSV3FeedController {
+
+  @Value("${org.entur.lamassu.gbfs.cache-control.minimum-ttl:0}")
+  private int cacheControlMinimumTtl;
 
   private final SystemDiscoveryService systemDiscoveryService;
   private final FeedProviderService feedProviderService;
@@ -89,7 +93,8 @@ public class GBFSV3FeedController {
                 data,
                 systemId,
                 feed,
-                (int) Instant.now().getEpochSecond()
+                (int) Instant.now().getEpochSecond(),
+                cacheControlMinimumTtl
               ),
               TimeUnit.SECONDS
             )
