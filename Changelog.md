@@ -22,6 +22,7 @@ based on merged pull requests. Search GitHub issues and pull requests for smalle
 - Map current_range_meters as provided instead of setting a missing value to 0.0 [#512](https://github.com/entur/lamassu/pull/512)
 - Improve/id validation [#516](https://github.com/entur/lamassu/pull/516)
 - Encoding stations.stationArea with polyline [#526](https://github.com/entur/lamassu/pull/526)
+- Improve: allow configurable minimum max-age for cache-control directive [#530](https://github.com/entur/lamassu/pull/530)
   [](AUTOMATIC_CHANGELOG_PLACEHOLDER_DO_NOT_REMOVE)
   
 ## 1.0.0
