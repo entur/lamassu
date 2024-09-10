@@ -30,6 +30,9 @@
                                     "serviceContext": {
                                         "service": "lamassu"
                                     },
+                                    "mdc": {
+                                        "systemId": "%X{systemId}"
+                                    },
                                     "message": "%message\n%ex{full}",
                                     "severity": "%level",
                                     "reportLocation": {
