@@ -25,6 +25,7 @@ public class FilterParameters {
   private List<String> codespaces;
   private List<String> systems;
   private List<String> operators;
+  private Integer count;
 
   public List<String> getCodespaces() {
     return codespaces;
@@ -48,5 +49,13 @@ public class FilterParameters {
 
   public void setOperators(List<String> operators) {
     this.operators = operators;
+  }
+
+  public Integer getCount() {
+    return count;
+  }
+
+  public void setCount(Integer count) {
+    this.count = count;
   }
 }

@@ -1,0 +1,14 @@
+{
+    stations(
+        minimumLongitude: 44.0,
+        minimumLatitude: 11.0,
+        maximumLongitude: 45.0
+        maximumLatitude: 12.0
+        count: 1
+    ) {
+        id
+        lat
+        lon
+    }
+}
+,

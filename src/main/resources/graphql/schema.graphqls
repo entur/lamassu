@@ -18,6 +18,18 @@ type Query {
         "Search radius in meters. Required unless using 'ids'"
         range: Int
 
+        "Bounding box minimum latitude"
+        minimumLatitude: Float
+
+        "Bounding box minimum longitude"
+        minimumLongitude: Float
+
+        "Bounding box maximum latitude"
+        maximumLatitude: Float
+
+        "Bounding box maximum longitude"
+        maximumLongitude: Float
+
         "Max results to return."
         count: Int
 
@@ -57,6 +69,18 @@ type Query {
 
         "Search radius in meters. Required unless using 'ids'"
         range: Int
+
+        "Bounding box minimum latitude"
+        minimumLatitude: Float
+
+        "Bounding box minimum longitude"
+        minimumLongitude: Float
+
+        "Bounding box maximum latitude"
+        maximumLatitude: Float
+
+        "Bounding box maximum longitude"
+        maximumLongitude: Float
 
         "Max results to return."
         count: Int

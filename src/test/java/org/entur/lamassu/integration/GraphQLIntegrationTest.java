@@ -191,4 +191,35 @@ public class GraphQLIntegrationTest extends AbstractIntegrationTestBase {
         .isEmpty()
     );
   }
+
+  @Test
+  public void testVehiclesBoundingBoxQuery() throws IOException {
+    GraphQLResponse response = graphQLTestTemplate.postForResource(
+      "vehicles_bbox_query.graphql"
+    );
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+
+    assertEquals(
+      2,
+      JsonPath
+        .parse(response.getRawResponse().getBody())
+        .read("$.data.vehicles", List.class)
+        .size()
+    );
+  }
+
+  @Test
+  public void testStationsBoundingBoxQuery() throws IOException {
+    GraphQLResponse response = graphQLTestTemplate.postForResource(
+      "stations_bbox_query.graphql"
+    );
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(
+      1,
+      JsonPath
+        .parse(response.getRawResponse().getBody())
+        .read("$.data.stations", List.class)
+        .size()
+    );
+  }
 }
