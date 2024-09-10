@@ -23,6 +23,7 @@ based on merged pull requests. Search GitHub issues and pull requests for smalle
 - Improve/id validation [#516](https://github.com/entur/lamassu/pull/516)
 - Encoding stations.stationArea with polyline [#526](https://github.com/entur/lamassu/pull/526)
 - Improve: allow configurable minimum max-age for cache-control directive [#530](https://github.com/entur/lamassu/pull/530)
+- Add subscription update interceptor to add systemId to update logs [#518](https://github.com/entur/lamassu/pull/518)
   [](AUTOMATIC_CHANGELOG_PLACEHOLDER_DO_NOT_REMOVE)
   
 ## 1.0.0
