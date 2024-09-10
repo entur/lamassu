@@ -22,21 +22,22 @@ import org.entur.gbfs.SubscriptionUpdateInterceptor;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.slf4j.MDC;
 
-public class LoggingSubscriptionUpdateInterceptor implements SubscriptionUpdateInterceptor {
-    private final FeedProvider feedProvider;
+public class LoggingSubscriptionUpdateInterceptor
+  implements SubscriptionUpdateInterceptor {
 
-    public LoggingSubscriptionUpdateInterceptor(
-            FeedProvider feedProvider
-    ) {
-        this.feedProvider = feedProvider;
-    }
-    @Override
-    public void beforeUpdate() {
-        MDC.put("systemId", feedProvider.getSystemId());
-    }
+  private final FeedProvider feedProvider;
 
-    @Override
-    public void afterUpdate() {
-        MDC.remove("systemId");
-    }
+  public LoggingSubscriptionUpdateInterceptor(FeedProvider feedProvider) {
+    this.feedProvider = feedProvider;
+  }
+
+  @Override
+  public void beforeUpdate() {
+    MDC.put("systemId", feedProvider.getSystemId());
+  }
+
+  @Override
+  public void afterUpdate() {
+    MDC.remove("systemId");
+  }
 }
