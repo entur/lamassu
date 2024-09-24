@@ -3,7 +3,10 @@
 The changelog lists most feature changes between each release. The list is automatically created
 based on merged pull requests. Search GitHub issues and pull requests for smaller issues.
 
-## 1.1.0 (under development)
+## 1.2.0 (under development)
+  [](AUTOMATIC_CHANGELOG_PLACEHOLDER_DO_NOT_REMOVE)
+
+## 1.1.0
 
 - fix: do not skip vehicles without pricing plan id (fixes #396) [#397](https://github.com/entur/lamassu/pull/397)
 - Support consuming GBFS v3 [#389](https://github.com/entur/lamassu/pull/389)
@@ -25,8 +28,7 @@ based on merged pull requests. Search GitHub issues and pull requests for smalle
 - Improve: allow configurable minimum max-age for cache-control directive [#530](https://github.com/entur/lamassu/pull/530)
 - Add subscription update interceptor to add systemId to update logs [#518](https://github.com/entur/lamassu/pull/518)
 - Add bounding box search functionality to vehicles and stations queries [#527](https://github.com/entur/lamassu/pull/527)
-  [](AUTOMATIC_CHANGELOG_PLACEHOLDER_DO_NOT_REMOVE)
-  
+
 ## 1.0.0
 
 First major release
