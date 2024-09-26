@@ -24,6 +24,7 @@ import org.entur.lamassu.service.GeoSearchService;
 import org.entur.lamassu.service.RangeQueryParameters;
 import org.entur.lamassu.service.StationFilterParameters;
 import org.entur.lamassu.service.VehicleFilterParameters;
+import org.entur.lamassu.util.OperatorFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,8 +64,8 @@ public class GraphQLQueryController implements GraphQLQueryResolver {
       .collect(Collectors.toSet());
   }
 
-  public Collection<Operator> getOperators() {
-    return feedProviderService.getOperators();
+  public Collection<Operator> getOperators(List<FormFactor> formFactors) {
+    return feedProviderService.getOperators(new OperatorFilter(formFactors));
   }
 
   public Collection<Vehicle> getVehicles(
