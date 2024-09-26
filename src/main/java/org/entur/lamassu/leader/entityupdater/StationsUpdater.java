@@ -50,6 +50,7 @@ import org.mobilitydata.gbfs.v3_0.vehicle_types.GBFSVehicleTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -63,6 +64,12 @@ public class StationsUpdater {
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   private final MetricsService metricsService;
+
+  @Value("${org.entur.lamassu.stationEntityCacheMinimumTtl:30}")
+  private Integer stationEntityCacheMinimumTtl;
+
+  @Value("${org.entur.lamassu.stationEntityCacheMaximumTtl:300}")
+  private Integer stationEntityCacheMaximumTtl;
 
   @Autowired
   public StationsUpdater(
@@ -223,7 +230,8 @@ public class StationsUpdater {
           (int) Instant.now().getEpochSecond(),
           (int) lastUpdated.getTime() / 1000,
           ttl,
-          300
+          stationEntityCacheMinimumTtl,
+          stationEntityCacheMaximumTtl
         ),
         TimeUnit.SECONDS
       );
