@@ -185,6 +185,8 @@ public class FeedUpdater {
     } else {
       logger.info("Setup subscription complete systemId={}", feedProvider.getSystemId());
       metricsService.registerSubscriptionSetup(feedProvider, true);
+      // after registration, immediately update the feed
+      subscriptionManager.update(id);
     }
   }
 
