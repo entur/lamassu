@@ -5,6 +5,7 @@ based on merged pull requests. Search GitHub issues and pull requests for smalle
 
 ## 1.2.0 (under development)
 - Improve: introduce configurable stationEntityCacheMinimumTtl and stationEntityCacheMaximumTtl [#542](https://github.com/entur/lamassu/pull/542)
+- Update subscription immediately after registration [#592](https://github.com/entur/lamassu/pull/592)
   [](AUTOMATIC_CHANGELOG_PLACEHOLDER_DO_NOT_REMOVE)
 
 ## 1.1.0
