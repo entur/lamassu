@@ -79,7 +79,7 @@ public class StationGraphQLController extends BaseGraphQLController {
       maximumLongitude
     );
 
-    if (isRangeSearch(range, maximumLatitude, maximumLongitude)) {
+    if (isRangeSearch(range, lat, lon)) {
       var queryParams = new RangeQueryParameters(lat, lon, range);
       stations = geoSearchService.getStationsWithinRange(queryParams, filterParams);
     } else {
