@@ -124,9 +124,9 @@ public class SpatialIndexIdFilterTest {
   public void testVehicleTypesAvailableFilter() {
     var testId = aStationId();
     var params = new StationFilterParameters(
-      emptyList(),
-      emptyList(),
-      emptyList(),
+      null,
+      null,
+      null,
       null,
       List.of(FormFactor.SCOOTER),
       List.of(PropulsionType.ELECTRIC)
