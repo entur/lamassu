@@ -4,8 +4,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
@@ -17,7 +17,7 @@ public class GBFSRestIntegrationTest extends AbstractIntegrationTestBase {
   private MockMvc mockMvc;
 
   @Test
-  public void testFeedProviderDiscovery() throws Exception {
+  void testFeedProviderDiscovery() throws Exception {
     mockMvc
       .perform(get("/gbfs/v2").contentType("application/json"))
       .andExpect(status().isOk())
@@ -25,7 +25,7 @@ public class GBFSRestIntegrationTest extends AbstractIntegrationTestBase {
   }
 
   @Test
-  public void testGBFS() throws Exception {
+  void testGBFS() throws Exception {
     mockMvc
       .perform(get("/gbfs/v2/testatlantis/gbfs").contentType("application/json"))
       .andExpect(status().isOk())
@@ -33,8 +33,8 @@ public class GBFSRestIntegrationTest extends AbstractIntegrationTestBase {
   }
 
   @Test
-  @Ignore("gbfs_versions intentionally not mapped")
-  public void testGBFSVersions() throws Exception {
+  @Disabled("gbfs_versions intentionally not mapped")
+  void testGBFSVersions() throws Exception {
     mockMvc
       .perform(get("/gbfs/v2/testatlantis/gbfs_versions").contentType("application/json"))
       .andExpect(status().isOk())
@@ -42,7 +42,7 @@ public class GBFSRestIntegrationTest extends AbstractIntegrationTestBase {
   }
 
   @Test
-  public void testSystemInformation() throws Exception {
+  void testSystemInformation() throws Exception {
     mockMvc
       .perform(
         get("/gbfs/v2/testatlantis/system_information").contentType("application/json")
@@ -52,7 +52,7 @@ public class GBFSRestIntegrationTest extends AbstractIntegrationTestBase {
   }
 
   @Test
-  public void testVehicleTypes() throws Exception {
+  void testVehicleTypes() throws Exception {
     mockMvc
       .perform(get("/gbfs/v2/testatlantis/vehicle_types").contentType("application/json"))
       .andExpect(status().isOk())
@@ -63,7 +63,7 @@ public class GBFSRestIntegrationTest extends AbstractIntegrationTestBase {
   }
 
   @Test
-  public void testFreeBikeStatus() throws Exception {
+  void testFreeBikeStatus() throws Exception {
     mockMvc
       .perform(
         get("/gbfs/v2/testatlantis/free_bike_status").contentType("application/json")
@@ -79,7 +79,7 @@ public class GBFSRestIntegrationTest extends AbstractIntegrationTestBase {
   }
 
   @Test
-  public void testSystemRegions() throws Exception {
+  void testSystemRegions() throws Exception {
     mockMvc
       .perform(
         get("/gbfs/v2/testatlantis/system_regions").contentType("application/json")
@@ -89,7 +89,7 @@ public class GBFSRestIntegrationTest extends AbstractIntegrationTestBase {
   }
 
   @Test
-  public void testSystemPricingPlans() throws Exception {
+  void testSystemPricingPlans() throws Exception {
     mockMvc
       .perform(
         get("/gbfs/v2/testatlantis/system_pricing_plans").contentType("application/json")
@@ -99,7 +99,7 @@ public class GBFSRestIntegrationTest extends AbstractIntegrationTestBase {
   }
 
   @Test
-  public void testStationInformation() throws Exception {
+  void testStationInformation() throws Exception {
     mockMvc
       .perform(
         get("/gbfs/v2/testatlantis/station_information").contentType("application/json")
@@ -109,7 +109,7 @@ public class GBFSRestIntegrationTest extends AbstractIntegrationTestBase {
   }
 
   @Test
-  public void testStationStatus() throws Exception {
+  void testStationStatus() throws Exception {
     mockMvc
       .perform(
         get("/gbfs/v2/testatlantis/station_status").contentType("application/json")
@@ -119,7 +119,7 @@ public class GBFSRestIntegrationTest extends AbstractIntegrationTestBase {
   }
 
   @Test
-  public void testSystemHours() throws Exception {
+  void testSystemHours() throws Exception {
     mockMvc
       .perform(get("/gbfs/v2/testatlantis/system_hours").contentType("application/json"))
       .andExpect(status().isOk())
@@ -127,7 +127,7 @@ public class GBFSRestIntegrationTest extends AbstractIntegrationTestBase {
   }
 
   @Test
-  public void testSystemCalendar() throws Exception {
+  void testSystemCalendar() throws Exception {
     mockMvc
       .perform(
         get("/gbfs/v2/testatlantis/system_calendar").contentType("application/json")
@@ -137,7 +137,7 @@ public class GBFSRestIntegrationTest extends AbstractIntegrationTestBase {
   }
 
   @Test
-  public void testSystemAlerts() throws Exception {
+  void testSystemAlerts() throws Exception {
     mockMvc
       .perform(get("/gbfs/v2/testatlantis/system_alerts").contentType("application/json"))
       .andExpect(status().isOk())
@@ -147,7 +147,7 @@ public class GBFSRestIntegrationTest extends AbstractIntegrationTestBase {
   }
 
   @Test
-  public void testGeofencingZones() throws Exception {
+  void testGeofencingZones() throws Exception {
     mockMvc
       .perform(
         get("/gbfs/v2/testatlantis/geofencing_zones").contentType("application/json")
@@ -159,14 +159,14 @@ public class GBFSRestIntegrationTest extends AbstractIntegrationTestBase {
   }
 
   @Test
-  public void testUnknownProviderResponds404() throws Exception {
+  void testUnknownProviderResponds404() throws Exception {
     mockMvc
       .perform(get("/gbfs/v2/foobar/gbfs").contentType("application/json"))
       .andExpect(status().isNotFound());
   }
 
   @Test
-  public void testUnsupportedFeedResponds400() throws Exception {
+  void testUnsupportedFeedResponds400() throws Exception {
     mockMvc
       .perform(get("/gbfs/v2/testatlantis/foobar").contentType("application/json"))
       .andExpect(status().isBadRequest());
