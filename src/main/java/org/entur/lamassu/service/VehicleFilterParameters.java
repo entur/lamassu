@@ -11,6 +11,23 @@ public class VehicleFilterParameters extends FilterParameters {
   private boolean includeReserved;
   private boolean includeDisabled;
 
+  public VehicleFilterParameters(
+    List<String> codespaces,
+    List<String> systems,
+    List<String> operators,
+    Integer count,
+    List<FormFactor> formFactors,
+    List<PropulsionType> propulsionTypes,
+    boolean includeReserved,
+    boolean includeDisabled
+  ) {
+    super(codespaces, systems, operators, count);
+    this.formFactors = formFactors;
+    this.propulsionTypes = propulsionTypes;
+    this.includeReserved = includeReserved;
+    this.includeDisabled = includeDisabled;
+  }
+
   public List<FormFactor> getFormFactors() {
     return formFactors;
   }

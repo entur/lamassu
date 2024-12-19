@@ -123,10 +123,14 @@ public class SpatialIndexIdFilterTest {
   @Test
   public void testVehicleTypesAvailableFilter() {
     var testId = aStationId();
-    var params = new StationFilterParameters();
-
-    params.setAvailableFormFactors(List.of(FormFactor.SCOOTER));
-    params.setAvailablePropulsionTypes(List.of(PropulsionType.ELECTRIC));
+    var params = new StationFilterParameters(
+      null,
+      null,
+      null,
+      null,
+      List.of(FormFactor.SCOOTER),
+      List.of(PropulsionType.ELECTRIC)
+    );
 
     Assert.assertTrue(SpatialIndexIdFilter.filterStation(testId, params));
 
@@ -143,6 +147,10 @@ public class SpatialIndexIdFilterTest {
 
   private VehicleSpatialIndexId aVehicleId() {
     return SpatialIndexIdUtil.createVehicleSpatialIndexId(aVehicle(), aProvider());
+  }
+
+  private List<String> emptyList() {
+    return List.of();
   }
 
   private StationSpatialIndexId aStationId() {
@@ -204,14 +212,10 @@ public class SpatialIndexIdFilterTest {
   }
 
   private VehicleFilterParameters aVehicleFilterParams() {
-    var params = new VehicleFilterParameters();
-    params.setIncludeReserved(false);
-    params.setIncludeDisabled(false);
-    return params;
+    return new VehicleFilterParameters(null, null, null, null, null, null, false, false);
   }
 
   private StationFilterParameters aStationFilterParams() {
-    var params = new StationFilterParameters();
-    return params;
+    return new StationFilterParameters(null, null, null, null, null, null);
   }
 }

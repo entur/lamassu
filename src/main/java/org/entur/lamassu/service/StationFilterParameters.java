@@ -27,6 +27,19 @@ public class StationFilterParameters extends FilterParameters {
   private List<FormFactor> availableFormFactors;
   private List<PropulsionType> availablePropulsionTypes;
 
+  public StationFilterParameters(
+    List<String> codespaces,
+    List<String> systems,
+    List<String> operators,
+    Integer count,
+    List<FormFactor> availableFormFactors,
+    List<PropulsionType> availablePropulsionTypes
+  ) {
+    super(codespaces, systems, operators, count);
+    this.availableFormFactors = availableFormFactors;
+    this.availablePropulsionTypes = availablePropulsionTypes;
+  }
+
   public List<FormFactor> getAvailableFormFactors() {
     return availableFormFactors;
   }
