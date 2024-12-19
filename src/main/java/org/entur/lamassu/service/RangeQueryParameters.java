@@ -6,6 +6,14 @@ public class RangeQueryParameters {
   private Double lon;
   private Double range;
 
+  public RangeQueryParameters() {}
+
+  public RangeQueryParameters(Double lat, Double lon, Double range) {
+    this.lat = lat;
+    this.lon = lon;
+    this.range = range;
+  }
+
   public Double getLat() {
     return lat;
   }
