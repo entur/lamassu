@@ -22,10 +22,8 @@ import com.mapbox.geojson.Point;
 import com.mapbox.geojson.utils.PolylineUtils;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.entur.lamassu.model.entities.MultiPolygon;
 import org.entur.lamassu.model.entities.ParkingType;
 import org.entur.lamassu.model.entities.PricingPlan;
@@ -35,7 +33,6 @@ import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.System;
 import org.entur.lamassu.model.entities.VehicleDocksAvailability;
 import org.entur.lamassu.model.entities.VehicleDocksCapacity;
-import org.entur.lamassu.model.entities.VehicleType;
 import org.entur.lamassu.model.entities.VehicleTypeAvailability;
 import org.entur.lamassu.model.entities.VehicleTypeCapacity;
 import org.entur.lamassu.model.entities.VehicleTypesCapacity;
@@ -59,28 +56,20 @@ public class StationMapper {
 
   private final TranslationMapper translationMapper;
   private final RentalUrisMapper rentalUrisMapper;
-  private final VehicleTypeMapper vehicleTypeMapper;
-
-  private static final Logger logger = LoggerFactory.getLogger(StationMapper.class);
 
   @Autowired
   public StationMapper(
     TranslationMapper translationMapper,
-    RentalUrisMapper rentalUrisMapper,
-    VehicleTypeMapper vehicleTypeMapper
+    RentalUrisMapper rentalUrisMapper
   ) {
     this.translationMapper = translationMapper;
     this.rentalUrisMapper = rentalUrisMapper;
-    this.vehicleTypeMapper = vehicleTypeMapper;
   }
 
   public Station mapStation(
-    System system,
-    List<PricingPlan> pricingPlans,
     GBFSStation stationInformation,
     org.mobilitydata.gbfs.v3_0.station_status.GBFSStation stationStatus,
-    GBFSVehicleTypes vehicleTypesFeed,
-    GBFSSystemRegions regions,
+    String systemId,
     String language
   ) {
     var station = new Station();
@@ -114,7 +103,7 @@ public class StationMapper {
     station.setLon(stationInformation.getLon());
     station.setAddress(stationInformation.getAddress());
     station.setCrossStreet(stationInformation.getCrossStreet());
-    station.setRegion(mapRegion(regions, stationInformation.getRegionId(), language));
+    station.setRegionId(stationInformation.getRegionId());
     station.setPostCode(stationInformation.getPostCode());
     station.setRentalMethods(mapRentalMethods(stationInformation.getRentalMethods()));
     station.setVirtualStation(stationInformation.getIsVirtualStation());
@@ -128,34 +117,24 @@ public class StationMapper {
 
     station.setVehicleCapacity(
       stationInformation.getVehicleTypesCapacity() != null
-        ? mapVehicleCapacities(
-          stationInformation.getVehicleTypesCapacity(),
-          mapVehicleTypes(vehicleTypesFeed, pricingPlans, language)
-        )
+        ? mapVehicleCapacities(stationInformation.getVehicleTypesCapacity())
         : null
     );
     station.setVehicleTypesCapacity(
       stationInformation.getVehicleTypesCapacity() != null
-        ? mapVehicleTypesCapacity(
-          stationInformation.getVehicleTypesCapacity(),
-          mapVehicleTypes(vehicleTypesFeed, pricingPlans, language)
-        )
+        ? mapVehicleTypesCapacity(stationInformation.getVehicleTypesCapacity())
         : null
     );
 
     station.setVehicleTypeCapacity(
       stationInformation.getVehicleDocksCapacity() != null
-        ? mapVehicleTypeCapacities(
-          stationInformation.getVehicleDocksCapacity(),
-          mapVehicleTypes(vehicleTypesFeed, pricingPlans, language)
-        )
+        ? mapVehicleTypeCapacities(stationInformation.getVehicleDocksCapacity())
         : null
     );
     station.setVehicleDocksCapacity(
       stationInformation.getVehicleDocksCapacity() != null
         ? mapVehicleDocksCapacityToVehicleTypeCapacity(
-          stationInformation.getVehicleDocksCapacity(),
-          mapVehicleTypes(vehicleTypesFeed, pricingPlans, language)
+          stationInformation.getVehicleDocksCapacity()
         )
         : null
     );
@@ -177,12 +156,7 @@ public class StationMapper {
     );
     station.setVehicleTypesAvailable(
       stationStatus.getVehicleTypesAvailable() != null
-        ? mapVehicleTypesAvailable(
-          vehicleTypesFeed,
-          stationStatus.getVehicleTypesAvailable(),
-          pricingPlans,
-          language
-        )
+        ? mapVehicleTypesAvailable(stationStatus.getVehicleTypesAvailable())
         : null
     );
     station.setNumBikesDisabled(
@@ -202,12 +176,7 @@ public class StationMapper {
     );
     station.setVehicleDocksAvailable(
       stationStatus.getVehicleDocksAvailable() != null
-        ? mapVehicleDocksAvailable(
-          vehicleTypesFeed,
-          stationStatus.getVehicleDocksAvailable(),
-          pricingPlans,
-          language
-        )
+        ? mapVehicleDocksAvailable(stationStatus.getVehicleDocksAvailable())
         : null
     );
     station.setNumDocksDisabled(station.getNumDocksDisabled());
@@ -219,8 +188,7 @@ public class StationMapper {
         ? stationStatus.getLastReported().getTime() / 1000
         : null
     );
-    station.setSystem(system);
-    station.setPricingPlans(pricingPlans);
+    station.setSystemId(systemId);
     station.setStationAreaPolylineEncodedMultiPolygon(
       station.getStationArea() != null
         ? station
@@ -277,222 +245,98 @@ public class StationMapper {
       .orElse(null);
   }
 
-  private Region mapRegion(GBFSSystemRegions regions, String regionId, String language) {
-    if (regionId == null || regionId.isBlank()) {
-      return null;
-    }
-
-    var sourceRegion = Optional
-      .ofNullable(regions)
-      .flatMap(r ->
-        r
-          .getData()
-          .getRegions()
-          .stream()
-          .filter(region -> region.getRegionId().equals(regionId))
-          .findFirst()
-      );
-
-    if (sourceRegion.isPresent()) {
-      var region = new Region();
-      region.setId(regionId);
-      region.setName(
-        translationMapper.mapSingleTranslation(
-          language,
-          sourceRegion
-            .get()
-            .getName()
-            .stream()
-            .filter(name -> name.getLanguage().equals(language))
-            .map(org.mobilitydata.gbfs.v3_0.system_regions.GBFSName::getText)
-            .findFirst()
-            .orElse(null)
-        )
-      );
-      return region;
-    } else {
-      logger.warn(
-        "Could not map regionId to a region from system_regions feed {}",
-        regionId
-      );
-      return null;
-    }
-  }
-
   private List<VehicleTypeCapacity> mapVehicleCapacities(
-    List<GBFSVehicleTypesCapacity> vehicleCapacityList,
-    Map<String, VehicleType> vehicleTypes
+    List<GBFSVehicleTypesCapacity> vehicleCapacityList
   ) {
     return vehicleCapacityList
       .stream()
-      .map(vehicleCapacity -> mapVehicleTypeCapacity(vehicleTypes, vehicleCapacity))
+      .map(StationMapper::mapVehicleTypeCapacity)
       .toList();
   }
 
   private static @NotNull VehicleTypeCapacity mapVehicleTypeCapacity(
-    Map<String, VehicleType> vehicleTypes,
     GBFSVehicleTypesCapacity vehicleCapacity
   ) {
     var mapped = new VehicleTypeCapacity();
-    mapped.setVehicleType(
-      vehicleTypes.get(vehicleCapacity.getVehicleTypeIds().getFirst())
-    );
+    mapped.setVehicleTypeId(vehicleCapacity.getVehicleTypeIds().getFirst());
     mapped.setCount(vehicleCapacity.getCount());
     return mapped;
   }
 
   private List<VehicleTypesCapacity> mapVehicleTypesCapacity(
-    List<GBFSVehicleTypesCapacity> vehicleTypesCapacity,
-    Map<String, VehicleType> vehicleTypes
+    List<GBFSVehicleTypesCapacity> vehicleTypesCapacity
   ) {
-    return vehicleTypesCapacity
-      .stream()
-      .map(v -> mapVehicleTypeCapacity(v, vehicleTypes))
-      .toList();
+    return vehicleTypesCapacity.stream().map(this::mapVehicleTypesCapacity).toList();
   }
 
-  private VehicleTypesCapacity mapVehicleTypeCapacity(
-    GBFSVehicleTypesCapacity vehicleTypesCapacity,
-    Map<String, VehicleType> vehicleTypes
+  private VehicleTypesCapacity mapVehicleTypesCapacity(
+    GBFSVehicleTypesCapacity vehicleTypesCapacity
   ) {
     var mapped = new VehicleTypesCapacity();
-    mapped.setVehicleTypes(
-      vehicleTypesCapacity.getVehicleTypeIds().stream().map(vehicleTypes::get).toList()
-    );
+    mapped.setVehicleTypeIds(vehicleTypesCapacity.getVehicleTypeIds());
     mapped.setCount(vehicleTypesCapacity.getCount());
     return mapped;
   }
 
   private List<VehicleTypeCapacity> mapVehicleTypeCapacities(
-    List<GBFSVehicleDocksCapacity> vehicleCapacity,
-    Map<String, VehicleType> vehicleTypes
+    List<GBFSVehicleDocksCapacity> vehicleCapacity
   ) {
     return vehicleCapacity
       .stream()
-      .map(entry -> mapVehicleDocksCapacityToVehicleTypeCapacity(entry, vehicleTypes))
+      .map(this::mapVehicleDocksCapacityToVehicleTypeCapacity)
       .toList();
   }
 
   private VehicleTypeCapacity mapVehicleDocksCapacityToVehicleTypeCapacity(
-    GBFSVehicleDocksCapacity vehicleDocksCapacity,
-    Map<String, VehicleType> vehicleTypes
+    GBFSVehicleDocksCapacity vehicleDocksCapacity
   ) {
     var mapped = new VehicleTypeCapacity();
-    mapped.setVehicleType(
-      vehicleTypes.get(vehicleDocksCapacity.getVehicleTypeIds().getFirst())
-    );
+    mapped.setVehicleTypeId(vehicleDocksCapacity.getVehicleTypeIds().getFirst());
     mapped.setCount(vehicleDocksCapacity.getCount());
     return mapped;
   }
 
   private List<VehicleDocksCapacity> mapVehicleDocksCapacityToVehicleTypeCapacity(
-    List<GBFSVehicleDocksCapacity> vehicleDocksCapacity,
-    Map<String, VehicleType> vehicleTypes
+    List<GBFSVehicleDocksCapacity> vehicleDocksCapacity
   ) {
-    return vehicleDocksCapacity
-      .stream()
-      .map(v -> mapVehicleDocksCapacity(v, vehicleTypes))
-      .toList();
+    return vehicleDocksCapacity.stream().map(this::mapVehicleDocksCapacity).toList();
   }
 
   private VehicleDocksCapacity mapVehicleDocksCapacity(
-    GBFSVehicleDocksCapacity vehicleDocksCapacity,
-    Map<String, VehicleType> vehicleTypes
+    GBFSVehicleDocksCapacity vehicleDocksCapacity
   ) {
     var mapped = new VehicleDocksCapacity();
-    mapped.setVehicleTypes(
-      vehicleDocksCapacity.getVehicleTypeIds().stream().map(vehicleTypes::get).toList()
-    );
+    mapped.setVehicleTypeIds(vehicleDocksCapacity.getVehicleTypeIds());
     mapped.setCount(vehicleDocksCapacity.getCount());
     return mapped;
   }
 
-  private Map<String, VehicleType> mapVehicleTypes(
-    GBFSVehicleTypes vehicleTypesFeed,
-    List<PricingPlan> pricingPlans,
-    String language
-  ) {
-    return vehicleTypesFeed
-      .getData()
-      .getVehicleTypes()
-      .stream()
-      .map(vehicleType ->
-        vehicleTypeMapper.mapVehicleType(vehicleType, pricingPlans, language)
-      )
-      .collect(Collectors.toMap(VehicleType::getId, vehicleType -> vehicleType));
-  }
-
   private List<VehicleTypeAvailability> mapVehicleTypesAvailable(
-    GBFSVehicleTypes vehicleTypesFeed,
-    List<GBFSVehicleTypesAvailable> vehicleTypesAvailable,
-    List<PricingPlan> pricingPlans,
-    String language
+    List<GBFSVehicleTypesAvailable> vehicleTypesAvailable
   ) {
-    var mappedVehicleTypes = vehicleTypesFeed
-      .getData()
-      .getVehicleTypes()
-      .stream()
-      .map(vehicleType ->
-        vehicleTypeMapper.mapVehicleType(vehicleType, pricingPlans, language)
-      )
-      .collect(Collectors.toMap(VehicleType::getId, vehicleType -> vehicleType));
-
-    return vehicleTypesAvailable
-      .stream()
-      .map(vehicleTypeAvailability ->
-        mapVehicleTypeAvailability(
-          mappedVehicleTypes.get(vehicleTypeAvailability.getVehicleTypeId()),
-          vehicleTypeAvailability
-        )
-      )
-      .collect(Collectors.toList());
+    return vehicleTypesAvailable.stream().map(this::mapVehicleTypeAvailability).toList();
   }
 
   private VehicleTypeAvailability mapVehicleTypeAvailability(
-    VehicleType vehicleType,
     GBFSVehicleTypesAvailable vehicleTypeAvailability
   ) {
     var mapped = new VehicleTypeAvailability();
-    mapped.setVehicleType(vehicleType);
+    mapped.setVehicleTypeId(vehicleTypeAvailability.getVehicleTypeId());
     mapped.setCount(vehicleTypeAvailability.getCount());
     return mapped;
   }
 
   private List<VehicleDocksAvailability> mapVehicleDocksAvailable(
-    GBFSVehicleTypes vehicleTypesFeed,
-    List<GBFSVehicleDocksAvailable> vehicleDocksAvailable,
-    List<PricingPlan> pricingPlans,
-    String language
+    List<GBFSVehicleDocksAvailable> vehicleDocksAvailable
   ) {
-    var mappedVehicleTypes = vehicleTypesFeed
-      .getData()
-      .getVehicleTypes()
-      .stream()
-      .map(vehicleType ->
-        vehicleTypeMapper.mapVehicleType(vehicleType, pricingPlans, language)
-      )
-      .collect(Collectors.toMap(VehicleType::getId, vehicleType -> vehicleType));
-
-    return vehicleDocksAvailable
-      .stream()
-      .map(vehicleDocksAvailability ->
-        mapVehicleDocksAvailability(mappedVehicleTypes, vehicleDocksAvailability)
-      )
-      .collect(Collectors.toList());
+    return vehicleDocksAvailable.stream().map(this::mapVehicleDocksAvailability).toList();
   }
 
   private VehicleDocksAvailability mapVehicleDocksAvailability(
-    Map<String, VehicleType> mappedVehicleTypes,
     GBFSVehicleDocksAvailable vehicleDocksAvailability
   ) {
-    var vehicleTypes = vehicleDocksAvailability
-      .getVehicleTypeIds()
-      .stream()
-      .map(mappedVehicleTypes::get)
-      .toList();
-
     var mapped = new VehicleDocksAvailability();
-    mapped.setVehicleTypes(vehicleTypes);
+    mapped.setVehicleTypeIds(vehicleDocksAvailability.getVehicleTypeIds());
     mapped.setCount(vehicleDocksAvailability.getCount());
     return mapped;
   }

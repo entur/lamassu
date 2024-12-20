@@ -24,6 +24,8 @@ public class VehicleTypeCapacity implements Serializable {
 
   private VehicleType vehicleType;
 
+  private String vehicleTypeId;
+
   private Integer count;
 
   public VehicleType getVehicleType() {
@@ -40,6 +42,14 @@ public class VehicleTypeCapacity implements Serializable {
 
   public void setCount(Integer count) {
     this.count = count;
+  }
+
+  public String getVehicleTypeId() {
+    return vehicleTypeId;
+  }
+
+  public void setVehicleTypeId(String vehicleTypeId) {
+    this.vehicleTypeId = vehicleTypeId;
   }
 
   @Override

@@ -38,12 +38,7 @@ public class VehicleMapper {
     this.rentalUrisMapper = rentalUrisMapper;
   }
 
-  public Vehicle mapVehicle(
-    GBFSVehicle vehicle,
-    VehicleType vehicleType,
-    PricingPlan pricingPlan,
-    System system
-  ) {
+  public Vehicle mapVehicle(GBFSVehicle vehicle, String systemId) {
     var mappedVehicle = new Vehicle();
     mappedVehicle.setId(vehicle.getVehicleId());
     mappedVehicle.setLat(vehicle.getLat());
@@ -54,12 +49,12 @@ public class VehicleMapper {
       vehicle.getCurrentRangeMeters() == null ? 0.0 : vehicle.getCurrentRangeMeters()
     );
     mappedVehicle.setCurrentFuelPercent(vehicle.getCurrentFuelPercent());
-    mappedVehicle.setVehicleType(vehicleType);
-    mappedVehicle.setPricingPlan(pricingPlan);
+    mappedVehicle.setVehicleTypeId(vehicle.getVehicleTypeId());
+    mappedVehicle.setPricingPlanId(vehicle.getPricingPlanId());
     mappedVehicle.setVehicleEquipment(mapVehicleEquipment(vehicle.getVehicleEquipment()));
     mappedVehicle.setRentalUris(rentalUrisMapper.mapRentalUris(vehicle.getRentalUris()));
     mappedVehicle.setAvailableUntil(vehicle.getAvailableUntil());
-    mappedVehicle.setSystem(system);
+    mappedVehicle.setSystemId(systemId);
     return mappedVehicle;
   }
 

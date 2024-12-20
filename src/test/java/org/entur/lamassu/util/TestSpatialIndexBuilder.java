@@ -1,6 +1,6 @@
 package org.entur.lamassu.util;
 
-import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 import org.entur.lamassu.cache.StationSpatialIndexId;
 import org.entur.lamassu.cache.VehicleSpatialIndexId;
@@ -8,19 +8,23 @@ import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.provider.FeedProvider;
 
-public class SpatialIndexIdUtil {
+/**
+ * Test helper class for creating spatial index IDs.
+ * This replaces the functionality of SpatialIndexService in tests.
+ */
+public class TestSpatialIndexBuilder {
 
-  private SpatialIndexIdUtil() {}
+  private TestSpatialIndexBuilder() {}
 
-  public static VehicleSpatialIndexId createVehicleSpatialIndexId(
+  public static VehicleSpatialIndexId createVehicleIndex(
     Vehicle vehicle,
-    FeedProvider feedProvider
+    FeedProvider provider
   ) {
     var id = new VehicleSpatialIndexId();
     id.setId(vehicle.getId());
-    id.setCodespace(feedProvider.getCodespace());
-    id.setSystemId(feedProvider.getSystemId());
-    id.setOperatorId(feedProvider.getOperatorId());
+    id.setCodespace(provider.getCodespace());
+    id.setSystemId(provider.getSystemId());
+    id.setOperatorId(provider.getOperatorId());
     id.setFormFactor(vehicle.getVehicleType().getFormFactor());
     id.setPropulsionType(vehicle.getVehicleType().getPropulsionType());
     id.setReserved(vehicle.getReserved());
@@ -28,15 +32,16 @@ public class SpatialIndexIdUtil {
     return id;
   }
 
-  public static StationSpatialIndexId createStationSpatialIndexId(
+  public static StationSpatialIndexId createStationIndex(
     Station station,
-    FeedProvider feedProvider
+    FeedProvider provider
   ) {
     var id = new StationSpatialIndexId();
     id.setId(station.getId());
-    id.setCodespace(feedProvider.getCodespace());
-    id.setSystemId(feedProvider.getSystemId());
-    id.setOperatorId(feedProvider.getOperatorId());
+    id.setCodespace(provider.getCodespace());
+    id.setSystemId(provider.getSystemId());
+    id.setOperatorId(provider.getOperatorId());
+
     if (station.getVehicleTypesAvailable() != null) {
       id.setAvailableFormFactors(
         station
@@ -53,11 +58,8 @@ public class SpatialIndexIdUtil {
           .collect(Collectors.toList())
       );
     } else {
-      // Note: in case no validation is activated, this issue would slip
-      // silently. On the other hand, logging it here for every station would
-      // be overwhelming...
-      id.setAvailableFormFactors(Collections.emptyList());
-      id.setAvailablePropulsionTypes(Collections.emptyList());
+      id.setAvailableFormFactors(List.of());
+      id.setAvailablePropulsionTypes(List.of());
     }
 
     return id;
