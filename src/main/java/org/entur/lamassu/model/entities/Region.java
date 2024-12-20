@@ -18,9 +18,7 @@
 
 package org.entur.lamassu.model.entities;
 
-import java.io.Serializable;
-
-public class Region implements Serializable {
+public class Region implements Entity {
 
   private String id;
   private TranslatedString name;

@@ -30,6 +30,7 @@ public class EntityCachesUpdater {
   private final SystemUpdater systemUpdater;
   private final VehicleTypesUpdater vehicleTypesUpdater;
   private final PricingPlansUpdater pricingPlansUpdater;
+  private final RegionsUpdater regionsUpdater;
   private final VehiclesUpdater vehiclesUpdater;
   private final StationsUpdater stationsUpdater;
   private final GeofencingZonesUpdater geofencingZonesUpdater;
@@ -39,6 +40,7 @@ public class EntityCachesUpdater {
     SystemUpdater systemUpdater,
     VehicleTypesUpdater vehicleTypesUpdater,
     PricingPlansUpdater pricingPlansUpdater,
+    RegionsUpdater regionsUpdater,
     VehiclesUpdater vehiclesUpdater,
     StationsUpdater stationsUpdater,
     GeofencingZonesUpdater geofencingZonesUpdater
@@ -46,6 +48,7 @@ public class EntityCachesUpdater {
     this.systemUpdater = systemUpdater;
     this.vehicleTypesUpdater = vehicleTypesUpdater;
     this.pricingPlansUpdater = pricingPlansUpdater;
+    this.regionsUpdater = regionsUpdater;
     this.vehiclesUpdater = vehiclesUpdater;
     this.stationsUpdater = stationsUpdater;
     this.geofencingZonesUpdater = geofencingZonesUpdater;
@@ -66,6 +69,10 @@ public class EntityCachesUpdater {
 
     if (canUpdatePricingPlans(delivery, feedProvider)) {
       pricingPlansUpdater.update(delivery.systemPricingPlans(), feedProvider);
+    }
+
+    if (canUpdateRegions(delivery, feedProvider)) {
+      regionsUpdater.updateRegions(delivery.systemRegions(), feedProvider.getLanguage());
     }
 
     if (canUpdateVehicles(delivery, feedProvider)) {
@@ -109,6 +116,16 @@ public class EntityCachesUpdater {
       return false;
     }
     return delivery.systemPricingPlans() != null;
+  }
+
+  private boolean canUpdateRegions(
+          GbfsV3Delivery delivery,
+          FeedProvider feedProvider
+  ) {
+    if (exclude(feedProvider, GBFSFeedName.SystemRegions)) {
+      return false;
+    }
+    return delivery.systemRegions() != null;
   }
 
   private boolean canUpdateGeofencingZones(
