@@ -1,7 +1,6 @@
 package org.entur.lamassu.util;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.entur.lamassu.cache.StationSpatialIndexId;
 import org.entur.lamassu.cache.VehicleSpatialIndexId;
 import org.entur.lamassu.model.entities.Station;
