@@ -16,31 +16,17 @@
  *
  */
 
-package org.entur.lamassu.model.entities;
+package org.entur.lamassu.cache.impl;
 
-public class Region implements Entity {
+import org.entur.lamassu.cache.RegionCache;
+import org.entur.lamassu.model.entities.Region;
+import org.redisson.api.RMapCache;
+import org.springframework.stereotype.Component;
 
-  private String id;
-  private TranslatedString name;
+@Component
+public class RegionCacheImpl extends EntityCacheImpl<Region> implements RegionCache {
 
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  public TranslatedString getName() {
-    return name;
-  }
-
-  public void setName(TranslatedString name) {
-    this.name = name;
-  }
-
-  @Override
-  public String toString() {
-    return "Region{" + "id='" + id + '\'' + ", name=" + name + '}';
+  public RegionCacheImpl(RMapCache<String, Region> cache) {
+    super(cache);
   }
 }

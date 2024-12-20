@@ -48,6 +48,91 @@ public class VehicleTypeMapper {
     this.translationMapper = translationMapper;
   }
 
+  public VehicleType mapVehicleType(GBFSVehicleType vehicleType, String language) {
+    var mapped = new VehicleType();
+    mapped.setId(vehicleType.getVehicleTypeId());
+    mapped.setFormFactor(FormFactor.valueOf(vehicleType.getFormFactor().name()));
+    mapped.setRiderCapacity(vehicleType.getRiderCapacity());
+    mapped.setCargoVolumeCapacity(vehicleType.getCargoVolumeCapacity());
+    mapped.setCargoLoadCapacity(vehicleType.getCargoLoadCapacity());
+    mapped.setPropulsionType(
+      PropulsionType.valueOf(vehicleType.getPropulsionType().name())
+    );
+    mapped.setEcoLabel(mapEcoLabels(vehicleType.getEcoLabels()));
+    mapped.setEcoLabels(mapEcoLabels(vehicleType.getEcoLabels()));
+    mapped.setMaxRangeMeters(vehicleType.getMaxRangeMeters());
+    mapped.setName(
+      translationMapper.mapTranslatedString(
+        Optional
+          .ofNullable(vehicleType.getName())
+          .orElse(Collections.emptyList())
+          .stream()
+          .map(name ->
+            translationMapper.mapTranslation(name.getLanguage(), name.getText())
+          )
+          .toList()
+      )
+    );
+    mapped.setDescription(
+      translationMapper.mapTranslatedString(
+        Optional
+          .ofNullable(vehicleType.getDescription())
+          .orElse(Collections.emptyList())
+          .stream()
+          .map(description ->
+            translationMapper.mapTranslation(
+              description.getLanguage(),
+              description.getText()
+            )
+          )
+          .toList()
+      )
+    );
+    mapped.setVehicleAccessories(
+      mapVehicleAccessories(vehicleType.getVehicleAccessories())
+    );
+    mapped.setgCO2km(vehicleType.getgCO2Km() != null ? vehicleType.getgCO2Km() : null);
+    mapped.setVehicleImage(vehicleType.getVehicleImage());
+    mapped.setMake(
+      Optional
+        .ofNullable(vehicleType.getMake())
+        .orElse(Collections.emptyList())
+        .stream()
+        .filter(make -> make.getLanguage().equals(language))
+        .map(GBFSMake::getText)
+        .findFirst()
+        .orElse(null)
+    );
+    mapped.setModel(
+      Optional
+        .ofNullable(vehicleType.getModel())
+        .orElse(Collections.emptyList())
+        .stream()
+        .filter(model -> model.getLanguage().equals(language))
+        .map(GBFSModel::getText)
+        .findFirst()
+        .orElse(null)
+    );
+    mapped.setColor(vehicleType.getColor());
+    mapped.setWheelCount(
+      vehicleType.getWheelCount() != null ? vehicleType.getWheelCount() : null
+    );
+    mapped.setMaxPermittedSpeed(
+      vehicleType.getMaxPermittedSpeed() != null
+        ? vehicleType.getMaxPermittedSpeed()
+        : null
+    );
+    mapped.setRatedPower(
+      vehicleType.getRatedPower() != null ? vehicleType.getRatedPower() : null
+    );
+    mapped.setDefaultReserveTime(vehicleType.getDefaultReserveTime());
+    mapped.setReturnConstraint(mapReturnConstraint(vehicleType.getReturnConstraint()));
+    mapped.setVehicleAssets(mapVehicleAssets(vehicleType.getVehicleAssets()));
+    mapped.setDefaultPricingPlanId(vehicleType.getDefaultPricingPlanId());
+    mapped.setPricingPlanIds(vehicleType.getPricingPlanIds());
+    return mapped;
+  }
+
   public VehicleType mapVehicleType(
     GBFSVehicleType vehicleType,
     List<PricingPlan> pricingPlans,

@@ -18,7 +18,6 @@
 
 package org.entur.lamassu.leader.entityupdater;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
@@ -29,22 +28,14 @@ import org.entur.gbfs.loader.v3.GbfsV3Delivery;
 import org.entur.lamassu.cache.VehicleCache;
 import org.entur.lamassu.cache.VehicleSpatialIndex;
 import org.entur.lamassu.cache.VehicleSpatialIndexId;
-import org.entur.lamassu.mapper.entitymapper.PricingPlanMapper;
-import org.entur.lamassu.mapper.entitymapper.SystemMapper;
 import org.entur.lamassu.mapper.entitymapper.VehicleMapper;
-import org.entur.lamassu.mapper.entitymapper.VehicleTypeMapper;
 import org.entur.lamassu.metrics.MetricsService;
-import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.Vehicle;
-import org.entur.lamassu.model.entities.VehicleType;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.entur.lamassu.service.SpatialIndexService;
 import org.entur.lamassu.util.CacheUtil;
-import org.entur.lamassu.util.SpatialIndexIdUtil;
-import org.mobilitydata.gbfs.v3_0.system_information.GBFSSystemInformation;
-import org.mobilitydata.gbfs.v3_0.system_pricing_plans.GBFSSystemPricingPlans;
 import org.mobilitydata.gbfs.v3_0.vehicle_status.GBFSVehicle;
 import org.mobilitydata.gbfs.v3_0.vehicle_status.GBFSVehicleStatus;
-import org.mobilitydata.gbfs.v3_0.vehicle_types.GBFSVehicleTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,12 +47,10 @@ public class VehiclesUpdater {
 
   private final VehicleCache vehicleCache;
   private final VehicleSpatialIndex spatialIndex;
-  private final SystemMapper systemMapper;
-  private final PricingPlanMapper pricingPlanMapper;
-  private final VehicleTypeMapper vehicleTypeMapper;
   private final VehicleMapper vehicleMapper;
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
   private final MetricsService metricsService;
+  private final SpatialIndexService spatialIndexService;
 
   @Value("${org.entur.lamassu.vehicleEntityCacheMinimumTtl:30}")
   private Integer vehicleEntityCacheMinimumTtl;
@@ -74,18 +63,14 @@ public class VehiclesUpdater {
     VehicleCache vehicleCache,
     VehicleSpatialIndex spatialIndex,
     VehicleMapper vehicleMapper,
-    SystemMapper systemMapper,
-    PricingPlanMapper pricingPlanMapper,
-    VehicleTypeMapper vehicleTypeMapper,
-    MetricsService metricsService
+    MetricsService metricsService,
+    SpatialIndexService spatialIndexService
   ) {
     this.vehicleCache = vehicleCache;
     this.spatialIndex = spatialIndex;
     this.vehicleMapper = vehicleMapper;
-    this.systemMapper = systemMapper;
-    this.pricingPlanMapper = pricingPlanMapper;
-    this.vehicleTypeMapper = vehicleTypeMapper;
     this.metricsService = metricsService;
+    this.spatialIndexService = spatialIndexService;
   }
 
   public void addOrUpdateVehicles(
@@ -95,9 +80,6 @@ public class VehiclesUpdater {
   ) {
     GBFSVehicleStatus vehicleStatusFeed = delivery.vehicleStatus();
     GBFSVehicleStatus oldFreeBikeStatusFeed = oldDelivery.vehicleStatus();
-    GBFSSystemInformation systemInformationFeed = delivery.systemInformation();
-    GBFSSystemPricingPlans pricingPlansFeed = delivery.systemPricingPlans();
-    GBFSVehicleTypes vehicleTypesFeed = delivery.vehicleTypes();
 
     var vehicleIds = vehicleStatusFeed
       .getData()
@@ -139,30 +121,14 @@ public class VehiclesUpdater {
     }
 
     var currentVehicles = vehicleCache.getAllAsMap(new HashSet<>(vehicleIds));
-    var system = getSystem(feedProvider, systemInformationFeed);
-    var pricingPlans = getPricingPlans(pricingPlansFeed);
-    var vehicleTypes = getVehicleTypes(
-      vehicleTypesFeed,
-      pricingPlans,
-      system.getLanguage()
-    );
 
     var vehicleList = vehicleStatusFeed
       .getData()
       .getVehicles()
       .stream()
-      .filter(new VehicleFilter(pricingPlans, vehicleTypes))
-      .map(vehicle ->
-        vehicleMapper.mapVehicle(
-          vehicle,
-          vehicleTypes.get(vehicle.getVehicleTypeId()),
-          // pricingPlanId is optional for vehicles and defaults to it's vehicleType's default pricing plan
-          vehicle.getPricingPlanId() != null
-            ? pricingPlans.get(vehicle.getPricingPlanId())
-            : vehicleTypes.get(vehicle.getVehicleTypeId()).getDefaultPricingPlan(),
-          system
-        )
-      )
+      // TODO consider the consequence of removing this filter
+      //.filter(new VehicleFilter(pricingPlans, vehicleTypes))
+      .map(vehicle -> vehicleMapper.mapVehicle(vehicle, feedProvider.getSystemId()))
       .toList();
 
     var duplicateVehicles = vehicleList
@@ -188,14 +154,11 @@ public class VehiclesUpdater {
     );
 
     vehicles.forEach((key, vehicle) -> {
-      var spatialIndexId = SpatialIndexIdUtil.createVehicleSpatialIndexId(
-        vehicle,
-        feedProvider
-      );
+      var spatialIndexId = spatialIndexService.createVehicleIndex(vehicle, feedProvider);
       var previousVehicle = currentVehicles.get(key);
 
       if (previousVehicle != null) {
-        var oldSpatialIndexId = SpatialIndexIdUtil.createVehicleSpatialIndexId(
+        var oldSpatialIndexId = spatialIndexService.createVehicleIndex(
           previousVehicle,
           feedProvider
         );
@@ -211,10 +174,7 @@ public class VehiclesUpdater {
         .stream()
         .filter(currentVehicles::containsKey)
         .map(id ->
-          SpatialIndexIdUtil.createVehicleSpatialIndexId(
-            currentVehicles.get(id),
-            feedProvider
-          )
+          spatialIndexService.createVehicleIndex(currentVehicles.get(id), feedProvider)
         )
         .collect(Collectors.toSet())
     );
@@ -257,42 +217,5 @@ public class VehiclesUpdater {
       MetricsService.ENTITY_VEHICLE,
       vehicleCache.count()
     );
-  }
-
-  private Map<String, VehicleType> getVehicleTypes(
-    GBFSVehicleTypes vehicleTypesFeed,
-    Map<String, PricingPlan> pricingPlans,
-    String language
-  ) {
-    return vehicleTypesFeed
-      .getData()
-      .getVehicleTypes()
-      .stream()
-      .map(vehicleType ->
-        vehicleTypeMapper.mapVehicleType(
-          vehicleType,
-          new ArrayList<>(pricingPlans.values()),
-          language
-        )
-      )
-      .collect(Collectors.toMap(VehicleType::getId, i -> i));
-  }
-
-  private org.entur.lamassu.model.entities.System getSystem(
-    FeedProvider feedProvider,
-    GBFSSystemInformation systemInformationFeed
-  ) {
-    return systemMapper.mapSystem(systemInformationFeed.getData(), feedProvider);
-  }
-
-  private Map<String, PricingPlan> getPricingPlans(
-    GBFSSystemPricingPlans pricingPlansFeed
-  ) {
-    return pricingPlansFeed
-      .getData()
-      .getPlans()
-      .stream()
-      .map(pricingPlanMapper::mapPricingPlan)
-      .collect(Collectors.toMap(PricingPlan::getId, i -> i));
   }
 }

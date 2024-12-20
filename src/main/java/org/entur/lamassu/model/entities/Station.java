@@ -61,6 +61,8 @@ public class Station implements LocationEntity {
   private System system;
   private List<PricingPlan> pricingPlans;
   private List<List<String>> stationAreaPolylineEncodedMultiPolygon;
+  private String systemId;
+  private String regionId;
 
   @Override
   public String getId() {
@@ -373,6 +375,22 @@ public class Station implements LocationEntity {
 
   public List<List<String>> getStationAreaPolylineEncodedMultiPolygon() {
     return stationAreaPolylineEncodedMultiPolygon;
+  }
+
+  public String getSystemId() {
+    return systemId;
+  }
+
+  public void setSystemId(String systemId) {
+    this.systemId = systemId;
+  }
+
+  public String getRegionId() {
+    return regionId;
+  }
+
+  public void setRegionId(String regionId) {
+    this.regionId = regionId;
   }
 
   @Override

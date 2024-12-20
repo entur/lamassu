@@ -16,31 +16,20 @@
  *
  */
 
-package org.entur.lamassu.model.entities;
+package org.entur.lamassu.cache.impl;
 
-public class Region implements Entity {
+import org.entur.lamassu.cache.PricingPlanCache;
+import org.entur.lamassu.model.entities.PricingPlan;
+import org.redisson.api.RMapCache;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-  private String id;
-  private TranslatedString name;
+@Component
+public class PricingPlanCacheImpl
+  extends EntityCacheImpl<PricingPlan>
+  implements PricingPlanCache {
 
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  public TranslatedString getName() {
-    return name;
-  }
-
-  public void setName(TranslatedString name) {
-    this.name = name;
-  }
-
-  @Override
-  public String toString() {
-    return "Region{" + "id='" + id + '\'' + ", name=" + name + '}';
+  public PricingPlanCacheImpl(@Autowired RMapCache<String, PricingPlan> cache) {
+    super(cache);
   }
 }
