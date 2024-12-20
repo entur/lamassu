@@ -48,14 +48,14 @@ public class TestSpatialIndexBuilder {
           .getVehicleTypesAvailable()
           .stream()
           .map(vta -> vta.getVehicleType().getFormFactor())
-          .collect(Collectors.toList())
+          .toList()
       );
       id.setAvailablePropulsionTypes(
         station
           .getVehicleTypesAvailable()
           .stream()
           .map(vta -> vta.getVehicleType().getPropulsionType())
-          .collect(Collectors.toList())
+          .toList()
       );
     } else {
       id.setAvailableFormFactors(List.of());
