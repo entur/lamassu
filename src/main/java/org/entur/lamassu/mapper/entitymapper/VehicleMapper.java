@@ -19,11 +19,8 @@
 package org.entur.lamassu.mapper.entitymapper;
 
 import java.util.List;
-import org.entur.lamassu.model.entities.PricingPlan;
-import org.entur.lamassu.model.entities.System;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.entities.VehicleEquipment;
-import org.entur.lamassu.model.entities.VehicleType;
 import org.mobilitydata.gbfs.v3_0.vehicle_status.GBFSVehicle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

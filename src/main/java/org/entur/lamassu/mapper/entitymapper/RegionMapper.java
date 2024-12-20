@@ -18,19 +18,13 @@
 
 package org.entur.lamassu.mapper.entitymapper;
 
-import java.util.Optional;
 import org.entur.lamassu.model.entities.Region;
 import org.mobilitydata.gbfs.v3_0.system_regions.GBFSRegion;
-import org.mobilitydata.gbfs.v3_0.system_regions.GBFSSystemRegions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class RegionMapper {
-
-  private static final Logger logger = LoggerFactory.getLogger(RegionMapper.class);
 
   private final TranslationMapper translationMapper;
 

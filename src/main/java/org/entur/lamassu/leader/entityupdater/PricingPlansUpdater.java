@@ -24,8 +24,6 @@ import java.util.stream.Collectors;
 import org.entur.lamassu.cache.PricingPlanCache;
 import org.entur.lamassu.mapper.entitymapper.PricingPlanMapper;
 import org.entur.lamassu.model.entities.PricingPlan;
-import org.entur.lamassu.model.entities.VehicleType;
-import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.util.CacheUtil;
 import org.mobilitydata.gbfs.v3_0.system_pricing_plans.GBFSSystemPricingPlans;
 import org.springframework.stereotype.Component;
@@ -44,10 +42,7 @@ public class PricingPlansUpdater {
     this.pricingPlanMapper = pricingPlanMapper;
   }
 
-  public void update(
-    GBFSSystemPricingPlans gbfsSystemPricingPlans,
-    FeedProvider feedProvider
-  ) {
+  public void update(GBFSSystemPricingPlans gbfsSystemPricingPlans) {
     var mapped = gbfsSystemPricingPlans
       .getData()
       .getPlans()

@@ -68,7 +68,7 @@ public class EntityCachesUpdater {
     }
 
     if (canUpdatePricingPlans(delivery, feedProvider)) {
-      pricingPlansUpdater.update(delivery.systemPricingPlans(), feedProvider);
+      pricingPlansUpdater.update(delivery.systemPricingPlans());
     }
 
     if (canUpdateRegions(delivery, feedProvider)) {
