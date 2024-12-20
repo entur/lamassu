@@ -18,6 +18,9 @@
 
 package org.entur.lamassu.leader.entityupdater;
 
+import java.time.Instant;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import org.entur.lamassu.cache.RegionCache;
 import org.entur.lamassu.mapper.entitymapper.RegionMapper;
 import org.entur.lamassu.model.entities.Region;
@@ -25,37 +28,37 @@ import org.entur.lamassu.util.CacheUtil;
 import org.mobilitydata.gbfs.v3_0.system_regions.GBFSSystemRegions;
 import org.springframework.stereotype.Component;
 
-import java.time.Instant;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
 @Component
 public class RegionsUpdater {
-    private final RegionCache regionCache;
-    private final RegionMapper regionMapper;
 
-    public RegionsUpdater(RegionCache regionCache, RegionMapper regionMapper) {
-        this.regionCache = regionCache;
-        this.regionMapper = regionMapper;
-    }
+  private final RegionCache regionCache;
+  private final RegionMapper regionMapper;
 
-    public void updateRegions(GBFSSystemRegions systemRegions, String language) {
-        var mapped = systemRegions.getData().getRegions().stream().map(region -> regionMapper.mapRegion(region, language))
-                .collect(Collectors.toMap(Region::getId, region -> region));
+  public RegionsUpdater(RegionCache regionCache, RegionMapper regionMapper) {
+    this.regionCache = regionCache;
+    this.regionMapper = regionMapper;
+  }
 
-        var lastUpdated = systemRegions.getLastUpdated();
-        var ttl = systemRegions.getTtl();
+  public void updateRegions(GBFSSystemRegions systemRegions, String language) {
+    var mapped = systemRegions
+      .getData()
+      .getRegions()
+      .stream()
+      .map(region -> regionMapper.mapRegion(region, language))
+      .collect(Collectors.toMap(Region::getId, region -> region));
 
-        regionCache.updateAll(
-                mapped,
-                CacheUtil.getTtl(
-                        (int) Instant.now().getEpochSecond(),
-                        (int) (lastUpdated.getTime() / 100),
-                        ttl,
-                        86400
-                ),
-                TimeUnit.SECONDS
-        );
+    var lastUpdated = systemRegions.getLastUpdated();
+    var ttl = systemRegions.getTtl();
 
-    }
+    regionCache.updateAll(
+      mapped,
+      CacheUtil.getTtl(
+        (int) Instant.now().getEpochSecond(),
+        (int) (lastUpdated.getTime() / 100),
+        ttl,
+        86400
+      ),
+      TimeUnit.SECONDS
+    );
+  }
 }

@@ -118,10 +118,7 @@ public class EntityCachesUpdater {
     return delivery.systemPricingPlans() != null;
   }
 
-  private boolean canUpdateRegions(
-          GbfsV3Delivery delivery,
-          FeedProvider feedProvider
-  ) {
+  private boolean canUpdateRegions(GbfsV3Delivery delivery, FeedProvider feedProvider) {
     if (exclude(feedProvider, GBFSFeedName.SystemRegions)) {
       return false;
     }

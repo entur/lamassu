@@ -25,7 +25,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class RegionCacheImpl extends EntityCacheImpl<Region> implements RegionCache {
-    public RegionCacheImpl(RMapCache<String, Region> cache) {
-        super(cache);
-    }
+
+  public RegionCacheImpl(RMapCache<String, Region> cache) {
+    super(cache);
+  }
 }

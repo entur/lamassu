@@ -18,6 +18,7 @@
 
 package org.entur.lamassu.mapper.entitymapper;
 
+import java.util.Optional;
 import org.entur.lamassu.model.entities.Region;
 import org.mobilitydata.gbfs.v3_0.system_regions.GBFSRegion;
 import org.mobilitydata.gbfs.v3_0.system_regions.GBFSSystemRegions;
@@ -26,36 +27,33 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
-
 @Component
 public class RegionMapper {
-    private static final Logger logger = LoggerFactory.getLogger(RegionMapper.class);
 
-    private final TranslationMapper translationMapper;
+  private static final Logger logger = LoggerFactory.getLogger(RegionMapper.class);
 
-    @Autowired
-    public RegionMapper(TranslationMapper translationMapper) {
-        this.translationMapper = translationMapper;
-    }
+  private final TranslationMapper translationMapper;
 
-    public Region mapRegion(GBFSRegion sourceRegion, String language) {
+  @Autowired
+  public RegionMapper(TranslationMapper translationMapper) {
+    this.translationMapper = translationMapper;
+  }
 
-            var region = new Region();
-            region.setId(sourceRegion.getRegionId());
-            region.setName(
-                    translationMapper.mapSingleTranslation(
-                            language,
-                            sourceRegion
-                                    .getName()
-                                    .stream()
-                                    .filter(name -> name.getLanguage().equals(language))
-                                    .map(org.mobilitydata.gbfs.v3_0.system_regions.GBFSName::getText)
-                                    .findFirst()
-                                    .orElse(null)
-                    )
-            );
-            return region;
-
-    }
+  public Region mapRegion(GBFSRegion sourceRegion, String language) {
+    var region = new Region();
+    region.setId(sourceRegion.getRegionId());
+    region.setName(
+      translationMapper.mapSingleTranslation(
+        language,
+        sourceRegion
+          .getName()
+          .stream()
+          .filter(name -> name.getLanguage().equals(language))
+          .map(org.mobilitydata.gbfs.v3_0.system_regions.GBFSName::getText)
+          .findFirst()
+          .orElse(null)
+      )
+    );
+    return region;
+  }
 }
