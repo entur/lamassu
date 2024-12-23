@@ -27,7 +27,7 @@
         <kryo.version>5.6.2</kryo.version>
         <jackson.version>2.18.2</jackson.version>
         <gbfs-loader-java.version>4.0.23</gbfs-loader-java.version>
-        <gbfs-validator-java.version>2.0.14</gbfs-validator-java.version>
+        <gbfs-validator-java.version>2.0.16</gbfs-validator-java.version>
         <gbfs-mapper-java.version>2.0.20</gbfs-mapper-java.version>
         <prettier-java.version>2.1.0</prettier-java.version>
         <prettier-maven-plugin.version>0.22</prettier-maven-plugin.version>
