@@ -42,12 +42,11 @@ jobs:
           SONAR_PROJECT_NAME: ${{ github.event.repository.name }}
           SONAR_PROJECT_KEY: entur_${{ github.event.repository.name }}
         run: |
-          mvn -s .github/workflows/settings.xml \
+          mvn -DskipTests \
                   org.jacoco:jacoco-maven-plugin:prepare-agent verify \
                   org.jacoco:jacoco-maven-plugin:report sonar:sonar \
                   -P prettierSkip \
                   -Dmaven.main.skip \
-                  -DskipTests \
                   -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
                   -Dsonar.organization=enturas-github \
                   -Dsonar.projectName=${SONAR_PROJECT_NAME} \
