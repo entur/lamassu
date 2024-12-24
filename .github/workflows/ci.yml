@@ -36,6 +36,22 @@ jobs:
           mvn --batch-mode jacoco:prepare-agent test jacoco:report -Dprettier.nodePath=node -Dprettier.npmPath=npm
           mvn --batch-mode jib:dockerBuild -Dmaven.test.skip -P prettierSkip
 
+      - name: Sonar Scan
+        env:
+          SONAR_TOKEN: ${{ secrets.ENTUR_SONAR_PASSWORD }}
+          SONAR_PROJECT_NAME: ${{ github.event.repository.name }}
+          SONAR_PROJECT_KEY: entur_${{ github.event.repository.name }}
+        run: |
+          mvn -DskipTests \
+                  org.jacoco:jacoco-maven-plugin:prepare-agent verify \
+                  org.jacoco:jacoco-maven-plugin:report sonar:sonar \
+                  -P prettierSkip \
+                  -Dmaven.main.skip \
+                  -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                  -Dsonar.organization=enturas-github \
+                  -Dsonar.projectName=${SONAR_PROJECT_NAME} \
+                  -Dsonar.host.url=https://sonarcloud.io \
+                  -Dsonar.token=${SONAR_TOKEN}
 
   image:
     # only build and push the image when it's a commit to master in Entur's repository
@@ -55,12 +71,35 @@ jobs:
           java-version: 21
           distribution: temurin
           cache: maven
+      - name: set variables
+        run: |
+          echo "GHA_DOCKER_PUSH_IMAGE_TAG=`date +%Y-%m-%dT%H-%M`" >> $GITHUB_ENV
 
       - name: Build container image with Jib, push to container repo
         run: |
-          image_date=`date +%Y-%m-%dT%H-%M`
           mvn --batch-mode compile \
             com.google.cloud.tools:jib-maven-plugin:build \
-            -Djib.to.tags=latest,"$image_date" \
+            -Djib.to.tags=latest,${{ env.GHA_DOCKER_PUSH_IMAGE_TAG }} \
             -Dmaven.test.skip \
             -P prettierSkip
+
+      - name: Tag default branch with the container image tag ${{ env.GHA_DOCKER_PUSH_IMAGE_TAG }}
+        id: tag-version
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git tag --annotate "$GHA_DOCKER_PUSH_IMAGE_TAG" -m "chore(tag): $GHA_DOCKER_PUSH_IMAGE_TAG [skip ci]" --force
+          git push origin "$GHA_DOCKER_PUSH_IMAGE_TAG" --force
+
+      - name: Trigger downstream CI
+        run: |
+          repo_owner="entur"
+          repo_name="lamassu-deployment-config"
+          event_type="trigger-downstream-ci"
+          service="lamassu"   
+          echo "Triggering downstream CI for $service with version $GHA_DOCKER_PUSH_IMAGE_TAG"
+          curl -X POST \
+          -H "Authorization: token ${{ secrets.GITFLOW_PAT }}" \
+          -H "Accept: application/vnd.github.everest-preview+json" \
+          -H "Content-Type: application/json" https://api.github.com/repos/$repo_owner/$repo_name/dispatches \
+          -d "{\"event_type\": \"$event_type\", \"client_payload\": {\"service\": \"$service\", \"version\": \"$GHA_DOCKER_PUSH_IMAGE_TAG\", \"unit\": false, \"integration\": true}}"
