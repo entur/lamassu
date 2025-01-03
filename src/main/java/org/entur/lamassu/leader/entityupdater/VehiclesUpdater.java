@@ -154,7 +154,10 @@ public class VehiclesUpdater {
     );
 
     vehicles.forEach((key, vehicle) -> {
-      var spatialIndexId = spatialIndexService.createVehicleIndexId(vehicle, feedProvider);
+      var spatialIndexId = spatialIndexService.createVehicleIndexId(
+        vehicle,
+        feedProvider
+      );
       var previousVehicle = currentVehicles.get(key);
 
       if (previousVehicle != null) {

@@ -168,7 +168,10 @@ public class StationsUpdater {
     );
 
     stations.forEach((key, station) -> {
-      var spatialIndexId = spatialIndexService.createStationIndexId(station, feedProvider);
+      var spatialIndexId = spatialIndexService.createStationIndexId(
+        station,
+        feedProvider
+      );
       var previousStation = originalStations.get(key);
 
       if (previousStation != null) {
