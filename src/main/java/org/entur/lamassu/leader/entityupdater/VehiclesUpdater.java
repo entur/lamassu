@@ -32,7 +32,7 @@ import org.entur.lamassu.mapper.entitymapper.VehicleMapper;
 import org.entur.lamassu.metrics.MetricsService;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.provider.FeedProvider;
-import org.entur.lamassu.service.SpatialIndexService;
+import org.entur.lamassu.service.SpatialIndexIdGeneratorService;
 import org.entur.lamassu.util.CacheUtil;
 import org.mobilitydata.gbfs.v3_0.vehicle_status.GBFSVehicle;
 import org.mobilitydata.gbfs.v3_0.vehicle_status.GBFSVehicleStatus;
@@ -50,7 +50,7 @@ public class VehiclesUpdater {
   private final VehicleMapper vehicleMapper;
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
   private final MetricsService metricsService;
-  private final SpatialIndexService spatialIndexService;
+  private final SpatialIndexIdGeneratorService spatialIndexService;
 
   @Value("${org.entur.lamassu.vehicleEntityCacheMinimumTtl:30}")
   private Integer vehicleEntityCacheMinimumTtl;
@@ -64,7 +64,7 @@ public class VehiclesUpdater {
     VehicleSpatialIndex spatialIndex,
     VehicleMapper vehicleMapper,
     MetricsService metricsService,
-    SpatialIndexService spatialIndexService
+    SpatialIndexIdGeneratorService spatialIndexService
   ) {
     this.vehicleCache = vehicleCache;
     this.spatialIndex = spatialIndex;
@@ -154,11 +154,11 @@ public class VehiclesUpdater {
     );
 
     vehicles.forEach((key, vehicle) -> {
-      var spatialIndexId = spatialIndexService.createVehicleIndex(vehicle, feedProvider);
+      var spatialIndexId = spatialIndexService.createVehicleIndexId(vehicle, feedProvider);
       var previousVehicle = currentVehicles.get(key);
 
       if (previousVehicle != null) {
-        var oldSpatialIndexId = spatialIndexService.createVehicleIndex(
+        var oldSpatialIndexId = spatialIndexService.createVehicleIndexId(
           previousVehicle,
           feedProvider
         );
@@ -174,7 +174,7 @@ public class VehiclesUpdater {
         .stream()
         .filter(currentVehicles::containsKey)
         .map(id ->
-          spatialIndexService.createVehicleIndex(currentVehicles.get(id), feedProvider)
+          spatialIndexService.createVehicleIndexId(currentVehicles.get(id), feedProvider)
         )
         .collect(Collectors.toSet())
     );

@@ -34,7 +34,7 @@ import org.entur.lamassu.mapper.entitymapper.StationMapper;
 import org.entur.lamassu.metrics.MetricsService;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.provider.FeedProvider;
-import org.entur.lamassu.service.SpatialIndexService;
+import org.entur.lamassu.service.SpatialIndexIdGeneratorService;
 import org.entur.lamassu.util.CacheUtil;
 import org.mobilitydata.gbfs.v3_0.station_information.GBFSData;
 import org.mobilitydata.gbfs.v3_0.station_information.GBFSStationInformation;
@@ -53,7 +53,7 @@ public class StationsUpdater {
   private final StationSpatialIndex spatialIndex;
   private final StationMapper stationMapper;
   private final MetricsService metricsService;
-  private final SpatialIndexService spatialIndexService;
+  private final SpatialIndexIdGeneratorService spatialIndexService;
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   @Value("${org.entur.lamassu.stationEntityCacheMinimumTtl:30}")
@@ -68,7 +68,7 @@ public class StationsUpdater {
     StationSpatialIndex spatialIndex,
     StationMapper stationMapper,
     MetricsService metricsService,
-    SpatialIndexService spatialIndexService
+    SpatialIndexIdGeneratorService spatialIndexService
   ) {
     this.stationCache = stationCache;
     this.spatialIndex = spatialIndex;
@@ -168,11 +168,11 @@ public class StationsUpdater {
     );
 
     stations.forEach((key, station) -> {
-      var spatialIndexId = spatialIndexService.createStationIndex(station, feedProvider);
+      var spatialIndexId = spatialIndexService.createStationIndexId(station, feedProvider);
       var previousStation = originalStations.get(key);
 
       if (previousStation != null) {
-        var oldSpatialIndexId = spatialIndexService.createStationIndex(
+        var oldSpatialIndexId = spatialIndexService.createStationIndexId(
           previousStation,
           feedProvider
         );

@@ -14,16 +14,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SpatialIndexService {
+public class SpatialIndexIdGeneratorService {
 
   private final VehicleTypeCache vehicleTypeCache;
 
   @Autowired
-  public SpatialIndexService(VehicleTypeCache vehicleTypeCache) {
+  public SpatialIndexIdGeneratorService(VehicleTypeCache vehicleTypeCache) {
     this.vehicleTypeCache = vehicleTypeCache;
   }
 
-  public VehicleSpatialIndexId createVehicleIndex(
+  public VehicleSpatialIndexId createVehicleIndexId(
     Vehicle vehicle,
     FeedProvider provider
   ) {
@@ -46,7 +46,7 @@ public class SpatialIndexService {
     return id;
   }
 
-  public StationSpatialIndexId createStationIndex(
+  public StationSpatialIndexId createStationIndexId(
     Station station,
     FeedProvider provider
   ) {
