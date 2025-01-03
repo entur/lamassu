@@ -1,4 +1,4 @@
-package org.entur.lamassu.graphql.exception;
+package org.entur.lamassu.graphql.validation;
 
 import graphql.ErrorType;
 import graphql.GraphQLError;
