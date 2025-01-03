@@ -3,11 +3,8 @@ package org.entur.lamassu.graphql.controller;
 import graphql.ErrorType;
 import graphql.GraphQLError;
 import graphql.GraphqlErrorException;
-import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.service.FeedProviderService;
 import org.springframework.graphql.data.method.annotation.GraphQlExceptionHandler;
 
@@ -40,14 +37,14 @@ public abstract class BaseGraphQLController {
 
   protected void validateCodespaces(List<String> codespaces) {
     if (codespaces != null) {
-      var validCodespaces = getCodespaces();
+      var validCodespaces = feedProviderService.getCodespaces();
       validate(validCodespaces::containsAll, codespaces, "Unknown codespace(s)");
     }
   }
 
   protected void validateSystems(List<String> systems) {
     if (systems != null) {
-      var validSystems = getSystems();
+      var validSystems = feedProviderService.getSystems();
       validate(validSystems::containsAll, systems, "Unknown system(s)");
     }
   }
@@ -75,22 +72,6 @@ public abstract class BaseGraphQLController {
         "At least one of minimumLatitude, minimumLongitude, maximumLatitude and maximumLongitude must be specified"
       );
     }
-  }
-
-  protected Collection<String> getSystems() {
-    return feedProviderService
-      .getFeedProviders()
-      .stream()
-      .map(FeedProvider::getSystemId)
-      .collect(Collectors.toSet());
-  }
-
-  protected Collection<String> getCodespaces() {
-    return feedProviderService
-      .getFeedProviders()
-      .stream()
-      .map(FeedProvider::getCodespace)
-      .collect(Collectors.toSet());
   }
 
   protected <T> void validate(Predicate<T> predicate, T value, String message) {

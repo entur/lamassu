@@ -18,7 +18,7 @@ public class FeedProviderGraphQLController extends BaseGraphQLController {
 
   @QueryMapping
   public Collection<String> codespaces() {
-    return getCodespaces();
+    return feedProviderService.getCodespaces();
   }
 
   @QueryMapping
