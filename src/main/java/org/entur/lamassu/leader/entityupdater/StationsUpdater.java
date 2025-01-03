@@ -30,23 +30,16 @@ import org.entur.gbfs.loader.v3.GbfsV3Delivery;
 import org.entur.lamassu.cache.StationCache;
 import org.entur.lamassu.cache.StationSpatialIndex;
 import org.entur.lamassu.cache.StationSpatialIndexId;
-import org.entur.lamassu.mapper.entitymapper.PricingPlanMapper;
 import org.entur.lamassu.mapper.entitymapper.StationMapper;
-import org.entur.lamassu.mapper.entitymapper.SystemMapper;
 import org.entur.lamassu.metrics.MetricsService;
-import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.entur.lamassu.service.SpatialIndexIdGeneratorService;
 import org.entur.lamassu.util.CacheUtil;
-import org.entur.lamassu.util.SpatialIndexIdUtil;
 import org.mobilitydata.gbfs.v3_0.station_information.GBFSData;
 import org.mobilitydata.gbfs.v3_0.station_information.GBFSStationInformation;
 import org.mobilitydata.gbfs.v3_0.station_status.GBFSStation;
 import org.mobilitydata.gbfs.v3_0.station_status.GBFSStationStatus;
-import org.mobilitydata.gbfs.v3_0.system_information.GBFSSystemInformation;
-import org.mobilitydata.gbfs.v3_0.system_pricing_plans.GBFSSystemPricingPlans;
-import org.mobilitydata.gbfs.v3_0.system_regions.GBFSSystemRegions;
-import org.mobilitydata.gbfs.v3_0.vehicle_types.GBFSVehicleTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,12 +51,10 @@ public class StationsUpdater {
 
   private final StationCache stationCache;
   private final StationSpatialIndex spatialIndex;
-  private final SystemMapper systemMapper;
-  private final PricingPlanMapper pricingPlanMapper;
   private final StationMapper stationMapper;
-  private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
   private final MetricsService metricsService;
+  private final SpatialIndexIdGeneratorService spatialIndexService;
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   @Value("${org.entur.lamassu.stationEntityCacheMinimumTtl:30}")
   private Integer stationEntityCacheMinimumTtl;
@@ -75,17 +66,15 @@ public class StationsUpdater {
   public StationsUpdater(
     StationCache stationCache,
     StationSpatialIndex spatialIndex,
-    SystemMapper systemMapper,
-    PricingPlanMapper pricingPlanMapper,
     StationMapper stationMapper,
-    MetricsService metricsService
+    MetricsService metricsService,
+    SpatialIndexIdGeneratorService spatialIndexService
   ) {
     this.stationCache = stationCache;
     this.spatialIndex = spatialIndex;
-    this.systemMapper = systemMapper;
-    this.pricingPlanMapper = pricingPlanMapper;
     this.stationMapper = stationMapper;
     this.metricsService = metricsService;
+    this.spatialIndexService = spatialIndexService;
   }
 
   public void addOrUpdateStations(
@@ -96,10 +85,6 @@ public class StationsUpdater {
     GBFSStationStatus stationStatusFeed = delivery.stationStatus();
     GBFSStationStatus oldStationStatusFeed = oldDelivery.stationStatus();
     GBFSStationInformation stationInformationFeed = delivery.stationInformation();
-    GBFSSystemInformation systemInformationFeed = delivery.systemInformation();
-    GBFSSystemPricingPlans pricingPlansFeed = delivery.systemPricingPlans();
-    GBFSVehicleTypes vehicleTypesFeed = delivery.vehicleTypes();
-    GBFSSystemRegions systemRegionsFeed = delivery.systemRegions();
 
     var stationIds = stationStatusFeed
       .getData()
@@ -139,9 +124,6 @@ public class StationsUpdater {
 
     var originalStations = stationCache.getAllAsMap(stationIds);
 
-    var system = getSystem(feedProvider, systemInformationFeed);
-    var pricingPlans = getPricingPlans(pricingPlansFeed);
-
     var stationInfo = Optional
       .ofNullable(stationInformationFeed)
       .map(GBFSStationInformation::getData)
@@ -172,13 +154,10 @@ public class StationsUpdater {
       })
       .map(station ->
         stationMapper.mapStation(
-          system,
-          pricingPlans,
           stationInfo.get(station.getStationId()),
           station,
-          vehicleTypesFeed,
-          systemRegionsFeed,
-          system.getLanguage()
+          feedProvider.getSystemId(),
+          feedProvider.getLanguage()
         )
       )
       .collect(Collectors.toMap(Station::getId, s -> s));
@@ -189,14 +168,14 @@ public class StationsUpdater {
     );
 
     stations.forEach((key, station) -> {
-      var spatialIndexId = SpatialIndexIdUtil.createStationSpatialIndexId(
+      var spatialIndexId = spatialIndexService.createStationIndexId(
         station,
         feedProvider
       );
       var previousStation = originalStations.get(key);
 
       if (previousStation != null) {
-        var oldSpatialIndexId = SpatialIndexIdUtil.createStationSpatialIndexId(
+        var oldSpatialIndexId = spatialIndexService.createStationIndexId(
           previousStation,
           feedProvider
         );
@@ -246,21 +225,5 @@ public class StationsUpdater {
       MetricsService.ENTITY_STATION,
       stationCache.count()
     );
-  }
-
-  private List<PricingPlan> getPricingPlans(GBFSSystemPricingPlans pricingPlansFeed) {
-    return pricingPlansFeed
-      .getData()
-      .getPlans()
-      .stream()
-      .map(pricingPlanMapper::mapPricingPlan)
-      .collect(Collectors.toList());
-  }
-
-  private org.entur.lamassu.model.entities.System getSystem(
-    FeedProvider feedProvider,
-    GBFSSystemInformation systemInformationFeed
-  ) {
-    return systemMapper.mapSystem(systemInformationFeed.getData(), feedProvider);
   }
 }

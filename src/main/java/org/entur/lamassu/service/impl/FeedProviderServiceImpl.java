@@ -79,4 +79,14 @@ public class FeedProviderServiceImpl implements FeedProviderService {
   public FeedProvider getFeedProviderBySystemId(String systemId) {
     return feedProvidersBySystemId.get(systemId);
   }
+
+  @Override
+  public List<String> getCodespaces() {
+    return getFeedProviders().stream().map(FeedProvider::getCodespace).toList();
+  }
+
+  @Override
+  public List<String> getSystems() {
+    return getFeedProviders().stream().map(FeedProvider::getSystemId).toList();
+  }
 }

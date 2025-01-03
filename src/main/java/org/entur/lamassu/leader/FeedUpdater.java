@@ -26,7 +26,6 @@ import org.entur.gbfs.GbfsSubscriptionManager;
 import org.entur.gbfs.GbfsSubscriptionOptions;
 import org.entur.gbfs.loader.v2.GbfsV2Delivery;
 import org.entur.gbfs.loader.v3.GbfsV3Delivery;
-import org.entur.gbfs.mapper.GBFSMapper;
 import org.entur.gbfs.validation.model.ValidationResult;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.leader.entityupdater.EntityCachesUpdater;

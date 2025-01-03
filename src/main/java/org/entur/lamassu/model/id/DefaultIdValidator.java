@@ -18,10 +18,6 @@
 
 package org.entur.lamassu.model.id;
 
-import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class DefaultIdValidator implements IdValidator {
 
   public static final char ID_SEPARATOR_CHAR = ':';
@@ -29,7 +25,6 @@ public class DefaultIdValidator implements IdValidator {
   public static final int ID_MINIMUM_LENGTH = 6;
 
   protected static final DefaultIdValidator instance = new DefaultIdValidator();
-  private static final Logger log = LoggerFactory.getLogger(DefaultIdValidator.class);
 
   public static DefaultIdValidator getInstance() {
     return instance;

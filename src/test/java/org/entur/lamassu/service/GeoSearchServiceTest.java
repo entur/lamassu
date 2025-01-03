@@ -39,7 +39,7 @@ import org.entur.lamassu.model.entities.VehicleType;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.service.impl.GeoSearchServiceImpl;
 import org.entur.lamassu.stubs.VehicleCacheStub;
-import org.entur.lamassu.util.SpatialIndexIdUtil;
+import org.entur.lamassu.util.TestSpatialIndexBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
@@ -77,7 +77,7 @@ public class GeoSearchServiceTest {
         vehicles
           .stream()
           .map(vehicle ->
-            SpatialIndexIdUtil.createVehicleSpatialIndexId(vehicle, feedProvider)
+            TestSpatialIndexBuilder.createVehicleIndex(vehicle, feedProvider)
           )
           .collect(Collectors.toList())
       );
@@ -106,12 +106,10 @@ public class GeoSearchServiceTest {
   public void testRemoveVehicleSpatialIndexOrphans() {
     var vehicleToRemove = vehicleCache.get("foo_1");
     vehicleCache.removeAll(Set.of("foo_1"));
-    var orphans = service.removeVehicleSpatialIndexOrphans();
+    service.removeVehicleSpatialIndexOrphans();
     verify(vehicleSpatialIndex)
       .removeAll(
-        Set.of(
-          SpatialIndexIdUtil.createVehicleSpatialIndexId(vehicleToRemove, feedProvider)
-        )
+        Set.of(TestSpatialIndexBuilder.createVehicleIndex(vehicleToRemove, feedProvider))
       );
   }
 

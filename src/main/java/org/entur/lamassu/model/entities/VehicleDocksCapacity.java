@@ -24,6 +24,7 @@ import java.util.List;
 public class VehicleDocksCapacity implements Serializable {
 
   private List<VehicleType> vehicleTypes;
+  private List<String> vehicleTypeIds;
   private Integer count;
 
   public List<VehicleType> getVehicleTypes() {
@@ -40,5 +41,13 @@ public class VehicleDocksCapacity implements Serializable {
 
   public void setCount(Integer count) {
     this.count = count;
+  }
+
+  public List<String> getVehicleTypeIds() {
+    return vehicleTypeIds;
+  }
+
+  public void setVehicleTypeIds(List<String> vehicleTypeIds) {
+    this.vehicleTypeIds = vehicleTypeIds;
   }
 }

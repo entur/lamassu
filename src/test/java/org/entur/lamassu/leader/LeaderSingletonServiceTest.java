@@ -1,6 +1,5 @@
 package org.entur.lamassu.leader;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import org.entur.lamassu.service.GeoSearchService;

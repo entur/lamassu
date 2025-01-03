@@ -27,7 +27,7 @@ public class SpatialIndexIdFilterTest {
   @Test
   public void testNoFilterReturnsStationWithoutVehicleTypesAvailable() {
     StationSpatialIndexId stationSpatialIndexId =
-      SpatialIndexIdUtil.createStationSpatialIndexId(
+      TestSpatialIndexBuilder.createStationIndex(
         aStationWithoutVehicleTypeAvailability(),
         aProvider()
       );
@@ -146,27 +146,23 @@ public class SpatialIndexIdFilterTest {
   }
 
   private VehicleSpatialIndexId aVehicleId() {
-    return SpatialIndexIdUtil.createVehicleSpatialIndexId(aVehicle(), aProvider());
-  }
-
-  private List<String> emptyList() {
-    return List.of();
+    return TestSpatialIndexBuilder.createVehicleIndex(aVehicle(), aProvider());
   }
 
   private StationSpatialIndexId aStationId() {
-    return SpatialIndexIdUtil.createStationSpatialIndexId(aStation(), aProvider());
+    return TestSpatialIndexBuilder.createStationIndex(aStation(), aProvider());
   }
 
   private VehicleSpatialIndexId aReservedId() {
     var vehicle = aVehicle();
     vehicle.setReserved(true);
-    return SpatialIndexIdUtil.createVehicleSpatialIndexId(vehicle, aProvider());
+    return TestSpatialIndexBuilder.createVehicleIndex(vehicle, aProvider());
   }
 
   private VehicleSpatialIndexId aDisabledId() {
     var vehicle = aVehicle();
     vehicle.setDisabled(true);
-    return SpatialIndexIdUtil.createVehicleSpatialIndexId(vehicle, aProvider());
+    return TestSpatialIndexBuilder.createVehicleIndex(vehicle, aProvider());
   }
 
   private Vehicle aVehicle() {

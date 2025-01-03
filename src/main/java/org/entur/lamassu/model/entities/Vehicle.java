@@ -18,6 +18,9 @@ public class Vehicle implements LocationEntity {
   private PricingPlan pricingPlan;
   private System system;
   private RentalUris rentalUris;
+  private String vehicleTypeId;
+  private String pricingPlanId;
+  private String systemId;
 
   @Override
   public String getId() {
@@ -126,6 +129,30 @@ public class Vehicle implements LocationEntity {
     this.rentalUris = rentalUris;
   }
 
+  public String getVehicleTypeId() {
+    return vehicleTypeId;
+  }
+
+  public void setVehicleTypeId(String vehicleTypeId) {
+    this.vehicleTypeId = vehicleTypeId;
+  }
+
+  public String getPricingPlanId() {
+    return pricingPlanId;
+  }
+
+  public void setPricingPlanId(String pricingPlanId) {
+    this.pricingPlanId = pricingPlanId;
+  }
+
+  public String getSystemId() {
+    return systemId;
+  }
+
+  public void setSystemId(String systemId) {
+    this.systemId = systemId;
+  }
+
   @Override
   public String toString() {
     return (
@@ -145,8 +172,9 @@ public class Vehicle implements LocationEntity {
       currentRangeMeters +
       ", currentFuelPercent=" +
       currentFuelPercent +
-      ", vehicleType=" +
-      vehicleType +
+      ", vehicleTypeId='" +
+      vehicleTypeId +
+      '\'' +
       ", vehicleEquipment=" +
       vehicleEquipment +
       ", availableUntil='" +
