@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import org.entur.lamassu.cache.StationCache;
-import org.entur.lamassu.graphql.BaseGraphQLController;
 import org.entur.lamassu.graphql.validation.QueryParameterValidator;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PropulsionType;
@@ -18,7 +17,7 @@ import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
 @Controller
-public class StationQueryController extends BaseGraphQLController {
+public class StationQueryController {
 
   private final GeoSearchService geoSearchService;
   private final StationCache stationCache;

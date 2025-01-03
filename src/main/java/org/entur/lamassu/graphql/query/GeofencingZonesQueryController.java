@@ -3,7 +3,6 @@ package org.entur.lamassu.graphql.query;
 import java.util.List;
 import java.util.Set;
 import org.entur.lamassu.cache.GeofencingZonesCache;
-import org.entur.lamassu.graphql.BaseGraphQLController;
 import org.entur.lamassu.graphql.validation.QueryParameterValidator;
 import org.entur.lamassu.model.entities.GeofencingZones;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -11,7 +10,7 @@ import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
 @Controller
-public class GeofencingZonesQueryController extends BaseGraphQLController {
+public class GeofencingZonesQueryController {
 
   private final GeofencingZonesCache geofencingZonesCache;
   private final QueryParameterValidator validationService;

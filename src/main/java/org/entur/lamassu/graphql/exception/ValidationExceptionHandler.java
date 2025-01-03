@@ -1,10 +1,12 @@
-package org.entur.lamassu.graphql;
+package org.entur.lamassu.graphql.exception;
 
 import graphql.ErrorType;
 import graphql.GraphQLError;
 import org.springframework.graphql.data.method.annotation.GraphQlExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-public abstract class BaseGraphQLController {
+@RestControllerAdvice
+public class ValidationExceptionHandler {
 
   @GraphQlExceptionHandler(IllegalArgumentException.class)
   protected GraphQLError handleIllegalArgumentException(IllegalArgumentException ex) {
