@@ -12,7 +12,6 @@ public class FeedProviderGraphQLController extends BaseGraphQLController {
   private final FeedProviderService feedProviderService;
 
   public FeedProviderGraphQLController(FeedProviderService feedProviderService) {
-    super(feedProviderService);
     this.feedProviderService = feedProviderService;
   }
 

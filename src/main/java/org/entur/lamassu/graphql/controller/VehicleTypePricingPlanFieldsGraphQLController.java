@@ -9,11 +9,13 @@ import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
 @Controller
-public class VehicleTypeGraphQLController {
+public class VehicleTypePricingPlanFieldsGraphQLController extends BaseGraphQLController {
 
   private final PricingPlanCache pricingPlanCache;
 
-  public VehicleTypeGraphQLController(PricingPlanCache pricingPlanCache) {
+  public VehicleTypePricingPlanFieldsGraphQLController(
+    PricingPlanCache pricingPlanCache
+  ) {
     this.pricingPlanCache = pricingPlanCache;
   }
 
