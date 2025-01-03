@@ -8,12 +8,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.entur.lamassu.cache.PricingPlanCache;
+import org.entur.lamassu.cache.RegionCache;
 import org.entur.lamassu.cache.StationCache;
 import org.entur.lamassu.cache.SystemCache;
 import org.entur.lamassu.cache.VehicleTypeCache;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.PropulsionType;
+import org.entur.lamassu.model.entities.Region;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.System;
 import org.entur.lamassu.model.entities.VehicleDocksAvailability;
@@ -36,6 +38,7 @@ public class StationGraphQLController extends BaseGraphQLController {
   private final VehicleTypeCache vehicleTypeCache;
   private final SystemCache systemCache;
   private final PricingPlanCache pricingPlanCache;
+  private final RegionCache regionCache;
 
   public StationGraphQLController(
     GeoSearchService geoSearchService,
@@ -43,7 +46,8 @@ public class StationGraphQLController extends BaseGraphQLController {
     StationCache stationCache,
     VehicleTypeCache vehicleTypeCache,
     SystemCache systemCache,
-    PricingPlanCache pricingPlanCache
+    PricingPlanCache pricingPlanCache,
+    RegionCache regionCache
   ) {
     super(feedProviderService);
     this.geoSearchService = geoSearchService;
@@ -51,6 +55,7 @@ public class StationGraphQLController extends BaseGraphQLController {
     this.vehicleTypeCache = vehicleTypeCache;
     this.systemCache = systemCache;
     this.pricingPlanCache = pricingPlanCache;
+    this.regionCache = regionCache;
   }
 
   @QueryMapping
@@ -139,6 +144,25 @@ public class StationGraphQLController extends BaseGraphQLController {
     );
   }
 
+  @SchemaMapping(typeName = "VehicleTypeCapacity", field = "vehicleType")
+  public VehicleType getVehicleType(VehicleTypeCapacity vehicleTypeCapacity) {
+    return vehicleTypeCache.get(vehicleTypeCapacity.getVehicleTypeId());
+  }
+
+  @SchemaMapping(typeName = "VehicleTypesCapacity", field = "vehicleTypes")
+  public List<VehicleType> getVehicleType(VehicleTypesCapacity vehicleTypesCapacity) {
+    return vehicleTypeCache.getAll(
+      new HashSet<>(vehicleTypesCapacity.getVehicleTypeIds())
+    );
+  }
+
+  @SchemaMapping(typeName = "VehicleDocksCapacity", field = "vehicleTypes")
+  public List<VehicleType> getVehicleType(VehicleDocksCapacity vehicleDocksCapacity) {
+    return vehicleTypeCache.getAll(
+      new HashSet<>(vehicleDocksCapacity.getVehicleTypeIds())
+    );
+  }
+
   @SchemaMapping(typeName = "Station", field = "system")
   public System getSystem(Station station) {
     return systemCache.get(station.getSystemId());
@@ -206,13 +230,12 @@ public class StationGraphQLController extends BaseGraphQLController {
 
     return pricingPlanCache.getAll(pricingPlanIds);
   }
-  // TODO implement
-  /*  private List<VehicleTypeCapacity> vehicleCapacity;
-  private List<VehicleDocksCapacity> vehicleDocksCapacity;
-  private List<VehicleTypeCapacity> vehicleTypeCapacity;
-  private List<VehicleTypesCapacity> vehicleTypesCapacity; */
 
-  // TODO: implement region resolving
-
-  // TODO: we must also resolve pricing plans from within vehicle type
+  @SchemaMapping(typeName = "Station", field = "region")
+  public Region getRegion(Station station) {
+    if (station.getRegionId() == null) {
+      return null;
+    }
+    return regionCache.get(station.getRegionId());
+  }
 }
