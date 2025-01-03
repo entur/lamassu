@@ -1,21 +1,22 @@
-package org.entur.lamassu.graphql.controller;
+package org.entur.lamassu.graphql.resolver.vehicle;
 
 import org.entur.lamassu.cache.SystemCache;
+import org.entur.lamassu.model.entities.System;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
 @Controller
-public class VehicleSystemFieldGraphQLController {
+public class VehicleSystemResolver {
 
   private final SystemCache systemCache;
 
-  public VehicleSystemFieldGraphQLController(SystemCache systemCache) {
+  public VehicleSystemResolver(SystemCache systemCache) {
     this.systemCache = systemCache;
   }
 
   @SchemaMapping(typeName = "Vehicle", field = "system")
-  public org.entur.lamassu.model.entities.System system(Vehicle vehicle) {
+  public System resolve(Vehicle vehicle) {
     return systemCache.get(vehicle.getSystemId());
   }
 }

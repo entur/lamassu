@@ -1,4 +1,4 @@
-package org.entur.lamassu.graphql.controller;
+package org.entur.lamassu.graphql.resolver.vehicletype;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,18 +9,16 @@ import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
 @Controller
-public class VehicleTypePricingPlanFieldsGraphQLController extends BaseGraphQLController {
+public class VehicleTypePricingPlanResolver {
 
   private final PricingPlanCache pricingPlanCache;
 
-  public VehicleTypePricingPlanFieldsGraphQLController(
-    PricingPlanCache pricingPlanCache
-  ) {
+  public VehicleTypePricingPlanResolver(PricingPlanCache pricingPlanCache) {
     this.pricingPlanCache = pricingPlanCache;
   }
 
   @SchemaMapping(typeName = "VehicleType", field = "defaultPricingPlan")
-  public PricingPlan pricingPlan(VehicleType vehicleType) {
+  public PricingPlan defaultPricingPlan(VehicleType vehicleType) {
     return pricingPlanCache.get(vehicleType.getDefaultPricingPlanId());
   }
 

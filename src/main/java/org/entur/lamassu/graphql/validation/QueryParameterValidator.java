@@ -4,14 +4,14 @@ import graphql.GraphqlErrorException;
 import java.util.List;
 import java.util.function.Predicate;
 import org.entur.lamassu.service.FeedProviderService;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
-public class GraphQLQueryValidationService {
+@Service
+public class QueryParameterValidator {
 
   private final FeedProviderService feedProviderService;
 
-  public GraphQLQueryValidationService(FeedProviderService feedProviderService) {
+  public QueryParameterValidator(FeedProviderService feedProviderService) {
     this.feedProviderService = feedProviderService;
   }
 
@@ -64,17 +64,11 @@ public class GraphQLQueryValidationService {
     }
   }
 
-  private <T> void validate(Predicate<T> predicate, T value, String message) {
-    if (predicate.negate().test(value)) {
-      throw new GraphqlErrorException.Builder().message(message).build();
-    }
-  }
-
   public boolean isRangeSearch(Double range, Double lat, Double lon) {
     return range != null && lat != null && lon != null;
   }
 
-  public boolean isBoundingBoxSearch(
+  private boolean isBoundingBoxSearch(
     Double minimumLatitude,
     Double minimumLongitude,
     Double maximumLatitude,
@@ -86,5 +80,11 @@ public class GraphQLQueryValidationService {
       maximumLatitude != null &&
       maximumLongitude != null
     );
+  }
+
+  private <T> void validate(Predicate<T> predicate, T value, String message) {
+    if (predicate.negate().test(value)) {
+      throw new GraphqlErrorException.Builder().message(message).build();
+    }
   }
 }

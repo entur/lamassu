@@ -1,10 +1,11 @@
-package org.entur.lamassu.graphql.controller;
+package org.entur.lamassu.graphql.query;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import org.entur.lamassu.cache.VehicleCache;
-import org.entur.lamassu.graphql.validation.GraphQLQueryValidationService;
+import org.entur.lamassu.graphql.BaseGraphQLController;
+import org.entur.lamassu.graphql.validation.QueryParameterValidator;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PropulsionType;
 import org.entur.lamassu.model.entities.Vehicle;
@@ -17,16 +18,16 @@ import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
 @Controller
-public class VehicleGraphQLController extends BaseGraphQLController {
+public class VehicleQueryController extends BaseGraphQLController {
 
   private final GeoSearchService geoSearchService;
   private final VehicleCache vehicleCache;
-  private final GraphQLQueryValidationService validationService;
+  private final QueryParameterValidator validationService;
 
-  public VehicleGraphQLController(
+  public VehicleQueryController(
     GeoSearchService geoSearchService,
     VehicleCache vehicleCache,
-    GraphQLQueryValidationService validationService
+    QueryParameterValidator validationService
   ) {
     this.geoSearchService = geoSearchService;
     this.vehicleCache = vehicleCache;
@@ -69,7 +70,6 @@ public class VehicleGraphQLController extends BaseGraphQLController {
       codespaces,
       systems,
       operators,
-      count,
       formFactors,
       propulsionTypes,
       includeReserved,
@@ -98,7 +98,11 @@ public class VehicleGraphQLController extends BaseGraphQLController {
         maximumLatitude,
         maximumLongitude
       );
-      vehicles = geoSearchService.getVehiclesInBoundingBox(queryParams, filterParams);
+      vehicles = geoSearchService.getVehiclesWithinBoundingBox(queryParams, filterParams);
+    }
+
+    if (count != null) {
+      return vehicles.stream().limit(count).toList();
     }
 
     return vehicles;

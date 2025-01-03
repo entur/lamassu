@@ -1,17 +1,18 @@
-package org.entur.lamassu.graphql.controller;
+package org.entur.lamassu.graphql.query;
 
 import java.util.Collection;
+import org.entur.lamassu.graphql.BaseGraphQLController;
 import org.entur.lamassu.model.entities.Operator;
 import org.entur.lamassu.service.FeedProviderService;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
 @Controller
-public class FeedProviderGraphQLController extends BaseGraphQLController {
+public class FeedProviderQueryController extends BaseGraphQLController {
 
   private final FeedProviderService feedProviderService;
 
-  public FeedProviderGraphQLController(FeedProviderService feedProviderService) {
+  public FeedProviderQueryController(FeedProviderService feedProviderService) {
     this.feedProviderService = feedProviderService;
   }
 

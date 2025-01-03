@@ -1,29 +1,32 @@
-package org.entur.lamassu.graphql.controller;
+package org.entur.lamassu.graphql.query;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import org.entur.lamassu.cache.StationCache;
-import org.entur.lamassu.graphql.validation.GraphQLQueryValidationService;
+import org.entur.lamassu.graphql.validation.QueryParameterValidator;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PropulsionType;
 import org.entur.lamassu.model.entities.Station;
-import org.entur.lamassu.service.*;
+import org.entur.lamassu.service.BoundingBoxQueryParameters;
+import org.entur.lamassu.service.GeoSearchService;
+import org.entur.lamassu.service.RangeQueryParameters;
+import org.entur.lamassu.service.StationFilterParameters;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
 @Controller
-public class StationGraphQLController extends BaseGraphQLController {
+public class StationQueryController extends BaseGraphQLController {
 
   private final GeoSearchService geoSearchService;
   private final StationCache stationCache;
-  private final GraphQLQueryValidationService validationService;
+  private final QueryParameterValidator validationService;
 
-  public StationGraphQLController(
+  public StationQueryController(
     GeoSearchService geoSearchService,
     StationCache stationCache,
-    GraphQLQueryValidationService validationService
+    QueryParameterValidator validationService
   ) {
     this.geoSearchService = geoSearchService;
     this.stationCache = stationCache;
@@ -64,7 +67,6 @@ public class StationGraphQLController extends BaseGraphQLController {
       codespaces,
       systems,
       operators,
-      count,
       availableFormFactors,
       availablePropulsionTypes
     );
@@ -91,7 +93,11 @@ public class StationGraphQLController extends BaseGraphQLController {
         maximumLatitude,
         maximumLongitude
       );
-      stations = geoSearchService.getStationsInBoundingBox(queryParams, filterParams);
+      stations = geoSearchService.getStationsWithinBoundingBox(queryParams, filterParams);
+    }
+
+    if (count != null) {
+      return stations.stream().limit(count).toList();
     }
 
     return stations;

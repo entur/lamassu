@@ -1,4 +1,4 @@
-package org.entur.lamassu.graphql.controller;
+package org.entur.lamassu.graphql.resolver.station;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -21,12 +21,12 @@ import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
 @Controller
-public class StationPricingPlansFieldGraphQLController {
+public class StationPricingPlanResolver {
 
   private final VehicleTypeCache vehicleTypeCache;
   private final PricingPlanCache pricingPlanCache;
 
-  public StationPricingPlansFieldGraphQLController(
+  public StationPricingPlanResolver(
     VehicleTypeCache vehicleTypeCache,
     PricingPlanCache pricingPlanCache
   ) {
@@ -41,7 +41,7 @@ public class StationPricingPlansFieldGraphQLController {
    * to by a stations various references to vehicle types
    */
   @SchemaMapping(typeName = "Station", field = "pricingPlans")
-  public List<PricingPlan> getPricingPlans(Station station) {
+  public List<PricingPlan> resolve(Station station) {
     Set<String> vehicleTypeIds = Stream
       .of(
         Optional
