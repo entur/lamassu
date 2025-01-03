@@ -149,10 +149,6 @@ public class SpatialIndexIdFilterTest {
     return TestSpatialIndexBuilder.createVehicleIndex(aVehicle(), aProvider());
   }
 
-  private List<String> emptyList() {
-    return List.of();
-  }
-
   private StationSpatialIndexId aStationId() {
     return TestSpatialIndexBuilder.createStationIndex(aStation(), aProvider());
   }

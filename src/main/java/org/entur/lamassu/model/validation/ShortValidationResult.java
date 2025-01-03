@@ -20,7 +20,6 @@ package org.entur.lamassu.model.validation;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.entur.gbfs.validation.model.ValidationSummary;
 
 public class ShortValidationResult {
 

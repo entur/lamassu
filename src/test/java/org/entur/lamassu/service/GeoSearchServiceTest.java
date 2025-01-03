@@ -106,7 +106,7 @@ public class GeoSearchServiceTest {
   public void testRemoveVehicleSpatialIndexOrphans() {
     var vehicleToRemove = vehicleCache.get("foo_1");
     vehicleCache.removeAll(Set.of("foo_1"));
-    var orphans = service.removeVehicleSpatialIndexOrphans();
+    service.removeVehicleSpatialIndexOrphans();
     verify(vehicleSpatialIndex)
       .removeAll(
         Set.of(TestSpatialIndexBuilder.createVehicleIndex(vehicleToRemove, feedProvider))
