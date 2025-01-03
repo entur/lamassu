@@ -1,4 +1,4 @@
-package org.entur.lamassu.graphql.controller;
+package org.entur.lamassu.graphql;
 
 import graphql.ErrorType;
 import graphql.GraphQLError;

@@ -70,6 +70,7 @@ public class VehicleQueryController extends BaseGraphQLController {
       codespaces,
       systems,
       operators,
+      count,
       formFactors,
       propulsionTypes,
       includeReserved,
@@ -98,7 +99,7 @@ public class VehicleQueryController extends BaseGraphQLController {
         maximumLatitude,
         maximumLongitude
       );
-      vehicles = geoSearchService.getVehiclesWithinBoundingBox(queryParams, filterParams);
+      vehicles = geoSearchService.getVehiclesInBoundingBox(queryParams, filterParams);
     }
 
     if (count != null) {

@@ -22,7 +22,9 @@ public class StationVehicleTypeResolver {
   }
 
   @SchemaMapping(typeName = "VehicleTypeAvailability", field = "vehicleType")
-  public VehicleType resolveVehicleTypeAvailability(VehicleTypeAvailability vehicleTypeAvailability) {
+  public VehicleType resolveVehicleTypeAvailability(
+    VehicleTypeAvailability vehicleTypeAvailability
+  ) {
     return vehicleTypeCache.get(vehicleTypeAvailability.getVehicleTypeId());
   }
 
@@ -41,14 +43,18 @@ public class StationVehicleTypeResolver {
   }
 
   @SchemaMapping(typeName = "VehicleTypesCapacity", field = "vehicleTypes")
-  public List<VehicleType> resolveVehicleTypesCapacity(VehicleTypesCapacity vehicleTypesCapacity) {
+  public List<VehicleType> resolveVehicleTypesCapacity(
+    VehicleTypesCapacity vehicleTypesCapacity
+  ) {
     return vehicleTypeCache.getAll(
       new HashSet<>(vehicleTypesCapacity.getVehicleTypeIds())
     );
   }
 
   @SchemaMapping(typeName = "VehicleDocksCapacity", field = "vehicleTypes")
-  public List<VehicleType> resolveVehicleDocksCapacity(VehicleDocksCapacity vehicleDocksCapacity) {
+  public List<VehicleType> resolveVehicleDocksCapacity(
+    VehicleDocksCapacity vehicleDocksCapacity
+  ) {
     return vehicleTypeCache.getAll(
       new HashSet<>(vehicleDocksCapacity.getVehicleTypeIds())
     );

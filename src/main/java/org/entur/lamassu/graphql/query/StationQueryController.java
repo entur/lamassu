@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import org.entur.lamassu.cache.StationCache;
+import org.entur.lamassu.graphql.BaseGraphQLController;
 import org.entur.lamassu.graphql.validation.QueryParameterValidator;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PropulsionType;
@@ -67,6 +68,7 @@ public class StationQueryController extends BaseGraphQLController {
       codespaces,
       systems,
       operators,
+      count,
       availableFormFactors,
       availablePropulsionTypes
     );
@@ -93,7 +95,7 @@ public class StationQueryController extends BaseGraphQLController {
         maximumLatitude,
         maximumLongitude
       );
-      stations = geoSearchService.getStationsWithinBoundingBox(queryParams, filterParams);
+      stations = geoSearchService.getStationsInBoundingBox(queryParams, filterParams);
     }
 
     if (count != null) {
