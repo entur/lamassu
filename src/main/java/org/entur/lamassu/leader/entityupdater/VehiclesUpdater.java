@@ -126,8 +126,7 @@ public class VehiclesUpdater {
       .getData()
       .getVehicles()
       .stream()
-      // TODO consider the consequence of removing this filter
-      //.filter(new VehicleFilter(pricingPlans, vehicleTypes))
+      .filter(new VehicleFilter())
       .map(vehicle -> vehicleMapper.mapVehicle(vehicle, feedProvider.getSystemId()))
       .toList();
 
