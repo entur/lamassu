@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.cache.StationCache;
 import org.entur.lamassu.cache.StationSpatialIndex;
 import org.entur.lamassu.cache.StationSpatialIndexId;
-import org.entur.lamassu.cache.VehicleCache;
 import org.entur.lamassu.cache.VehicleSpatialIndex;
 import org.entur.lamassu.cache.VehicleSpatialIndexId;
 import org.entur.lamassu.model.entities.Station;
@@ -30,14 +30,14 @@ public class GeoSearchServiceImpl implements GeoSearchService {
 
   private final VehicleSpatialIndex vehicleSpatialIndex;
   private final StationSpatialIndex stationSpatialIndex;
-  private final VehicleCache vehicleCache;
+  private final EntityCache<Vehicle> vehicleCache;
   private final StationCache stationCache;
 
   @Autowired
   public GeoSearchServiceImpl(
     VehicleSpatialIndex vehicleSpatialIndex,
     StationSpatialIndex stationSpatialIndex,
-    VehicleCache vehicleCache,
+    EntityCache<Vehicle> vehicleCache,
     StationCache stationCache
   ) {
     this.vehicleSpatialIndex = vehicleSpatialIndex;
