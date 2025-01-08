@@ -51,6 +51,7 @@ public class VehiclesUpdater {
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
   private final MetricsService metricsService;
   private final SpatialIndexIdGeneratorService spatialIndexService;
+  private final VehicleFilter vehicleFilter;
 
   @Value("${org.entur.lamassu.vehicleEntityCacheMinimumTtl:30}")
   private Integer vehicleEntityCacheMinimumTtl;
@@ -64,13 +65,15 @@ public class VehiclesUpdater {
     VehicleSpatialIndex spatialIndex,
     VehicleMapper vehicleMapper,
     MetricsService metricsService,
-    SpatialIndexIdGeneratorService spatialIndexService
+    SpatialIndexIdGeneratorService spatialIndexService,
+    VehicleFilter vehicleFilter
   ) {
     this.vehicleCache = vehicleCache;
     this.spatialIndex = spatialIndex;
     this.vehicleMapper = vehicleMapper;
     this.metricsService = metricsService;
     this.spatialIndexService = spatialIndexService;
+    this.vehicleFilter = vehicleFilter;
   }
 
   public void addOrUpdateVehicles(
@@ -126,7 +129,7 @@ public class VehiclesUpdater {
       .getData()
       .getVehicles()
       .stream()
-      .filter(new VehicleFilter())
+      .filter(vehicleFilter)
       .map(vehicle -> vehicleMapper.mapVehicle(vehicle, feedProvider.getSystemId()))
       .toList();
 
