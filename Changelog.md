@@ -9,6 +9,7 @@ based on merged pull requests. Search GitHub issues and pull requests for smalle
 - Replace graphql kickstart project with spring graphql [#595](https://github.com/entur/lamassu/pull/595)
 - Normalize entity data [#596](https://github.com/entur/lamassu/pull/596)
 - Add null checks to avoid NPE [#612](https://github.com/entur/lamassu/pull/612)
+- Remove redundant entity cache interfaces [#613](https://github.com/entur/lamassu/pull/613)
   [](AUTOMATIC_CHANGELOG_PLACEHOLDER_DO_NOT_REMOVE)
 
 ## 1.1.0
