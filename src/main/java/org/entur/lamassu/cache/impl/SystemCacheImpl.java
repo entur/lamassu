@@ -16,8 +16,17 @@
  *
  */
 
-package org.entur.lamassu.cache;
+package org.entur.lamassu.cache.impl;
 
-import org.entur.lamassu.model.entities.GeofencingZones;
+import org.entur.lamassu.model.entities.System;
+import org.redisson.api.RMapCache;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-public interface GeofencingZonesCache extends EntityCache<GeofencingZones> {}
+@Component
+public class SystemCacheImpl extends EntityCacheImpl<System> {
+
+  public SystemCacheImpl(@Autowired RMapCache<String, System> cache) {
+    super(cache);
+  }
+}

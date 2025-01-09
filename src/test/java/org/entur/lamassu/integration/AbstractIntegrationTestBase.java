@@ -12,19 +12,19 @@ import okhttp3.mockwebserver.RecordedRequest;
 import org.entur.lamassu.TestLamassuApplication;
 import org.entur.lamassu.leader.LeaderSingletonService;
 import org.jetbrains.annotations.NotNull;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ActiveProfiles({ "test", "leader" })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(
   classes = TestLamassuApplication.class,
   properties = "scheduling.enabled=false",
@@ -37,7 +37,7 @@ public abstract class AbstractIntegrationTestBase {
 
   private static MockWebServer mockWebServer;
 
-  @BeforeClass
+  @BeforeAll
   public static void setUp() throws IOException {
     mockWebServer = new MockWebServer();
 
@@ -112,13 +112,13 @@ public abstract class AbstractIntegrationTestBase {
       .setBody(getFileFromResource(file));
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() throws IOException {
     mockWebServer.shutdown();
     mockWebServer = null;
   }
 
-  @Before
+  @BeforeEach
   public void heartbeat() throws InterruptedException {
     Thread.sleep(1000);
     leaderSingletonService.update();

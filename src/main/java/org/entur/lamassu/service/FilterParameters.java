@@ -20,12 +20,24 @@ package org.entur.lamassu.service;
 
 import java.util.List;
 
-public class FilterParameters {
+public abstract class FilterParameters {
 
   private List<String> codespaces;
   private List<String> systems;
   private List<String> operators;
   private Integer count;
+
+  public FilterParameters(
+    List<String> codespaces,
+    List<String> systems,
+    List<String> operators,
+    Integer count
+  ) {
+    this.codespaces = codespaces;
+    this.systems = systems;
+    this.operators = operators;
+    this.count = count;
+  }
 
   public List<String> getCodespaces() {
     return codespaces;

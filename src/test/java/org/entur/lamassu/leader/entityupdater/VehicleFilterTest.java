@@ -3,6 +3,7 @@ package org.entur.lamassu.leader.entityupdater;
 import java.util.HashMap;
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.VehicleType;
+import org.entur.lamassu.stubs.EntityCacheStub;
 import org.junit.Test;
 import org.mobilitydata.gbfs.v3_0.vehicle_status.GBFSVehicle;
 
@@ -11,10 +12,10 @@ public class VehicleFilterTest {
   private static String VEHICLE_TYPE_ID = "vehicleTypeId";
 
   private HashMap<String, VehicleType> vehicleTypesWithPricingPlan(
-    PricingPlan optionalPricingPlan
+    String optionalPricingPlanId
   ) {
     VehicleType vehicleType = new VehicleType();
-    vehicleType.setDefaultPricingPlan(optionalPricingPlan);
+    vehicleType.setDefaultPricingPlanId(optionalPricingPlanId);
     HashMap<String, VehicleType> vehicleTypes = new HashMap<>();
     vehicleTypes.put(VEHICLE_TYPE_ID, vehicleType);
 
@@ -23,24 +24,28 @@ public class VehicleFilterTest {
 
   @Test
   public void testVehicleWithoutPricingPlanButDefaultPricingPlanIsntSkipped() {
-    VehicleFilter filter = new VehicleFilter(
-      new HashMap<>(),
-      vehicleTypesWithPricingPlan(new PricingPlan())
-    );
+    var pricingPlanCache = new EntityCacheStub<PricingPlan>();
+    var vehicleTypeCache = new EntityCacheStub<VehicleType>();
+
+    vehicleTypeCache.updateAll(vehicleTypesWithPricingPlan("pricingPlanId"), 0, null);
+
+    VehicleFilter filter = new VehicleFilter(pricingPlanCache, vehicleTypeCache);
 
     GBFSVehicle vehicle = new GBFSVehicle();
     vehicle.setVehicleId("VehicleWithoutPricingPlan");
-    vehicle.setVehicleTypeId("vehicleTypeId");
+    vehicle.setVehicleTypeId(VEHICLE_TYPE_ID);
 
     assert filter.test(vehicle) == true;
   }
 
   @Test
   public void testVehicleWithoutPricingPlanAndWithoutDefaultPricingPlanIsSkipped() {
-    VehicleFilter filter = new VehicleFilter(
-      new HashMap<>(),
-      vehicleTypesWithPricingPlan(null)
-    );
+    var pricingPlanCache = new EntityCacheStub<PricingPlan>();
+    var vehicleTypeCache = new EntityCacheStub<VehicleType>();
+
+    vehicleTypeCache.updateAll(vehicleTypesWithPricingPlan(null), 0, null);
+
+    VehicleFilter filter = new VehicleFilter(pricingPlanCache, vehicleTypeCache);
 
     GBFSVehicle vehicle = new GBFSVehicle();
     vehicle.setVehicleId("VehicleWithoutPricingPlan");

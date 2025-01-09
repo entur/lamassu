@@ -25,6 +25,18 @@ public class BoundingBoxQueryParameters {
   private Double maximumLatitude;
   private Double maximumLongitude;
 
+  public BoundingBoxQueryParameters(
+    Double minimumLatitude,
+    Double minimumLongitude,
+    Double maximumLatitude,
+    Double maximumLongitude
+  ) {
+    this.minimumLatitude = minimumLatitude;
+    this.minimumLongitude = minimumLongitude;
+    this.maximumLatitude = maximumLatitude;
+    this.maximumLongitude = maximumLongitude;
+  }
+
   public Double getMinimumLatitude() {
     return minimumLatitude;
   }

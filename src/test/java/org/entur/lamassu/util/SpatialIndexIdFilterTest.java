@@ -27,7 +27,7 @@ public class SpatialIndexIdFilterTest {
   @Test
   public void testNoFilterReturnsStationWithoutVehicleTypesAvailable() {
     StationSpatialIndexId stationSpatialIndexId =
-      SpatialIndexIdUtil.createStationSpatialIndexId(
+      TestSpatialIndexBuilder.createStationIndexId(
         aStationWithoutVehicleTypeAvailability(),
         aProvider()
       );
@@ -123,10 +123,14 @@ public class SpatialIndexIdFilterTest {
   @Test
   public void testVehicleTypesAvailableFilter() {
     var testId = aStationId();
-    var params = new StationFilterParameters();
-
-    params.setAvailableFormFactors(List.of(FormFactor.SCOOTER));
-    params.setAvailablePropulsionTypes(List.of(PropulsionType.ELECTRIC));
+    var params = new StationFilterParameters(
+      null,
+      null,
+      null,
+      null,
+      List.of(FormFactor.SCOOTER),
+      List.of(PropulsionType.ELECTRIC)
+    );
 
     Assert.assertTrue(SpatialIndexIdFilter.filterStation(testId, params));
 
@@ -142,23 +146,23 @@ public class SpatialIndexIdFilterTest {
   }
 
   private VehicleSpatialIndexId aVehicleId() {
-    return SpatialIndexIdUtil.createVehicleSpatialIndexId(aVehicle(), aProvider());
+    return TestSpatialIndexBuilder.createVehicleIndexId(aVehicle(), aProvider());
   }
 
   private StationSpatialIndexId aStationId() {
-    return SpatialIndexIdUtil.createStationSpatialIndexId(aStation(), aProvider());
+    return TestSpatialIndexBuilder.createStationIndexId(aStation(), aProvider());
   }
 
   private VehicleSpatialIndexId aReservedId() {
     var vehicle = aVehicle();
     vehicle.setReserved(true);
-    return SpatialIndexIdUtil.createVehicleSpatialIndexId(vehicle, aProvider());
+    return TestSpatialIndexBuilder.createVehicleIndexId(vehicle, aProvider());
   }
 
   private VehicleSpatialIndexId aDisabledId() {
     var vehicle = aVehicle();
     vehicle.setDisabled(true);
-    return SpatialIndexIdUtil.createVehicleSpatialIndexId(vehicle, aProvider());
+    return TestSpatialIndexBuilder.createVehicleIndexId(vehicle, aProvider());
   }
 
   private Vehicle aVehicle() {
@@ -204,14 +208,10 @@ public class SpatialIndexIdFilterTest {
   }
 
   private VehicleFilterParameters aVehicleFilterParams() {
-    var params = new VehicleFilterParameters();
-    params.setIncludeReserved(false);
-    params.setIncludeDisabled(false);
-    return params;
+    return new VehicleFilterParameters(null, null, null, null, null, null, false, false);
   }
 
   private StationFilterParameters aStationFilterParams() {
-    var params = new StationFilterParameters();
-    return params;
+    return new StationFilterParameters(null, null, null, null, null, null);
   }
 }

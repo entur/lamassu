@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.entur.ror</groupId>
         <artifactId>superpom</artifactId>
-        <version>2.16</version>
+        <version>2.17</version>
     </parent>
     <groupId>org.entur</groupId>
     <artifactId>lamassu</artifactId>
@@ -16,20 +16,19 @@
     <description>Micro mobility aggregation</description>
 
     <properties>
-        <lamassu.serialization.version.id>23</lamassu.serialization.version.id>
+        <lamassu.serialization.version.id>24</lamassu.serialization.version.id>
 
         <java.version>21</java.version>
 
-        <graphql-starter.version>15.1.0</graphql-starter.version>
         <entur.ror.helpers.version>1.101</entur.ror.helpers.version>
-        <redisson.version>3.36.0</redisson.version>
-        <embedded-redis.version>0.9.0</embedded-redis.version>
+        <redisson.version>3.41.0</redisson.version>
+        <embedded-redis.version>0.9.1</embedded-redis.version>
         <okhttp.version>4.12.0</okhttp.version>
-        <kryo.version>5.6.0</kryo.version>
-        <jackson.version>2.17.2</jackson.version>
-        <gbfs-loader-java.version>4.0.11</gbfs-loader-java.version>
-        <gbfs-validator-java.version>2.0.7</gbfs-validator-java.version>
-        <gbfs-mapper-java.version>2.0.10</gbfs-mapper-java.version>
+        <kryo.version>5.6.2</kryo.version>
+        <jackson.version>2.18.2</jackson.version>
+        <gbfs-loader-java.version>4.0.25</gbfs-loader-java.version>
+        <gbfs-validator-java.version>2.0.23</gbfs-validator-java.version>
+        <gbfs-mapper-java.version>2.0.21</gbfs-mapper-java.version>
         <prettier-java.version>2.1.0</prettier-java.version>
         <prettier-maven-plugin.version>0.22</prettier-maven-plugin.version>
         <plugin.prettier.goal>write</plugin.prettier.goal>
@@ -127,9 +126,8 @@
             <version>${jackson.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.graphql-java-kickstart</groupId>
-            <artifactId>graphql-spring-boot-starter</artifactId>
-            <version>${graphql-starter.version}</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-graphql</artifactId>
         </dependency>
         <dependency>
             <groupId>net.logstash.logback</groupId>
@@ -155,6 +153,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.springframework.graphql</groupId>
+            <artifactId>spring-graphql-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.signal</groupId>
             <artifactId>embedded-redis</artifactId>
             <version>${embedded-redis.version}</version>
@@ -173,15 +176,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.graphql-java-kickstart</groupId>
-            <artifactId>graphql-spring-boot-starter-test</artifactId>
-            <version>${graphql-starter.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.wiremock</groupId>
             <artifactId>wiremock</artifactId>
-            <version>3.9.1</version>
+            <version>3.10.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -199,7 +196,7 @@
             <groupId>io.netty</groupId>
             <artifactId>netty-resolver-dns-native-macos</artifactId>
             <classifier>osx-aarch_64</classifier>
-            <version>4.1.113.Final</version>
+            <version>4.1.116.Final</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -210,7 +207,7 @@
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-main</artifactId>
-            <version>31.3</version>
+            <version>32.1</version>
         </dependency>
     </dependencies>
 
@@ -287,7 +284,7 @@
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>jib-maven-plugin</artifactId>
-                <version>3.4.3</version>
+                <version>3.4.4</version>
                 <dependencies>
                     <!-- Include jib-spring-boot-extension-maven to prevent spring-boot-devtools from being packaged.-->
                     <dependency>

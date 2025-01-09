@@ -16,8 +16,16 @@
  *
  */
 
-package org.entur.lamassu.cache;
+package org.entur.lamassu.cache.impl;
 
-import org.entur.lamassu.model.entities.Station;
+import org.entur.lamassu.model.entities.Region;
+import org.redisson.api.RMapCache;
+import org.springframework.stereotype.Component;
 
-public interface StationCache extends EntityCache<Station> {}
+@Component
+public class RegionCacheImpl extends EntityCacheImpl<Region> {
+
+  public RegionCacheImpl(RMapCache<String, Region> cache) {
+    super(cache);
+  }
+}

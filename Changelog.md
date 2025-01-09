@@ -4,6 +4,12 @@ The changelog lists most feature changes between each release. The list is autom
 based on merged pull requests. Search GitHub issues and pull requests for smaller issues.
 
 ## 1.2.0 (under development)
+- Improve: introduce configurable stationEntityCacheMinimumTtl and stationEntityCacheMaximumTtl [#542](https://github.com/entur/lamassu/pull/542)
+- Update subscription immediately after registration [#592](https://github.com/entur/lamassu/pull/592)
+- Replace graphql kickstart project with spring graphql [#595](https://github.com/entur/lamassu/pull/595)
+- Normalize entity data [#596](https://github.com/entur/lamassu/pull/596)
+- Add null checks to avoid NPE [#612](https://github.com/entur/lamassu/pull/612)
+- Remove redundant entity cache interfaces [#613](https://github.com/entur/lamassu/pull/613)
   [](AUTOMATIC_CHANGELOG_PLACEHOLDER_DO_NOT_REMOVE)
 
 ## 1.1.0
