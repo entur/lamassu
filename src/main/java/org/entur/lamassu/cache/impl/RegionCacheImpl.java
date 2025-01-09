@@ -18,13 +18,12 @@
 
 package org.entur.lamassu.cache.impl;
 
-import org.entur.lamassu.cache.RegionCache;
 import org.entur.lamassu.model.entities.Region;
 import org.redisson.api.RMapCache;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RegionCacheImpl extends EntityCacheImpl<Region> implements RegionCache {
+public class RegionCacheImpl extends EntityCacheImpl<Region> {
 
   public RegionCacheImpl(RMapCache<String, Region> cache) {
     super(cache);

@@ -18,16 +18,13 @@
 
 package org.entur.lamassu.cache.impl;
 
-import org.entur.lamassu.cache.PricingPlanCache;
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.redisson.api.RMapCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PricingPlanCacheImpl
-  extends EntityCacheImpl<PricingPlan>
-  implements PricingPlanCache {
+public class PricingPlanCacheImpl extends EntityCacheImpl<PricingPlan> {
 
   public PricingPlanCacheImpl(@Autowired RMapCache<String, PricingPlan> cache) {
     super(cache);

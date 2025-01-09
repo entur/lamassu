@@ -2,7 +2,7 @@ package org.entur.lamassu.graphql.resolver.station;
 
 import java.util.HashSet;
 import java.util.List;
-import org.entur.lamassu.cache.VehicleTypeCache;
+import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.model.entities.VehicleDocksAvailability;
 import org.entur.lamassu.model.entities.VehicleDocksCapacity;
 import org.entur.lamassu.model.entities.VehicleType;
@@ -15,9 +15,9 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class StationVehicleTypeResolver {
 
-  private final VehicleTypeCache vehicleTypeCache;
+  private final EntityCache<VehicleType> vehicleTypeCache;
 
-  public StationVehicleTypeResolver(VehicleTypeCache vehicleTypeCache) {
+  public StationVehicleTypeResolver(EntityCache<VehicleType> vehicleTypeCache) {
     this.vehicleTypeCache = vehicleTypeCache;
   }
 

@@ -21,7 +21,7 @@ package org.entur.lamassu.leader.entityupdater;
 import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import org.entur.lamassu.cache.RegionCache;
+import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.mapper.entitymapper.RegionMapper;
 import org.entur.lamassu.model.entities.Region;
 import org.entur.lamassu.util.CacheUtil;
@@ -31,10 +31,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class RegionsUpdater {
 
-  private final RegionCache regionCache;
+  private final EntityCache<Region> regionCache;
   private final RegionMapper regionMapper;
 
-  public RegionsUpdater(RegionCache regionCache, RegionMapper regionMapper) {
+  public RegionsUpdater(EntityCache<Region> regionCache, RegionMapper regionMapper) {
     this.regionCache = regionCache;
     this.regionMapper = regionMapper;
   }

@@ -18,16 +18,13 @@
 
 package org.entur.lamassu.cache.impl;
 
-import org.entur.lamassu.cache.VehicleTypeCache;
 import org.entur.lamassu.model.entities.VehicleType;
 import org.redisson.api.RMapCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class VehicleTypeCacheImpl
-  extends EntityCacheImpl<VehicleType>
-  implements VehicleTypeCache {
+public class VehicleTypeCacheImpl extends EntityCacheImpl<VehicleType> {
 
   protected VehicleTypeCacheImpl(@Autowired RMapCache<String, VehicleType> cache) {
     super(cache);

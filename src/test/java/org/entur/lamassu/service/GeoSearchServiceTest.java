@@ -29,11 +29,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.entur.lamassu.cache.EntityCache;
-import org.entur.lamassu.cache.StationCache;
 import org.entur.lamassu.cache.StationSpatialIndex;
 import org.entur.lamassu.cache.VehicleSpatialIndex;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PropulsionType;
+import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.entities.VehicleType;
 import org.entur.lamassu.model.provider.FeedProvider;
@@ -49,7 +49,7 @@ public class GeoSearchServiceTest {
   private final VehicleSpatialIndex vehicleSpatialIndex = mock(VehicleSpatialIndex.class);
   private final StationSpatialIndex stationSpatialIndex = mock(StationSpatialIndex.class);
   private final EntityCache<Vehicle> vehicleCache = new EntityCacheStub<Vehicle>();
-  private final StationCache stationCache = mock(StationCache.class);
+  private final EntityCache<Station> stationCache = new EntityCacheStub<Station>();
   private final FeedProvider feedProvider = getFeedProvider();
   private final GeoSearchService service = new GeoSearchServiceImpl(
     vehicleSpatialIndex,
