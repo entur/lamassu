@@ -15,7 +15,7 @@ public class TestSpatialIndexBuilder {
 
   private TestSpatialIndexBuilder() {}
 
-  public static VehicleSpatialIndexId createVehicleIndex(
+  public static VehicleSpatialIndexId createVehicleIndexId(
     Vehicle vehicle,
     FeedProvider provider
   ) {
@@ -31,7 +31,7 @@ public class TestSpatialIndexBuilder {
     return id;
   }
 
-  public static StationSpatialIndexId createStationIndex(
+  public static StationSpatialIndexId createStationIndexId(
     Station station,
     FeedProvider provider
   ) {

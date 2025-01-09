@@ -77,7 +77,7 @@ public class GeoSearchServiceTest {
         vehicles
           .stream()
           .map(vehicle ->
-            TestSpatialIndexBuilder.createVehicleIndex(vehicle, feedProvider)
+            TestSpatialIndexBuilder.createVehicleIndexId(vehicle, feedProvider)
           )
           .collect(Collectors.toList())
       );
@@ -109,7 +109,9 @@ public class GeoSearchServiceTest {
     service.removeVehicleSpatialIndexOrphans();
     verify(vehicleSpatialIndex)
       .removeAll(
-        Set.of(TestSpatialIndexBuilder.createVehicleIndex(vehicleToRemove, feedProvider))
+        Set.of(
+          TestSpatialIndexBuilder.createVehicleIndexId(vehicleToRemove, feedProvider)
+        )
       );
   }
 
