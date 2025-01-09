@@ -16,31 +16,8 @@
  *
  */
 
-package org.entur.lamassu.model.entities;
+package org.entur.lamassu.cache;
 
-public class Region implements Entity {
+import org.entur.lamassu.model.entities.PricingPlan;
 
-  private String id;
-  private TranslatedString name;
-
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  public TranslatedString getName() {
-    return name;
-  }
-
-  public void setName(TranslatedString name) {
-    this.name = name;
-  }
-
-  @Override
-  public String toString() {
-    return "Region{" + "id='" + id + '\'' + ", name=" + name + '}';
-  }
-}
+public interface PricingPlanCache extends EntityCache<PricingPlan> {}

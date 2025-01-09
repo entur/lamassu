@@ -29,6 +29,8 @@ public class VehicleType implements Entity {
   private VehicleAssets vehicleAssets;
   private PricingPlan defaultPricingPlan;
   private List<PricingPlan> pricingPlans;
+  private String defaultPricingPlanId;
+  private List<String> pricingPlanIds;
 
   @Override
   public String getId() {
@@ -229,6 +231,22 @@ public class VehicleType implements Entity {
 
   public void setPricingPlans(List<PricingPlan> pricingPlans) {
     this.pricingPlans = pricingPlans;
+  }
+
+  public String getDefaultPricingPlanId() {
+    return defaultPricingPlanId;
+  }
+
+  public void setDefaultPricingPlanId(String defaultPricingPlanId) {
+    this.defaultPricingPlanId = defaultPricingPlanId;
+  }
+
+  public List<String> getPricingPlanIds() {
+    return pricingPlanIds;
+  }
+
+  public void setPricingPlanIds(List<String> pricingPlanIds) {
+    this.pricingPlanIds = pricingPlanIds;
   }
 
   @Override

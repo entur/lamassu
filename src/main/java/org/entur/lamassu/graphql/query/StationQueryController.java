@@ -1,31 +1,36 @@
-package org.entur.lamassu.graphql.controller;
+package org.entur.lamassu.graphql.query;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import org.entur.lamassu.cache.StationCache;
+import org.entur.lamassu.graphql.validation.QueryParameterValidator;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PropulsionType;
 import org.entur.lamassu.model.entities.Station;
-import org.entur.lamassu.service.*;
+import org.entur.lamassu.service.BoundingBoxQueryParameters;
+import org.entur.lamassu.service.GeoSearchService;
+import org.entur.lamassu.service.RangeQueryParameters;
+import org.entur.lamassu.service.StationFilterParameters;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
 @Controller
-public class StationGraphQLController extends BaseGraphQLController {
+public class StationQueryController {
 
   private final GeoSearchService geoSearchService;
   private final StationCache stationCache;
+  private final QueryParameterValidator validationService;
 
-  public StationGraphQLController(
+  public StationQueryController(
     GeoSearchService geoSearchService,
-    FeedProviderService feedProviderService,
-    StationCache stationCache
+    StationCache stationCache,
+    QueryParameterValidator validationService
   ) {
-    super(feedProviderService);
     this.geoSearchService = geoSearchService;
     this.stationCache = stationCache;
+    this.validationService = validationService;
   }
 
   @QueryMapping
@@ -54,9 +59,9 @@ public class StationGraphQLController extends BaseGraphQLController {
       return stationCache.getAll(Set.copyOf(ids));
     }
 
-    validateCount(count);
-    validateCodespaces(codespaces);
-    validateSystems(systems);
+    validationService.validateCount(count);
+    validationService.validateCodespaces(codespaces);
+    validationService.validateSystems(systems);
 
     var filterParams = new StationFilterParameters(
       codespaces,
@@ -69,7 +74,7 @@ public class StationGraphQLController extends BaseGraphQLController {
 
     Collection<Station> stations;
 
-    validateQueryParameters(
+    validationService.validateQueryParameters(
       lat,
       lon,
       range,
@@ -79,7 +84,7 @@ public class StationGraphQLController extends BaseGraphQLController {
       maximumLongitude
     );
 
-    if (isRangeSearch(range, lat, lon)) {
+    if (validationService.isRangeSearch(range, lat, lon)) {
       var queryParams = new RangeQueryParameters(lat, lon, range);
       stations = geoSearchService.getStationsWithinRange(queryParams, filterParams);
     } else {
@@ -90,6 +95,10 @@ public class StationGraphQLController extends BaseGraphQLController {
         maximumLongitude
       );
       stations = geoSearchService.getStationsInBoundingBox(queryParams, filterParams);
+    }
+
+    if (count != null) {
+      return stations.stream().limit(count).toList();
     }
 
     return stations;

@@ -24,6 +24,8 @@ import org.entur.lamassu.model.provider.FeedProvider;
 
 public interface FeedProviderService {
   List<FeedProvider> getFeedProviders();
+  List<String> getCodespaces();
+  List<String> getSystems();
   List<Operator> getOperators();
   FeedProvider getFeedProviderBySystemId(String systemId);
 }

@@ -1,14 +1,14 @@
-package org.entur.lamassu.graphql.controller;
+package org.entur.lamassu.graphql.query;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import org.entur.lamassu.cache.VehicleCache;
+import org.entur.lamassu.graphql.validation.QueryParameterValidator;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PropulsionType;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.service.BoundingBoxQueryParameters;
-import org.entur.lamassu.service.FeedProviderService;
 import org.entur.lamassu.service.GeoSearchService;
 import org.entur.lamassu.service.RangeQueryParameters;
 import org.entur.lamassu.service.VehicleFilterParameters;
@@ -17,19 +17,20 @@ import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
 @Controller
-public class VehicleGraphQLController extends BaseGraphQLController {
+public class VehicleQueryController {
 
   private final GeoSearchService geoSearchService;
   private final VehicleCache vehicleCache;
+  private final QueryParameterValidator validationService;
 
-  public VehicleGraphQLController(
+  public VehicleQueryController(
     GeoSearchService geoSearchService,
-    FeedProviderService feedProviderService,
-    VehicleCache vehicleCache
+    VehicleCache vehicleCache,
+    QueryParameterValidator validationService
   ) {
-    super(feedProviderService);
     this.geoSearchService = geoSearchService;
     this.vehicleCache = vehicleCache;
+    this.validationService = validationService;
   }
 
   @QueryMapping
@@ -60,9 +61,9 @@ public class VehicleGraphQLController extends BaseGraphQLController {
       return vehicleCache.getAll(Set.copyOf(ids));
     }
 
-    validateCount(count);
-    validateCodespaces(codespaces);
-    validateSystems(systems);
+    validationService.validateCount(count);
+    validationService.validateCodespaces(codespaces);
+    validationService.validateSystems(systems);
 
     var filterParams = new VehicleFilterParameters(
       codespaces,
@@ -77,7 +78,7 @@ public class VehicleGraphQLController extends BaseGraphQLController {
 
     Collection<Vehicle> vehicles;
 
-    validateQueryParameters(
+    validationService.validateQueryParameters(
       lat,
       lon,
       range,
@@ -87,7 +88,7 @@ public class VehicleGraphQLController extends BaseGraphQLController {
       maximumLongitude
     );
 
-    if (isRangeSearch(range, lat, lon)) {
+    if (validationService.isRangeSearch(range, lat, lon)) {
       var queryParams = new RangeQueryParameters(lat, lon, range);
       vehicles = geoSearchService.getVehiclesWithinRange(queryParams, filterParams);
     } else {
@@ -98,6 +99,10 @@ public class VehicleGraphQLController extends BaseGraphQLController {
         maximumLongitude
       );
       vehicles = geoSearchService.getVehiclesInBoundingBox(queryParams, filterParams);
+    }
+
+    if (count != null) {
+      return vehicles.stream().limit(count).toList();
     }
 
     return vehicles;

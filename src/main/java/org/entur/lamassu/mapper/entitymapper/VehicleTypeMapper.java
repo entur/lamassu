@@ -20,11 +20,9 @@ package org.entur.lamassu.mapper.entitymapper;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import org.entur.lamassu.model.entities.EcoLabel;
 import org.entur.lamassu.model.entities.FormFactor;
-import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.PropulsionType;
 import org.entur.lamassu.model.entities.ReturnConstraint;
 import org.entur.lamassu.model.entities.VehicleAccessory;
@@ -48,11 +46,7 @@ public class VehicleTypeMapper {
     this.translationMapper = translationMapper;
   }
 
-  public VehicleType mapVehicleType(
-    GBFSVehicleType vehicleType,
-    List<PricingPlan> pricingPlans,
-    String language
-  ) {
+  public VehicleType mapVehicleType(GBFSVehicleType vehicleType, String language) {
     var mapped = new VehicleType();
     mapped.setId(vehicleType.getVehicleTypeId());
     mapped.setFormFactor(FormFactor.valueOf(vehicleType.getFormFactor().name()));
@@ -132,42 +126,9 @@ public class VehicleTypeMapper {
     mapped.setDefaultReserveTime(vehicleType.getDefaultReserveTime());
     mapped.setReturnConstraint(mapReturnConstraint(vehicleType.getReturnConstraint()));
     mapped.setVehicleAssets(mapVehicleAssets(vehicleType.getVehicleAssets()));
-    mapped.setDefaultPricingPlan(
-      vehicleType.getDefaultPricingPlanId() != null
-        ? getPricingPlanWithId(pricingPlans, vehicleType.getDefaultPricingPlanId())
-        : null
-    );
-    mapped.setPricingPlans(
-      mapPricingPlans(vehicleType.getPricingPlanIds(), pricingPlans)
-    );
+    mapped.setDefaultPricingPlanId(vehicleType.getDefaultPricingPlanId());
+    mapped.setPricingPlanIds(vehicleType.getPricingPlanIds());
     return mapped;
-  }
-
-  private List<PricingPlan> mapPricingPlans(
-    List<String> pricingPlanIds,
-    List<PricingPlan> pricingPlans
-  ) {
-    if (pricingPlans == null || pricingPlanIds == null) {
-      return null;
-    }
-
-    return pricingPlanIds
-      .stream()
-      .map(id -> getPricingPlanWithId(pricingPlans, id))
-      .filter(Objects::nonNull)
-      .toList();
-  }
-
-  private PricingPlan getPricingPlanWithId(List<PricingPlan> pricingPlans, String id) {
-    if (pricingPlans == null || id == null) {
-      return null;
-    }
-
-    return pricingPlans
-      .stream()
-      .filter(pricingPlan -> pricingPlan.getId().equals(id))
-      .findFirst()
-      .orElse(null);
   }
 
   private VehicleAssets mapVehicleAssets(GBFSVehicleAssets vehicleAssets) {

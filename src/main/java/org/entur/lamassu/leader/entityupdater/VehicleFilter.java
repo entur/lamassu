@@ -18,27 +18,29 @@
 
 package org.entur.lamassu.leader.entityupdater;
 
-import java.util.Map;
 import java.util.function.Predicate;
+import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.VehicleType;
 import org.mobilitydata.gbfs.v3_0.vehicle_status.GBFSVehicle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
+@Component
 class VehicleFilter implements Predicate<GBFSVehicle> {
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-  private final Map<String, PricingPlan> pricingPlans;
-  private final Map<String, VehicleType> vehicleTypes;
+  private final EntityCache<PricingPlan> pricingPlanCache;
+  private final EntityCache<VehicleType> vehicleTypeCache;
 
   public VehicleFilter(
-    Map<String, PricingPlan> pricingPlans,
-    Map<String, VehicleType> vehicleTypes
+    EntityCache<PricingPlan> pricingPlanCache,
+    EntityCache<VehicleType> vehicleTypeCache
   ) {
-    this.pricingPlans = pricingPlans;
-    this.vehicleTypes = vehicleTypes;
+    this.pricingPlanCache = pricingPlanCache;
+    this.vehicleTypeCache = vehicleTypeCache;
   }
 
   @Override
@@ -50,7 +52,7 @@ class VehicleFilter implements Predicate<GBFSVehicle> {
 
     if (
       vehicle.getPricingPlanId() != null &&
-      !pricingPlans.containsKey(vehicle.getPricingPlanId())
+      !pricingPlanCache.hasKey(vehicle.getPricingPlanId())
     ) {
       logger.info(
         "Skipping vehicle with unknown pricing plan id {} (vehicle {})",
@@ -60,7 +62,7 @@ class VehicleFilter implements Predicate<GBFSVehicle> {
       return false;
     }
 
-    if (!vehicleTypes.containsKey(vehicle.getVehicleTypeId())) {
+    if (!vehicleTypeCache.hasKey(vehicle.getVehicleTypeId())) {
       logger.info(
         "Skipping vehicle with unknown vehicle type id {} (vehicle {})",
         vehicle.getVehicleTypeId(),
@@ -71,7 +73,7 @@ class VehicleFilter implements Predicate<GBFSVehicle> {
 
     if (
       vehicle.getPricingPlanId() == null &&
-      vehicleTypes.get(vehicle.getVehicleTypeId()).getDefaultPricingPlan() == null
+      vehicleTypeCache.get(vehicle.getVehicleTypeId()).getDefaultPricingPlanId() == null
     ) {
       logger.info(
         "Skipping vehicle without pricing plan id and vehicle type {} without default pricing plan (vehicle {})",

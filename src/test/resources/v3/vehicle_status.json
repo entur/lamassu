@@ -12,6 +12,7 @@
         "is_reserved":false,
         "is_disabled":false,
         "vehicle_type_id":"abc123",
+        "pricing_plan_id": "bike_plan_1",
         "rental_uris": {
           "android": "https://www.example.com/app?vehicle_id=973a5c94-c288-4a2b-afa6-de8aeb6ae2e5&platform=android&",
           "ios": "https://www.example.com/app?vehicle_id=973a5c94-c288-4a2b-afa6-de8aeb6ae2e5&platform=ios"

@@ -28,9 +28,9 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.cache.StationCache;
 import org.entur.lamassu.cache.StationSpatialIndex;
-import org.entur.lamassu.cache.VehicleCache;
 import org.entur.lamassu.cache.VehicleSpatialIndex;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PropulsionType;
@@ -38,8 +38,8 @@ import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.entities.VehicleType;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.service.impl.GeoSearchServiceImpl;
-import org.entur.lamassu.stubs.VehicleCacheStub;
-import org.entur.lamassu.util.SpatialIndexIdUtil;
+import org.entur.lamassu.stubs.EntityCacheStub;
+import org.entur.lamassu.util.TestSpatialIndexBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
@@ -48,7 +48,7 @@ public class GeoSearchServiceTest {
 
   private final VehicleSpatialIndex vehicleSpatialIndex = mock(VehicleSpatialIndex.class);
   private final StationSpatialIndex stationSpatialIndex = mock(StationSpatialIndex.class);
-  private final VehicleCache vehicleCache = new VehicleCacheStub();
+  private final EntityCache<Vehicle> vehicleCache = new EntityCacheStub<Vehicle>();
   private final StationCache stationCache = mock(StationCache.class);
   private final FeedProvider feedProvider = getFeedProvider();
   private final GeoSearchService service = new GeoSearchServiceImpl(
@@ -77,7 +77,7 @@ public class GeoSearchServiceTest {
         vehicles
           .stream()
           .map(vehicle ->
-            SpatialIndexIdUtil.createVehicleSpatialIndexId(vehicle, feedProvider)
+            TestSpatialIndexBuilder.createVehicleIndexId(vehicle, feedProvider)
           )
           .collect(Collectors.toList())
       );
@@ -106,11 +106,11 @@ public class GeoSearchServiceTest {
   public void testRemoveVehicleSpatialIndexOrphans() {
     var vehicleToRemove = vehicleCache.get("foo_1");
     vehicleCache.removeAll(Set.of("foo_1"));
-    var orphans = service.removeVehicleSpatialIndexOrphans();
+    service.removeVehicleSpatialIndexOrphans();
     verify(vehicleSpatialIndex)
       .removeAll(
         Set.of(
-          SpatialIndexIdUtil.createVehicleSpatialIndexId(vehicleToRemove, feedProvider)
+          TestSpatialIndexBuilder.createVehicleIndexId(vehicleToRemove, feedProvider)
         )
       );
   }

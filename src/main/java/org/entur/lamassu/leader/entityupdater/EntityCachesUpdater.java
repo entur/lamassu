@@ -27,16 +27,28 @@ import org.springframework.stereotype.Component;
 @Component
 public class EntityCachesUpdater {
 
+  private final SystemUpdater systemUpdater;
+  private final VehicleTypesUpdater vehicleTypesUpdater;
+  private final PricingPlansUpdater pricingPlansUpdater;
+  private final RegionsUpdater regionsUpdater;
   private final VehiclesUpdater vehiclesUpdater;
   private final StationsUpdater stationsUpdater;
   private final GeofencingZonesUpdater geofencingZonesUpdater;
 
   @Autowired
   public EntityCachesUpdater(
+    SystemUpdater systemUpdater,
+    VehicleTypesUpdater vehicleTypesUpdater,
+    PricingPlansUpdater pricingPlansUpdater,
+    RegionsUpdater regionsUpdater,
     VehiclesUpdater vehiclesUpdater,
     StationsUpdater stationsUpdater,
     GeofencingZonesUpdater geofencingZonesUpdater
   ) {
+    this.systemUpdater = systemUpdater;
+    this.vehicleTypesUpdater = vehicleTypesUpdater;
+    this.pricingPlansUpdater = pricingPlansUpdater;
+    this.regionsUpdater = regionsUpdater;
     this.vehiclesUpdater = vehiclesUpdater;
     this.stationsUpdater = stationsUpdater;
     this.geofencingZonesUpdater = geofencingZonesUpdater;
@@ -47,6 +59,22 @@ public class EntityCachesUpdater {
     GbfsV3Delivery delivery,
     GbfsV3Delivery oldDelivery
   ) {
+    if (canUpdateSystem(delivery, feedProvider)) {
+      systemUpdater.update(delivery.systemInformation(), feedProvider);
+    }
+
+    if (canUpdateVehicleTypes(delivery, feedProvider)) {
+      vehicleTypesUpdater.update(delivery.vehicleTypes(), feedProvider);
+    }
+
+    if (canUpdatePricingPlans(delivery, feedProvider)) {
+      pricingPlansUpdater.update(delivery.systemPricingPlans());
+    }
+
+    if (canUpdateRegions(delivery, feedProvider)) {
+      regionsUpdater.updateRegions(delivery.systemRegions(), feedProvider.getLanguage());
+    }
+
     if (canUpdateVehicles(delivery, feedProvider)) {
       vehiclesUpdater.addOrUpdateVehicles(feedProvider, delivery, oldDelivery);
     }
@@ -55,13 +83,7 @@ public class EntityCachesUpdater {
       stationsUpdater.addOrUpdateStations(feedProvider, delivery, oldDelivery);
     }
 
-    if (
-      delivery.geofencingZones() != null &&
-      (
-        feedProvider.getExcludeFeeds() == null ||
-        !feedProvider.getExcludeFeeds().contains(GBFSFeedName.GeofencingZones)
-      )
-    ) {
+    if (canUpdateGeofencingZones(delivery, feedProvider)) {
       geofencingZonesUpdater.addOrUpdateGeofencingZones(
         feedProvider,
         delivery.geofencingZones()
@@ -69,11 +91,53 @@ public class EntityCachesUpdater {
     }
   }
 
+  private boolean canUpdateSystem(GbfsV3Delivery delivery, FeedProvider feedProvider) {
+    if (exclude(feedProvider, GBFSFeedName.SystemInformation)) {
+      return false;
+    }
+    return delivery.systemInformation() != null;
+  }
+
+  private boolean canUpdateVehicleTypes(
+    GbfsV3Delivery delivery,
+    FeedProvider feedProvider
+  ) {
+    if (exclude(feedProvider, GBFSFeedName.VehicleTypes)) {
+      return false;
+    }
+    return delivery.vehicleTypes() != null;
+  }
+
+  private boolean canUpdatePricingPlans(
+    GbfsV3Delivery delivery,
+    FeedProvider feedProvider
+  ) {
+    if (exclude(feedProvider, GBFSFeedName.SystemPricingPlans)) {
+      return false;
+    }
+    return delivery.systemPricingPlans() != null;
+  }
+
+  private boolean canUpdateRegions(GbfsV3Delivery delivery, FeedProvider feedProvider) {
+    if (exclude(feedProvider, GBFSFeedName.SystemRegions)) {
+      return false;
+    }
+    return delivery.systemRegions() != null;
+  }
+
+  private boolean canUpdateGeofencingZones(
+    GbfsV3Delivery delivery,
+    FeedProvider feedProvider
+  ) {
+    if (exclude(feedProvider, GBFSFeedName.GeofencingZones)) {
+      return false;
+    }
+
+    return delivery.geofencingZones() != null;
+  }
+
   private boolean canUpdateVehicles(GbfsV3Delivery delivery, FeedProvider feedProvider) {
-    if (
-      feedProvider.getExcludeFeeds() != null &&
-      feedProvider.getExcludeFeeds().contains(GBFSFeedName.FreeBikeStatus)
-    ) {
+    if (exclude(feedProvider, GBFSFeedName.FreeBikeStatus)) {
       return false;
     }
 
@@ -91,11 +155,8 @@ public class EntityCachesUpdater {
 
   private boolean canUpdateStations(GbfsV3Delivery delivery, FeedProvider feedProvider) {
     if (
-      feedProvider.getExcludeFeeds() != null &&
-      (
-        feedProvider.getExcludeFeeds().contains(GBFSFeedName.StationInformation) ||
-        feedProvider.getExcludeFeeds().contains(GBFSFeedName.StationStatus)
-      )
+      exclude(feedProvider, GBFSFeedName.StationInformation) ||
+      exclude(feedProvider, GBFSFeedName.StationStatus)
     ) {
       return false;
     }
@@ -111,6 +172,13 @@ public class EntityCachesUpdater {
       delivery.vehicleTypes().getData() != null &&
       delivery.systemPricingPlans() != null &&
       delivery.systemPricingPlans().getData() != null
+    );
+  }
+
+  private boolean exclude(FeedProvider feedProvider, GBFSFeedName feedName) {
+    return (
+      feedProvider.getExcludeFeeds() != null &&
+      feedProvider.getExcludeFeeds().contains(feedName)
     );
   }
 }
