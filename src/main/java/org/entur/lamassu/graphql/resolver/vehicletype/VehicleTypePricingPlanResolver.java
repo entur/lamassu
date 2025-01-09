@@ -19,11 +19,17 @@ public class VehicleTypePricingPlanResolver {
 
   @SchemaMapping(typeName = "VehicleType", field = "defaultPricingPlan")
   public PricingPlan defaultPricingPlan(VehicleType vehicleType) {
+    if (vehicleType.getDefaultPricingPlanId() == null) {
+      return null;
+    }
     return pricingPlanCache.get(vehicleType.getDefaultPricingPlanId());
   }
 
   @SchemaMapping(typeName = "VehicleType", field = "pricingPlans")
   public List<PricingPlan> pricingPlans(VehicleType vehicleType) {
+    if (vehicleType.getPricingPlanIds() == null) {
+      return null;
+    }
     return pricingPlanCache.getAll(
       vehicleType.getPricingPlanIds().stream().collect(Collectors.toSet())
     );
