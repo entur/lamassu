@@ -8,6 +8,7 @@ based on merged pull requests. Search GitHub issues and pull requests for smalle
 - Update subscription immediately after registration [#592](https://github.com/entur/lamassu/pull/592)
 - Replace graphql kickstart project with spring graphql [#595](https://github.com/entur/lamassu/pull/595)
 - Normalize entity data [#596](https://github.com/entur/lamassu/pull/596)
+- Add null checks to avoid NPE [#612](https://github.com/entur/lamassu/pull/612)
   [](AUTOMATIC_CHANGELOG_PLACEHOLDER_DO_NOT_REMOVE)
 
 ## 1.1.0
