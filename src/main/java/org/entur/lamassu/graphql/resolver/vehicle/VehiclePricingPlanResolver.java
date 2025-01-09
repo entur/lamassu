@@ -1,21 +1,21 @@
 package org.entur.lamassu.graphql.resolver.vehicle;
 
-import org.entur.lamassu.cache.PricingPlanCache;
-import org.entur.lamassu.cache.VehicleTypeCache;
+import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.Vehicle;
+import org.entur.lamassu.model.entities.VehicleType;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
 @Controller
 public class VehiclePricingPlanResolver {
 
-  private final PricingPlanCache pricingPlanCache;
-  private final VehicleTypeCache vehicleTypeCache;
+  private final EntityCache<PricingPlan> pricingPlanCache;
+  private final EntityCache<VehicleType> vehicleTypeCache;
 
   public VehiclePricingPlanResolver(
-    PricingPlanCache pricingPlanCache,
-    VehicleTypeCache vehicleTypeCache
+    EntityCache<PricingPlan> pricingPlanCache,
+    EntityCache<VehicleType> vehicleTypeCache
   ) {
     this.pricingPlanCache = pricingPlanCache;
     this.vehicleTypeCache = vehicleTypeCache;

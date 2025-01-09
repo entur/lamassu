@@ -25,7 +25,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.entur.gbfs.loader.v3.GbfsV3Delivery;
-import org.entur.lamassu.cache.VehicleCache;
+import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.cache.VehicleSpatialIndex;
 import org.entur.lamassu.cache.VehicleSpatialIndexId;
 import org.entur.lamassu.mapper.entitymapper.VehicleMapper;
@@ -45,7 +45,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class VehiclesUpdater {
 
-  private final VehicleCache vehicleCache;
+  private final EntityCache<Vehicle> vehicleCache;
   private final VehicleSpatialIndex spatialIndex;
   private final VehicleMapper vehicleMapper;
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -61,7 +61,7 @@ public class VehiclesUpdater {
 
   @Autowired
   public VehiclesUpdater(
-    VehicleCache vehicleCache,
+    EntityCache<Vehicle> vehicleCache,
     VehicleSpatialIndex spatialIndex,
     VehicleMapper vehicleMapper,
     MetricsService metricsService,

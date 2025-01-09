@@ -3,7 +3,7 @@ package org.entur.lamassu.graphql.query;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import org.entur.lamassu.cache.VehicleCache;
+import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.graphql.validation.QueryParameterValidator;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PropulsionType;
@@ -20,12 +20,12 @@ import org.springframework.stereotype.Controller;
 public class VehicleQueryController {
 
   private final GeoSearchService geoSearchService;
-  private final VehicleCache vehicleCache;
+  private final EntityCache<Vehicle> vehicleCache;
   private final QueryParameterValidator validationService;
 
   public VehicleQueryController(
     GeoSearchService geoSearchService,
-    VehicleCache vehicleCache,
+    EntityCache<Vehicle> vehicleCache,
     QueryParameterValidator validationService
   ) {
     this.geoSearchService = geoSearchService;

@@ -21,8 +21,9 @@ package org.entur.lamassu.leader.entityupdater;
 import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import org.entur.lamassu.cache.GeofencingZonesCache;
+import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.mapper.entitymapper.GeofencingZonesMapper;
+import org.entur.lamassu.model.entities.GeofencingZones;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.util.CacheUtil;
 import org.mobilitydata.gbfs.v3_0.geofencing_zones.GBFSGeofencingZones;
@@ -32,12 +33,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class GeofencingZonesUpdater {
 
-  private final GeofencingZonesCache geofencingZonesCache;
+  private final EntityCache<GeofencingZones> geofencingZonesCache;
   private final GeofencingZonesMapper geofencingZonesMapper;
 
   @Autowired
   public GeofencingZonesUpdater(
-    GeofencingZonesCache geofencingZonesCache,
+    EntityCache<GeofencingZones> geofencingZonesCache,
     GeofencingZonesMapper geofencingZonesMapper
   ) {
     this.geofencingZonesCache = geofencingZonesCache;

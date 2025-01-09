@@ -27,7 +27,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.entur.gbfs.loader.v3.GbfsV3Delivery;
-import org.entur.lamassu.cache.StationCache;
+import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.cache.StationSpatialIndex;
 import org.entur.lamassu.cache.StationSpatialIndexId;
 import org.entur.lamassu.mapper.entitymapper.StationMapper;
@@ -49,7 +49,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class StationsUpdater {
 
-  private final StationCache stationCache;
+  private final EntityCache<Station> stationCache;
   private final StationSpatialIndex spatialIndex;
   private final StationMapper stationMapper;
   private final MetricsService metricsService;
@@ -64,7 +64,7 @@ public class StationsUpdater {
 
   @Autowired
   public StationsUpdater(
-    StationCache stationCache,
+    EntityCache<Station> stationCache,
     StationSpatialIndex spatialIndex,
     StationMapper stationMapper,
     MetricsService metricsService,

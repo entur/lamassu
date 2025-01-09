@@ -21,7 +21,7 @@ package org.entur.lamassu.leader.entityupdater;
 import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import org.entur.lamassu.cache.PricingPlanCache;
+import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.mapper.entitymapper.PricingPlanMapper;
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.util.CacheUtil;
@@ -31,11 +31,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class PricingPlansUpdater {
 
-  private final PricingPlanCache pricingPlanCache;
+  private final EntityCache<PricingPlan> pricingPlanCache;
   private final PricingPlanMapper pricingPlanMapper;
 
   public PricingPlansUpdater(
-    PricingPlanCache pricingPlanCache,
+    EntityCache<PricingPlan> pricingPlanCache,
     PricingPlanMapper pricingPlanMapper
   ) {
     this.pricingPlanCache = pricingPlanCache;

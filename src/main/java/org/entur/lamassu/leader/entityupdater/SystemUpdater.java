@@ -21,8 +21,9 @@ package org.entur.lamassu.leader.entityupdater;
 import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import org.entur.lamassu.cache.SystemCache;
+import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.mapper.entitymapper.SystemMapper;
+import org.entur.lamassu.model.entities.System;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.util.CacheUtil;
 import org.mobilitydata.gbfs.v3_0.system_information.GBFSSystemInformation;
@@ -31,10 +32,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class SystemUpdater {
 
-  private final SystemCache systemCache;
+  private final EntityCache<System> systemCache;
   private final SystemMapper systemMapper;
 
-  public SystemUpdater(SystemCache systemCache, SystemMapper systemMapper) {
+  public SystemUpdater(EntityCache<System> systemCache, SystemMapper systemMapper) {
     this.systemCache = systemCache;
     this.systemMapper = systemMapper;
   }

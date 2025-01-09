@@ -7,8 +7,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.entur.lamassu.cache.PricingPlanCache;
-import org.entur.lamassu.cache.VehicleTypeCache;
+import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.VehicleDocksAvailability;
@@ -23,12 +22,12 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class StationPricingPlanResolver {
 
-  private final VehicleTypeCache vehicleTypeCache;
-  private final PricingPlanCache pricingPlanCache;
+  private final EntityCache<VehicleType> vehicleTypeCache;
+  private final EntityCache<PricingPlan> pricingPlanCache;
 
   public StationPricingPlanResolver(
-    VehicleTypeCache vehicleTypeCache,
-    PricingPlanCache pricingPlanCache
+    EntityCache<VehicleType> vehicleTypeCache,
+    EntityCache<PricingPlan> pricingPlanCache
   ) {
     this.vehicleTypeCache = vehicleTypeCache;
     this.pricingPlanCache = pricingPlanCache;

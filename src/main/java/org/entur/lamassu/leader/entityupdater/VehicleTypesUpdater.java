@@ -21,7 +21,7 @@ package org.entur.lamassu.leader.entityupdater;
 import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import org.entur.lamassu.cache.VehicleTypeCache;
+import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.mapper.entitymapper.VehicleTypeMapper;
 import org.entur.lamassu.model.entities.VehicleType;
 import org.entur.lamassu.model.provider.FeedProvider;
@@ -32,11 +32,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class VehicleTypesUpdater {
 
-  private final VehicleTypeCache vehicleTypeCache;
+  private final EntityCache<VehicleType> vehicleTypeCache;
   private final VehicleTypeMapper vehicleTypeMapper;
 
   public VehicleTypesUpdater(
-    VehicleTypeCache vehicleTypeCache,
+    EntityCache<VehicleType> vehicleTypeCache,
     VehicleTypeMapper vehicleTypeMapper
   ) {
     this.vehicleTypeCache = vehicleTypeCache;

@@ -2,9 +2,9 @@ package org.entur.lamassu.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.cache.StationSpatialIndexId;
 import org.entur.lamassu.cache.VehicleSpatialIndexId;
-import org.entur.lamassu.cache.VehicleTypeCache;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.entities.VehicleType;
@@ -16,10 +16,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class SpatialIndexIdGeneratorService {
 
-  private final VehicleTypeCache vehicleTypeCache;
+  private final EntityCache<VehicleType> vehicleTypeCache;
 
   @Autowired
-  public SpatialIndexIdGeneratorService(VehicleTypeCache vehicleTypeCache) {
+  public SpatialIndexIdGeneratorService(EntityCache<VehicleType> vehicleTypeCache) {
     this.vehicleTypeCache = vehicleTypeCache;
   }
 
