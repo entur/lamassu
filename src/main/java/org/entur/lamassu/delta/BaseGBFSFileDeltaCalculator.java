@@ -52,6 +52,7 @@ public abstract class BaseGBFSFileDeltaCalculator<S, T>
     return new GBFSFileDelta<>(
       base != null ? getLastUpdated(base) : null,
       getLastUpdated(compare),
+      getTtl(compare),
       getFileName(),
       entityDeltas
     );
@@ -189,6 +190,13 @@ public abstract class BaseGBFSFileDeltaCalculator<S, T>
    * @return The last updated time
    */
   protected abstract long getLastUpdated(S instance);
+
+  /**
+   * Get the ttl of the GBFS file instance
+   * @param instance The GBFS file instance
+   * @return The ttl
+   */
+  protected abstract long getTtl(S instance);
 
   /**
    * Get the file name of the GBFS file

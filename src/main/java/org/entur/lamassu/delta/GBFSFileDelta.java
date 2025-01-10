@@ -32,6 +32,7 @@ import java.util.List;
 public record GBFSFileDelta<E>(
   Long base,
   Long compare,
+  Long ttl,
   String fileName,
   List<GBFSEntityDelta<E>> entityDelta
 ) {}
