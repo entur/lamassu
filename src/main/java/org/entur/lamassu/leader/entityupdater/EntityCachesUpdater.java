@@ -20,9 +20,11 @@ package org.entur.lamassu.leader.entityupdater;
 
 import org.entur.gbfs.loader.v3.GbfsV3Delivery;
 import org.entur.lamassu.delta.GBFSFileDelta;
+import org.entur.lamassu.delta.GBFSStationStatusDeltaCalculator;
 import org.entur.lamassu.delta.GBFSVehicleStatusDeltaCalculator;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.mobilitydata.gbfs.v2_3.gbfs.GBFSFeedName;
+import org.mobilitydata.gbfs.v3_0.station_status.GBFSStation;
 import org.mobilitydata.gbfs.v3_0.vehicle_status.GBFSVehicle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -38,8 +40,10 @@ public class EntityCachesUpdater {
   private final StationsUpdater stationsUpdater;
   private final GeofencingZonesUpdater geofencingZonesUpdater;
 
-  private final GBFSVehicleStatusDeltaCalculator deltaCalculator =
+  private final GBFSVehicleStatusDeltaCalculator vehicleStatusDeltaCalculator =
     new GBFSVehicleStatusDeltaCalculator();
+  private final GBFSStationStatusDeltaCalculator stationStatusDeltaCalculator =
+    new GBFSStationStatusDeltaCalculator();
 
   @Autowired
   public EntityCachesUpdater(
@@ -82,15 +86,25 @@ public class EntityCachesUpdater {
     }
 
     if (canUpdateVehicles(delivery, feedProvider)) {
-      GBFSFileDelta<GBFSVehicle> vehicleStatusDelta = deltaCalculator.calculateDelta(
-        oldDelivery.vehicleStatus(),
-        delivery.vehicleStatus()
-      );
+      GBFSFileDelta<GBFSVehicle> vehicleStatusDelta =
+        vehicleStatusDeltaCalculator.calculateDelta(
+          oldDelivery.vehicleStatus(),
+          delivery.vehicleStatus()
+        );
       vehiclesUpdater.addOrUpdateVehicles(feedProvider, vehicleStatusDelta);
     }
 
     if (canUpdateStations(delivery, feedProvider)) {
-      stationsUpdater.addOrUpdateStations(feedProvider, delivery, oldDelivery);
+      GBFSFileDelta<GBFSStation> stationStatusDelta =
+        stationStatusDeltaCalculator.calculateDelta(
+          oldDelivery.stationStatus(),
+          delivery.stationStatus()
+        );
+      stationsUpdater.addOrUpdateStations(
+        feedProvider,
+        stationStatusDelta,
+        delivery.stationInformation()
+      );
     }
 
     if (canUpdateGeofencingZones(delivery, feedProvider)) {

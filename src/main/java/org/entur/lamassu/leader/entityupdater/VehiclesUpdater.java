@@ -105,14 +105,12 @@ public class VehiclesUpdater {
     );
 
     for (GBFSEntityDelta<GBFSVehicle> entityDelta : delta.entityDelta()) {
-      Vehicle currentVehicle = vehicleCache.get(entityDelta.entityId());
-
       if (entityDelta.type() == DeltaType.DELETE) {
-        processDeltaDelete(context, entityDelta, currentVehicle);
+        processDeltaDelete(context, entityDelta);
       } else if (entityDelta.type() == DeltaType.CREATE) {
         processDeltaCreate(context, entityDelta);
       } else if (entityDelta.type() == DeltaType.UPDATE) {
-        processDeltaUpdate(context, entityDelta, currentVehicle);
+        processDeltaUpdate(context, entityDelta);
       }
     }
 
@@ -149,9 +147,9 @@ public class VehiclesUpdater {
 
   private void processDeltaDelete(
     UpdateContext context,
-    GBFSEntityDelta<GBFSVehicle> entityDelta,
-    Vehicle currentVehicle
+    GBFSEntityDelta<GBFSVehicle> entityDelta
   ) {
+    Vehicle currentVehicle = vehicleCache.get(entityDelta.entityId());
     context.vehicleIdsToRemove.add(entityDelta.entityId());
     if (currentVehicle != null) {
       var spatialIndexId = spatialIndexService.createVehicleIndexId(
@@ -181,9 +179,9 @@ public class VehiclesUpdater {
 
   private void processDeltaUpdate(
     UpdateContext context,
-    GBFSEntityDelta<GBFSVehicle> entityDelta,
-    Vehicle currentVehicle
+    GBFSEntityDelta<GBFSVehicle> entityDelta
   ) {
+    Vehicle currentVehicle = vehicleCache.get(entityDelta.entityId());
     if (currentVehicle != null) {
       Vehicle mappedVehicle = vehicleMapper.mapVehicle(
         entityDelta.entity(),

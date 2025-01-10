@@ -18,7 +18,8 @@
 
 package org.entur.lamassu.leader.entityupdater;
 
-import java.time.Instant;
+import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -26,20 +27,21 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import org.entur.gbfs.loader.v3.GbfsV3Delivery;
 import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.cache.StationSpatialIndex;
 import org.entur.lamassu.cache.StationSpatialIndexId;
+import org.entur.lamassu.delta.DeltaType;
+import org.entur.lamassu.delta.GBFSEntityDelta;
+import org.entur.lamassu.delta.GBFSFileDelta;
+import org.entur.lamassu.delta.GBFSStationStatusDeltaCalculator;
 import org.entur.lamassu.mapper.entitymapper.StationMapper;
 import org.entur.lamassu.metrics.MetricsService;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.service.SpatialIndexIdGeneratorService;
-import org.entur.lamassu.util.CacheUtil;
 import org.mobilitydata.gbfs.v3_0.station_information.GBFSData;
 import org.mobilitydata.gbfs.v3_0.station_information.GBFSStationInformation;
 import org.mobilitydata.gbfs.v3_0.station_status.GBFSStation;
-import org.mobilitydata.gbfs.v3_0.station_status.GBFSStationStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,11 +51,35 @@ import org.springframework.stereotype.Component;
 @Component
 public class StationsUpdater {
 
+  private static final class UpdateContext {
+
+    final FeedProvider feedProvider;
+    final int ttl;
+    final Map<String, org.mobilitydata.gbfs.v3_0.station_information.GBFSStation> stationInfo;
+
+    final Set<String> stationIdsToRemove = new HashSet<>();
+    final Map<String, Station> addedAndUpdatedStations = new HashMap<>();
+    final Set<StationSpatialIndexId> spatialIndexIdsToRemove = new HashSet<>();
+    final Map<StationSpatialIndexId, Station> spatialIndexUpdateMap = new HashMap<>();
+
+    public UpdateContext(
+      FeedProvider feedProvider,
+      int ttl,
+      Map<String, org.mobilitydata.gbfs.v3_0.station_information.GBFSStation> stationInfo
+    ) {
+      this.feedProvider = feedProvider;
+      this.ttl = ttl;
+      this.stationInfo = stationInfo;
+    }
+  }
+
   private final EntityCache<Station> stationCache;
   private final StationSpatialIndex spatialIndex;
   private final StationMapper stationMapper;
   private final MetricsService metricsService;
   private final SpatialIndexIdGeneratorService spatialIndexService;
+  private final GBFSStationStatusDeltaCalculator deltaCalculator =
+    new GBFSStationStatusDeltaCalculator();
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   @Value("${org.entur.lamassu.stationEntityCacheMinimumTtl:30}")
@@ -79,51 +105,9 @@ public class StationsUpdater {
 
   public void addOrUpdateStations(
     FeedProvider feedProvider,
-    GbfsV3Delivery delivery,
-    GbfsV3Delivery oldDelivery
+    GBFSFileDelta<GBFSStation> delta,
+    GBFSStationInformation stationInformationFeed
   ) {
-    GBFSStationStatus stationStatusFeed = delivery.stationStatus();
-    GBFSStationStatus oldStationStatusFeed = oldDelivery.stationStatus();
-    GBFSStationInformation stationInformationFeed = delivery.stationInformation();
-
-    var stationIds = stationStatusFeed
-      .getData()
-      .getStations()
-      .stream()
-      .map(GBFSStation::getStationId)
-      .collect(Collectors.toSet());
-
-    Set<String> stationIdsToRemove = null;
-
-    if (oldStationStatusFeed != null && oldStationStatusFeed.getData() != null) {
-      stationIdsToRemove =
-        oldStationStatusFeed
-          .getData()
-          .getStations()
-          .stream()
-          .map(GBFSStation::getStationId)
-          .collect(Collectors.toSet());
-      stationIdsToRemove.removeAll(stationIds);
-      logger.debug(
-        "Found {} stationIds to remove from old station_status feed",
-        stationIdsToRemove.size()
-      );
-
-      // Add station ids that are staged for removal to the set of stations ids that will be used to
-      // fetch current stations from cache
-      stationIds.addAll(stationIdsToRemove);
-    }
-
-    if (stationIdsToRemove == null) {
-      stationIdsToRemove = new HashSet<>(stationIds);
-      logger.debug(
-        "Old station_status feed was not available or had no data. As a workaround, removing all stations for provider {}",
-        feedProvider.getSystemId()
-      );
-    }
-
-    var originalStations = stationCache.getAllAsMap(stationIds);
-
     var stationInfo = Optional
       .ofNullable(stationInformationFeed)
       .map(GBFSStationInformation::getData)
@@ -137,93 +121,190 @@ public class StationsUpdater {
         )
       );
 
-    var stations = stationStatusFeed
-      .getData()
-      .getStations()
-      .stream()
-      .filter(s -> {
-        if (stationInfo.get(s.getStationId()) == null) {
-          logger.warn(
-            "Skipping station due to missing station information feed for provider={} stationId={}",
-            feedProvider,
-            s.getStationId()
-          );
-          return false;
-        }
-        return true;
-      })
-      .map(station ->
-        stationMapper.mapStation(
-          stationInfo.get(station.getStationId()),
-          station,
-          feedProvider.getSystemId(),
-          feedProvider.getLanguage()
-        )
-      )
-      .collect(Collectors.toMap(Station::getId, s -> s));
-
-    Set<StationSpatialIndexId> spatialIndicesToRemove = new java.util.HashSet<>(Set.of());
-    Map<StationSpatialIndexId, Station> spatialIndexUpdateMap = new java.util.HashMap<>(
-      Map.of()
+    UpdateContext context = new UpdateContext(
+      feedProvider,
+      delta.ttl().intValue(),
+      stationInfo
     );
 
-    stations.forEach((key, station) -> {
-      var spatialIndexId = spatialIndexService.createStationIndexId(
-        station,
-        feedProvider
-      );
-      var previousStation = originalStations.get(key);
+    for (GBFSEntityDelta<GBFSStation> entityDelta : delta.entityDelta()) {
+      Station currentStation = stationCache.get(entityDelta.entityId());
 
-      if (previousStation != null) {
-        var oldSpatialIndexId = spatialIndexService.createStationIndexId(
-          previousStation,
-          feedProvider
-        );
-        if (!oldSpatialIndexId.equals(spatialIndexId)) {
-          spatialIndicesToRemove.add(oldSpatialIndexId);
-        }
+      if (entityDelta.type() == DeltaType.DELETE) {
+        processDeltaDelete(context, entityDelta, currentStation);
+      } else if (entityDelta.type() == DeltaType.CREATE) {
+        processDeltaCreate(context, entityDelta);
+      } else if (entityDelta.type() == DeltaType.UPDATE) {
+        processDeltaUpdate(context, entityDelta, currentStation);
       }
-      spatialIndexUpdateMap.put(spatialIndexId, station);
-    });
+    }
 
-    if (!spatialIndicesToRemove.isEmpty()) {
+    updateCaches(context);
+  }
+
+  private void processDeltaDelete(
+    UpdateContext context,
+    GBFSEntityDelta<GBFSStation> entityDelta,
+    Station currentStation
+  ) {
+    context.stationIdsToRemove.add(entityDelta.entityId());
+    if (currentStation != null) {
+      var spatialIndexId = spatialIndexService.createStationIndexId(
+        currentStation,
+        context.feedProvider
+      );
+      context.spatialIndexIdsToRemove.add(spatialIndexId);
+    } else {
+      logger.warn(
+        "Station {} marked for deletion but not found in cache",
+        entityDelta.entityId()
+      );
+    }
+  }
+
+  private void processDeltaCreate(
+    UpdateContext context,
+    GBFSEntityDelta<GBFSStation> entityDelta
+  ) {
+    var stationId = entityDelta.entityId();
+    var stationInformation = context.stationInfo.get(stationId);
+    if (stationInformation == null) {
+      logger.warn(
+        "Skipping station due to missing station information feed for provider={} stationId={}",
+        context.feedProvider,
+        stationId
+      );
+      return;
+    }
+
+    Station mappedStation = stationMapper.mapStation(
+      stationInformation,
+      entityDelta.entity(),
+      context.feedProvider.getSystemId(),
+      context.feedProvider.getLanguage()
+    );
+    context.addedAndUpdatedStations.put(mappedStation.getId(), mappedStation);
+    updateSpatialIndex(context, mappedStation);
+  }
+
+  private void processDeltaUpdate(
+    UpdateContext context,
+    GBFSEntityDelta<GBFSStation> entityDelta,
+    Station currentStation
+  ) {
+    var stationId = entityDelta.entityId();
+    var stationInformation = context.stationInfo.get(stationId);
+    if (stationInformation == null) {
+      logger.warn(
+        "Skipping station due to missing station information feed for provider={} stationId={}",
+        context.feedProvider,
+        stationId
+      );
+      return;
+    }
+
+    if (currentStation != null) {
+      Station mappedStation = stationMapper.mapStation(
+        stationInformation,
+        entityDelta.entity(),
+        context.feedProvider.getSystemId(),
+        context.feedProvider.getLanguage()
+      );
+
+      // For updates, we need to check if the spatial index needs updating
+      var oldSpatialIndexId = spatialIndexService.createStationIndexId(
+        currentStation,
+        context.feedProvider
+      );
+      var newSpatialIndexId = spatialIndexService.createStationIndexId(
+        mappedStation,
+        context.feedProvider
+      );
+      if (!oldSpatialIndexId.equals(newSpatialIndexId)) {
+        context.spatialIndexIdsToRemove.add(oldSpatialIndexId);
+      }
+
+      // Merge the mapped station into the current station
+      merge(currentStation, mappedStation);
+      context.addedAndUpdatedStations.put(currentStation.getId(), currentStation);
+      updateSpatialIndex(context, currentStation);
+    } else {
+      logger.warn(
+        "Station {} marked for update but not found in cache",
+        entityDelta.entityId()
+      );
+    }
+  }
+
+  private void updateSpatialIndex(UpdateContext context, Station station) {
+    var spatialIndexId = spatialIndexService.createStationIndexId(
+      station,
+      context.feedProvider
+    );
+    context.spatialIndexUpdateMap.put(spatialIndexId, station);
+  }
+
+  private void updateCaches(UpdateContext context) {
+    if (!context.spatialIndexIdsToRemove.isEmpty()) {
       logger.debug(
         "Removing {} stale entries in spatial index",
-        spatialIndicesToRemove.size()
+        context.spatialIndexIdsToRemove.size()
       );
-      spatialIndex.removeAll(spatialIndicesToRemove);
+      spatialIndex.removeAll(context.spatialIndexIdsToRemove);
     }
 
-    if (!stationIdsToRemove.isEmpty()) {
-      logger.debug("Removing {} stations from station cache", stationIdsToRemove.size());
-      stationCache.removeAll(stationIdsToRemove);
+    if (!context.stationIdsToRemove.isEmpty()) {
+      logger.debug(
+        "Removing {} stations from station cache",
+        context.stationIdsToRemove.size()
+      );
+      stationCache.removeAll(context.stationIdsToRemove);
     }
 
-    if (!stations.isEmpty()) {
-      logger.debug("Adding/updating {} stations in station cache", stations.size());
-      var lastUpdated = stationStatusFeed.getLastUpdated();
-      var ttl = stationStatusFeed.getTtl();
+    if (!context.addedAndUpdatedStations.isEmpty()) {
+      logger.debug(
+        "Adding/updating {} stations in station cache",
+        context.addedAndUpdatedStations.size()
+      );
       stationCache.updateAll(
-        stations,
-        CacheUtil.getTtl(
-          (int) Instant.now().getEpochSecond(),
-          (int) lastUpdated.getTime() / 1000,
-          ttl,
-          stationEntityCacheMinimumTtl,
-          stationEntityCacheMaximumTtl
-        ),
+        context.addedAndUpdatedStations,
+        context.ttl,
         TimeUnit.SECONDS
       );
     }
 
-    if (!spatialIndexUpdateMap.isEmpty()) {
-      logger.debug("Updating {} entries in spatial index", spatialIndexUpdateMap.size());
-      spatialIndex.addAll(spatialIndexUpdateMap);
+    if (!context.spatialIndexUpdateMap.isEmpty()) {
+      logger.debug(
+        "Updating {} entries in spatial index",
+        context.spatialIndexUpdateMap.size()
+      );
+      spatialIndex.addAll(context.spatialIndexUpdateMap);
     }
 
     metricsService.registerEntityCount(
       MetricsService.ENTITY_STATION,
       stationCache.count()
     );
+  }
+
+  private void merge(Object obj, Object update) {
+    for (Method method : update.getClass().getMethods()) {
+      if (
+        method.getName().startsWith("get") &&
+        !method.getName().equals("getClass") &&
+        method.getParameterCount() == 0
+      ) {
+        try {
+          Object value = method.invoke(update);
+          if (value != null) {
+            String setterName = "set" + method.getName().substring(3);
+            Method setter = obj.getClass().getMethod(setterName, method.getReturnType());
+            setter.invoke(obj, value);
+          }
+        } catch (Exception e) {
+          logger.warn("Failed to merge field {}: {}", method.getName(), e.getMessage());
+        }
+      }
+    }
   }
 }
