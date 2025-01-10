@@ -19,8 +19,11 @@
 package org.entur.lamassu.leader.entityupdater;
 
 import org.entur.gbfs.loader.v3.GbfsV3Delivery;
+import org.entur.lamassu.delta.GBFSFileDelta;
+import org.entur.lamassu.delta.GBFSVehicleStatusDeltaCalculator;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.mobilitydata.gbfs.v2_3.gbfs.GBFSFeedName;
+import org.mobilitydata.gbfs.v3_0.vehicle_status.GBFSVehicle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -34,6 +37,9 @@ public class EntityCachesUpdater {
   private final VehiclesUpdater vehiclesUpdater;
   private final StationsUpdater stationsUpdater;
   private final GeofencingZonesUpdater geofencingZonesUpdater;
+
+  private final GBFSVehicleStatusDeltaCalculator deltaCalculator =
+    new GBFSVehicleStatusDeltaCalculator();
 
   @Autowired
   public EntityCachesUpdater(
@@ -76,7 +82,11 @@ public class EntityCachesUpdater {
     }
 
     if (canUpdateVehicles(delivery, feedProvider)) {
-      vehiclesUpdater.addOrUpdateVehicles(feedProvider, delivery, oldDelivery);
+      GBFSFileDelta<GBFSVehicle> vehicleStatusDelta = deltaCalculator.calculateDelta(
+        oldDelivery.vehicleStatus(),
+        delivery.vehicleStatus()
+      );
+      vehiclesUpdater.addOrUpdateVehicles(feedProvider, vehicleStatusDelta);
     }
 
     if (canUpdateStations(delivery, feedProvider)) {

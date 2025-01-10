@@ -18,16 +18,18 @@
 
 package org.entur.lamassu.leader.entityupdater;
 
-import java.util.Collections;
+import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import org.entur.gbfs.loader.v3.GbfsV3Delivery;
 import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.cache.VehicleSpatialIndex;
 import org.entur.lamassu.cache.VehicleSpatialIndexId;
+import org.entur.lamassu.delta.DeltaType;
+import org.entur.lamassu.delta.GBFSEntityDelta;
+import org.entur.lamassu.delta.GBFSFileDelta;
 import org.entur.lamassu.mapper.entitymapper.VehicleMapper;
 import org.entur.lamassu.metrics.MetricsService;
 import org.entur.lamassu.model.entities.Vehicle;
@@ -35,7 +37,6 @@ import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.service.SpatialIndexIdGeneratorService;
 import org.entur.lamassu.util.CacheUtil;
 import org.mobilitydata.gbfs.v3_0.vehicle_status.GBFSVehicle;
-import org.mobilitydata.gbfs.v3_0.vehicle_status.GBFSVehicleStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,13 +46,28 @@ import org.springframework.stereotype.Component;
 @Component
 public class VehiclesUpdater {
 
+  private static final class UpdateContext {
+
+    final FeedProvider feedProvider;
+    final int ttl;
+
+    final Set<String> vehicleIdsToRemove = new HashSet<>();
+    final Map<String, Vehicle> addedAndUpdatedVehicles = new HashMap<>();
+    final Set<VehicleSpatialIndexId> spatialIndexIdsToRemove = new HashSet<>();
+    final Map<VehicleSpatialIndexId, Vehicle> spatialIndexUpdateMap = new HashMap<>();
+
+    public UpdateContext(FeedProvider feedProvider, int ttl) {
+      this.feedProvider = feedProvider;
+      this.ttl = ttl;
+    }
+  }
+
   private final EntityCache<Vehicle> vehicleCache;
   private final VehicleSpatialIndex spatialIndex;
   private final VehicleMapper vehicleMapper;
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
   private final MetricsService metricsService;
   private final SpatialIndexIdGeneratorService spatialIndexService;
-  private final VehicleFilter vehicleFilter;
 
   @Value("${org.entur.lamassu.vehicleEntityCacheMinimumTtl:30}")
   private Integer vehicleEntityCacheMinimumTtl;
@@ -65,157 +81,168 @@ public class VehiclesUpdater {
     VehicleSpatialIndex spatialIndex,
     VehicleMapper vehicleMapper,
     MetricsService metricsService,
-    SpatialIndexIdGeneratorService spatialIndexService,
-    VehicleFilter vehicleFilter
+    SpatialIndexIdGeneratorService spatialIndexService
   ) {
     this.vehicleCache = vehicleCache;
     this.spatialIndex = spatialIndex;
     this.vehicleMapper = vehicleMapper;
     this.metricsService = metricsService;
     this.spatialIndexService = spatialIndexService;
-    this.vehicleFilter = vehicleFilter;
   }
 
   public void addOrUpdateVehicles(
     FeedProvider feedProvider,
-    GbfsV3Delivery delivery,
-    GbfsV3Delivery oldDelivery
+    GBFSFileDelta<GBFSVehicle> delta
   ) {
-    GBFSVehicleStatus vehicleStatusFeed = delivery.vehicleStatus();
-    GBFSVehicleStatus oldFreeBikeStatusFeed = oldDelivery.vehicleStatus();
-
-    var vehicleIds = vehicleStatusFeed
-      .getData()
-      .getVehicles()
-      .stream()
-      .map(GBFSVehicle::getVehicleId)
-      .collect(Collectors.toSet());
-
-    Set<String> vehicleIdsToRemove = null;
-
-    if (oldFreeBikeStatusFeed != null && oldFreeBikeStatusFeed.getData() != null) {
-      vehicleIdsToRemove =
-        oldFreeBikeStatusFeed
-          .getData()
-          .getVehicles()
-          .stream()
-          .map(GBFSVehicle::getVehicleId)
-          .collect(Collectors.toSet());
-
-      // Find vehicle ids in old feed not present in new feed
-      vehicleIdsToRemove.removeAll(vehicleIds);
-      logger.trace(
-        "Found {} vehicleIds to remove from old free_bike_status feed: {}",
-        vehicleIdsToRemove.size(),
-        oldFreeBikeStatusFeed
-      );
-
-      // Add vehicle ids that are staged for removal to the set of vehicle ids that will be used to
-      // fetch current vehicles from cache
-      vehicleIds.addAll(vehicleIdsToRemove);
-    }
-
-    if (vehicleIdsToRemove == null) {
-      vehicleIdsToRemove = new HashSet<>(vehicleIds);
-      logger.debug(
-        "Old free_bike_status feed was not available or had no data. As a workaround, removing all vehicles for provider {}",
-        feedProvider.getSystemId()
-      );
-    }
-
-    var currentVehicles = vehicleCache.getAllAsMap(new HashSet<>(vehicleIds));
-
-    var vehicleList = vehicleStatusFeed
-      .getData()
-      .getVehicles()
-      .stream()
-      .filter(vehicleFilter)
-      .map(vehicle -> vehicleMapper.mapVehicle(vehicle, feedProvider.getSystemId()))
-      .toList();
-
-    var duplicateVehicles = vehicleList
-      .stream()
-      .filter(i -> Collections.frequency(vehicleList, i) > 1)
-      .collect(Collectors.toSet());
-
-    if (!duplicateVehicles.isEmpty() && logger.isWarnEnabled()) {
-      logger.warn(
-        "Removed duplicate vehicles with ids: {}",
-        duplicateVehicles.stream().map(Vehicle::getId).collect(Collectors.joining(","))
-      );
-    }
-
-    var vehicles = vehicleList
-      .stream()
-      .filter(i -> Collections.frequency(vehicleList, i) == 1)
-      .collect(Collectors.toMap(Vehicle::getId, v -> v));
-
-    Set<VehicleSpatialIndexId> spatialIndicesToRemove = new java.util.HashSet<>(Set.of());
-    Map<VehicleSpatialIndexId, Vehicle> spatialIndexUpdateMap = new java.util.HashMap<>(
-      Map.of()
+    UpdateContext context = new UpdateContext(
+      feedProvider,
+      CacheUtil.getTtl(
+        (int) (delta.compare() / 1000),
+        delta.ttl().intValue(),
+        vehicleEntityCacheMinimumTtl,
+        vehicleEntityCacheMaximumTtl
+      )
     );
 
-    vehicles.forEach((key, vehicle) -> {
-      var spatialIndexId = spatialIndexService.createVehicleIndexId(
-        vehicle,
-        feedProvider
-      );
-      var previousVehicle = currentVehicles.get(key);
+    for (GBFSEntityDelta<GBFSVehicle> entityDelta : delta.entityDelta()) {
+      Vehicle currentVehicle = vehicleCache.get(entityDelta.entityId());
 
-      if (previousVehicle != null) {
-        var oldSpatialIndexId = spatialIndexService.createVehicleIndexId(
-          previousVehicle,
-          feedProvider
-        );
-        if (!oldSpatialIndexId.equals(spatialIndexId)) {
-          spatialIndicesToRemove.add(oldSpatialIndexId);
+      if (entityDelta.type() == DeltaType.DELETE) {
+        processDeltaDelete(context, entityDelta, currentVehicle);
+      } else if (entityDelta.type() == DeltaType.CREATE) {
+        processDeltaCreate(context, entityDelta);
+      } else if (entityDelta.type() == DeltaType.UPDATE) {
+        processDeltaUpdate(context, entityDelta, currentVehicle);
+      }
+    }
+
+    updateCaches(context);
+  }
+
+  private void merge(Object obj, Object update) {
+    if (!obj.getClass().isAssignableFrom(update.getClass())) {
+      return;
+    }
+
+    Method[] methods = obj.getClass().getMethods();
+
+    for (Method fromMethod : methods) {
+      if (
+        fromMethod.getDeclaringClass().equals(obj.getClass()) &&
+        fromMethod.getName().startsWith("get")
+      ) {
+        String fromName = fromMethod.getName();
+        String toName = fromName.replace("get", "set");
+
+        try {
+          Method toMetod = obj.getClass().getMethod(toName, fromMethod.getReturnType());
+          Object value = fromMethod.invoke(update, (Object[]) null);
+          if (value != null) {
+            toMetod.invoke(obj, value);
+          }
+        } catch (Exception e) {
+          e.printStackTrace();
         }
       }
-      spatialIndexUpdateMap.put(spatialIndexId, vehicle);
-    });
+    }
+  }
 
-    spatialIndicesToRemove.addAll(
-      vehicleIdsToRemove
-        .stream()
-        .filter(currentVehicles::containsKey)
-        .map(id ->
-          spatialIndexService.createVehicleIndexId(currentVehicles.get(id), feedProvider)
-        )
-        .collect(Collectors.toSet())
+  private void processDeltaDelete(
+    UpdateContext context,
+    GBFSEntityDelta<GBFSVehicle> entityDelta,
+    Vehicle currentVehicle
+  ) {
+    context.vehicleIdsToRemove.add(entityDelta.entityId());
+    if (currentVehicle != null) {
+      var spatialIndexId = spatialIndexService.createVehicleIndexId(
+        currentVehicle,
+        context.feedProvider
+      );
+      context.spatialIndexIdsToRemove.add(spatialIndexId);
+    } else {
+      logger.warn(
+        "Vehicle {} marked for deletion but not found in cache",
+        entityDelta.entityId()
+      );
+    }
+  }
+
+  private void processDeltaCreate(
+    UpdateContext context,
+    GBFSEntityDelta<GBFSVehicle> entityDelta
+  ) {
+    Vehicle mappedVehicle = vehicleMapper.mapVehicle(
+      entityDelta.entity(),
+      context.feedProvider.getSystemId()
     );
+    context.addedAndUpdatedVehicles.put(mappedVehicle.getId(), mappedVehicle);
+    updateSpatialIndex(context, mappedVehicle);
+  }
 
-    if (!spatialIndicesToRemove.isEmpty()) {
+  private void processDeltaUpdate(
+    UpdateContext context,
+    GBFSEntityDelta<GBFSVehicle> entityDelta,
+    Vehicle currentVehicle
+  ) {
+    if (currentVehicle != null) {
+      Vehicle mappedVehicle = vehicleMapper.mapVehicle(
+        entityDelta.entity(),
+        context.feedProvider.getSystemId()
+      );
+      merge(currentVehicle, mappedVehicle);
+      context.addedAndUpdatedVehicles.put(mappedVehicle.getId(), currentVehicle);
+      updateSpatialIndex(context, currentVehicle);
+    } else {
+      logger.warn(
+        "Vehicle {} marked for update but not found in cache",
+        entityDelta.entityId()
+      );
+    }
+  }
+
+  private void updateSpatialIndex(UpdateContext context, Vehicle vehicle) {
+    var spatialIndexId = spatialIndexService.createVehicleIndexId(
+      vehicle,
+      context.feedProvider
+    );
+    context.spatialIndexUpdateMap.put(spatialIndexId, vehicle);
+  }
+
+  private void updateCaches(UpdateContext context) {
+    if (!context.spatialIndexIdsToRemove.isEmpty()) {
       logger.debug(
         "Removing {} stale entries in spatial index",
-        spatialIndicesToRemove.size()
+        context.spatialIndexIdsToRemove.size()
       );
-      spatialIndex.removeAll(spatialIndicesToRemove);
+      spatialIndex.removeAll(context.spatialIndexIdsToRemove);
     }
 
-    if (!vehicleIdsToRemove.isEmpty()) {
-      logger.debug("Removing {} vehicles from vehicle cache", vehicleIdsToRemove.size());
-      vehicleCache.removeAll(new HashSet<>(vehicleIdsToRemove));
+    if (!context.vehicleIdsToRemove.isEmpty()) {
+      logger.debug(
+        "Removing {} vehicles from vehicle cache",
+        context.vehicleIdsToRemove.size()
+      );
+      vehicleCache.removeAll(new HashSet<>(context.vehicleIdsToRemove));
     }
 
-    if (!vehicles.isEmpty()) {
-      logger.debug("Adding/updating {} vehicles in vehicle cache", vehicles.size());
-      var lastUpdated = vehicleStatusFeed.getLastUpdated();
-      var ttl = vehicleStatusFeed.getTtl();
+    if (!context.addedAndUpdatedVehicles.isEmpty()) {
+      logger.debug(
+        "Adding/updating {} vehicles in vehicle cache",
+        context.addedAndUpdatedVehicles.size()
+      );
       vehicleCache.updateAll(
-        vehicles,
-        CacheUtil.getTtl(
-          (int) (lastUpdated.getTime() / 1000),
-          ttl,
-          vehicleEntityCacheMinimumTtl,
-          vehicleEntityCacheMaximumTtl
-        ),
+        context.addedAndUpdatedVehicles,
+        context.ttl,
         TimeUnit.SECONDS
       );
     }
 
-    if (!spatialIndexUpdateMap.isEmpty()) {
-      logger.debug("Updating {} entries in spatial index", spatialIndexUpdateMap.size());
-      spatialIndex.addAll(spatialIndexUpdateMap);
+    if (!context.spatialIndexUpdateMap.isEmpty()) {
+      logger.debug(
+        "Updating {} entries in spatial index",
+        context.spatialIndexUpdateMap.size()
+      );
+      spatialIndex.addAll(context.spatialIndexUpdateMap);
     }
 
     metricsService.registerEntityCount(
