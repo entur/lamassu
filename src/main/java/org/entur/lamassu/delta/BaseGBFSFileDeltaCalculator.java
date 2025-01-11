@@ -145,12 +145,18 @@ public abstract class BaseGBFSFileDeltaCalculator<S, T>
               try {
                 setter.invoke(delta, method.invoke(b));
               } catch (IllegalAccessException | InvocationTargetException e) {
-                throw new RuntimeException(e);
+                throw new GBFSDeltaException(
+                  "Failed to set value for field " + method.getName(),
+                  e
+                );
               }
             });
         }
       } catch (InvocationTargetException | IllegalAccessException e) {
-        throw new RuntimeException(e);
+        throw new GBFSDeltaException(
+          "Failed to get value for field " + method.getName(),
+          e
+        );
       }
     }
     return delta;

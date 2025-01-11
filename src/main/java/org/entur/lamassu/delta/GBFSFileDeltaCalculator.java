@@ -21,22 +21,17 @@ package org.entur.lamassu.delta;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Represents a calculator that can compute the delta (difference) between to instances
- * of a GBFS file.
- *
- * @param <S> The type of the GBFS file instances to compare
- * @param <T> The type of the enumerable entity inside the GBFS file being compared
+ * Interface for calculating deltas between GBFS files.
+ * @param <S> The type of the GBFS file
+ * @param <T> The type of the entities in the GBFS file
  */
 public interface GBFSFileDeltaCalculator<S, T> {
   /**
-   * Calculate the delta (difference) between to instances of a GBFS file of type S
-   *
-   * @param base The base of the comparison
-   *             Note: This parameter can be null, in it is then interpreted as a full update
-   *
-   * @param compare The instance to compare with the base
-   *                Note: This parameter can't be null
-   * @return An instance of GBFSFileDelta containing deltas of the enumerable entity of type T
+   * Calculate the delta between two GBFS files.
+   * @param base The base GBFS file to compare against, may be null for initial state
+   * @param compare The GBFS file to compare with the base file
+   * @return A delta containing the changes between the two files
+   * @throws GBFSDeltaException if there is an error calculating the delta
    */
   GBFSFileDelta<T> calculateDelta(S base, @NotNull S compare);
 }
