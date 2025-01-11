@@ -49,7 +49,7 @@ public abstract class BaseGBFSFileDeltaCalculator<S, T>
     @NotNull S compare,
     List<GBFSEntityDelta<T>> entityDeltas
   ) {
-    return new GBFSFileDelta<>(
+    return new GBFSFileDelta<T>(
       base != null ? getLastUpdated(base) : null,
       getLastUpdated(compare),
       getTtl(compare),

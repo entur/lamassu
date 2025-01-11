@@ -18,7 +18,6 @@
 
 package org.entur.lamassu.leader.entityupdater;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -35,6 +34,7 @@ import org.entur.lamassu.delta.GBFSEntityDelta;
 import org.entur.lamassu.delta.GBFSFileDelta;
 import org.entur.lamassu.delta.GBFSStationStatusDeltaCalculator;
 import org.entur.lamassu.mapper.entitymapper.StationMapper;
+import org.entur.lamassu.mapper.entitymapper.StationMergeMapper;
 import org.entur.lamassu.metrics.MetricsService;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.provider.FeedProvider;
@@ -76,6 +76,7 @@ public class StationsUpdater {
   private final EntityCache<Station> stationCache;
   private final StationSpatialIndex spatialIndex;
   private final StationMapper stationMapper;
+  private final StationMergeMapper stationMergeMapper;
   private final MetricsService metricsService;
   private final SpatialIndexIdGeneratorService spatialIndexService;
   private final GBFSStationStatusDeltaCalculator deltaCalculator =
@@ -93,12 +94,14 @@ public class StationsUpdater {
     EntityCache<Station> stationCache,
     StationSpatialIndex spatialIndex,
     StationMapper stationMapper,
+    StationMergeMapper stationMergeMapper,
     MetricsService metricsService,
     SpatialIndexIdGeneratorService spatialIndexService
   ) {
     this.stationCache = stationCache;
     this.spatialIndex = spatialIndex;
     this.stationMapper = stationMapper;
+    this.stationMergeMapper = stationMergeMapper;
     this.metricsService = metricsService;
     this.spatialIndexService = spatialIndexService;
   }
@@ -225,7 +228,7 @@ public class StationsUpdater {
       }
 
       // Merge the mapped station into the current station
-      merge(currentStation, mappedStation);
+      stationMergeMapper.updateStation(currentStation, mappedStation);
       context.addedAndUpdatedStations.put(currentStation.getId(), currentStation);
       updateSpatialIndex(context, currentStation);
     } else {
@@ -285,26 +288,5 @@ public class StationsUpdater {
       MetricsService.ENTITY_STATION,
       stationCache.count()
     );
-  }
-
-  private void merge(Object obj, Object update) {
-    for (Method method : update.getClass().getMethods()) {
-      if (
-        method.getName().startsWith("get") &&
-        !method.getName().equals("getClass") &&
-        method.getParameterCount() == 0
-      ) {
-        try {
-          Object value = method.invoke(update);
-          if (value != null) {
-            String setterName = "set" + method.getName().substring(3);
-            Method setter = obj.getClass().getMethod(setterName, method.getReturnType());
-            setter.invoke(obj, value);
-          }
-        } catch (Exception e) {
-          logger.warn("Failed to merge field {}: {}", method.getName(), e.getMessage());
-        }
-      }
-    }
   }
 }

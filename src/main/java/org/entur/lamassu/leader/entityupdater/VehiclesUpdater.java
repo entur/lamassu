@@ -18,7 +18,6 @@
 
 package org.entur.lamassu.leader.entityupdater;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -31,6 +30,7 @@ import org.entur.lamassu.delta.DeltaType;
 import org.entur.lamassu.delta.GBFSEntityDelta;
 import org.entur.lamassu.delta.GBFSFileDelta;
 import org.entur.lamassu.mapper.entitymapper.VehicleMapper;
+import org.entur.lamassu.mapper.entitymapper.VehicleMergeMapper;
 import org.entur.lamassu.metrics.MetricsService;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.provider.FeedProvider;
@@ -65,6 +65,7 @@ public class VehiclesUpdater {
   private final EntityCache<Vehicle> vehicleCache;
   private final VehicleSpatialIndex spatialIndex;
   private final VehicleMapper vehicleMapper;
+  private final VehicleMergeMapper vehicleMergeMapper;
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
   private final MetricsService metricsService;
   private final SpatialIndexIdGeneratorService spatialIndexService;
@@ -80,12 +81,14 @@ public class VehiclesUpdater {
     EntityCache<Vehicle> vehicleCache,
     VehicleSpatialIndex spatialIndex,
     VehicleMapper vehicleMapper,
+    VehicleMergeMapper vehicleMergeMapper,
     MetricsService metricsService,
     SpatialIndexIdGeneratorService spatialIndexService
   ) {
     this.vehicleCache = vehicleCache;
     this.spatialIndex = spatialIndex;
     this.vehicleMapper = vehicleMapper;
+    this.vehicleMergeMapper = vehicleMergeMapper;
     this.metricsService = metricsService;
     this.spatialIndexService = spatialIndexService;
   }
@@ -115,34 +118,6 @@ public class VehiclesUpdater {
     }
 
     updateCaches(context);
-  }
-
-  private void merge(Object obj, Object update) {
-    if (!obj.getClass().isAssignableFrom(update.getClass())) {
-      return;
-    }
-
-    Method[] methods = obj.getClass().getMethods();
-
-    for (Method fromMethod : methods) {
-      if (
-        fromMethod.getDeclaringClass().equals(obj.getClass()) &&
-        fromMethod.getName().startsWith("get")
-      ) {
-        String fromName = fromMethod.getName();
-        String toName = fromName.replace("get", "set");
-
-        try {
-          Method toMetod = obj.getClass().getMethod(toName, fromMethod.getReturnType());
-          Object value = fromMethod.invoke(update, (Object[]) null);
-          if (value != null) {
-            toMetod.invoke(obj, value);
-          }
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
-      }
-    }
   }
 
   private void processDeltaDelete(
@@ -187,9 +162,9 @@ public class VehiclesUpdater {
         entityDelta.entity(),
         context.feedProvider.getSystemId()
       );
-      merge(currentVehicle, mappedVehicle);
-      context.addedAndUpdatedVehicles.put(mappedVehicle.getId(), currentVehicle);
+      vehicleMergeMapper.updateVehicle(currentVehicle, mappedVehicle);
       updateSpatialIndex(context, currentVehicle);
+      context.addedAndUpdatedVehicles.put(currentVehicle.getId(), currentVehicle);
     } else {
       logger.warn(
         "Vehicle {} marked for update but not found in cache",
