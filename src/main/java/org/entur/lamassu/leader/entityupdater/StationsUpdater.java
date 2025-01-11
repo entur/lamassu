@@ -32,7 +32,6 @@ import org.entur.lamassu.cache.StationSpatialIndexId;
 import org.entur.lamassu.delta.DeltaType;
 import org.entur.lamassu.delta.GBFSEntityDelta;
 import org.entur.lamassu.delta.GBFSFileDelta;
-import org.entur.lamassu.delta.GBFSStationStatusDeltaCalculator;
 import org.entur.lamassu.mapper.entitymapper.StationMapper;
 import org.entur.lamassu.mapper.entitymapper.StationMergeMapper;
 import org.entur.lamassu.metrics.MetricsService;
