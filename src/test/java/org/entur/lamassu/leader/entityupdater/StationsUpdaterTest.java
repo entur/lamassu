@@ -9,12 +9,12 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.cache.StationSpatialIndex;
-import org.entur.lamassu.cache.StationSpatialIndexId;
 import org.entur.lamassu.delta.DeltaType;
 import org.entur.lamassu.delta.GBFSEntityDelta;
 import org.entur.lamassu.delta.GBFSFileDelta;
@@ -24,9 +24,13 @@ import org.entur.lamassu.mapper.entitymapper.StationMergeMapper;
 import org.entur.lamassu.mapper.entitymapper.StationMergeMapperImpl;
 import org.entur.lamassu.mapper.entitymapper.TranslationMapper;
 import org.entur.lamassu.metrics.MetricsService;
+import org.entur.lamassu.model.entities.FormFactor;
+import org.entur.lamassu.model.entities.PropulsionType;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.TranslatedString;
 import org.entur.lamassu.model.entities.Translation;
+import org.entur.lamassu.model.entities.VehicleType;
+import org.entur.lamassu.model.entities.VehicleTypeAvailability;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.service.SpatialIndexIdGeneratorService;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,18 +57,12 @@ class StationsUpdaterTest {
   private MetricsService metricsService;
 
   @Mock
-  private SpatialIndexIdGeneratorService spatialIndexService;
+  private EntityCache<VehicleType> vehicleTypeCache;
 
   private StationMapper stationMapper;
   private StationMergeMapper stationMergeMapper;
+  private SpatialIndexIdGeneratorService spatialIndexIdGeneratorService;
   private StationsUpdater stationsUpdater;
-
-  private StationSpatialIndexId createStationIndexId(String id, String systemId) {
-    var indexId = new StationSpatialIndexId();
-    indexId.setId(id);
-    indexId.setSystemId(systemId);
-    return indexId;
-  }
 
   @BeforeEach
   void setUp() {
@@ -74,6 +72,7 @@ class StationsUpdaterTest {
     stationMapper = new StationMapper(translationMapper, rentalUrisMapper);
     stationMergeMapper = new StationMergeMapperImpl();
 
+    spatialIndexIdGeneratorService = new SpatialIndexIdGeneratorService(vehicleTypeCache);
     stationsUpdater =
       new StationsUpdater(
         stationCache,
@@ -81,7 +80,7 @@ class StationsUpdaterTest {
         stationMapper,
         stationMergeMapper,
         metricsService,
-        spatialIndexService
+        spatialIndexIdGeneratorService
       );
     // Set default values for cache TTLs
     ReflectionTestUtils.setField(stationsUpdater, "stationEntityCacheMinimumTtl", 30);
@@ -93,11 +92,15 @@ class StationsUpdaterTest {
     // Given
     var feedProvider = new FeedProvider();
     feedProvider.setSystemId("test-system");
+    feedProvider.setCodespace("test");
+    feedProvider.setOperatorId("test-operator");
     feedProvider.setLanguage("en");
 
     var stationId = "station-1";
     var currentStation = new Station();
     currentStation.setId(stationId);
+    currentStation.setLat(59.9);
+    currentStation.setLon(10.7);
     var oldName = new TranslatedString();
     var oldTranslation = new Translation();
     oldTranslation.setLanguage("en");
@@ -105,17 +108,10 @@ class StationsUpdaterTest {
     oldName.setTranslation(List.of(oldTranslation));
     currentStation.setName(oldName);
 
-    var updatedStation = new Station();
-    updatedStation.setId(stationId);
-    var newName = new TranslatedString();
-    var newTranslation = new Translation();
-    newTranslation.setLanguage("en");
-    newTranslation.setValue("New Station Name");
-    newName.setTranslation(List.of(newTranslation));
-    updatedStation.setName(newName);
-
     var stationInfo = new GBFSStation();
     stationInfo.setStationId(stationId);
+    stationInfo.setLat(59.9);
+    stationInfo.setLon(10.7);
     var gbfsName = new GBFSName();
     gbfsName.setText("New Station Name");
     gbfsName.setLanguage("en");
@@ -123,19 +119,19 @@ class StationsUpdaterTest {
 
     var stationStatus = new org.mobilitydata.gbfs.v3_0.station_status.GBFSStation();
     stationStatus.setStationId(stationId);
-    stationStatus.setNumVehiclesAvailable(5);
+    stationStatus.setNumDocksAvailable(10);
+    stationStatus.setIsInstalled(true);
+    stationStatus.setIsRenting(true);
+    stationStatus.setIsReturning(true);
+    stationStatus.setLastReported(new Date());
 
     var stationInformationFeed = new GBFSStationInformation();
     var data = new GBFSData();
     data.setStations(List.of(stationInfo));
     stationInformationFeed.setData(data);
 
-    var spatialIndexId = createStationIndexId(stationId, "test-system");
-
     // Mock behavior
     when(stationCache.get(stationId)).thenReturn(currentStation);
-    when(spatialIndexService.createStationIndexId(any(), eq(feedProvider)))
-      .thenReturn(spatialIndexId);
 
     var delta = new GBFSFileDelta<org.mobilitydata.gbfs.v3_0.station_status.GBFSStation>(
       1000L,
@@ -160,17 +156,18 @@ class StationsUpdaterTest {
     // Given
     var feedProvider = new FeedProvider();
     feedProvider.setSystemId("test-system");
+    feedProvider.setCodespace("test");
+    feedProvider.setOperatorId("test-operator");
+    feedProvider.setLanguage("en");
 
     var stationId = "station-1";
     var currentStation = new Station();
     currentStation.setId(stationId);
-
-    var spatialIndexId = createStationIndexId(stationId, "test-system");
+    currentStation.setLat(59.9);
+    currentStation.setLon(10.7);
 
     // Mock behavior
     when(stationCache.get(stationId)).thenReturn(currentStation);
-    when(spatialIndexService.createStationIndexId(currentStation, feedProvider))
-      .thenReturn(spatialIndexId);
 
     var delta = new GBFSFileDelta<org.mobilitydata.gbfs.v3_0.station_status.GBFSStation>(
       1000L,
@@ -178,6 +175,12 @@ class StationsUpdaterTest {
       60L,
       "station_status",
       List.of(new GBFSEntityDelta<>(stationId, DeltaType.DELETE, null))
+    );
+
+    // Calculate expected spatial index ID
+    var spatialIndexId = spatialIndexIdGeneratorService.createStationIndexId(
+      currentStation,
+      feedProvider
     );
 
     // When
@@ -195,42 +198,37 @@ class StationsUpdaterTest {
     // Given
     var feedProvider = new FeedProvider();
     feedProvider.setSystemId("test-system");
+    feedProvider.setCodespace("test");
+    feedProvider.setOperatorId("test-operator");
     feedProvider.setLanguage("en");
 
     var stationId = "station-1";
-    var newStation = new Station();
-    newStation.setId(stationId);
-    var name = new TranslatedString();
-    var translation = new Translation();
-    translation.setLanguage("en");
-    translation.setValue("New Station");
-    name.setTranslation(List.of(translation));
-    newStation.setName(name);
 
     var stationInfo = new GBFSStation();
     stationInfo.setStationId(stationId);
-    var gbfsName = new GBFSName();
-    gbfsName.setText("New Station");
-    gbfsName.setLanguage("en");
-    stationInfo.setName(List.of(gbfsName));
+    stationInfo.setName(
+      List.of(new GBFSName().withLanguage("en").withText("New Station"))
+    );
+    stationInfo.setLat(59.9);
+    stationInfo.setLon(10.7);
 
     var stationStatus = new org.mobilitydata.gbfs.v3_0.station_status.GBFSStation();
     stationStatus.setStationId(stationId);
-    stationStatus.setNumVehiclesAvailable(5);
+    stationStatus.setNumDocksAvailable(10);
+    stationStatus.setIsInstalled(true);
+    stationStatus.setIsRenting(true);
+    stationStatus.setIsReturning(true);
+    stationStatus.setLastReported(new Date());
 
     var stationInformationFeed = new GBFSStationInformation();
     var data = new GBFSData();
     data.setStations(List.of(stationInfo));
     stationInformationFeed.setData(data);
 
-    var spatialIndexId = createStationIndexId(stationId, "test-system");
-
     // Mock behavior
     when(stationCache.get(stationId)).thenReturn(null);
-    when(spatialIndexService.createStationIndexId(any(), eq(feedProvider)))
-      .thenReturn(spatialIndexId);
 
-    var delta = new GBFSFileDelta<org.mobilitydata.gbfs.v3_0.station_status.GBFSStation>(
+    var delta = new GBFSFileDelta<>(
       1000L,
       2000L,
       60L,
@@ -242,9 +240,9 @@ class StationsUpdaterTest {
     stationsUpdater.addOrUpdateStations(feedProvider, delta, stationInformationFeed);
 
     // Then
+    verify(spatialIndex, never()).removeAll(anySet());
     verify(spatialIndex).addAll(any());
     verify(stationCache).updateAll(any(), eq(60), eq(TimeUnit.SECONDS));
-    verify(spatialIndex, never()).removeAll(anySet());
     verify(stationCache, never()).removeAll(anySet());
   }
 
@@ -265,7 +263,7 @@ class StationsUpdaterTest {
     // Mock behavior
     when(stationCache.get(stationId)).thenReturn(currentStation);
 
-    var delta = new GBFSFileDelta<org.mobilitydata.gbfs.v3_0.station_status.GBFSStation>(
+    var delta = new GBFSFileDelta<>(
       1000L,
       2000L,
       60L,
@@ -280,6 +278,83 @@ class StationsUpdaterTest {
     verify(spatialIndex, never()).addAll(anyMap());
     verify(spatialIndex, never()).removeAll(anySet());
     verify(stationCache, never()).updateAll(anyMap(), anyInt(), any(TimeUnit.class));
+    verify(stationCache, never()).removeAll(anySet());
+  }
+
+  @Test
+  void shouldHandleStationUpdateWithSpatialIndexChange() {
+    // Given
+    var feedProvider = new FeedProvider();
+    feedProvider.setSystemId("test-system");
+    feedProvider.setCodespace("test");
+    feedProvider.setOperatorId("test-operator");
+    feedProvider.setLanguage("en");
+
+    var stationId = "station-1";
+    var bikeTypeId = "bike";
+
+    var bikeType = new VehicleType();
+    bikeType.setId(bikeTypeId);
+    bikeType.setFormFactor(FormFactor.BICYCLE);
+    bikeType.setPropulsionType(PropulsionType.HUMAN);
+
+    var currentStation = new Station();
+    currentStation.setId(stationId);
+    currentStation.setLat(59.9);
+    currentStation.setLon(10.7);
+    var oldAvailability = new VehicleTypeAvailability();
+    oldAvailability.setVehicleTypeId(bikeTypeId);
+    oldAvailability.setCount(5);
+    currentStation.setVehicleTypesAvailable(List.of(oldAvailability));
+
+    var stationInfo = new GBFSStation();
+    stationInfo.setStationId(stationId);
+    stationInfo.setName(
+      List.of(new GBFSName().withLanguage("en").withText("Test Station"))
+    );
+    stationInfo.setLat(59.9);
+    stationInfo.setLon(10.7);
+
+    var stationStatus = new org.mobilitydata.gbfs.v3_0.station_status.GBFSStation();
+    stationStatus.setStationId(stationId);
+    // No vehicles available anymore
+    stationStatus.setNumVehiclesAvailable(0);
+    stationStatus.setNumDocksAvailable(10);
+    stationStatus.setIsInstalled(true);
+    stationStatus.setIsRenting(true);
+    stationStatus.setIsReturning(true);
+    stationStatus.setLastReported(new Date());
+
+    var stationInformationFeed = new GBFSStationInformation();
+    var data = new GBFSData();
+    data.setStations(List.of(stationInfo));
+    stationInformationFeed.setData(data);
+
+    // Mock behavior
+    when(stationCache.get(stationId)).thenReturn(currentStation);
+    when(vehicleTypeCache.getAll(Set.of(bikeTypeId))).thenReturn(List.of(bikeType));
+
+    var delta = new GBFSFileDelta<>(
+      1000L,
+      2000L,
+      60L,
+      "station_status",
+      List.of(new GBFSEntityDelta<>(stationId, DeltaType.UPDATE, stationStatus))
+    );
+
+    // Calculate expected spatial index ID for verification
+    var oldSpatialIndexId = spatialIndexIdGeneratorService.createStationIndexId(
+      currentStation,
+      feedProvider
+    );
+
+    // When
+    stationsUpdater.addOrUpdateStations(feedProvider, delta, stationInformationFeed);
+
+    // Then
+    verify(spatialIndex).removeAll(Set.of(oldSpatialIndexId));
+    verify(spatialIndex).addAll(any());
+    verify(stationCache).updateAll(any(), eq(60), eq(TimeUnit.SECONDS));
     verify(stationCache, never()).removeAll(anySet());
   }
 }
