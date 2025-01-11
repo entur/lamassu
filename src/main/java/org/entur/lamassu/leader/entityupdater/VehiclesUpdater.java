@@ -158,6 +158,12 @@ public class VehiclesUpdater {
   ) {
     Vehicle currentVehicle = vehicleCache.get(entityDelta.entityId());
     if (currentVehicle != null) {
+      var oldSpatialIndexId = spatialIndexService.createVehicleIndexId(
+        currentVehicle,
+        context.feedProvider
+      );
+      context.spatialIndexIdsToRemove.add(oldSpatialIndexId);
+
       Vehicle mappedVehicle = vehicleMapper.mapVehicle(
         entityDelta.entity(),
         context.feedProvider.getSystemId()
