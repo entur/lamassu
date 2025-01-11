@@ -106,7 +106,7 @@ class VehiclesUpdaterTest {
 
     // Mock behavior
     when(vehicleCache.get(vehicleId)).thenReturn(currentVehicle);
-    when(spatialIndexService.createVehicleIndexId(eq(currentVehicle), eq(feedProvider)))
+    when(spatialIndexService.createVehicleIndexId(currentVehicle, feedProvider))
       .thenReturn(oldSpatialIndexId);
 
     var delta = new GBFSFileDelta<GBFSVehicle>(

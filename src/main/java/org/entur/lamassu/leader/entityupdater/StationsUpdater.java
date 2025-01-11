@@ -79,8 +79,7 @@ public class StationsUpdater {
   private final StationMergeMapper stationMergeMapper;
   private final MetricsService metricsService;
   private final SpatialIndexIdGeneratorService spatialIndexService;
-  private final GBFSStationStatusDeltaCalculator deltaCalculator =
-    new GBFSStationStatusDeltaCalculator();
+
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   @Value("${org.entur.lamassu.stationEntityCacheMinimumTtl:30}")
