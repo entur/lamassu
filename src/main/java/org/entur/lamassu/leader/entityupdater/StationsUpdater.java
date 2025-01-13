@@ -53,7 +53,6 @@ public class StationsUpdater {
   private static final class UpdateContext {
 
     final FeedProvider feedProvider;
-    final int ttl;
     final Map<String, org.mobilitydata.gbfs.v3_0.station_information.GBFSStation> stationInfo;
 
     final Set<String> stationIdsToRemove = new HashSet<>();
@@ -63,11 +62,9 @@ public class StationsUpdater {
 
     public UpdateContext(
       FeedProvider feedProvider,
-      int ttl,
       Map<String, org.mobilitydata.gbfs.v3_0.station_information.GBFSStation> stationInfo
     ) {
       this.feedProvider = feedProvider;
-      this.ttl = ttl;
       this.stationInfo = stationInfo;
     }
   }
@@ -80,12 +77,6 @@ public class StationsUpdater {
   private final SpatialIndexIdGeneratorService spatialIndexService;
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-  @Value("${org.entur.lamassu.stationEntityCacheMinimumTtl:30}")
-  private Integer stationEntityCacheMinimumTtl;
-
-  @Value("${org.entur.lamassu.stationEntityCacheMaximumTtl:300}")
-  private Integer stationEntityCacheMaximumTtl;
 
   @Autowired
   public StationsUpdater(
@@ -122,11 +113,7 @@ public class StationsUpdater {
         )
       );
 
-    UpdateContext context = new UpdateContext(
-      feedProvider,
-      delta.ttl().intValue(),
-      stationInfo
-    );
+    UpdateContext context = new UpdateContext(feedProvider, stationInfo);
 
     for (GBFSEntityDelta<GBFSStation> entityDelta : delta.entityDelta()) {
       Station currentStation = stationCache.get(entityDelta.entityId());
@@ -267,11 +254,7 @@ public class StationsUpdater {
         "Adding/updating {} stations in station cache",
         context.addedAndUpdatedStations.size()
       );
-      stationCache.updateAll(
-        context.addedAndUpdatedStations,
-        context.ttl,
-        TimeUnit.SECONDS
-      );
+      stationCache.updateAll(context.addedAndUpdatedStations);
     }
 
     if (!context.spatialIndexUpdateMap.isEmpty()) {

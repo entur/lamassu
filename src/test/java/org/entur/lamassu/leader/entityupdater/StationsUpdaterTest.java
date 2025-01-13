@@ -42,7 +42,6 @@ import org.mobilitydata.gbfs.v3_0.station_information.GBFSStation;
 import org.mobilitydata.gbfs.v3_0.station_information.GBFSStationInformation;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 class StationsUpdaterTest {
@@ -82,9 +81,6 @@ class StationsUpdaterTest {
         metricsService,
         spatialIndexIdGeneratorService
       );
-    // Set default values for cache TTLs
-    ReflectionTestUtils.setField(stationsUpdater, "stationEntityCacheMinimumTtl", 30);
-    ReflectionTestUtils.setField(stationsUpdater, "stationEntityCacheMaximumTtl", 300);
   }
 
   @Test
@@ -146,7 +142,7 @@ class StationsUpdaterTest {
 
     // Then
     verify(spatialIndex).addAll(any());
-    verify(stationCache).updateAll(any(), eq(60), eq(TimeUnit.SECONDS));
+    verify(stationCache).updateAll(any());
     verify(spatialIndex, never()).removeAll(anySet());
     verify(stationCache, never()).removeAll(anySet());
   }
@@ -242,7 +238,7 @@ class StationsUpdaterTest {
     // Then
     verify(spatialIndex, never()).removeAll(anySet());
     verify(spatialIndex).addAll(any());
-    verify(stationCache).updateAll(any(), eq(60), eq(TimeUnit.SECONDS));
+    verify(stationCache).updateAll(any());
     verify(stationCache, never()).removeAll(anySet());
   }
 
@@ -354,7 +350,7 @@ class StationsUpdaterTest {
     // Then
     verify(spatialIndex).removeAll(Set.of(oldSpatialIndexId));
     verify(spatialIndex).addAll(any());
-    verify(stationCache).updateAll(any(), eq(60), eq(TimeUnit.SECONDS));
+    verify(stationCache).updateAll(any());
     verify(stationCache, never()).removeAll(anySet());
   }
 }

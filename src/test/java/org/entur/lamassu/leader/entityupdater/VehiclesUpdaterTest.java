@@ -75,9 +75,6 @@ class VehiclesUpdaterTest {
         metricsService,
         spatialIndexIdGeneratorService
       );
-    // Set default values for cache TTLs
-    ReflectionTestUtils.setField(vehiclesUpdater, "vehicleEntityCacheMinimumTtl", 30);
-    ReflectionTestUtils.setField(vehiclesUpdater, "vehicleEntityCacheMaximumTtl", 300);
   }
 
   @Test
@@ -134,7 +131,7 @@ class VehiclesUpdaterTest {
     // Then
     verify(spatialIndex).removeAll(Set.of(oldSpatialIndexId));
     verify(spatialIndex).addAll(any());
-    verify(vehicleCache).updateAll(any(), eq(300), eq(TimeUnit.SECONDS));
+    verify(vehicleCache).updateAll(any());
     verify(vehicleCache, never()).removeAll(anySet());
   }
 
@@ -231,7 +228,7 @@ class VehiclesUpdaterTest {
 
     // Then
     verify(spatialIndex).addAll(any());
-    verify(vehicleCache).updateAll(any(), eq(300), eq(TimeUnit.SECONDS));
+    verify(vehicleCache).updateAll(any());
     verify(vehicleCache, never()).removeAll(anySet());
     verify(spatialIndex, never()).removeAll(anySet());
   }

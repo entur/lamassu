@@ -49,16 +49,14 @@ public class VehiclesUpdater {
   private static final class UpdateContext {
 
     final FeedProvider feedProvider;
-    final int ttl;
 
     final Set<String> vehicleIdsToRemove = new HashSet<>();
     final Map<String, Vehicle> addedAndUpdatedVehicles = new HashMap<>();
     final Set<VehicleSpatialIndexId> spatialIndexIdsToRemove = new HashSet<>();
     final Map<VehicleSpatialIndexId, Vehicle> spatialIndexUpdateMap = new HashMap<>();
 
-    public UpdateContext(FeedProvider feedProvider, int ttl) {
+    public UpdateContext(FeedProvider feedProvider) {
       this.feedProvider = feedProvider;
-      this.ttl = ttl;
     }
   }
 
@@ -69,12 +67,6 @@ public class VehiclesUpdater {
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
   private final MetricsService metricsService;
   private final SpatialIndexIdGeneratorService spatialIndexService;
-
-  @Value("${org.entur.lamassu.vehicleEntityCacheMinimumTtl:30}")
-  private Integer vehicleEntityCacheMinimumTtl;
-
-  @Value("${org.entur.lamassu.vehicleEntityCacheMaximumTtl:300}")
-  private Integer vehicleEntityCacheMaximumTtl;
 
   @Autowired
   public VehiclesUpdater(
@@ -97,15 +89,7 @@ public class VehiclesUpdater {
     FeedProvider feedProvider,
     GBFSFileDelta<GBFSVehicle> delta
   ) {
-    UpdateContext context = new UpdateContext(
-      feedProvider,
-      CacheUtil.getTtl(
-        (int) (delta.compare() / 1000),
-        delta.ttl().intValue(),
-        vehicleEntityCacheMinimumTtl,
-        vehicleEntityCacheMaximumTtl
-      )
-    );
+    UpdateContext context = new UpdateContext(feedProvider);
 
     for (GBFSEntityDelta<GBFSVehicle> entityDelta : delta.entityDelta()) {
       if (entityDelta.type() == DeltaType.DELETE) {
@@ -209,11 +193,7 @@ public class VehiclesUpdater {
         "Adding/updating {} vehicles in vehicle cache",
         context.addedAndUpdatedVehicles.size()
       );
-      vehicleCache.updateAll(
-        context.addedAndUpdatedVehicles,
-        context.ttl,
-        TimeUnit.SECONDS
-      );
+      vehicleCache.updateAll(context.addedAndUpdatedVehicles);
     }
 
     if (!context.spatialIndexUpdateMap.isEmpty()) {
