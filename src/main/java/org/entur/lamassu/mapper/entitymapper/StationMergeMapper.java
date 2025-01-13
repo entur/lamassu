@@ -12,7 +12,6 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 public interface StationMergeMapper {
   /**
    * Updates an existing Station with non-null values from the source Station.
-   * The id and systemId fields are preserved from the target Station.
    */
   void updateStation(@MappingTarget Station target, Station source);
 }

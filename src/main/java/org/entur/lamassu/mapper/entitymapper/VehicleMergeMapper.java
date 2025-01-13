@@ -12,7 +12,6 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 public interface VehicleMergeMapper {
   /**
    * Updates an existing Vehicle with non-null values from the source Vehicle.
-   * The id and systemId fields are preserved from the target Vehicle.
    */
   void updateVehicle(@MappingTarget Vehicle target, Vehicle source);
 }
