@@ -3,7 +3,7 @@ package org.entur.lamassu.graphql.query;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import org.entur.lamassu.cache.EntityCache;
+import org.entur.lamassu.cache.EntityReader;
 import org.entur.lamassu.graphql.validation.QueryParameterValidator;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PropulsionType;
@@ -20,22 +20,22 @@ import org.springframework.stereotype.Controller;
 public class StationQueryController {
 
   private final GeoSearchService geoSearchService;
-  private final EntityCache<Station> stationCache;
+  private final EntityReader<Station> stationReader;
   private final QueryParameterValidator validationService;
 
   public StationQueryController(
     GeoSearchService geoSearchService,
-    EntityCache<Station> stationCache,
+    EntityReader<Station> stationReader,
     QueryParameterValidator validationService
   ) {
     this.geoSearchService = geoSearchService;
-    this.stationCache = stationCache;
+    this.stationReader = stationReader;
     this.validationService = validationService;
   }
 
   @QueryMapping
   public Station station(@Argument String id) {
-    return stationCache.get(id);
+    return stationReader.get(id);
   }
 
   @QueryMapping
@@ -56,7 +56,7 @@ public class StationQueryController {
     @Argument List<PropulsionType> availablePropulsionTypes
   ) {
     if (ids != null && !ids.isEmpty()) {
-      return stationCache.getAll(Set.copyOf(ids));
+      return stationReader.getAll(Set.copyOf(ids));
     }
 
     validationService.validateCount(count);
@@ -106,6 +106,6 @@ public class StationQueryController {
 
   @QueryMapping
   public Collection<Station> stationsById(@Argument List<String> ids) {
-    return stationCache.getAll(Set.copyOf(ids));
+    return stationReader.getAll(Set.copyOf(ids));
   }
 }

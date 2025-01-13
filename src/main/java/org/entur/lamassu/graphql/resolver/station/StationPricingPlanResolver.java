@@ -7,7 +7,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.entur.lamassu.cache.EntityCache;
+import org.entur.lamassu.cache.EntityReader;
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.VehicleDocksAvailability;
@@ -22,15 +22,15 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class StationPricingPlanResolver {
 
-  private final EntityCache<VehicleType> vehicleTypeCache;
-  private final EntityCache<PricingPlan> pricingPlanCache;
+  private final EntityReader<VehicleType> vehicleTypeReader;
+  private final EntityReader<PricingPlan> pricingPlanReader;
 
   public StationPricingPlanResolver(
-    EntityCache<VehicleType> vehicleTypeCache,
-    EntityCache<PricingPlan> pricingPlanCache
+    EntityReader<VehicleType> vehicleTypeReader,
+    EntityReader<PricingPlan> pricingPlanReader
   ) {
-    this.vehicleTypeCache = vehicleTypeCache;
-    this.pricingPlanCache = pricingPlanCache;
+    this.vehicleTypeReader = vehicleTypeReader;
+    this.pricingPlanReader = pricingPlanReader;
   }
 
   /**
@@ -80,7 +80,7 @@ public class StationPricingPlanResolver {
       .flatMap(i -> i)
       .collect(Collectors.toSet());
 
-    List<VehicleType> vehicleTypes = vehicleTypeCache.getAll(vehicleTypeIds);
+    List<VehicleType> vehicleTypes = vehicleTypeReader.getAll(vehicleTypeIds);
 
     Set<String> pricingPlanIds = new HashSet<>();
 
@@ -93,6 +93,6 @@ public class StationPricingPlanResolver {
       }
     });
 
-    return pricingPlanCache.getAll(pricingPlanIds);
+    return pricingPlanReader.getAll(pricingPlanIds);
   }
 }

@@ -1,19 +1,22 @@
 package org.entur.lamassu.cache;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import org.entur.lamassu.model.entities.Entity;
 
-public interface EntityCache<T extends Entity> {
-  List<T> getAll(Set<String> keys);
-  List<T> getAll();
-  Map<String, T> getAllAsMap(Set<String> keys);
-  T get(String key);
+/**
+ * Interface for read-write operations on entity caches.
+ * Extends EntityReader to inherit all read operations while adding write capabilities.
+ */
+public interface EntityCache<T extends Entity> extends EntityReader<T> {
+  /**
+   * Update multiple entities in the cache with a TTL
+   */
   void updateAll(Map<String, T> entities, int ttl, TimeUnit timeUnit);
-  void removeAll(Set<String> keys);
-  boolean hasKey(String key);
 
-  int count();
+  /**
+   * Remove multiple entities from the cache
+   */
+  void removeAll(Set<String> keys);
 }

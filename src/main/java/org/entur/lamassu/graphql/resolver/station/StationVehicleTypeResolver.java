@@ -2,7 +2,7 @@ package org.entur.lamassu.graphql.resolver.station;
 
 import java.util.HashSet;
 import java.util.List;
-import org.entur.lamassu.cache.EntityCache;
+import org.entur.lamassu.cache.EntityReader;
 import org.entur.lamassu.model.entities.VehicleDocksAvailability;
 import org.entur.lamassu.model.entities.VehicleDocksCapacity;
 import org.entur.lamassu.model.entities.VehicleType;
@@ -15,38 +15,38 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class StationVehicleTypeResolver {
 
-  private final EntityCache<VehicleType> vehicleTypeCache;
+  private final EntityReader<VehicleType> vehicleTypeReader;
 
-  public StationVehicleTypeResolver(EntityCache<VehicleType> vehicleTypeCache) {
-    this.vehicleTypeCache = vehicleTypeCache;
+  public StationVehicleTypeResolver(EntityReader<VehicleType> vehicleTypeReader) {
+    this.vehicleTypeReader = vehicleTypeReader;
   }
 
   @SchemaMapping(typeName = "VehicleTypeAvailability", field = "vehicleType")
   public VehicleType resolveVehicleTypeAvailability(
     VehicleTypeAvailability vehicleTypeAvailability
   ) {
-    return vehicleTypeCache.get(vehicleTypeAvailability.getVehicleTypeId());
+    return vehicleTypeReader.get(vehicleTypeAvailability.getVehicleTypeId());
   }
 
   @SchemaMapping(typeName = "VehicleDocksAvailability", field = "vehicleTypes")
   public List<VehicleType> resolveVehicleDocksAvailability(
     VehicleDocksAvailability vehicleDocksAvailability
   ) {
-    return vehicleTypeCache.getAll(
+    return vehicleTypeReader.getAll(
       new HashSet<>(vehicleDocksAvailability.getVehicleTypeIds())
     );
   }
 
   @SchemaMapping(typeName = "VehicleTypeCapacity", field = "vehicleType")
   public VehicleType resolveVehicleTypeCapacity(VehicleTypeCapacity vehicleTypeCapacity) {
-    return vehicleTypeCache.get(vehicleTypeCapacity.getVehicleTypeId());
+    return vehicleTypeReader.get(vehicleTypeCapacity.getVehicleTypeId());
   }
 
   @SchemaMapping(typeName = "VehicleTypesCapacity", field = "vehicleTypes")
   public List<VehicleType> resolveVehicleTypesCapacity(
     VehicleTypesCapacity vehicleTypesCapacity
   ) {
-    return vehicleTypeCache.getAll(
+    return vehicleTypeReader.getAll(
       new HashSet<>(vehicleTypesCapacity.getVehicleTypeIds())
     );
   }
@@ -55,7 +55,7 @@ public class StationVehicleTypeResolver {
   public List<VehicleType> resolveVehicleDocksCapacity(
     VehicleDocksCapacity vehicleDocksCapacity
   ) {
-    return vehicleTypeCache.getAll(
+    return vehicleTypeReader.getAll(
       new HashSet<>(vehicleDocksCapacity.getVehicleTypeIds())
     );
   }

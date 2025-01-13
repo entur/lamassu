@@ -1,9 +1,9 @@
 package org.entur.lamassu.graphql.query;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import org.entur.lamassu.cache.EntityCache;
+import org.entur.lamassu.cache.EntityReader;
 import org.entur.lamassu.graphql.validation.QueryParameterValidator;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PropulsionType;
@@ -20,22 +20,22 @@ import org.springframework.stereotype.Controller;
 public class VehicleQueryController {
 
   private final GeoSearchService geoSearchService;
-  private final EntityCache<Vehicle> vehicleCache;
+  private final EntityReader<Vehicle> vehicleReader;
   private final QueryParameterValidator validationService;
 
   public VehicleQueryController(
     GeoSearchService geoSearchService,
-    EntityCache<Vehicle> vehicleCache,
+    EntityReader<Vehicle> vehicleReader,
     QueryParameterValidator validationService
   ) {
     this.geoSearchService = geoSearchService;
-    this.vehicleCache = vehicleCache;
+    this.vehicleReader = vehicleReader;
     this.validationService = validationService;
   }
 
   @QueryMapping
   public Vehicle vehicle(@Argument String id) {
-    return vehicleCache.get(id);
+    return vehicleReader.get(id);
   }
 
   @QueryMapping
@@ -58,7 +58,7 @@ public class VehicleQueryController {
     @Argument Boolean includeDisabled
   ) {
     if (ids != null && !ids.isEmpty()) {
-      return vehicleCache.getAll(Set.copyOf(ids));
+      return vehicleReader.getAll(new HashSet<>(ids));
     }
 
     validationService.validateCount(count);
