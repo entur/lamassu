@@ -34,6 +34,6 @@ public class VehicleTypePricingPlanResolver {
       .getPricingPlanIds()
       .stream()
       .map(pricingPlanReader::get)
-      .collect(Collectors.toList());
+      .toList();
   }
 }
