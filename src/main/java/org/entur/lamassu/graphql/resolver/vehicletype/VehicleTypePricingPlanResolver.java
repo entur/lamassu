@@ -30,10 +30,6 @@ public class VehicleTypePricingPlanResolver {
     if (vehicleType.getPricingPlanIds() == null) {
       return null;
     }
-    return vehicleType
-      .getPricingPlanIds()
-      .stream()
-      .map(pricingPlanReader::get)
-      .toList();
+    return vehicleType.getPricingPlanIds().stream().map(pricingPlanReader::get).toList();
   }
 }
