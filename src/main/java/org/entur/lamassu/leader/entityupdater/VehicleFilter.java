@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-class VehicleFilter implements Predicate<GBFSVehicle> {
+public class VehicleFilter implements Predicate<GBFSVehicle> {
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
