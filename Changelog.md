@@ -10,6 +10,7 @@ based on merged pull requests. Search GitHub issues and pull requests for smalle
 - Normalize entity data [#596](https://github.com/entur/lamassu/pull/596)
 - Add null checks to avoid NPE [#612](https://github.com/entur/lamassu/pull/612)
 - Remove redundant entity cache interfaces [#613](https://github.com/entur/lamassu/pull/613)
+- Add request-scope cache for reading entities [#619](https://github.com/entur/lamassu/pull/619)
   [](AUTOMATIC_CHANGELOG_PLACEHOLDER_DO_NOT_REMOVE)
 
 ## 1.1.0
