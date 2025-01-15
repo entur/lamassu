@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.cache.VehicleSpatialIndex;
 import org.entur.lamassu.cache.VehicleSpatialIndexId;
@@ -35,12 +34,10 @@ import org.entur.lamassu.metrics.MetricsService;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.service.SpatialIndexIdGeneratorService;
-import org.entur.lamassu.util.CacheUtil;
 import org.mobilitydata.gbfs.v3_0.vehicle_status.GBFSVehicle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
