@@ -64,6 +64,7 @@ public class VehiclesUpdater {
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
   private final MetricsService metricsService;
   private final SpatialIndexIdGeneratorService spatialIndexService;
+  private final VehicleFilter vehicleFilter;
 
   @Autowired
   public VehiclesUpdater(
@@ -72,7 +73,8 @@ public class VehiclesUpdater {
     VehicleMapper vehicleMapper,
     VehicleMergeMapper vehicleMergeMapper,
     MetricsService metricsService,
-    SpatialIndexIdGeneratorService spatialIndexService
+    SpatialIndexIdGeneratorService spatialIndexService,
+    VehicleFilter vehicleFilter
   ) {
     this.vehicleCache = vehicleCache;
     this.spatialIndex = spatialIndex;
@@ -80,6 +82,7 @@ public class VehiclesUpdater {
     this.vehicleMergeMapper = vehicleMergeMapper;
     this.metricsService = metricsService;
     this.spatialIndexService = spatialIndexService;
+    this.vehicleFilter = vehicleFilter;
   }
 
   public void addOrUpdateVehicles(
@@ -125,12 +128,14 @@ public class VehiclesUpdater {
     UpdateContext context,
     GBFSEntityDelta<GBFSVehicle> entityDelta
   ) {
-    Vehicle mappedVehicle = vehicleMapper.mapVehicle(
-      entityDelta.entity(),
-      context.feedProvider.getSystemId()
-    );
-    context.addedAndUpdatedVehicles.put(mappedVehicle.getId(), mappedVehicle);
-    updateSpatialIndex(context, mappedVehicle);
+    if (vehicleFilter.test(entityDelta.entity())) {
+      Vehicle mappedVehicle = vehicleMapper.mapVehicle(
+        entityDelta.entity(),
+        context.feedProvider.getSystemId()
+      );
+      context.addedAndUpdatedVehicles.put(mappedVehicle.getId(), mappedVehicle);
+      updateSpatialIndex(context, mappedVehicle);
+    }
   }
 
   private void processDeltaUpdate(

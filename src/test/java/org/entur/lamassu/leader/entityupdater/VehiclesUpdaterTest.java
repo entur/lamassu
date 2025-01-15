@@ -49,6 +49,9 @@ class VehiclesUpdaterTest {
   @Mock
   private EntityCache<VehicleType> vehicleTypeCache;
 
+  @Mock
+  private VehicleFilter vehicleFilter;
+
   private VehicleMapper vehicleMapper;
   private VehicleMergeMapper vehicleMergeMapper;
   private SpatialIndexIdGeneratorService spatialIndexIdGeneratorService;
@@ -71,7 +74,8 @@ class VehiclesUpdaterTest {
         vehicleMapper,
         vehicleMergeMapper,
         metricsService,
-        spatialIndexIdGeneratorService
+        spatialIndexIdGeneratorService,
+        vehicleFilter
       );
   }
 
@@ -212,6 +216,7 @@ class VehiclesUpdaterTest {
 
     // Mock behavior
     when(vehicleTypeCache.get(bikeTypeId)).thenReturn(bikeType);
+    when(vehicleFilter.test(gbfsVehicle)).thenReturn(true);
 
     var delta = new GBFSFileDelta<GBFSVehicle>(
       1000L,
