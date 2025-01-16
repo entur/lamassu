@@ -98,6 +98,35 @@ public class StationsUpdater {
     GBFSFileDelta<GBFSStation> delta,
     GBFSStationInformation stationInformationFeed
   ) {
+    if (delta.base() == null) {
+      var systemId = feedProvider.getSystemId();
+      var existingStations = stationCache.getAll();
+      var stationsToRemove = existingStations
+        .stream()
+        .filter(s -> systemId.equals(s.getSystemId()))
+        .toList();
+
+      if (!stationsToRemove.isEmpty()) {
+        logger.info(
+          "Removing {} existing stations for system {} due to null base",
+          stationsToRemove.size(),
+          systemId
+        );
+
+        var idsToRemove = stationsToRemove
+          .stream()
+          .map(Station::getId)
+          .collect(Collectors.toSet());
+        var spatialIdsToRemove = stationsToRemove
+          .stream()
+          .map(s -> spatialIndexService.createStationIndexId(s, feedProvider))
+          .collect(Collectors.toSet());
+
+        stationCache.removeAll(idsToRemove);
+        spatialIndex.removeAll(spatialIdsToRemove);
+      }
+    }
+
     var stationInfo = Optional
       .ofNullable(stationInformationFeed)
       .map(GBFSStationInformation::getData)

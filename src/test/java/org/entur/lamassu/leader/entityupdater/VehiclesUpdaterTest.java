@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anySet;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -13,6 +14,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.cache.VehicleSpatialIndex;
+import org.entur.lamassu.cache.VehicleSpatialIndexId;
 import org.entur.lamassu.delta.DeltaType;
 import org.entur.lamassu.delta.GBFSEntityDelta;
 import org.entur.lamassu.delta.GBFSFileDelta;
@@ -273,5 +275,77 @@ class VehiclesUpdaterTest {
     // Then
     verify(spatialIndex, never()).addAll(anyMap());
     verify(vehicleCache, never()).updateAll(anyMap(), anyInt(), any(TimeUnit.class));
+  }
+
+  @Test
+  void shouldRemoveExistingVehiclesWhenBaseIsNull() {
+    // Given
+    var feedProvider = new FeedProvider();
+    feedProvider.setSystemId("system-1");
+    feedProvider.setCodespace("codespace-1");
+
+    var vehicle1 = new Vehicle();
+    vehicle1.setId("vehicle-1");
+    vehicle1.setSystemId("system-1");
+    vehicle1.setVehicleTypeId("type-1");
+    vehicle1.setReserved(false);
+    vehicle1.setDisabled(false);
+
+    var vehicle2 = new Vehicle();
+    vehicle2.setId("vehicle-2");
+    vehicle2.setSystemId("system-1");
+    vehicle2.setVehicleTypeId("type-1");
+    vehicle2.setReserved(false);
+    vehicle2.setDisabled(false);
+
+    var vehicle3 = new Vehicle();
+    vehicle3.setId("vehicle-3");
+    vehicle3.setSystemId("system-2"); // Different system
+    vehicle3.setVehicleTypeId("type-1");
+
+    var vehicleType = new VehicleType();
+    vehicleType.setFormFactor(FormFactor.BICYCLE);
+    vehicleType.setPropulsionType(PropulsionType.HUMAN);
+
+    when(vehicleTypeCache.get("type-1")).thenReturn(vehicleType);
+    when(vehicleCache.getAll()).thenReturn(List.of(vehicle1, vehicle2, vehicle3));
+
+    var delta = new GBFSFileDelta<GBFSVehicle>(
+      null,
+      1000L,
+      null,
+      "vehicle_status",
+      List.of()
+    );
+
+    // When
+    vehiclesUpdater.addOrUpdateVehicles(feedProvider, delta);
+
+    // Then
+    verify(vehicleCache).removeAll(Set.of("vehicle-1", "vehicle-2"));
+    verify(spatialIndex)
+      .removeAll(
+        argThat(spatialIds -> {
+          if (spatialIds.size() != 2) return false;
+          return spatialIds
+            .stream()
+            .allMatch(id -> {
+              var spatialId = (VehicleSpatialIndexId) id;
+              return (
+                (
+                  spatialId.getId().equals("vehicle-1") ||
+                  spatialId.getId().equals("vehicle-2")
+                ) &&
+                spatialId.getSystemId().equals("system-1") &&
+                spatialId.getCodespace().equals("codespace-1") &&
+                spatialId.getFormFactor() == FormFactor.BICYCLE &&
+                spatialId.getPropulsionType() == PropulsionType.HUMAN &&
+                !spatialId.getReserved() &&
+                !spatialId.getDisabled()
+              );
+            });
+        })
+      );
+    verify(vehicleCache, never()).removeAll(Set.of("vehicle-3")); // Should not remove vehicles from other systems
   }
 }

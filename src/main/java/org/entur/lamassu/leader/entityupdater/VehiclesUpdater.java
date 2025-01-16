@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.cache.VehicleSpatialIndex;
 import org.entur.lamassu.cache.VehicleSpatialIndexId;
@@ -89,6 +90,35 @@ public class VehiclesUpdater {
     FeedProvider feedProvider,
     GBFSFileDelta<GBFSVehicle> delta
   ) {
+    if (delta.base() == null) {
+      var systemId = feedProvider.getSystemId();
+      var existingVehicles = vehicleCache.getAll();
+      var vehiclesToRemove = existingVehicles
+        .stream()
+        .filter(v -> systemId.equals(v.getSystemId()))
+        .toList();
+
+      if (!vehiclesToRemove.isEmpty()) {
+        logger.info(
+          "Removing {} existing vehicles for system {} due to null base",
+          vehiclesToRemove.size(),
+          systemId
+        );
+
+        var idsToRemove = vehiclesToRemove
+          .stream()
+          .map(Vehicle::getId)
+          .collect(Collectors.toSet());
+        var spatialIdsToRemove = vehiclesToRemove
+          .stream()
+          .map(v -> spatialIndexService.createVehicleIndexId(v, feedProvider))
+          .collect(Collectors.toSet());
+
+        vehicleCache.removeAll(idsToRemove);
+        spatialIndex.removeAll(spatialIdsToRemove);
+      }
+    }
+
     UpdateContext context = new UpdateContext(feedProvider);
 
     for (GBFSEntityDelta<GBFSVehicle> entityDelta : delta.entityDelta()) {

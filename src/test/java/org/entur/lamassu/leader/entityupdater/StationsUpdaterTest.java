@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anySet;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -14,6 +15,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.cache.StationSpatialIndex;
+import org.entur.lamassu.cache.StationSpatialIndexId;
 import org.entur.lamassu.delta.DeltaType;
 import org.entur.lamassu.delta.GBFSEntityDelta;
 import org.entur.lamassu.delta.GBFSFileDelta;
@@ -351,5 +353,71 @@ class StationsUpdaterTest {
     verify(spatialIndex).addAll(any());
     verify(stationCache).updateAll(any());
     verify(stationCache, never()).removeAll(anySet());
+  }
+
+  @Test
+  void shouldRemoveExistingStationsWhenBaseIsNull() {
+    // Given
+    var feedProvider = new FeedProvider();
+    feedProvider.setSystemId("system-1");
+    feedProvider.setCodespace("codespace-1");
+
+    var station1 = new Station();
+    station1.setId("station-1");
+    station1.setSystemId("system-1");
+
+    var station2 = new Station();
+    station2.setId("station-2");
+    station2.setSystemId("system-1");
+
+    var station3 = new Station();
+    station3.setId("station-3");
+    station3.setSystemId("system-2"); // Different system
+
+    when(stationCache.getAll()).thenReturn(List.of(station1, station2, station3));
+
+    stationsUpdater =
+      new StationsUpdater(
+        stationCache,
+        spatialIndex,
+        stationMapper,
+        stationMergeMapper,
+        metricsService,
+        spatialIndexIdGeneratorService
+      );
+
+    var delta = new GBFSFileDelta<org.mobilitydata.gbfs.v3_0.station_status.GBFSStation>(
+      null,
+      1000L,
+      null,
+      "station_status",
+      List.of()
+    );
+
+    // When
+    stationsUpdater.addOrUpdateStations(feedProvider, delta, null);
+
+    // Then
+    verify(stationCache).removeAll(Set.of("station-1", "station-2"));
+    verify(spatialIndex)
+      .removeAll(
+        argThat(spatialIds -> {
+          if (spatialIds.size() != 2) return false;
+          return spatialIds
+            .stream()
+            .allMatch(id -> {
+              var spatialId = (StationSpatialIndexId) id;
+              return (
+                (
+                  spatialId.getId().equals("station-1") ||
+                  spatialId.getId().equals("station-2")
+                ) &&
+                spatialId.getSystemId().equals("system-1") &&
+                spatialId.getCodespace().equals("codespace-1")
+              );
+            });
+        })
+      );
+    verify(stationCache, never()).removeAll(Set.of("station-3")); // Should not remove stations from other systems
   }
 }
