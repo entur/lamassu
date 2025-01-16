@@ -45,6 +45,8 @@ public class EntityCachesUpdater {
   private final GBFSStationStatusDeltaCalculator stationStatusDeltaCalculator =
     new GBFSStationStatusDeltaCalculator();
 
+  private final GbfsUpdateContinuityTracker updateContinuityTracker;
+
   @Autowired
   public EntityCachesUpdater(
     SystemUpdater systemUpdater,
@@ -53,7 +55,8 @@ public class EntityCachesUpdater {
     RegionsUpdater regionsUpdater,
     VehiclesUpdater vehiclesUpdater,
     StationsUpdater stationsUpdater,
-    GeofencingZonesUpdater geofencingZonesUpdater
+    GeofencingZonesUpdater geofencingZonesUpdater,
+    GbfsUpdateContinuityTracker updateContinuityTracker
   ) {
     this.systemUpdater = systemUpdater;
     this.vehicleTypesUpdater = vehicleTypesUpdater;
@@ -62,6 +65,7 @@ public class EntityCachesUpdater {
     this.vehiclesUpdater = vehiclesUpdater;
     this.stationsUpdater = stationsUpdater;
     this.geofencingZonesUpdater = geofencingZonesUpdater;
+    this.updateContinuityTracker = updateContinuityTracker;
   }
 
   public void updateEntityCaches(
@@ -86,18 +90,28 @@ public class EntityCachesUpdater {
     }
 
     if (canUpdateVehicles(delivery, feedProvider)) {
+      var useBase = updateContinuityTracker.hasVehicleUpdateContinuity(
+        feedProvider.getSystemId(),
+        oldDelivery,
+        delivery
+      );
       GBFSFileDelta<GBFSVehicle> vehicleStatusDelta =
         vehicleStatusDeltaCalculator.calculateDelta(
-          oldDelivery.vehicleStatus(),
+          useBase ? oldDelivery.vehicleStatus() : null,
           delivery.vehicleStatus()
         );
       vehiclesUpdater.addOrUpdateVehicles(feedProvider, vehicleStatusDelta);
     }
 
     if (canUpdateStations(delivery, feedProvider)) {
+      var useBase = updateContinuityTracker.hasStationUpdateContinuity(
+        feedProvider.getSystemId(),
+        oldDelivery,
+        delivery
+      );
       GBFSFileDelta<GBFSStation> stationStatusDelta =
         stationStatusDeltaCalculator.calculateDelta(
-          oldDelivery.stationStatus(),
+          useBase ? oldDelivery.stationStatus() : null,
           delivery.stationStatus()
         );
       stationsUpdater.addOrUpdateStations(
