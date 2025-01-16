@@ -37,6 +37,7 @@ import org.entur.lamassu.metrics.MetricsService;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.service.SpatialIndexIdGeneratorService;
+import org.jetbrains.annotations.NotNull;
 import org.mobilitydata.gbfs.v3_0.station_information.GBFSData;
 import org.mobilitydata.gbfs.v3_0.station_information.GBFSStationInformation;
 import org.mobilitydata.gbfs.v3_0.station_status.GBFSStation;
@@ -99,47 +100,10 @@ public class StationsUpdater {
     GBFSStationInformation stationInformationFeed
   ) {
     if (delta.base() == null) {
-      var systemId = feedProvider.getSystemId();
-      var existingStations = stationCache.getAll();
-      var stationsToRemove = existingStations
-        .stream()
-        .filter(s -> systemId.equals(s.getSystemId()))
-        .toList();
-
-      if (!stationsToRemove.isEmpty()) {
-        logger.info(
-          "Removing {} existing stations for system {} due to null base",
-          stationsToRemove.size(),
-          systemId
-        );
-
-        var idsToRemove = stationsToRemove
-          .stream()
-          .map(Station::getId)
-          .collect(Collectors.toSet());
-        var spatialIdsToRemove = stationsToRemove
-          .stream()
-          .map(s -> spatialIndexService.createStationIndexId(s, feedProvider))
-          .collect(Collectors.toSet());
-
-        stationCache.removeAll(idsToRemove);
-        spatialIndex.removeAll(spatialIdsToRemove);
-      }
+      clearExistingEntities(feedProvider);
     }
 
-    var stationInfo = Optional
-      .ofNullable(stationInformationFeed)
-      .map(GBFSStationInformation::getData)
-      .map(GBFSData::getStations)
-      .orElse(List.of())
-      .stream()
-      .collect(
-        Collectors.toMap(
-          org.mobilitydata.gbfs.v3_0.station_information.GBFSStation::getStationId,
-          s -> s
-        )
-      );
-
+    var stationInfo = extractStationInfo(stationInformationFeed);
     UpdateContext context = new UpdateContext(feedProvider, stationInfo);
 
     for (GBFSEntityDelta<GBFSStation> entityDelta : delta.entityDelta()) {
@@ -155,6 +119,52 @@ public class StationsUpdater {
     }
 
     updateCaches(context);
+  }
+
+  private static @NotNull Map<String, org.mobilitydata.gbfs.v3_0.station_information.@NotNull GBFSStation> extractStationInfo(
+    GBFSStationInformation stationInformationFeed
+  ) {
+    return Optional
+      .ofNullable(stationInformationFeed)
+      .map(GBFSStationInformation::getData)
+      .map(GBFSData::getStations)
+      .orElse(List.of())
+      .stream()
+      .collect(
+        Collectors.toMap(
+          org.mobilitydata.gbfs.v3_0.station_information.GBFSStation::getStationId,
+          s -> s
+        )
+      );
+  }
+
+  private void clearExistingEntities(FeedProvider feedProvider) {
+    var systemId = feedProvider.getSystemId();
+    var existingStations = stationCache.getAll();
+    var stationsToRemove = existingStations
+      .stream()
+      .filter(s -> systemId.equals(s.getSystemId()))
+      .toList();
+
+    if (!stationsToRemove.isEmpty()) {
+      logger.info(
+        "Removing {} existing stations for system {} due to null base",
+        stationsToRemove.size(),
+        systemId
+      );
+
+      var idsToRemove = stationsToRemove
+        .stream()
+        .map(Station::getId)
+        .collect(Collectors.toSet());
+      var spatialIdsToRemove = stationsToRemove
+        .stream()
+        .map(s -> spatialIndexService.createStationIndexId(s, feedProvider))
+        .collect(Collectors.toSet());
+
+      stationCache.removeAll(idsToRemove);
+      spatialIndex.removeAll(spatialIdsToRemove);
+    }
   }
 
   private void processDeltaDelete(
