@@ -86,10 +86,7 @@ public class VehiclesUpdater {
     this.vehicleFilter = vehicleFilter;
   }
 
-  public void addOrUpdateVehicles(
-    FeedProvider feedProvider,
-    GBFSFileDelta<GBFSVehicle> delta
-  ) {
+  public void update(FeedProvider feedProvider, GBFSFileDelta<GBFSVehicle> delta) {
     if (delta.base() == null) {
       clearExistingEntities(feedProvider);
     }

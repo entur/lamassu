@@ -45,10 +45,7 @@ public class GeofencingZonesUpdater {
     this.geofencingZonesMapper = geofencingZonesMapper;
   }
 
-  public void addOrUpdateGeofencingZones(
-    FeedProvider feedProvider,
-    GBFSGeofencingZones feed
-  ) {
+  public void update(FeedProvider feedProvider, GBFSGeofencingZones feed) {
     var mapped = geofencingZonesMapper.map(
       feed.getData().getGeofencingZones(),
       feedProvider

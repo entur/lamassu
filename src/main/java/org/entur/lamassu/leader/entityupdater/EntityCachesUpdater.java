@@ -86,7 +86,7 @@ public class EntityCachesUpdater {
     }
 
     if (canUpdateRegions(delivery, feedProvider)) {
-      regionsUpdater.updateRegions(delivery.systemRegions(), feedProvider.getLanguage());
+      regionsUpdater.update(delivery.systemRegions(), feedProvider.getLanguage());
     }
 
     if (canUpdateVehicles(delivery, feedProvider)) {
@@ -100,7 +100,7 @@ public class EntityCachesUpdater {
           useBase ? oldDelivery.vehicleStatus() : null,
           delivery.vehicleStatus()
         );
-      vehiclesUpdater.addOrUpdateVehicles(feedProvider, vehicleStatusDelta);
+      vehiclesUpdater.update(feedProvider, vehicleStatusDelta);
     }
 
     if (canUpdateStations(delivery, feedProvider)) {
@@ -114,7 +114,7 @@ public class EntityCachesUpdater {
           useBase ? oldDelivery.stationStatus() : null,
           delivery.stationStatus()
         );
-      stationsUpdater.addOrUpdateStations(
+      stationsUpdater.update(
         feedProvider,
         stationStatusDelta,
         delivery.stationInformation()
@@ -122,10 +122,7 @@ public class EntityCachesUpdater {
     }
 
     if (canUpdateGeofencingZones(delivery, feedProvider)) {
-      geofencingZonesUpdater.addOrUpdateGeofencingZones(
-        feedProvider,
-        delivery.geofencingZones()
-      );
+      geofencingZonesUpdater.update(feedProvider, delivery.geofencingZones());
     }
   }
 

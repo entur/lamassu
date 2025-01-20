@@ -129,7 +129,7 @@ class VehiclesUpdaterTest {
     );
 
     // When
-    vehiclesUpdater.addOrUpdateVehicles(feedProvider, delta);
+    vehiclesUpdater.update(feedProvider, delta);
 
     // Then
     verify(spatialIndex).removeAll(Set.of(oldSpatialIndexId));
@@ -181,7 +181,7 @@ class VehiclesUpdaterTest {
     );
 
     // When
-    vehiclesUpdater.addOrUpdateVehicles(feedProvider, delta);
+    vehiclesUpdater.update(feedProvider, delta);
 
     // Then
     verify(spatialIndex).removeAll(Set.of(spatialIndexId));
@@ -226,7 +226,7 @@ class VehiclesUpdaterTest {
     );
 
     // When
-    vehiclesUpdater.addOrUpdateVehicles(feedProvider, delta);
+    vehiclesUpdater.update(feedProvider, delta);
 
     // Then
     verify(spatialIndex).addAll(any());
@@ -266,7 +266,7 @@ class VehiclesUpdaterTest {
     );
 
     // When
-    vehiclesUpdater.addOrUpdateVehicles(feedProvider, delta);
+    vehiclesUpdater.update(feedProvider, delta);
 
     // Then
     verify(spatialIndex, never()).addAll(anyMap());
@@ -309,7 +309,7 @@ class VehiclesUpdaterTest {
     var delta = new GBFSFileDelta<GBFSVehicle>(null, 1000L, "vehicle_status", List.of());
 
     // When
-    vehiclesUpdater.addOrUpdateVehicles(feedProvider, delta);
+    vehiclesUpdater.update(feedProvider, delta);
 
     // Then
     verify(vehicleCache).removeAll(Set.of("vehicle-1", "vehicle-2"));

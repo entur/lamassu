@@ -39,7 +39,7 @@ public class RegionsUpdater {
     this.regionMapper = regionMapper;
   }
 
-  public void updateRegions(GBFSSystemRegions systemRegions, String language) {
+  public void update(GBFSSystemRegions systemRegions, String language) {
     var mapped = systemRegions
       .getData()
       .getRegions()

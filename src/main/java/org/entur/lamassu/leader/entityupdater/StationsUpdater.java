@@ -94,7 +94,7 @@ public class StationsUpdater {
     this.spatialIndexService = spatialIndexService;
   }
 
-  public void addOrUpdateStations(
+  public void update(
     FeedProvider feedProvider,
     GBFSFileDelta<GBFSStation> delta,
     GBFSStationInformation stationInformationFeed

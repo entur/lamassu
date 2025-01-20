@@ -138,7 +138,7 @@ class StationsUpdaterTest {
     );
 
     // When
-    stationsUpdater.addOrUpdateStations(feedProvider, delta, stationInformationFeed);
+    stationsUpdater.update(feedProvider, delta, stationInformationFeed);
 
     // Then
     verify(spatialIndex).addAll(any());
@@ -179,7 +179,7 @@ class StationsUpdaterTest {
     );
 
     // When
-    stationsUpdater.addOrUpdateStations(feedProvider, delta, null);
+    stationsUpdater.update(feedProvider, delta, null);
 
     // Then
     verify(spatialIndex).removeAll(Set.of(spatialIndexId));
@@ -231,7 +231,7 @@ class StationsUpdaterTest {
     );
 
     // When
-    stationsUpdater.addOrUpdateStations(feedProvider, delta, stationInformationFeed);
+    stationsUpdater.update(feedProvider, delta, stationInformationFeed);
 
     // Then
     verify(spatialIndex, never()).removeAll(anySet());
@@ -265,7 +265,7 @@ class StationsUpdaterTest {
     );
 
     // When
-    stationsUpdater.addOrUpdateStations(feedProvider, delta, null);
+    stationsUpdater.update(feedProvider, delta, null);
 
     // Then
     verify(spatialIndex, never()).addAll(anyMap());
@@ -341,7 +341,7 @@ class StationsUpdaterTest {
     );
 
     // When
-    stationsUpdater.addOrUpdateStations(feedProvider, delta, stationInformationFeed);
+    stationsUpdater.update(feedProvider, delta, stationInformationFeed);
 
     // Then
     verify(spatialIndex).removeAll(Set.of(oldSpatialIndexId));
@@ -389,7 +389,7 @@ class StationsUpdaterTest {
     );
 
     // When
-    stationsUpdater.addOrUpdateStations(feedProvider, delta, null);
+    stationsUpdater.update(feedProvider, delta, null);
 
     // Then
     verify(stationCache).removeAll(Set.of("station-1", "station-2"));
