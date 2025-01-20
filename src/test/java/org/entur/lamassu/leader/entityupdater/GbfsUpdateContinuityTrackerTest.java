@@ -22,96 +22,72 @@ class GbfsUpdateContinuityTrackerTest {
 
   @Test
   void hasVehicleUpdateContinuity_shouldReturnFalse_whenOldDeliveryIsNull() {
-    var nextDelivery = createDeliveryWithVehicleStatus(1000L);
     var oldDelivery = createDeliveryWithVehicleStatus(null);
-
-    assertFalse(tracker.hasVehicleUpdateContinuity(SYSTEM_ID, oldDelivery, nextDelivery));
+    assertFalse(tracker.hasVehicleUpdateContinuity(SYSTEM_ID, oldDelivery));
   }
 
   @Test
   void hasVehicleUpdateContinuity_shouldReturnFalse_whenFirstUpdate() {
-    var nextDelivery = createDeliveryWithVehicleStatus(1000L);
     var oldDelivery = createDeliveryWithVehicleStatus(500L);
-
-    assertFalse(tracker.hasVehicleUpdateContinuity(SYSTEM_ID, oldDelivery, nextDelivery));
+    assertFalse(tracker.hasVehicleUpdateContinuity(SYSTEM_ID, oldDelivery));
   }
 
   @Test
   void hasVehicleUpdateContinuity_shouldReturnTrue_whenTimestampsMatch() {
-    var nextDelivery = createDeliveryWithVehicleStatus(1000L);
-    var oldDelivery = createDeliveryWithVehicleStatus(500L);
+    var delivery = createDeliveryWithVehicleStatus(1000L);
 
     // First update establishes the base
-    tracker.hasVehicleUpdateContinuity(SYSTEM_ID, oldDelivery, nextDelivery);
+    tracker.updateVehicleUpdateContinuity(SYSTEM_ID, delivery);
 
-    // Second update with matching timestamps
-    var nextDelivery2 = createDeliveryWithVehicleStatus(1500L);
-    assertTrue(
-      tracker.hasVehicleUpdateContinuity(SYSTEM_ID, nextDelivery, nextDelivery2)
-    );
+    // Check continuity with matching timestamp
+    assertTrue(tracker.hasVehicleUpdateContinuity(SYSTEM_ID, delivery));
   }
 
   @Test
   void hasVehicleUpdateContinuity_shouldReturnFalse_whenTimestampsDontMatch() {
-    var nextDelivery = createDeliveryWithVehicleStatus(1000L);
-    var oldDelivery = createDeliveryWithVehicleStatus(500L);
+    var delivery = createDeliveryWithVehicleStatus(1000L);
 
     // First update establishes the base
-    tracker.hasVehicleUpdateContinuity(SYSTEM_ID, oldDelivery, nextDelivery);
+    tracker.updateVehicleUpdateContinuity(SYSTEM_ID, delivery);
 
-    // Second update with non-matching timestamps (simulating missed update)
-    var nextDelivery2 = createDeliveryWithVehicleStatus(1500L);
-    var modifiedOldDelivery = createDeliveryWithVehicleStatus(800L); // Different from stored base
-    assertFalse(
-      tracker.hasVehicleUpdateContinuity(SYSTEM_ID, modifiedOldDelivery, nextDelivery2)
-    );
+    // Check with non-matching timestamps (simulating missed update)
+    var modifiedDelivery = createDeliveryWithVehicleStatus(800L);
+    assertFalse(tracker.hasVehicleUpdateContinuity(SYSTEM_ID, modifiedDelivery));
   }
 
   @Test
   void hasStationUpdateContinuity_shouldReturnFalse_whenOldDeliveryIsNull() {
-    var nextDelivery = createDeliveryWithStationStatus(1000L);
     var oldDelivery = createDeliveryWithStationStatus(null);
-
-    assertFalse(tracker.hasStationUpdateContinuity(SYSTEM_ID, oldDelivery, nextDelivery));
+    assertFalse(tracker.hasStationUpdateContinuity(SYSTEM_ID, oldDelivery));
   }
 
   @Test
   void hasStationUpdateContinuity_shouldReturnFalse_whenFirstUpdate() {
-    var nextDelivery = createDeliveryWithStationStatus(1000L);
     var oldDelivery = createDeliveryWithStationStatus(500L);
-
-    assertFalse(tracker.hasStationUpdateContinuity(SYSTEM_ID, oldDelivery, nextDelivery));
+    assertFalse(tracker.hasStationUpdateContinuity(SYSTEM_ID, oldDelivery));
   }
 
   @Test
   void hasStationUpdateContinuity_shouldReturnTrue_whenTimestampsMatch() {
-    var nextDelivery = createDeliveryWithStationStatus(1000L);
-    var oldDelivery = createDeliveryWithStationStatus(500L);
+    var delivery = createDeliveryWithStationStatus(1000L);
 
     // First update establishes the base
-    tracker.hasStationUpdateContinuity(SYSTEM_ID, oldDelivery, nextDelivery);
+    tracker.updateStationUpdateContinuity(SYSTEM_ID, delivery);
 
-    // Second update with matching timestamps
-    var nextDelivery2 = createDeliveryWithStationStatus(1500L);
-    assertTrue(
-      tracker.hasStationUpdateContinuity(SYSTEM_ID, nextDelivery, nextDelivery2)
-    );
+    // Check continuity with matching timestamp
+    assertTrue(tracker.hasStationUpdateContinuity(SYSTEM_ID, delivery));
   }
 
   @Test
   void hasStationUpdateContinuity_shouldReturnFalse_whenTimestampsDontMatch() {
-    var nextDelivery = createDeliveryWithStationStatus(1000L);
-    var oldDelivery = createDeliveryWithStationStatus(500L);
+    var delivery = createDeliveryWithStationStatus(1000L);
 
     // First update establishes the base
-    tracker.hasStationUpdateContinuity(SYSTEM_ID, oldDelivery, nextDelivery);
+    tracker.updateStationUpdateContinuity(SYSTEM_ID, delivery);
 
-    // Second update with non-matching timestamps (simulating missed update)
-    var nextDelivery2 = createDeliveryWithStationStatus(1500L);
-    var modifiedOldDelivery = createDeliveryWithStationStatus(800L); // Different from stored base
-    assertFalse(
-      tracker.hasStationUpdateContinuity(SYSTEM_ID, modifiedOldDelivery, nextDelivery2)
-    );
+    // Check with non-matching timestamps (simulating missed update)
+    var modifiedDelivery = createDeliveryWithStationStatus(800L);
+    assertFalse(tracker.hasStationUpdateContinuity(SYSTEM_ID, modifiedDelivery));
   }
 
   private GbfsV3Delivery createDeliveryWithVehicleStatus(Long timestamp) {
