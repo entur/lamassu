@@ -118,7 +118,6 @@ class VehiclesUpdaterTest {
     var delta = new GBFSFileDelta<GBFSVehicle>(
       30000L,
       60000L,
-      300L,
       "vehicle_status",
       List.of(new GBFSEntityDelta<>(vehicleId, DeltaType.UPDATE, gbfsVehicle))
     );
@@ -171,7 +170,6 @@ class VehiclesUpdaterTest {
     var delta = new GBFSFileDelta<GBFSVehicle>(
       1000L,
       2000L,
-      60L,
       "vehicle_status",
       List.of(new GBFSEntityDelta<>(vehicleId, DeltaType.DELETE, null))
     );
@@ -223,7 +221,6 @@ class VehiclesUpdaterTest {
     var delta = new GBFSFileDelta<GBFSVehicle>(
       1000L,
       2000L,
-      60L,
       "vehicle_status",
       List.of(new GBFSEntityDelta<>(vehicleId, DeltaType.CREATE, gbfsVehicle))
     );
@@ -264,7 +261,6 @@ class VehiclesUpdaterTest {
     var delta = new GBFSFileDelta<GBFSVehicle>(
       1000L,
       2000L,
-      60L,
       "vehicle_status",
       List.of(new GBFSEntityDelta<>(vehicleId, DeltaType.UPDATE, gbfsVehicle))
     );
@@ -310,13 +306,7 @@ class VehiclesUpdaterTest {
     when(vehicleTypeCache.get("type-1")).thenReturn(vehicleType);
     when(vehicleCache.getAll()).thenReturn(List.of(vehicle1, vehicle2, vehicle3));
 
-    var delta = new GBFSFileDelta<GBFSVehicle>(
-      null,
-      1000L,
-      null,
-      "vehicle_status",
-      List.of()
-    );
+    var delta = new GBFSFileDelta<GBFSVehicle>(null, 1000L, "vehicle_status", List.of());
 
     // When
     vehiclesUpdater.addOrUpdateVehicles(feedProvider, delta);

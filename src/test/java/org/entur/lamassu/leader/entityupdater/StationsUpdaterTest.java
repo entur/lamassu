@@ -133,7 +133,6 @@ class StationsUpdaterTest {
     var delta = new GBFSFileDelta<org.mobilitydata.gbfs.v3_0.station_status.GBFSStation>(
       1000L,
       2000L,
-      60L,
       "station_status",
       List.of(new GBFSEntityDelta<>(stationId, DeltaType.UPDATE, stationStatus))
     );
@@ -169,7 +168,6 @@ class StationsUpdaterTest {
     var delta = new GBFSFileDelta<org.mobilitydata.gbfs.v3_0.station_status.GBFSStation>(
       1000L,
       2000L,
-      60L,
       "station_status",
       List.of(new GBFSEntityDelta<>(stationId, DeltaType.DELETE, null))
     );
@@ -228,7 +226,6 @@ class StationsUpdaterTest {
     var delta = new GBFSFileDelta<>(
       1000L,
       2000L,
-      60L,
       "station_status",
       List.of(new GBFSEntityDelta<>(stationId, DeltaType.CREATE, stationStatus))
     );
@@ -263,7 +260,6 @@ class StationsUpdaterTest {
     var delta = new GBFSFileDelta<>(
       1000L,
       2000L,
-      60L,
       "station_status",
       List.of(new GBFSEntityDelta<>(stationId, DeltaType.UPDATE, stationStatus))
     );
@@ -334,7 +330,6 @@ class StationsUpdaterTest {
     var delta = new GBFSFileDelta<>(
       1000L,
       2000L,
-      60L,
       "station_status",
       List.of(new GBFSEntityDelta<>(stationId, DeltaType.UPDATE, stationStatus))
     );
@@ -389,7 +384,6 @@ class StationsUpdaterTest {
     var delta = new GBFSFileDelta<org.mobilitydata.gbfs.v3_0.station_status.GBFSStation>(
       null,
       1000L,
-      null,
       "station_status",
       List.of()
     );

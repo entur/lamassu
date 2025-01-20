@@ -110,11 +110,6 @@ class BaseGBFSFileDeltaCalculatorTest {
     }
 
     @Override
-    protected long getTtl(TestFeed instance) {
-      return instance.getTtl();
-    }
-
-    @Override
     protected String getFileName() {
       return "test_feed";
     }

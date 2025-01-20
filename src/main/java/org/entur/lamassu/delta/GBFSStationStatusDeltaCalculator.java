@@ -48,11 +48,6 @@ public class GBFSStationStatusDeltaCalculator
   }
 
   @Override
-  protected long getTtl(GBFSStationStatus instance) {
-    return instance.getTtl();
-  }
-
-  @Override
   protected String getFileName() {
     return FILE_NAME;
   }
