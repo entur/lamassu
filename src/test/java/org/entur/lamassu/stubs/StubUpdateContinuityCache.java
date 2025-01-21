@@ -18,11 +18,10 @@
 
 package org.entur.lamassu.stubs;
 
-import org.entur.lamassu.cache.UpdateContinuityCache;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import org.entur.lamassu.cache.UpdateContinuityCache;
 
 /**
  * In-memory stub implementation of UpdateContinuityCache for testing.
