@@ -129,13 +129,13 @@ public abstract class BaseGBFSFileDeltaCalculator<S, T>
       .toList();
   }
 
-  private T getEntityDelta(T a, T b) {
+  private T getEntityDelta(T base, T compare) {
     T delta = createEntity();
-    Method[] methods = a.getClass().getDeclaredMethods();
+    Method[] methods = base.getClass().getDeclaredMethods();
     for (Method method : methods) {
       try {
-        if (isMethodEligibleForDelta(method) && hasValueChanged(method, a, b)) {
-          copyValueToDelta(method, getSetter(methods, method.getName()), b, delta);
+        if (isMethodEligibleForDelta(method) && hasValueChanged(method, base, compare)) {
+          copyValueToDelta(method, getSetter(methods, method.getName()), compare, delta);
         }
       } catch (IllegalAccessException | InvocationTargetException e) {
         throw new GBFSDeltaException("Failed to process field " + method.getName(), e);
