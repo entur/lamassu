@@ -28,6 +28,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class BaseGBFSFileDeltaCalculator<S, T>
   implements GBFSFileDeltaCalculator<S, T> {
@@ -39,7 +40,7 @@ public abstract class BaseGBFSFileDeltaCalculator<S, T>
   );
 
   @Override
-  public final GBFSFileDelta<T> calculateDelta(S base, @NotNull S compare) {
+  public final GBFSFileDelta<T> calculateDelta(@Nullable S base, @NotNull S compare) {
     List<GBFSEntityDelta<T>> entityDeltas = getEntityDeltas(base, compare);
     return getGBFSFileDelta(base, compare, entityDeltas);
   }
