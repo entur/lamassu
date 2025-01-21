@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Date;
 import org.entur.gbfs.loader.v3.GbfsV3Delivery;
+import org.entur.lamassu.stubs.StubUpdateContinuityCache;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mobilitydata.gbfs.v3_0.station_status.GBFSStationStatus;
@@ -14,10 +15,14 @@ class GbfsUpdateContinuityTrackerTest {
 
   private static final String SYSTEM_ID = "test-system";
   private GbfsUpdateContinuityTracker tracker;
+  private StubUpdateContinuityCache vehicleCache;
+  private StubUpdateContinuityCache stationCache;
 
   @BeforeEach
   void setUp() {
-    tracker = new GbfsUpdateContinuityTracker();
+    vehicleCache = new StubUpdateContinuityCache();
+    stationCache = new StubUpdateContinuityCache();
+    tracker = new GbfsUpdateContinuityTracker(vehicleCache, stationCache);
   }
 
   @Test
