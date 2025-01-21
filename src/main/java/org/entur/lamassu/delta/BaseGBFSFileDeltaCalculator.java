@@ -134,31 +134,46 @@ public abstract class BaseGBFSFileDeltaCalculator<S, T>
     Method[] methods = a.getClass().getDeclaredMethods();
     for (Method method : methods) {
       try {
-        if (
-          !EXCLUDE_METHODS.contains(method.getName()) &&
-          method.getParameterCount() == 0 &&
-          (method.invoke(a) == null || !method.invoke(a).equals(method.invoke(b)))
-        ) {
-          getSetter(methods, method.getName())
-            .ifPresent(setter -> {
-              try {
-                setter.invoke(delta, method.invoke(b));
-              } catch (IllegalAccessException | InvocationTargetException e) {
-                throw new GBFSDeltaException(
-                  "Failed to set value for field " + method.getName(),
-                  e
-                );
-              }
-            });
+        if (isMethodEligibleForDelta(method) && hasValueChanged(method, a, b)) {
+          copyValueToDelta(method, getSetter(methods, method.getName()), b, delta);
         }
-      } catch (InvocationTargetException | IllegalAccessException e) {
-        throw new GBFSDeltaException(
-          "Failed to get value for field " + method.getName(),
-          e
-        );
+      } catch (IllegalAccessException | InvocationTargetException e) {
+        throw new GBFSDeltaException("Failed to process field " + method.getName(), e);
       }
     }
     return delta;
+  }
+
+  private boolean isMethodEligibleForDelta(Method method) {
+    return !EXCLUDE_METHODS.contains(method.getName()) && isGetter(method);
+  }
+
+  private boolean isGetter(Method method) {
+    return method.getParameterCount() == 0;
+  }
+
+  private boolean hasValueChanged(Method method, T a, T b)
+    throws IllegalAccessException, InvocationTargetException {
+    Object valueA = method.invoke(a);
+    return valueA == null || !valueA.equals(method.invoke(b));
+  }
+
+  private void copyValueToDelta(
+    Method getter,
+    Optional<Method> setter,
+    T source,
+    T target
+  ) {
+    setter.ifPresent(s -> {
+      try {
+        s.invoke(target, getter.invoke(source));
+      } catch (IllegalAccessException | InvocationTargetException e) {
+        throw new GBFSDeltaException(
+          "Failed to set value for field " + getter.getName(),
+          e
+        );
+      }
+    });
   }
 
   private @NotNull Optional<Method> getSetter(Method[] methods, String getterName) {
