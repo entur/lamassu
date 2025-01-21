@@ -208,8 +208,15 @@ public class StationsUpdater {
       context.feedProvider.getSystemId(),
       context.feedProvider.getLanguage()
     );
+
+    var spatialIndexId = spatialIndexService.createStationIndexId(
+      mappedStation,
+      context.feedProvider
+    );
+
+    context.spatialIndexUpdateMap.put(spatialIndexId, mappedStation);
+
     context.addedAndUpdatedStations.put(mappedStation.getId(), mappedStation);
-    updateSpatialIndex(context, mappedStation);
   }
 
   private void processDeltaUpdate(
@@ -245,28 +252,21 @@ public class StationsUpdater {
         mappedStation,
         context.feedProvider
       );
-      if (!oldSpatialIndexId.equals(newSpatialIndexId)) {
-        context.spatialIndexIdsToRemove.add(oldSpatialIndexId);
-      }
 
       // Merge the mapped station into the current station
       stationMergeMapper.updateStation(currentStation, mappedStation);
       context.addedAndUpdatedStations.put(currentStation.getId(), currentStation);
-      updateSpatialIndex(context, currentStation);
+
+      if (!oldSpatialIndexId.equals(newSpatialIndexId)) {
+        context.spatialIndexIdsToRemove.add(oldSpatialIndexId);
+        context.spatialIndexUpdateMap.put(newSpatialIndexId, currentStation);
+      }
     } else {
       logger.warn(
         "Station {} marked for update but not found in cache",
         entityDelta.entityId()
       );
     }
-  }
-
-  private void updateSpatialIndex(UpdateContext context, Station station) {
-    var spatialIndexId = spatialIndexService.createStationIndexId(
-      station,
-      context.feedProvider
-    );
-    context.spatialIndexUpdateMap.put(spatialIndexId, station);
   }
 
   private void updateCaches(UpdateContext context) {

@@ -165,7 +165,11 @@ public class VehiclesUpdater {
         context.feedProvider.getSystemId()
       );
       context.addedAndUpdatedVehicles.put(mappedVehicle.getId(), mappedVehicle);
-      updateSpatialIndex(context, mappedVehicle);
+      var spatialIndexId = spatialIndexService.createVehicleIndexId(
+        mappedVehicle,
+        context.feedProvider
+      );
+      context.spatialIndexUpdateMap.put(spatialIndexId, mappedVehicle);
     }
   }
 
@@ -175,33 +179,34 @@ public class VehiclesUpdater {
   ) {
     Vehicle currentVehicle = vehicleCache.get(entityDelta.entityId());
     if (currentVehicle != null) {
-      var oldSpatialIndexId = spatialIndexService.createVehicleIndexId(
-        currentVehicle,
-        context.feedProvider
-      );
-      context.spatialIndexIdsToRemove.add(oldSpatialIndexId);
-
       Vehicle mappedVehicle = vehicleMapper.mapVehicle(
         entityDelta.entity(),
         context.feedProvider.getSystemId()
       );
+
+      // For updates, we need to check if the spatial index needs updating
+      var oldSpatialIndexId = spatialIndexService.createVehicleIndexId(
+        currentVehicle,
+        context.feedProvider
+      );
+      var newSpatialIndexId = spatialIndexService.createVehicleIndexId(
+        mappedVehicle,
+        context.feedProvider
+      );
+
       vehicleMergeMapper.updateVehicle(currentVehicle, mappedVehicle);
-      updateSpatialIndex(context, currentVehicle);
       context.addedAndUpdatedVehicles.put(currentVehicle.getId(), currentVehicle);
+
+      if (!oldSpatialIndexId.equals(newSpatialIndexId)) {
+        context.spatialIndexIdsToRemove.add(oldSpatialIndexId);
+        context.spatialIndexUpdateMap.put(newSpatialIndexId, currentVehicle);
+      }
     } else {
       logger.warn(
         "Vehicle {} marked for update but not found in cache",
         entityDelta.entityId()
       );
     }
-  }
-
-  private void updateSpatialIndex(UpdateContext context, Vehicle vehicle) {
-    var spatialIndexId = spatialIndexService.createVehicleIndexId(
-      vehicle,
-      context.feedProvider
-    );
-    context.spatialIndexUpdateMap.put(spatialIndexId, vehicle);
   }
 
   private void updateCaches(UpdateContext context) {
