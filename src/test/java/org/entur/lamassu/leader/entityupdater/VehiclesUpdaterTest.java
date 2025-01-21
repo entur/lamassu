@@ -122,17 +122,11 @@ class VehiclesUpdaterTest {
       List.of(new GBFSEntityDelta<>(vehicleId, DeltaType.UPDATE, gbfsVehicle))
     );
 
-    // Calculate expected spatial index ID for verification
-    var oldSpatialIndexId = spatialIndexIdGeneratorService.createVehicleIndexId(
-      currentVehicle,
-      feedProvider
-    );
-
     // When
     vehiclesUpdater.update(feedProvider, delta);
 
     // Then
-    verify(spatialIndex).removeAll(Set.of(oldSpatialIndexId));
+    verify(spatialIndex, never()).removeAll(any());
     verify(spatialIndex).addAll(any());
     verify(vehicleCache).updateAll(any());
     verify(vehicleCache, never()).removeAll(anySet());
@@ -320,18 +314,14 @@ class VehiclesUpdaterTest {
           return spatialIds
             .stream()
             .allMatch(id -> {
-              var spatialId = (VehicleSpatialIndexId) id;
               return (
-                (
-                  spatialId.getId().equals("vehicle-1") ||
-                  spatialId.getId().equals("vehicle-2")
-                ) &&
-                spatialId.getSystemId().equals("system-1") &&
-                spatialId.getCodespace().equals("codespace-1") &&
-                spatialId.getFormFactor() == FormFactor.BICYCLE &&
-                spatialId.getPropulsionType() == PropulsionType.HUMAN &&
-                !spatialId.getReserved() &&
-                !spatialId.getDisabled()
+                (id.getId().equals("vehicle-1") || id.getId().equals("vehicle-2")) &&
+                id.getSystemId().equals("system-1") &&
+                id.getCodespace().equals("codespace-1") &&
+                id.getFormFactor() == FormFactor.BICYCLE &&
+                id.getPropulsionType() == PropulsionType.HUMAN &&
+                !id.getReserved() &&
+                !id.getDisabled()
               );
             });
         })

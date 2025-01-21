@@ -248,19 +248,20 @@ public class StationsUpdater {
         currentStation,
         context.feedProvider
       );
-      var newSpatialIndexId = spatialIndexService.createStationIndexId(
-        mappedStation,
-        context.feedProvider
-      );
 
       // Merge the mapped station into the current station
       stationMergeMapper.updateStation(currentStation, mappedStation);
       context.addedAndUpdatedStations.put(currentStation.getId(), currentStation);
 
+      var newSpatialIndexId = spatialIndexService.createStationIndexId(
+        currentStation,
+        context.feedProvider
+      );
+
       if (!oldSpatialIndexId.equals(newSpatialIndexId)) {
         context.spatialIndexIdsToRemove.add(oldSpatialIndexId);
-        context.spatialIndexUpdateMap.put(newSpatialIndexId, currentStation);
       }
+      context.spatialIndexUpdateMap.put(newSpatialIndexId, currentStation);
     } else {
       logger.warn(
         "Station {} marked for update but not found in cache",

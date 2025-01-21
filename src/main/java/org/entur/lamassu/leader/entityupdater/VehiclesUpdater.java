@@ -189,18 +189,19 @@ public class VehiclesUpdater {
         currentVehicle,
         context.feedProvider
       );
-      var newSpatialIndexId = spatialIndexService.createVehicleIndexId(
-        mappedVehicle,
-        context.feedProvider
-      );
 
       vehicleMergeMapper.updateVehicle(currentVehicle, mappedVehicle);
       context.addedAndUpdatedVehicles.put(currentVehicle.getId(), currentVehicle);
 
+      var newSpatialIndexId = spatialIndexService.createVehicleIndexId(
+        currentVehicle,
+        context.feedProvider
+      );
+
       if (!oldSpatialIndexId.equals(newSpatialIndexId)) {
         context.spatialIndexIdsToRemove.add(oldSpatialIndexId);
-        context.spatialIndexUpdateMap.put(newSpatialIndexId, currentVehicle);
       }
+      context.spatialIndexUpdateMap.put(newSpatialIndexId, currentVehicle);
     } else {
       logger.warn(
         "Vehicle {} marked for update but not found in cache",

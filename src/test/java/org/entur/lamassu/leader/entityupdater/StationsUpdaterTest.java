@@ -9,13 +9,13 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.cache.StationSpatialIndex;
-import org.entur.lamassu.cache.StationSpatialIndexId;
 import org.entur.lamassu.delta.DeltaType;
 import org.entur.lamassu.delta.GBFSEntityDelta;
 import org.entur.lamassu.delta.GBFSFileDelta;
@@ -285,11 +285,17 @@ class StationsUpdaterTest {
 
     var stationId = "station-1";
     var bikeTypeId = "bike";
+    var scooterTypeId = "scooter";
 
     var bikeType = new VehicleType();
     bikeType.setId(bikeTypeId);
     bikeType.setFormFactor(FormFactor.BICYCLE);
     bikeType.setPropulsionType(PropulsionType.HUMAN);
+
+    var scooterType = new VehicleType();
+    scooterType.setId(scooterTypeId);
+    scooterType.setFormFactor(FormFactor.SCOOTER);
+    scooterType.setPropulsionType(PropulsionType.ELECTRIC);
 
     var currentStation = new Station();
     currentStation.setId(stationId);
@@ -298,25 +304,41 @@ class StationsUpdaterTest {
     var oldAvailability = new VehicleTypeAvailability();
     oldAvailability.setVehicleTypeId(bikeTypeId);
     oldAvailability.setCount(5);
-    currentStation.setVehicleTypesAvailable(List.of(oldAvailability));
+    currentStation.setVehicleTypesAvailable(new ArrayList<>(List.of(oldAvailability)));
 
     var stationInfo = new GBFSStation();
     stationInfo.setStationId(stationId);
-    stationInfo.setName(
-      List.of(new GBFSName().withLanguage("en").withText("Test Station"))
-    );
     stationInfo.setLat(59.9);
     stationInfo.setLon(10.7);
+    stationInfo.setName(
+      new ArrayList<>(List.of(new GBFSName().withLanguage("en").withText("Test Station")))
+    );
+    stationInfo.setVehicleTypesCapacity(
+      new ArrayList<>(
+        List.of(
+          new org.mobilitydata.gbfs.v3_0.station_information.GBFSVehicleTypesCapacity()
+            .withVehicleTypeIds(new ArrayList<>(List.of(scooterTypeId)))
+            .withCount(3)
+        )
+      )
+    );
 
     var stationStatus = new org.mobilitydata.gbfs.v3_0.station_status.GBFSStation();
     stationStatus.setStationId(stationId);
-    // No vehicles available anymore
-    stationStatus.setNumVehiclesAvailable(0);
     stationStatus.setNumDocksAvailable(10);
     stationStatus.setIsInstalled(true);
     stationStatus.setIsRenting(true);
     stationStatus.setIsReturning(true);
     stationStatus.setLastReported(new Date());
+    stationStatus.setVehicleTypesAvailable(
+      new ArrayList<>(
+        List.of(
+          new org.mobilitydata.gbfs.v3_0.station_status.GBFSVehicleTypesAvailable()
+            .withVehicleTypeId(scooterTypeId)
+            .withCount(3)
+        )
+      )
+    );
 
     var stationInformationFeed = new GBFSStationInformation();
     var data = new GBFSData();
@@ -326,6 +348,7 @@ class StationsUpdaterTest {
     // Mock behavior
     when(stationCache.get(stationId)).thenReturn(currentStation);
     when(vehicleTypeCache.getAll(Set.of(bikeTypeId))).thenReturn(List.of(bikeType));
+    when(vehicleTypeCache.getAll(Set.of(scooterTypeId))).thenReturn(List.of(scooterType));
 
     var delta = new GBFSFileDelta<>(
       1000L,
@@ -399,19 +422,84 @@ class StationsUpdaterTest {
           if (spatialIds.size() != 2) return false;
           return spatialIds
             .stream()
-            .allMatch(id -> {
-              var spatialId = (StationSpatialIndexId) id;
-              return (
-                (
-                  spatialId.getId().equals("station-1") ||
-                  spatialId.getId().equals("station-2")
-                ) &&
-                spatialId.getSystemId().equals("system-1") &&
-                spatialId.getCodespace().equals("codespace-1")
-              );
-            });
+            .allMatch(id ->
+              (
+                (id.getId().equals("station-1") || id.getId().equals("station-2")) &&
+                id.getSystemId().equals("system-1") &&
+                id.getCodespace().equals("codespace-1")
+              )
+            );
         })
       );
     verify(stationCache, never()).removeAll(Set.of("station-3")); // Should not remove stations from other systems
+  }
+
+  @Test
+  void shouldPreservePropertiesWhenGeneratingSpatialIndexId() {
+    // Given
+    var feedProvider = new FeedProvider();
+    feedProvider.setSystemId("test-system");
+    feedProvider.setCodespace("test");
+    feedProvider.setOperatorId("test-operator");
+    feedProvider.setLanguage("en");
+
+    var stationId = "station-1";
+    var bikeTypeId = "bike";
+
+    var bikeType = new VehicleType();
+    bikeType.setId(bikeTypeId);
+    bikeType.setFormFactor(FormFactor.BICYCLE);
+    bikeType.setPropulsionType(PropulsionType.HUMAN);
+
+    var currentStation = new Station();
+    currentStation.setId(stationId);
+    currentStation.setLat(59.9);
+    currentStation.setLon(10.7);
+    var availability = new VehicleTypeAvailability();
+    availability.setVehicleTypeId(bikeTypeId);
+    availability.setCount(5);
+    currentStation.setVehicleTypesAvailable(new ArrayList<>(List.of(availability)));
+
+    var stationInfo = new GBFSStation();
+    stationInfo.setStationId(stationId);
+    stationInfo.setLat(59.9);
+    stationInfo.setLon(10.7);
+    stationInfo.setName(
+      new ArrayList<>(List.of(new GBFSName().withLanguage("en").withText("Test Station")))
+    );
+    // Note: not setting vehicle types in GBFS station
+
+    var stationStatus = new org.mobilitydata.gbfs.v3_0.station_status.GBFSStation();
+    stationStatus.setStationId(stationId);
+    stationStatus.setNumDocksAvailable(10);
+    stationStatus.setIsInstalled(true);
+    stationStatus.setIsRenting(true);
+    stationStatus.setIsReturning(true);
+    stationStatus.setLastReported(new Date());
+
+    var stationInformationFeed = new GBFSStationInformation();
+    var data = new GBFSData();
+    data.setStations(List.of(stationInfo));
+    stationInformationFeed.setData(data);
+
+    // Mock behavior
+    when(stationCache.get(stationId)).thenReturn(currentStation);
+    when(vehicleTypeCache.getAll(Set.of(bikeTypeId))).thenReturn(List.of(bikeType));
+
+    var delta = new GBFSFileDelta<org.mobilitydata.gbfs.v3_0.station_status.GBFSStation>(
+      1000L,
+      2000L,
+      "station_status",
+      List.of(new GBFSEntityDelta<>(stationId, DeltaType.UPDATE, stationStatus))
+    );
+
+    // When
+    stationsUpdater.update(feedProvider, delta, stationInformationFeed);
+
+    // Then
+    verify(spatialIndex).addAll(any());
+    verify(stationCache).updateAll(any());
+    verify(spatialIndex, never()).removeAll(anySet());
+    verify(stationCache, never()).removeAll(anySet());
   }
 }
