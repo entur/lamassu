@@ -1,6 +1,5 @@
 package org.entur.lamassu.config.cache;
 
-import java.util.Date;
 import java.util.Set;
 import org.entur.gbfs.validation.model.ValidationResult;
 import org.entur.lamassu.cache.StationSpatialIndexId;
