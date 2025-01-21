@@ -50,7 +50,7 @@ public abstract class BaseGBFSFileDeltaCalculator<S, T>
     List<GBFSEntityDelta<T>> entityDeltas
   ) {
     return new GBFSFileDelta<>(
-      base != null ? getLastUpdated(base) : null,
+      getNullableLastUpdated(base),
       getLastUpdated(compare),
       getFileName(),
       entityDeltas
@@ -167,6 +167,13 @@ public abstract class BaseGBFSFileDeltaCalculator<S, T>
       .stream(methods)
       .filter(method1 -> method1.getName().equals(setterName))
       .findFirst();
+  }
+
+  private Long getNullableLastUpdated(S instance) {
+    if (instance == null) {
+      return null;
+    }
+    return getLastUpdated(instance);
   }
 
   /**
