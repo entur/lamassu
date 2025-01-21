@@ -2,6 +2,8 @@ package org.entur.lamassu.leader.entityupdater;
 
 import org.entur.gbfs.loader.v3.GbfsV3Delivery;
 import org.entur.lamassu.cache.UpdateContinuityCache;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -11,6 +13,10 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class GbfsUpdateContinuityTracker {
+
+  private static Logger logger = LoggerFactory.getLogger(
+    GbfsUpdateContinuityTracker.class
+  );
 
   private final UpdateContinuityCache vehicleStatusBases;
   private final UpdateContinuityCache stationStatusBases;
@@ -31,6 +37,10 @@ public class GbfsUpdateContinuityTracker {
     var previousBase = vehicleStatusBases.getLastUpdateTime(systemId);
 
     if (oldDelivery.vehicleStatus() == null || previousBase == null) {
+      logger.warn(
+        "Vehicle status update does not have continuity for system={}",
+        systemId
+      );
       return false;
     }
 
@@ -52,6 +62,10 @@ public class GbfsUpdateContinuityTracker {
     var previousBase = stationStatusBases.getLastUpdateTime(systemId);
 
     if (oldDelivery.stationStatus() == null || previousBase == null) {
+      logger.warn(
+        "Station status update does not have continuity for system={}",
+        systemId
+      );
       return false;
     }
 
