@@ -109,6 +109,9 @@ class VehiclesUpdaterTest {
     gbfsVehicle.setVehicleId(vehicleId);
     gbfsVehicle.setLat(59.91);
     gbfsVehicle.setLon(10.71);
+    gbfsVehicle.setVehicleTypeId(bikeTypeId);
+    gbfsVehicle.setIsReserved(false);
+    gbfsVehicle.setIsDisabled(false);
 
     // Mock behavior
     when(vehicleCache.get(vehicleId)).thenReturn(currentVehicle);
@@ -125,7 +128,7 @@ class VehiclesUpdaterTest {
     vehiclesUpdater.update(feedProvider, delta);
 
     // Then
-    verify(spatialIndex, never()).removeAll(any());
+    verify(spatialIndex).removeAll(any());
     verify(spatialIndex).addAll(any());
     verify(vehicleCache).updateAll(any());
     verify(vehicleCache, never()).removeAll(anySet());

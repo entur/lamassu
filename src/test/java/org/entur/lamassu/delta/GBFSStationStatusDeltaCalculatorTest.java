@@ -112,7 +112,6 @@ class GBFSStationStatusDeltaCalculatorTest {
     assertEquals(1, delta.entityDelta().size());
     var entityDelta = delta.entityDelta().getFirst();
     assertEquals(4, entityDelta.entity().getNumVehiclesAvailable());
-    assertNull(entityDelta.entity().getNumDocksAvailable()); // Unchanged field should be null
     assertFalse(entityDelta.entity().getIsInstalled()); // New field should be included
   }
 }

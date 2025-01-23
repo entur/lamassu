@@ -22,7 +22,7 @@ package org.entur.lamassu.delta;
  * A record representing the difference (delta) between two enumerable entities of a GBFS file
  * @param entityId The unique ID of the entity
  * @param type The type of the delta (create, update or delete)
- * @param entity An instance of the entity itself, containing the changed fields.
+ * @param entity An instance of the created or updated entity
  *               Note: this field is non-null only if the delta type is "UPDATE"
  * @param <E> The type of the enumerable entity that was compared
  */

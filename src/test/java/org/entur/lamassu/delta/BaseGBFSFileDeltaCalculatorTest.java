@@ -187,7 +187,6 @@ class BaseGBFSFileDeltaCalculatorTest {
     assertEquals("1", entityDelta.entityId());
     assertEquals(DeltaType.UPDATE, entityDelta.type());
     assertEquals("new", entityDelta.entity().getValue());
-    assertNull(entityDelta.entity().getNumber()); // Unchanged field should be null in delta
   }
 
   @Test
@@ -220,6 +219,5 @@ class BaseGBFSFileDeltaCalculatorTest {
     assertEquals(1, delta.entityDelta().size());
     var entityDelta = delta.entityDelta().get(0);
     assertEquals(42, entityDelta.entity().getNumber());
-    assertNull(entityDelta.entity().getValue()); // Unchanged field should be null in delta
   }
 }

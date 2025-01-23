@@ -134,12 +134,11 @@ public abstract class BaseGBFSFileDeltaCalculator<S, T>
     T delta = createEntity();
     Method[] methods = base.getClass().getDeclaredMethods();
     for (Method method : methods) {
-      try {
-        if (isMethodEligibleForDelta(method) && hasValueChanged(method, base, compare)) {
-          copyValueToDelta(method, getSetter(methods, method.getName()), compare, delta);
+      if (isMethodEligibleForDelta(method)) {
+        Method setter = getSetter(methods, method.getName());
+        if (setter != null) {
+          copyValueToDelta(method, setter, compare, delta);
         }
-      } catch (IllegalAccessException | InvocationTargetException e) {
-        throw new GBFSDeltaException("Failed to process field " + method.getName(), e);
       }
     }
     return delta;
@@ -153,36 +152,24 @@ public abstract class BaseGBFSFileDeltaCalculator<S, T>
     return method.getParameterCount() == 0;
   }
 
-  private boolean hasValueChanged(Method method, T a, T b)
-    throws IllegalAccessException, InvocationTargetException {
-    Object valueA = method.invoke(a);
-    return valueA == null || !valueA.equals(method.invoke(b));
+  private void copyValueToDelta(Method getter, Method setter, T source, T target) {
+    try {
+      setter.invoke(target, getter.invoke(source));
+    } catch (IllegalAccessException | InvocationTargetException e) {
+      throw new GBFSDeltaException(
+        "Failed to set value for field " + getter.getName(),
+        e
+      );
+    }
   }
 
-  private void copyValueToDelta(
-    Method getter,
-    Optional<Method> setter,
-    T source,
-    T target
-  ) {
-    setter.ifPresent(s -> {
-      try {
-        s.invoke(target, getter.invoke(source));
-      } catch (IllegalAccessException | InvocationTargetException e) {
-        throw new GBFSDeltaException(
-          "Failed to set value for field " + getter.getName(),
-          e
-        );
-      }
-    });
-  }
-
-  private @NotNull Optional<Method> getSetter(Method[] methods, String getterName) {
+  private @Nullable Method getSetter(Method[] methods, String getterName) {
     String setterName = getterName.replace("get", "set");
     return Arrays
       .stream(methods)
       .filter(method1 -> method1.getName().equals(setterName))
-      .findFirst();
+      .findFirst()
+      .orElse(null);
   }
 
   private Long getNullableLastUpdated(S instance) {

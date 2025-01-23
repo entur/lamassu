@@ -56,7 +56,6 @@ class GBFSVehicleStatusDeltaCalculatorTest {
     assertEquals(DeltaType.UPDATE, entityDelta.type());
     assertEquals(59.91, entityDelta.entity().getLat());
     assertEquals(10.71, entityDelta.entity().getLon());
-    assertNull(entityDelta.entity().getCurrentRangeMeters()); // Unchanged field should be null
   }
 
   @Test
@@ -116,8 +115,6 @@ class GBFSVehicleStatusDeltaCalculatorTest {
     assertEquals(1, delta.entityDelta().size());
     var entityDelta = delta.entityDelta().getFirst();
     assertEquals(7500, entityDelta.entity().getCurrentRangeMeters());
-    assertNull(entityDelta.entity().getLat()); // Unchanged field should be null
-    assertNull(entityDelta.entity().getLon()); // Unchanged field should be null
     assertTrue(entityDelta.entity().getIsReserved()); // New field should be included
   }
 }

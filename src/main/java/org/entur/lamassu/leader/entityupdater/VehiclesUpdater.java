@@ -184,24 +184,17 @@ public class VehiclesUpdater {
         context.feedProvider.getSystemId()
       );
 
-      // For updates, we need to check if the spatial index needs updating
-      var oldSpatialIndexId = spatialIndexService.createVehicleIndexId(
-        currentVehicle,
-        context.feedProvider
+      context.spatialIndexIdsToRemove.add(
+        spatialIndexService.createVehicleIndexId(currentVehicle, context.feedProvider)
       );
 
       vehicleMergeMapper.updateVehicle(currentVehicle, mappedVehicle);
       context.addedAndUpdatedVehicles.put(currentVehicle.getId(), currentVehicle);
 
-      var newSpatialIndexId = spatialIndexService.createVehicleIndexId(
-        currentVehicle,
-        context.feedProvider
+      context.spatialIndexUpdateMap.put(
+        spatialIndexService.createVehicleIndexId(currentVehicle, context.feedProvider),
+        currentVehicle
       );
-
-      if (!oldSpatialIndexId.equals(newSpatialIndexId)) {
-        context.spatialIndexIdsToRemove.add(oldSpatialIndexId);
-      }
-      context.spatialIndexUpdateMap.put(newSpatialIndexId, currentVehicle);
     } else {
       logger.warn(
         "Vehicle {} marked for update but not found in cache",

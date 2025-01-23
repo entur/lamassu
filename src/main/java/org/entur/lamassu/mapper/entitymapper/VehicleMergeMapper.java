@@ -7,7 +7,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 
 @Mapper(
   componentModel = "spring",
-  nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
+  nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL
 )
 public interface VehicleMergeMapper {
   /**

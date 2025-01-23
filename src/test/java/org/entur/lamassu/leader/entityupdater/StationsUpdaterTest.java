@@ -142,8 +142,8 @@ class StationsUpdaterTest {
 
     // Then
     verify(spatialIndex).addAll(any());
+    verify(spatialIndex).removeAll(any());
     verify(stationCache).updateAll(any());
-    verify(spatialIndex, never()).removeAll(anySet());
     verify(stationCache, never()).removeAll(anySet());
   }
 
@@ -435,7 +435,7 @@ class StationsUpdaterTest {
   }
 
   @Test
-  void shouldPreservePropertiesWhenGeneratingSpatialIndexId() {
+  void shouldAlwaysUpdateSpatialIndexOnStationUpdate() {
     // Given
     var feedProvider = new FeedProvider();
     feedProvider.setSystemId("test-system");
@@ -498,8 +498,8 @@ class StationsUpdaterTest {
 
     // Then
     verify(spatialIndex).addAll(any());
+    verify(spatialIndex).removeAll(any());
     verify(stationCache).updateAll(any());
-    verify(spatialIndex, never()).removeAll(anySet());
     verify(stationCache, never()).removeAll(anySet());
   }
 }
