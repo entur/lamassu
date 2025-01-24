@@ -21,6 +21,7 @@ package org.entur.lamassu.leader.entityupdater;
 import java.util.function.Predicate;
 import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.model.entities.PricingPlan;
+import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.VehicleType;
 import org.mobilitydata.gbfs.v3_0.vehicle_status.GBFSVehicle;
 import org.slf4j.Logger;
@@ -34,20 +35,30 @@ class VehicleFilter implements Predicate<GBFSVehicle> {
 
   private final EntityCache<PricingPlan> pricingPlanCache;
   private final EntityCache<VehicleType> vehicleTypeCache;
+  private final EntityCache<Station> stationCache;
 
   public VehicleFilter(
     EntityCache<PricingPlan> pricingPlanCache,
-    EntityCache<VehicleType> vehicleTypeCache
+    EntityCache<VehicleType> vehicleTypeCache,
+    EntityCache<Station> stationCache
   ) {
     this.pricingPlanCache = pricingPlanCache;
     this.vehicleTypeCache = vehicleTypeCache;
+    this.stationCache = stationCache;
   }
 
   @Override
   public boolean test(GBFSVehicle vehicle) {
     if (vehicle.getStationId() != null) {
-      logger.info("Skipping hybrid-system vehicle {}", vehicle);
-      return false;
+      var station = stationCache.get(vehicle.getStationId());
+      if (station != null && !station.getVirtualStation()) {
+        logger.info(
+          "Skipping vehicle {} currently assigned to non-virtual station {}",
+          vehicle.getVehicleId(),
+          vehicle.getStationId()
+        );
+        return false;
+      }
     }
 
     if (
