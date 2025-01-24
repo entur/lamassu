@@ -36,7 +36,11 @@ public class GbfsUpdateContinuityTracker {
   public boolean hasVehicleUpdateContinuity(String systemId, GbfsV3Delivery oldDelivery) {
     var previousBase = vehicleStatusBases.getLastUpdateTime(systemId);
 
-    if (oldDelivery.vehicleStatus() == null || previousBase == null) {
+    if (
+      oldDelivery.vehicleStatus() == null ||
+      previousBase == null ||
+      !previousBase.equals(oldDelivery.vehicleStatus().getLastUpdated())
+    ) {
       logger.warn(
         "Vehicle status update does not have continuity for system={}",
         systemId
@@ -44,7 +48,7 @@ public class GbfsUpdateContinuityTracker {
       return false;
     }
 
-    return previousBase.equals(oldDelivery.vehicleStatus().getLastUpdated());
+    return true;
   }
 
   public void updateVehicleUpdateContinuity(String systemId, GbfsV3Delivery delivery) {
@@ -61,7 +65,11 @@ public class GbfsUpdateContinuityTracker {
   public boolean hasStationUpdateContinuity(String systemId, GbfsV3Delivery oldDelivery) {
     var previousBase = stationStatusBases.getLastUpdateTime(systemId);
 
-    if (oldDelivery.stationStatus() == null || previousBase == null) {
+    if (
+      oldDelivery.stationStatus() == null ||
+      previousBase == null ||
+      previousBase.equals(oldDelivery.stationStatus().getLastUpdated())
+    ) {
       logger.warn(
         "Station status update does not have continuity for system={}",
         systemId
@@ -69,7 +77,7 @@ public class GbfsUpdateContinuityTracker {
       return false;
     }
 
-    return previousBase.equals(oldDelivery.stationStatus().getLastUpdated());
+    return true;
   }
 
   public void updateStationUpdateContinuity(

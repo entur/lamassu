@@ -147,7 +147,7 @@ public class StationsUpdater {
       .toList();
 
     if (!stationsToRemove.isEmpty()) {
-      logger.info(
+      logger.debug(
         "Removing {} existing stations for system {} due to null base",
         stationsToRemove.size(),
         systemId
@@ -180,7 +180,7 @@ public class StationsUpdater {
       );
       context.spatialIndexIdsToRemove.add(spatialIndexId);
     } else {
-      logger.warn(
+      logger.debug(
         "Station {} marked for deletion but not found in cache",
         entityDelta.entityId()
       );
@@ -256,7 +256,7 @@ public class StationsUpdater {
         currentStation
       );
     } else {
-      logger.warn(
+      logger.debug(
         "Station {} marked for update but not found in cache",
         entityDelta.entityId()
       );
