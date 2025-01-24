@@ -2,6 +2,7 @@ package org.entur.lamassu.leader.entityupdater;
 
 import java.util.HashMap;
 import org.entur.lamassu.model.entities.PricingPlan;
+import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.VehicleType;
 import org.entur.lamassu.stubs.EntityCacheStub;
 import org.junit.Test;
@@ -26,10 +27,11 @@ public class VehicleFilterTest {
   public void testVehicleWithoutPricingPlanButDefaultPricingPlanIsntSkipped() {
     var pricingPlanCache = new EntityCacheStub<PricingPlan>();
     var vehicleTypeCache = new EntityCacheStub<VehicleType>();
+    var stationCache = new EntityCacheStub<Station>();
 
     vehicleTypeCache.updateAll(vehicleTypesWithPricingPlan("pricingPlanId"), 0, null);
 
-    VehicleFilter filter = new VehicleFilter(pricingPlanCache, vehicleTypeCache);
+    VehicleFilter filter = new VehicleFilter(pricingPlanCache, vehicleTypeCache, stationCache);
 
     GBFSVehicle vehicle = new GBFSVehicle();
     vehicle.setVehicleId("VehicleWithoutPricingPlan");
@@ -42,10 +44,11 @@ public class VehicleFilterTest {
   public void testVehicleWithoutPricingPlanAndWithoutDefaultPricingPlanIsSkipped() {
     var pricingPlanCache = new EntityCacheStub<PricingPlan>();
     var vehicleTypeCache = new EntityCacheStub<VehicleType>();
+    var stationCache = new EntityCacheStub<Station>();
 
     vehicleTypeCache.updateAll(vehicleTypesWithPricingPlan(null), 0, null);
 
-    VehicleFilter filter = new VehicleFilter(pricingPlanCache, vehicleTypeCache);
+    VehicleFilter filter = new VehicleFilter(pricingPlanCache, vehicleTypeCache, stationCache);
 
     GBFSVehicle vehicle = new GBFSVehicle();
     vehicle.setVehicleId("VehicleWithoutPricingPlan");
