@@ -19,8 +19,6 @@ import org.entur.lamassu.delta.GBFSEntityDelta;
 import org.entur.lamassu.delta.GBFSFileDelta;
 import org.entur.lamassu.mapper.entitymapper.RentalUrisMapper;
 import org.entur.lamassu.mapper.entitymapper.VehicleMapper;
-import org.entur.lamassu.mapper.entitymapper.VehicleMergeMapper;
-import org.entur.lamassu.mapper.entitymapper.VehicleMergeMapperImpl;
 import org.entur.lamassu.metrics.MetricsService;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PropulsionType;
@@ -54,7 +52,6 @@ class VehiclesUpdaterTest {
   private VehicleFilter vehicleFilter;
 
   private VehicleMapper vehicleMapper;
-  private VehicleMergeMapper vehicleMergeMapper;
   private SpatialIndexIdGeneratorService spatialIndexIdGeneratorService;
   private VehiclesUpdater vehiclesUpdater;
 
@@ -63,7 +60,6 @@ class VehiclesUpdaterTest {
     // Initialize real mappers
     RentalUrisMapper rentalUrisMapper = new RentalUrisMapper();
     vehicleMapper = new VehicleMapper(rentalUrisMapper);
-    vehicleMergeMapper = new VehicleMergeMapperImpl();
 
     // Initialize real services
     spatialIndexIdGeneratorService = new SpatialIndexIdGeneratorService(vehicleTypeCache);
@@ -73,7 +69,6 @@ class VehiclesUpdaterTest {
         vehicleCache,
         spatialIndex,
         vehicleMapper,
-        vehicleMergeMapper,
         metricsService,
         spatialIndexIdGeneratorService,
         vehicleFilter

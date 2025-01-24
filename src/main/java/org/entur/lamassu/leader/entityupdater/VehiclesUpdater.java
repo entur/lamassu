@@ -30,7 +30,6 @@ import org.entur.lamassu.delta.DeltaType;
 import org.entur.lamassu.delta.GBFSEntityDelta;
 import org.entur.lamassu.delta.GBFSFileDelta;
 import org.entur.lamassu.mapper.entitymapper.VehicleMapper;
-import org.entur.lamassu.mapper.entitymapper.VehicleMergeMapper;
 import org.entur.lamassu.metrics.MetricsService;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.provider.FeedProvider;
@@ -61,7 +60,6 @@ public class VehiclesUpdater {
   private final EntityCache<Vehicle> vehicleCache;
   private final VehicleSpatialIndex spatialIndex;
   private final VehicleMapper vehicleMapper;
-  private final VehicleMergeMapper vehicleMergeMapper;
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
   private final MetricsService metricsService;
   private final SpatialIndexIdGeneratorService spatialIndexService;
@@ -72,7 +70,6 @@ public class VehiclesUpdater {
     EntityCache<Vehicle> vehicleCache,
     VehicleSpatialIndex spatialIndex,
     VehicleMapper vehicleMapper,
-    VehicleMergeMapper vehicleMergeMapper,
     MetricsService metricsService,
     SpatialIndexIdGeneratorService spatialIndexService,
     VehicleFilter vehicleFilter
@@ -80,7 +77,6 @@ public class VehiclesUpdater {
     this.vehicleCache = vehicleCache;
     this.spatialIndex = spatialIndex;
     this.vehicleMapper = vehicleMapper;
-    this.vehicleMergeMapper = vehicleMergeMapper;
     this.metricsService = metricsService;
     this.spatialIndexService = spatialIndexService;
     this.vehicleFilter = vehicleFilter;
@@ -180,21 +176,20 @@ public class VehiclesUpdater {
     Vehicle currentVehicle = vehicleCache.get(entityDelta.entityId());
 
     if (currentVehicle != null) {
+      context.spatialIndexIdsToRemove.add(
+        spatialIndexService.createVehicleIndexId(currentVehicle, context.feedProvider)
+      );
+
       Vehicle mappedVehicle = vehicleMapper.mapVehicle(
         entityDelta.entity(),
         context.feedProvider.getSystemId()
       );
 
-      context.spatialIndexIdsToRemove.add(
-        spatialIndexService.createVehicleIndexId(currentVehicle, context.feedProvider)
-      );
-
-      vehicleMergeMapper.updateVehicle(currentVehicle, mappedVehicle);
-      context.addedAndUpdatedVehicles.put(currentVehicle.getId(), currentVehicle);
+      context.addedAndUpdatedVehicles.put(mappedVehicle.getId(), mappedVehicle);
 
       context.spatialIndexUpdateMap.put(
-        spatialIndexService.createVehicleIndexId(currentVehicle, context.feedProvider),
-        currentVehicle
+        spatialIndexService.createVehicleIndexId(mappedVehicle, context.feedProvider),
+        mappedVehicle
       );
     } else {
       logger.debug(

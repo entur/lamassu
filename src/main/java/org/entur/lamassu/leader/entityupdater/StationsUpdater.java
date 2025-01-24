@@ -32,7 +32,6 @@ import org.entur.lamassu.delta.DeltaType;
 import org.entur.lamassu.delta.GBFSEntityDelta;
 import org.entur.lamassu.delta.GBFSFileDelta;
 import org.entur.lamassu.mapper.entitymapper.StationMapper;
-import org.entur.lamassu.mapper.entitymapper.StationMergeMapper;
 import org.entur.lamassu.metrics.MetricsService;
 import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.provider.FeedProvider;
@@ -71,7 +70,6 @@ public class StationsUpdater {
   private final EntityCache<Station> stationCache;
   private final StationSpatialIndex spatialIndex;
   private final StationMapper stationMapper;
-  private final StationMergeMapper stationMergeMapper;
   private final MetricsService metricsService;
   private final SpatialIndexIdGeneratorService spatialIndexService;
 
@@ -82,14 +80,12 @@ public class StationsUpdater {
     EntityCache<Station> stationCache,
     StationSpatialIndex spatialIndex,
     StationMapper stationMapper,
-    StationMergeMapper stationMergeMapper,
     MetricsService metricsService,
     SpatialIndexIdGeneratorService spatialIndexService
   ) {
     this.stationCache = stationCache;
     this.spatialIndex = spatialIndex;
     this.stationMapper = stationMapper;
-    this.stationMergeMapper = stationMergeMapper;
     this.metricsService = metricsService;
     this.spatialIndexService = spatialIndexService;
   }
@@ -236,6 +232,10 @@ public class StationsUpdater {
     }
 
     if (currentStation != null) {
+      context.spatialIndexIdsToRemove.add(
+        spatialIndexService.createStationIndexId(currentStation, context.feedProvider)
+      );
+
       Station mappedStation = stationMapper.mapStation(
         stationInformation,
         entityDelta.entity(),
@@ -243,17 +243,11 @@ public class StationsUpdater {
         context.feedProvider.getLanguage()
       );
 
-      context.spatialIndexIdsToRemove.add(
-        spatialIndexService.createStationIndexId(currentStation, context.feedProvider)
-      );
-
-      // Merge the mapped station into the current station
-      stationMergeMapper.updateStation(currentStation, mappedStation);
-      context.addedAndUpdatedStations.put(currentStation.getId(), currentStation);
+      context.addedAndUpdatedStations.put(mappedStation.getId(), mappedStation);
 
       context.spatialIndexUpdateMap.put(
-        spatialIndexService.createStationIndexId(currentStation, context.feedProvider),
-        currentStation
+        spatialIndexService.createStationIndexId(mappedStation, context.feedProvider),
+        mappedStation
       );
     } else {
       logger.debug(

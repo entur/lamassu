@@ -21,8 +21,6 @@ import org.entur.lamassu.delta.GBFSEntityDelta;
 import org.entur.lamassu.delta.GBFSFileDelta;
 import org.entur.lamassu.mapper.entitymapper.RentalUrisMapper;
 import org.entur.lamassu.mapper.entitymapper.StationMapper;
-import org.entur.lamassu.mapper.entitymapper.StationMergeMapper;
-import org.entur.lamassu.mapper.entitymapper.StationMergeMapperImpl;
 import org.entur.lamassu.mapper.entitymapper.TranslationMapper;
 import org.entur.lamassu.metrics.MetricsService;
 import org.entur.lamassu.model.entities.FormFactor;
@@ -60,7 +58,6 @@ class StationsUpdaterTest {
   private EntityCache<VehicleType> vehicleTypeCache;
 
   private StationMapper stationMapper;
-  private StationMergeMapper stationMergeMapper;
   private SpatialIndexIdGeneratorService spatialIndexIdGeneratorService;
   private StationsUpdater stationsUpdater;
 
@@ -70,7 +67,6 @@ class StationsUpdaterTest {
     TranslationMapper translationMapper = new TranslationMapper();
     RentalUrisMapper rentalUrisMapper = new RentalUrisMapper();
     stationMapper = new StationMapper(translationMapper, rentalUrisMapper);
-    stationMergeMapper = new StationMergeMapperImpl();
 
     spatialIndexIdGeneratorService = new SpatialIndexIdGeneratorService(vehicleTypeCache);
     stationsUpdater =
@@ -78,7 +74,6 @@ class StationsUpdaterTest {
         stationCache,
         spatialIndex,
         stationMapper,
-        stationMergeMapper,
         metricsService,
         spatialIndexIdGeneratorService
       );
@@ -399,7 +394,6 @@ class StationsUpdaterTest {
         stationCache,
         spatialIndex,
         stationMapper,
-        stationMergeMapper,
         metricsService,
         spatialIndexIdGeneratorService
       );
