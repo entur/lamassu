@@ -68,7 +68,7 @@ public class GbfsUpdateContinuityTracker {
     if (
       oldDelivery.stationStatus() == null ||
       previousBase == null ||
-      previousBase.equals(oldDelivery.stationStatus().getLastUpdated())
+      !previousBase.equals(oldDelivery.stationStatus().getLastUpdated())
     ) {
       logger.warn(
         "Station status update does not have continuity for system={}",
