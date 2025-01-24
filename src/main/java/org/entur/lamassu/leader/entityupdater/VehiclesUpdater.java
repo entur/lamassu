@@ -115,7 +115,7 @@ public class VehiclesUpdater {
       .toList();
 
     if (!vehiclesToRemove.isEmpty()) {
-      logger.info(
+      logger.debug(
         "Removing {} existing vehicles for system {} due to null base",
         vehiclesToRemove.size(),
         systemId
@@ -148,7 +148,7 @@ public class VehiclesUpdater {
       );
       context.spatialIndexIdsToRemove.add(spatialIndexId);
     } else {
-      logger.warn(
+      logger.debug(
         "Vehicle {} marked for deletion but not found in cache",
         entityDelta.entityId()
       );
@@ -178,6 +178,7 @@ public class VehiclesUpdater {
     GBFSEntityDelta<GBFSVehicle> entityDelta
   ) {
     Vehicle currentVehicle = vehicleCache.get(entityDelta.entityId());
+
     if (currentVehicle != null) {
       Vehicle mappedVehicle = vehicleMapper.mapVehicle(
         entityDelta.entity(),
@@ -196,10 +197,18 @@ public class VehiclesUpdater {
         currentVehicle
       );
     } else {
-      logger.warn(
-        "Vehicle {} marked for update but not found in cache",
+      logger.debug(
+        "Vehicle {} not found in cache during update - attempting creation in case filtering criteria now allows inclusion",
         entityDelta.entityId()
       );
+
+      /*
+       * Handle vehicles that were previously filtered out by VehicleFilter during CREATE.
+       * These vehicles won't be in the cache, but may appear in subsequent delta updates.
+       * We attempt to create them again since their eligibility for inclusion may have
+       * changed (e.g., a vehicle that was previously at a station may now no longer be).
+       */
+      processDeltaCreate(context, entityDelta);
     }
   }
 
