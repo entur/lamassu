@@ -31,7 +31,11 @@ public class VehicleFilterTest {
 
     vehicleTypeCache.updateAll(vehicleTypesWithPricingPlan("pricingPlanId"), 0, null);
 
-    VehicleFilter filter = new VehicleFilter(pricingPlanCache, vehicleTypeCache, stationCache);
+    VehicleFilter filter = new VehicleFilter(
+      pricingPlanCache,
+      vehicleTypeCache,
+      stationCache
+    );
 
     GBFSVehicle vehicle = new GBFSVehicle();
     vehicle.setVehicleId("VehicleWithoutPricingPlan");
@@ -48,7 +52,11 @@ public class VehicleFilterTest {
 
     vehicleTypeCache.updateAll(vehicleTypesWithPricingPlan(null), 0, null);
 
-    VehicleFilter filter = new VehicleFilter(pricingPlanCache, vehicleTypeCache, stationCache);
+    VehicleFilter filter = new VehicleFilter(
+      pricingPlanCache,
+      vehicleTypeCache,
+      stationCache
+    );
 
     GBFSVehicle vehicle = new GBFSVehicle();
     vehicle.setVehicleId("VehicleWithoutPricingPlan");
