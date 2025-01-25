@@ -39,7 +39,7 @@ class VehicleFilter implements Predicate<GBFSVehicle> {
   private final EntityCache<Station> stationCache;
 
   @Value(
-    "#{new Boolean('${org.entur.lamssu.vehicle-filter.include-vehicles-assigned-to-non-virtual-stations:false}')}"
+    "#{new Boolean('${org.entur.lamassu.vehicle-filter.include-vehicles-assigned-to-non-virtual-stations:false}')}"
   )
   private Boolean includeVehiclesAssignedToNonVirtualStations;
 
