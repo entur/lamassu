@@ -26,6 +26,7 @@ import org.entur.lamassu.model.entities.VehicleType;
 import org.mobilitydata.gbfs.v3_0.vehicle_status.GBFSVehicle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -36,6 +37,11 @@ public class VehicleFilter implements Predicate<GBFSVehicle> {
   private final EntityCache<PricingPlan> pricingPlanCache;
   private final EntityCache<VehicleType> vehicleTypeCache;
   private final EntityCache<Station> stationCache;
+
+  @Value(
+    "${org.entur.lamassu.vehicle-filter.include-vehicles-assigned-to-non-virtual-stations:false}"
+  )
+  private boolean includeVehiclesAssignedToNonVirtualStations;
 
   public VehicleFilter(
     EntityCache<PricingPlan> pricingPlanCache,
@@ -51,7 +57,11 @@ public class VehicleFilter implements Predicate<GBFSVehicle> {
   public boolean test(GBFSVehicle vehicle) {
     if (vehicle.getStationId() != null) {
       var station = stationCache.get(vehicle.getStationId());
-      if (station != null && !station.getVirtualStation()) {
+      if (
+        station != null &&
+        !station.getVirtualStation() &&
+        !includeVehiclesAssignedToNonVirtualStations
+      ) {
         logger.info(
           "Skipping vehicle {} currently assigned to non-virtual station {}",
           vehicle.getVehicleId(),
