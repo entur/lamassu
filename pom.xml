@@ -289,7 +289,7 @@
                 </dependencies>
                 <configuration>
                     <from>
-                        <image>eclipse-temurin:21.0.1_12-jre</image>
+                        <image>eclipse-temurin:21.0.5_11-jre</image>
                         <platforms>
                             <platform>
                                 <architecture>amd64</architecture>
