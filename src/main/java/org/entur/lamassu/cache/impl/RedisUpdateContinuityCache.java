@@ -22,6 +22,10 @@ public class RedisUpdateContinuityCache implements UpdateContinuityCache {
 
   @Override
   public void setLastUpdateTime(String systemId, Date timestamp) {
-    cache.put(systemId, timestamp);
+    if (timestamp == null) {
+      cache.remove(systemId);
+    } else {
+      cache.put(systemId, timestamp);
+    }
   }
 }

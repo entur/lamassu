@@ -134,7 +134,7 @@ public class StationsUpdater {
       );
   }
 
-  private void clearExistingEntities(FeedProvider feedProvider) {
+  public void clearExistingEntities(FeedProvider feedProvider) {
     var systemId = feedProvider.getSystemId();
     var existingStations = stationCache.getAll();
     var stationsToRemove = existingStations

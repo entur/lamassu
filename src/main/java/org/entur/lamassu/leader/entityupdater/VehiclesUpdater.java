@@ -102,7 +102,7 @@ public class VehiclesUpdater {
     updateCaches(context);
   }
 
-  private void clearExistingEntities(FeedProvider feedProvider) {
+  public void clearExistingEntities(FeedProvider feedProvider) {
     var systemId = feedProvider.getSystemId();
     var existingVehicles = vehicleCache.getAll();
     var vehiclesToRemove = existingVehicles

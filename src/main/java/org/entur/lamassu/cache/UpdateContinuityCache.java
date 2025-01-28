@@ -16,7 +16,8 @@ public interface UpdateContinuityCache {
   Date getLastUpdateTime(String systemId);
 
   /**
-   * Store the timestamp of a successful update.
+   * Store the timestamp of a successful update. If timestamp is null, entry
+   * is removed from cache.
    *
    * @param systemId ID of the system being updated
    * @param timestamp Timestamp of the successful update
