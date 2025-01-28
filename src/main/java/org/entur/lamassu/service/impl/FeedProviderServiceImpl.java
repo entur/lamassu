@@ -82,7 +82,11 @@ public class FeedProviderServiceImpl implements FeedProviderService {
 
   @Override
   public List<String> getCodespaces() {
-    return getFeedProviders().stream().map(FeedProvider::getCodespace).toList();
+    return getFeedProviders()
+      .stream()
+      .map(FeedProvider::getCodespace)
+      .distinct()
+      .toList();
   }
 
   @Override
