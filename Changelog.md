@@ -13,6 +13,7 @@ based on merged pull requests. Search GitHub issues and pull requests for smalle
 - Add request-scope cache for reading entities [#619](https://github.com/entur/lamassu/pull/619)
 - Only filter out vehicles that are assigned to non-virtual stations [#626](https://github.com/entur/lamassu/pull/626)
 - Dedupe codespaces list [#630](https://github.com/entur/lamassu/pull/630)
+- Compute delta of GBFS files and refactor vehicles and stations updaters [#543](https://github.com/entur/lamassu/pull/543)
   [](AUTOMATIC_CHANGELOG_PLACEHOLDER_DO_NOT_REMOVE)
 
 ## 1.1.0
