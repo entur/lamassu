@@ -3,7 +3,9 @@ package org.entur.lamassu.config.cache;
 import java.util.Set;
 import org.entur.gbfs.validation.model.ValidationResult;
 import org.entur.lamassu.cache.StationSpatialIndexId;
+import org.entur.lamassu.cache.UpdateContinuityCache;
 import org.entur.lamassu.cache.VehicleSpatialIndexId;
+import org.entur.lamassu.cache.impl.RedisUpdateContinuityCache;
 import org.entur.lamassu.config.project.LamassuProjectInfoConfiguration;
 import org.entur.lamassu.model.entities.GeofencingZones;
 import org.entur.lamassu.model.entities.PricingPlan;
@@ -45,6 +47,8 @@ public class RedissonCacheConfig {
   public static final String STATION_SPATIAL_INDEX_KEY = "stationSpatialIndex";
   public static final String VALIDATION_REPORTS_CACHE_KEY = "validationReportsCache";
   public static final String CACHE_READY_KEY = "cacheReady";
+  public static final String VEHICLE_STATUS_BASES_KEY = "vehicleStatusBases";
+  public static final String STATION_STATUS_BASES_KEY = "stationStatusBases";
 
   private final String serializationVersion;
   private final Config redissonConfig;
@@ -187,5 +191,23 @@ public class RedissonCacheConfig {
   @Bean
   public RBucket<Boolean> cacheReady(RedissonClient redissonClient) {
     return redissonClient.getBucket(CACHE_READY_KEY + "_" + serializationVersion);
+  }
+
+  @Bean
+  public UpdateContinuityCache vehicleUpdateContinuityCache(
+    RedissonClient redissonClient
+  ) {
+    return new RedisUpdateContinuityCache(
+      redissonClient.getMapCache(VEHICLE_STATUS_BASES_KEY + "_" + serializationVersion)
+    );
+  }
+
+  @Bean
+  public UpdateContinuityCache stationUpdateContinuityCache(
+    RedissonClient redissonClient
+  ) {
+    return new RedisUpdateContinuityCache(
+      redissonClient.getMapCache(STATION_STATUS_BASES_KEY + "_" + serializationVersion)
+    );
   }
 }

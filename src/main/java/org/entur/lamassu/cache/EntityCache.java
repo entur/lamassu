@@ -11,12 +11,27 @@ import org.entur.lamassu.model.entities.Entity;
  */
 public interface EntityCache<T extends Entity> extends EntityReader<T> {
   /**
-   * Update multiple entities in the cache with a TTL
+   * Updates or adds multiple entities to the cache with no expiration (infinite TTL).
+   * Entities will remain in the cache until explicitly removed.
+   *
+   * @param entities Map of entity keys to their corresponding entities
+   */
+  void updateAll(Map<String, T> entities);
+
+  /**
+   * Updates or adds multiple entities to the cache with a specified expiration.
+   * If ttl is 0 and timeUnit is null, entities will not expire.
+   *
+   * @param entities Map of entity keys to their corresponding entities
+   * @param ttl Cache expiration value, use 0 for no expiration
+   * @param timeUnit Cache expiration time unit, use null for no expiration
    */
   void updateAll(Map<String, T> entities, int ttl, TimeUnit timeUnit);
 
   /**
-   * Remove multiple entities from the cache
+   * Removes multiple entities from the cache by their keys.
+   *
+   * @param keys Set of entity keys to remove from the cache
    */
   void removeAll(Set<String> keys);
 }

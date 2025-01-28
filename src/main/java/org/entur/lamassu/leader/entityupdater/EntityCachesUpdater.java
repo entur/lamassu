@@ -19,8 +19,13 @@
 package org.entur.lamassu.leader.entityupdater;
 
 import org.entur.gbfs.loader.v3.GbfsV3Delivery;
+import org.entur.lamassu.delta.GBFSFileDelta;
+import org.entur.lamassu.delta.GBFSStationStatusDeltaCalculator;
+import org.entur.lamassu.delta.GBFSVehicleStatusDeltaCalculator;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.mobilitydata.gbfs.v2_3.gbfs.GBFSFeedName;
+import org.mobilitydata.gbfs.v3_0.station_status.GBFSStation;
+import org.mobilitydata.gbfs.v3_0.vehicle_status.GBFSVehicle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -35,6 +40,13 @@ public class EntityCachesUpdater {
   private final StationsUpdater stationsUpdater;
   private final GeofencingZonesUpdater geofencingZonesUpdater;
 
+  private final GBFSVehicleStatusDeltaCalculator vehicleStatusDeltaCalculator =
+    new GBFSVehicleStatusDeltaCalculator();
+  private final GBFSStationStatusDeltaCalculator stationStatusDeltaCalculator =
+    new GBFSStationStatusDeltaCalculator();
+
+  private final GbfsUpdateContinuityTracker updateContinuityTracker;
+
   @Autowired
   public EntityCachesUpdater(
     SystemUpdater systemUpdater,
@@ -43,7 +55,8 @@ public class EntityCachesUpdater {
     RegionsUpdater regionsUpdater,
     VehiclesUpdater vehiclesUpdater,
     StationsUpdater stationsUpdater,
-    GeofencingZonesUpdater geofencingZonesUpdater
+    GeofencingZonesUpdater geofencingZonesUpdater,
+    GbfsUpdateContinuityTracker updateContinuityTracker
   ) {
     this.systemUpdater = systemUpdater;
     this.vehicleTypesUpdater = vehicleTypesUpdater;
@@ -52,6 +65,7 @@ public class EntityCachesUpdater {
     this.vehiclesUpdater = vehiclesUpdater;
     this.stationsUpdater = stationsUpdater;
     this.geofencingZonesUpdater = geofencingZonesUpdater;
+    this.updateContinuityTracker = updateContinuityTracker;
   }
 
   public void updateEntityCaches(
@@ -72,22 +86,49 @@ public class EntityCachesUpdater {
     }
 
     if (canUpdateRegions(delivery, feedProvider)) {
-      regionsUpdater.updateRegions(delivery.systemRegions(), feedProvider.getLanguage());
+      regionsUpdater.update(delivery.systemRegions(), feedProvider.getLanguage());
     }
 
     if (canUpdateVehicles(delivery, feedProvider)) {
-      vehiclesUpdater.addOrUpdateVehicles(feedProvider, delivery, oldDelivery);
+      var useBase = updateContinuityTracker.hasVehicleUpdateContinuity(
+        feedProvider.getSystemId(),
+        oldDelivery
+      );
+      GBFSFileDelta<GBFSVehicle> vehicleStatusDelta =
+        vehicleStatusDeltaCalculator.calculateDelta(
+          useBase ? oldDelivery.vehicleStatus() : null,
+          delivery.vehicleStatus()
+        );
+      vehiclesUpdater.update(feedProvider, vehicleStatusDelta);
+      updateContinuityTracker.updateVehicleUpdateContinuity(
+        feedProvider.getSystemId(),
+        delivery
+      );
     }
 
     if (canUpdateStations(delivery, feedProvider)) {
-      stationsUpdater.addOrUpdateStations(feedProvider, delivery, oldDelivery);
+      var useBase = updateContinuityTracker.hasStationUpdateContinuity(
+        feedProvider.getSystemId(),
+        oldDelivery
+      );
+      GBFSFileDelta<GBFSStation> stationStatusDelta =
+        stationStatusDeltaCalculator.calculateDelta(
+          useBase ? oldDelivery.stationStatus() : null,
+          delivery.stationStatus()
+        );
+      stationsUpdater.update(
+        feedProvider,
+        stationStatusDelta,
+        delivery.stationInformation()
+      );
+      updateContinuityTracker.updateStationUpdateContinuity(
+        feedProvider.getSystemId(),
+        delivery
+      );
     }
 
     if (canUpdateGeofencingZones(delivery, feedProvider)) {
-      geofencingZonesUpdater.addOrUpdateGeofencingZones(
-        feedProvider,
-        delivery.geofencingZones()
-      );
+      geofencingZonesUpdater.update(feedProvider, delivery.geofencingZones());
     }
   }
 

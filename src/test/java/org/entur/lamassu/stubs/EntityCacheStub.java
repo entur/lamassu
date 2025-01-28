@@ -35,6 +35,11 @@ public class EntityCacheStub<E extends Entity> implements EntityCache<E> {
   }
 
   @Override
+  public void updateAll(Map<String, E> entities) {
+    map.putAll(entities);
+  }
+
+  @Override
   public void updateAll(Map<String, E> entities, int ttl, TimeUnit timeUnit) {
     map.putAll(entities);
   }

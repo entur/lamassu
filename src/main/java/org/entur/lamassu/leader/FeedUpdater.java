@@ -29,6 +29,7 @@ import org.entur.gbfs.loader.v3.GbfsV3Delivery;
 import org.entur.gbfs.validation.model.ValidationResult;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.leader.entityupdater.EntityCachesUpdater;
+import org.entur.lamassu.leader.entityupdater.StartupCleaner;
 import org.entur.lamassu.leader.feedcachesupdater.V2FeedCachesUpdater;
 import org.entur.lamassu.leader.feedcachesupdater.V3FeedCachesUpdater;
 import org.entur.lamassu.mapper.feedmapper.GbfsFeedVersionMappers;
@@ -66,6 +67,7 @@ public class FeedUpdater {
   private GbfsSubscriptionManager subscriptionManager;
   private ForkJoinPool updaterThreadPool;
   private final RListMultimap<String, ValidationResult> validationResultsCache;
+  private final StartupCleaner startupCleaner;
 
   @Value("${org.entur.lamassu.enableValidation:false}")
   private boolean enableValidation;
@@ -85,7 +87,8 @@ public class FeedUpdater {
     EntityCachesUpdater entityCachesUpdater,
     RListMultimap<String, ValidationResult> validationResultsCache,
     RBucket<Boolean> cacheReady,
-    MetricsService metricsService
+    MetricsService metricsService,
+    StartupCleaner startupCleaner
   ) {
     this.feedProviderConfig = feedProviderConfig;
     this.gbfsV2DeliveryMapper = gbfsV2DeliveryMapper;
@@ -96,9 +99,11 @@ public class FeedUpdater {
     this.validationResultsCache = validationResultsCache;
     this.cacheReady = cacheReady;
     this.metricsService = metricsService;
+    this.startupCleaner = startupCleaner;
   }
 
   public void start() {
+    startupCleaner.cleanup();
     updaterThreadPool =
       new ForkJoinPool(
         NUM_CORES * 2,
