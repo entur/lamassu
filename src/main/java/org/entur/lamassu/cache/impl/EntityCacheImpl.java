@@ -72,7 +72,8 @@ abstract class EntityCacheImpl<T extends Entity> implements EntityCache<T> {
 
   @Override
   public void removeAll(Set<String> keys) {
-    cache.fastRemoveAsync(String.valueOf(keys));
+    String[] arr = keys.toArray(String[]::new);
+    cache.fastRemoveAsync(arr);
   }
 
   @Override
