@@ -1,6 +1,5 @@
 # Lamassu
 
-[![CircleCI](https://dl.circleci.com/status-badge/img/gh/entur/lamassu/tree/master.svg?style=svg&circle-token=8db82686d192e3712a3a92502477a5a7e72b7be1)](https://dl.circleci.com/status-badge/redirect/gh/entur/lamassu/tree/master)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=entur_lamassu&metric=alert_status)](https://sonarcloud.io/dashboard?id=entur_lamassu)
 ![Github Workflow](https://github.com/entur/lamassu/actions/workflows/ci.yml/badge.svg)
 
