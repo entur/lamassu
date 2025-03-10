@@ -19,9 +19,9 @@
 package org.entur.lamassu.config;
 
 import io.micrometer.core.instrument.Clock;
-import io.micrometer.prometheus.PrometheusConfig;
-import io.micrometer.prometheus.PrometheusMeterRegistry;
-import io.prometheus.client.CollectorRegistry;
+import io.micrometer.prometheusmetrics.PrometheusConfig;
+import io.micrometer.prometheusmetrics.PrometheusMeterRegistry;
+import io.prometheus.metrics.model.registry.PrometheusRegistry;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -33,9 +33,9 @@ public class MetricsConfiguration {
   @Bean(name = { "metricsRegistry", "prometheusMeterRegistry" })
   public PrometheusMeterRegistry prometheusMeterRegistry(
     PrometheusConfig prometheusConfig,
-    CollectorRegistry collectorRegistry,
+    PrometheusRegistry prometheusRegistry,
     Clock clock
   ) {
-    return new PrometheusMeterRegistry(prometheusConfig, collectorRegistry, clock);
+    return new PrometheusMeterRegistry(prometheusConfig, prometheusRegistry, clock);
   }
 }
