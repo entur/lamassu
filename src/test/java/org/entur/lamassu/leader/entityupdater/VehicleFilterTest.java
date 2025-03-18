@@ -154,4 +154,34 @@ class VehicleFilterTest {
 
     assert filter.test(vehicle);
   }
+
+  @Test
+  void testVehicleAtStationWithoutIsVirtualSetIsSkipped() {
+    String defaultPricingPlanId = "defaultPricingPlanId";
+    PricingPlan pricingPlan = new PricingPlan();
+    pricingPlan.setId(defaultPricingPlanId);
+    Map<String, PricingPlan> pricingPlans = new HashMap<>();
+    pricingPlans.put(defaultPricingPlanId, pricingPlan);
+    pricingPlanCache.updateAll(pricingPlans, 0, null);
+    vehicleTypeCache.updateAll(
+      vehicleTypesWithPricingPlan(defaultPricingPlanId),
+      0,
+      null
+    );
+
+    String stationId = "virtualStation";
+    Station station = new Station();
+    station.setId(stationId);
+    station.setVirtualStation(null);
+    Map<String, Station> stations = new HashMap<>();
+    stations.put(stationId, station);
+    stationCache.updateAll(stations, 0, null);
+
+    GBFSVehicle vehicle = new GBFSVehicle();
+    vehicle.setVehicleId("VehicleAtVirtualStation");
+    vehicle.setVehicleTypeId(VEHICLE_TYPE_ID);
+    vehicle.setStationId(stationId);
+
+    assert !filter.test(vehicle);
+  }
 }
