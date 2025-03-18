@@ -59,7 +59,9 @@ public class VehicleFilter implements Predicate<GBFSVehicle> {
       var station = stationCache.get(vehicle.getStationId());
       if (
         station != null &&
-        !station.getVirtualStation() &&
+        // is_virtual_station may be unset, which we treat as implicitly being false
+        // though spec does not state this as default.
+        !Boolean.TRUE.equals(station.getVirtualStation()) &&
         !includeVehiclesAssignedToNonVirtualStations
       ) {
         logger.info(
