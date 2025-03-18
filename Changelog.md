@@ -12,6 +12,8 @@ based on merged pull requests. Search GitHub issues and pull requests for smalle
 - Remove redundant entity cache interfaces [#613](https://github.com/entur/lamassu/pull/613)
 - Add request-scope cache for reading entities [#619](https://github.com/entur/lamassu/pull/619)
 - Only filter out vehicles that are assigned to non-virtual stations [#626](https://github.com/entur/lamassu/pull/626)
+  - Note: requires `application.properties` change from `org.entur.lamassu.excludeVirtualStations` to
+    `org.entur.lamassu.vehicle-filter.include-vehicles-assigned-to-non-virtual-stations`
 - Dedupe codespaces list [#630](https://github.com/entur/lamassu/pull/630)
 - Compute delta of GBFS files and refactor vehicles and stations updaters [#543](https://github.com/entur/lamassu/pull/543)
 - Fixes remove entities from cache after refactoring [#632](https://github.com/entur/lamassu/pull/632)
