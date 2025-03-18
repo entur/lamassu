@@ -20,6 +20,7 @@ based on merged pull requests. Search GitHub issues and pull requests for smalle
 - Compute delta of GBFS files and refactor vehicles and stations updaters [#543](https://github.com/entur/lamassu/pull/543)
 - Fixes remove entities from cache after refactoring [#632](https://github.com/entur/lamassu/pull/632)
 - Fix: in VehicleFilter, support is_virtual_station being optional [#656](https://github.com/entur/lamassu/pull/656)
+- Fix: app config renamings [skip changelog] [#658](https://github.com/entur/lamassu/pull/658)
   [](AUTOMATIC_CHANGELOG_PLACEHOLDER_DO_NOT_REMOVE)
 
 ## 1.1.0
