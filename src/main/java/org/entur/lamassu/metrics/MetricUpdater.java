@@ -45,7 +45,7 @@ public class MetricUpdater {
     int overdueFilesCount = Arrays
       .asList(GBFSFeed.Name.values())
       .stream()
-      // TODO as gbfs is not yet updated regularly, we skip it explicitly
+      // Since gbfs is not yet updated regularly, we skip it explicitly
       .filter(feedName -> !GBFSFeed.Name.GBFS.equals(feedName))
       .mapToInt(feedName -> isFeedOverdue(feedProvider, feedName) ? 1 : 0)
       .sum();
