@@ -2,6 +2,7 @@ package org.entur.lamassu.leader;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
+import org.entur.lamassu.metrics.MetricUpdater;
 import org.entur.lamassu.service.GeoSearchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,13 +21,16 @@ public class LeaderSingletonService {
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
   private final FeedUpdater feedUpdater;
   private final GeoSearchService geoSearchService;
+  private final MetricUpdater metricUpdater;
 
   public LeaderSingletonService(
     @Autowired FeedUpdater feedUpdater,
-    @Autowired GeoSearchService geoSearchService
+    @Autowired GeoSearchService geoSearchService,
+    @Autowired MetricUpdater metricUpdater
   ) {
     this.feedUpdater = feedUpdater;
     this.geoSearchService = geoSearchService;
+    this.metricUpdater = metricUpdater;
   }
 
   @PostConstruct
@@ -52,5 +56,10 @@ public class LeaderSingletonService {
     if (!removedOrphans.isEmpty()) {
       logger.info("Removed {} orphans in vehicle spatial index", removedOrphans.size());
     }
+  }
+
+  @Scheduled(fixedRateString = "${org.entur.lamassu.update-feed-metrics-interval:60000}")
+  public void updateFeedMetrics() {
+    metricUpdater.updateOutdatedFeedMetrics();
   }
 }

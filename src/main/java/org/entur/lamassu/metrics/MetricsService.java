@@ -42,6 +42,7 @@ public class MetricsService {
 
   protected static final String SUBSCRIPTION_FAILEDSETUP =
     "app.lamassu.gbfs.subscription.failedsetup";
+  public static final String FILES_OVERDUE = "app.lamassu.gbfs.filesoverdue";
   public static final String LABEL_ENTITY = "entity";
 
   public static final String ENTITY_VEHICLE = "vehicle";
@@ -59,6 +60,8 @@ public class MetricsService {
   private final Map<String, AtomicInteger> validationFeedErrorsCounters =
     new ConcurrentHashMap<>();
   private final Map<String, AtomicInteger> validationMissingRequiredFilesCounters =
+    new ConcurrentHashMap<>();
+  private final Map<String, AtomicInteger> overdueFilesCounters =
     new ConcurrentHashMap<>();
 
   public MetricsService(MeterRegistry meterRegistry) {
@@ -101,6 +104,13 @@ public class MetricsService {
     }
   }
 
+  public void registerOverdueFilesCount(
+    FeedProvider feedProvider,
+    int overdueFilesCount
+  ) {
+    getOverdueFilesCounter(feedProvider).set(overdueFilesCount);
+  }
+
   private AtomicInteger getSubscriptionFailedSetupCounter(FeedProvider feedProvider) {
     return getCounter(
       feedProvider,
@@ -115,6 +125,10 @@ public class MetricsService {
       validationFeedErrorsCounters,
       VALIDATION_MISSING_REQUIRED_FILES
     );
+  }
+
+  private AtomicInteger getOverdueFilesCounter(FeedProvider feedProvider) {
+    return getCounter(feedProvider, overdueFilesCounters, FILES_OVERDUE);
   }
 
   private AtomicInteger getValidationFeedErrorsCounter(FeedProvider feedProvider) {
