@@ -89,23 +89,7 @@ public class EntityCachesUpdater {
       regionsUpdater.update(delivery.systemRegions(), feedProvider.getLanguage());
     }
 
-    if (canUpdateVehicles(delivery, feedProvider)) {
-      var useBase = updateContinuityTracker.hasVehicleUpdateContinuity(
-        feedProvider.getSystemId(),
-        oldDelivery
-      );
-      GBFSFileDelta<GBFSVehicle> vehicleStatusDelta =
-        vehicleStatusDeltaCalculator.calculateDelta(
-          useBase ? oldDelivery.vehicleStatus() : null,
-          delivery.vehicleStatus()
-        );
-      vehiclesUpdater.update(feedProvider, vehicleStatusDelta);
-      updateContinuityTracker.updateVehicleUpdateContinuity(
-        feedProvider.getSystemId(),
-        delivery
-      );
-    }
-
+    // Update stations before vehicles, as vehicles may refer to stations
     if (canUpdateStations(delivery, feedProvider)) {
       var useBase = updateContinuityTracker.hasStationUpdateContinuity(
         feedProvider.getSystemId(),
@@ -122,6 +106,23 @@ public class EntityCachesUpdater {
         delivery.stationInformation()
       );
       updateContinuityTracker.updateStationUpdateContinuity(
+        feedProvider.getSystemId(),
+        delivery
+      );
+    }
+
+    if (canUpdateVehicles(delivery, feedProvider)) {
+      var useBase = updateContinuityTracker.hasVehicleUpdateContinuity(
+        feedProvider.getSystemId(),
+        oldDelivery
+      );
+      GBFSFileDelta<GBFSVehicle> vehicleStatusDelta =
+        vehicleStatusDeltaCalculator.calculateDelta(
+          useBase ? oldDelivery.vehicleStatus() : null,
+          delivery.vehicleStatus()
+        );
+      vehiclesUpdater.update(feedProvider, vehicleStatusDelta);
+      updateContinuityTracker.updateVehicleUpdateContinuity(
         feedProvider.getSystemId(),
         delivery
       );
