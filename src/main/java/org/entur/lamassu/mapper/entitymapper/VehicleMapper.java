@@ -19,6 +19,7 @@
 package org.entur.lamassu.mapper.entitymapper;
 
 import java.util.List;
+import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.entities.VehicleEquipment;
 import org.mobilitydata.gbfs.v3_0.vehicle_status.GBFSVehicle;
@@ -35,11 +36,16 @@ public class VehicleMapper {
     this.rentalUrisMapper = rentalUrisMapper;
   }
 
-  public Vehicle mapVehicle(GBFSVehicle vehicle, String systemId) {
+  public Vehicle mapVehicle(GBFSVehicle vehicle, Station station, String systemId) {
     var mappedVehicle = new Vehicle();
     mappedVehicle.setId(vehicle.getVehicleId());
-    mappedVehicle.setLat(vehicle.getLat());
-    mappedVehicle.setLon(vehicle.getLon());
+    if (vehicle.getLat() == null && vehicle.getLon() == null && station != null) {
+      mappedVehicle.setLat(station.getLat());
+      mappedVehicle.setLon(station.getLon());
+    } else {
+      mappedVehicle.setLat(vehicle.getLat());
+      mappedVehicle.setLon(vehicle.getLon());
+    }
     mappedVehicle.setReserved(vehicle.getIsReserved());
     mappedVehicle.setDisabled(vehicle.getIsDisabled());
     mappedVehicle.setCurrentRangeMeters(
@@ -52,6 +58,7 @@ public class VehicleMapper {
     mappedVehicle.setRentalUris(rentalUrisMapper.mapRentalUris(vehicle.getRentalUris()));
     mappedVehicle.setAvailableUntil(vehicle.getAvailableUntil());
     mappedVehicle.setSystemId(systemId);
+    mappedVehicle.setStationId(vehicle.getStationId());
     return mappedVehicle;
   }
 
