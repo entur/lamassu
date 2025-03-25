@@ -10,10 +10,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.cache.VehicleSpatialIndex;
+import org.entur.lamassu.cache.VehicleSpatialIndexId;
 import org.entur.lamassu.delta.DeltaType;
 import org.entur.lamassu.delta.GBFSEntityDelta;
 import org.entur.lamassu.delta.GBFSFileDelta;
@@ -21,15 +24,19 @@ import org.entur.lamassu.mapper.entitymapper.RentalUrisMapper;
 import org.entur.lamassu.mapper.entitymapper.VehicleMapper;
 import org.entur.lamassu.metrics.MetricsService;
 import org.entur.lamassu.model.entities.FormFactor;
+import org.entur.lamassu.model.entities.LocationEntity;
 import org.entur.lamassu.model.entities.PropulsionType;
+import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.entities.VehicleType;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.service.SpatialIndexIdGeneratorService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mobilitydata.gbfs.v3_0.vehicle_status.GBFSVehicle;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -47,6 +54,9 @@ class VehiclesUpdaterTest {
 
   @Mock
   private EntityCache<VehicleType> vehicleTypeCache;
+
+  @Mock
+  private EntityCache<Station> stationCache;
 
   @Mock
   private VehicleFilter vehicleFilter;
@@ -71,7 +81,8 @@ class VehiclesUpdaterTest {
         vehicleMapper,
         metricsService,
         spatialIndexIdGeneratorService,
-        vehicleFilter
+        vehicleFilter,
+        stationCache
       );
   }
 
@@ -126,6 +137,70 @@ class VehiclesUpdaterTest {
     verify(spatialIndex).removeAll(any());
     verify(spatialIndex).addAll(any());
     verify(vehicleCache).updateAll(any());
+    verify(vehicleCache, never()).removeAll(anySet());
+  }
+
+  @Test
+  void shouldHandleDockedVehicleUpdate() {
+    // Given
+    var feedProvider = new FeedProvider();
+    feedProvider.setSystemId("test-system");
+    feedProvider.setCodespace("test");
+    feedProvider.setOperatorId("test-operator");
+    feedProvider.setLanguage("en");
+
+    var vehicleId = "vehicle-1";
+    var bikeTypeId = "bike";
+    var stationId = "station-1";
+    final double stationLon = -110.0;
+    final double stationLat = 45.0;
+
+    var bikeType = new VehicleType();
+    bikeType.setId(bikeTypeId);
+    bikeType.setFormFactor(FormFactor.BICYCLE);
+    bikeType.setPropulsionType(PropulsionType.HUMAN);
+
+    var currentVehicle = new Vehicle();
+    currentVehicle.setId(vehicleId);
+    currentVehicle.setVehicleTypeId(bikeTypeId);
+    currentVehicle.setReserved(false);
+    currentVehicle.setDisabled(false);
+
+    var gbfsVehicle = new GBFSVehicle();
+    gbfsVehicle.setVehicleId(vehicleId);
+    gbfsVehicle.setStationId(stationId);
+    gbfsVehicle.setVehicleTypeId(bikeTypeId);
+    gbfsVehicle.setIsReserved(false);
+    gbfsVehicle.setIsDisabled(false);
+
+    Station station = new Station();
+    station.setSystemId(stationId);
+    station.setLat(stationLat);
+    station.setLon(stationLon);
+
+    // Mock behavior
+    when(vehicleCache.get(vehicleId)).thenReturn(currentVehicle);
+    when(vehicleTypeCache.get(bikeTypeId)).thenReturn(bikeType);
+    when(stationCache.get(stationId)).thenReturn(station);
+
+    var delta = new GBFSFileDelta<GBFSVehicle>(
+      30000L,
+      60000L,
+      "vehicle_status",
+      List.of(new GBFSEntityDelta<>(vehicleId, DeltaType.UPDATE, gbfsVehicle))
+    );
+
+    // When
+    vehiclesUpdater.update(feedProvider, delta);
+
+    // Then
+    verify(spatialIndex).removeAll(any());
+    verify(spatialIndex).addAll(any());
+    ArgumentCaptor<Map<String, Vehicle>> captor = ArgumentCaptor.forClass(Map.class);
+    verify(vehicleCache).updateAll(captor.capture());
+    final Vehicle mappedVehicle = captor.getValue().get(vehicleId);
+    Assertions.assertEquals(Double.valueOf(stationLon), mappedVehicle.getLon());
+    Assertions.assertEquals(Double.valueOf(stationLat), mappedVehicle.getLat());
     verify(vehicleCache, never()).removeAll(anySet());
   }
 
