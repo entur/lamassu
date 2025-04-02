@@ -201,7 +201,7 @@
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-main</artifactId>
-            <version>32.2</version>
+            <version>33.0</version>
         </dependency>
     </dependencies>
 
