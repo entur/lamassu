@@ -37,24 +37,10 @@ jobs:
           mvn --batch-mode jacoco:prepare-agent test jacoco:report -Dprettier.nodePath=node -Dprettier.npmPath=npm
           mvn --batch-mode jib:dockerBuild -Dmaven.test.skip -P prettierSkip
 
-      - name: Sonar Scan
-        # Skip for external PRs where secrets are not available
-        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
-        env:
-          SONAR_TOKEN: ${{ secrets.ENTUR_SONAR_PASSWORD }}
-          SONAR_PROJECT_NAME: ${{ github.event.repository.name }}
-          SONAR_PROJECT_KEY: entur_${{ github.event.repository.name }}
-        run: |
-          mvn -DskipTests \
-                  org.jacoco:jacoco-maven-plugin:prepare-agent verify \
-                  org.jacoco:jacoco-maven-plugin:report sonar:sonar \
-                  -P prettierSkip \
-                  -Dmaven.main.skip \
-                  -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-                  -Dsonar.organization=enturas-github \
-                  -Dsonar.projectName=${SONAR_PROJECT_NAME} \
-                  -Dsonar.host.url=https://sonarcloud.io \
-                  -Dsonar.token=${SONAR_TOKEN}
+      - name: codecov
+        uses: codecov/codecov-action@v5
+        with:
+          files: ./target/site/jacoco/jacoco.xml
 
   image:
     # only build and push the image when it's a commit to master in Entur's repository
