@@ -74,5 +74,8 @@
                 brandTermsUrl
             }
         }
+        station {
+            id
+        }
     }
 }
