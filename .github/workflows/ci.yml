@@ -8,6 +8,16 @@ on:
     branches:
       - master
   workflow_dispatch:
+    inputs:
+      build_image:
+        description: 'Build and publish Docker image'
+        type: boolean
+        default: true
+      ref:
+        description: 'Git ref to checkout (branch, tag, or commit SHA)'
+        type: string
+        default: 'master'
+        required: true
 
 jobs:
   tests:
@@ -16,6 +26,8 @@ jobs:
       TZ: Europe/Oslo
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.ref || github.ref }}
 
       # nodejs is needed because the dynamic download of it via the prettier maven plugin often
       # times out
@@ -43,8 +55,11 @@ jobs:
           files: ./target/site/jacoco/jacoco.xml
 
   image:
-    # only build and push the image when it's a commit to master in Entur's repository
-    if: github.repository_owner == 'entur' && github.event_name == 'push'
+    # Build and push the image when:
+    # 1. It's a direct push to the repository, or
+    # 2. It's triggered by workflow_dispatch (either from post-merge workflow or manually)
+    #    and build_image is true or not specified
+    if: github.repository_owner == 'entur' && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && (github.event.inputs.build_image == 'true' || github.event.inputs.build_image == '')))
     runs-on: ubuntu-latest
     needs: [ tests ]
     env:
@@ -53,6 +68,8 @@ jobs:
       CONTAINER_REGISTRY_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.ref || github.ref }}
 
       - name: Set up JDK 21
         uses: actions/setup-java@v4
