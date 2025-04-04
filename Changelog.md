@@ -22,6 +22,7 @@ based on merged pull requests. Search GitHub issues and pull requests for smalle
 - Fix: in VehicleFilter, support is_virtual_station being optional [#656](https://github.com/entur/lamassu/pull/656)
 - Fix: app config renamings [skip changelog] [#658](https://github.com/entur/lamassu/pull/658)
 - feat: add metric for outdated feeds [#659](https://github.com/entur/lamassu/pull/659)
+- Fix: Use station coords for docked vehicles without coords [bump serialization id] [#662](https://github.com/entur/lamassu/pull/662)
   [](AUTOMATIC_CHANGELOG_PLACEHOLDER_DO_NOT_REMOVE)
 
 ## 1.1.0
