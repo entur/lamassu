@@ -72,3 +72,45 @@ jobs:
         env:
           # Use environment variables to prevent injection attack
           NUMBER: ${{ github.event.pull_request.number }}
+
+  # Job to check which dependencies are needed
+  check-dependencies:
+    if: github.event.pull_request.merged && github.repository_owner == 'entur'
+    runs-on: ubuntu-latest
+    outputs:
+      needs_changelog: ${{ !contains(github.event.pull_request.labels.*.name, 'skip changelog') }}
+      needs_serialization: ${{ contains(github.event.pull_request.labels.*.name, 'bump serialization id') }}
+    steps:
+      - run: echo "Determining required dependencies"
+
+  # Job to wait for changelog if needed
+  wait-for-changelog:
+    needs: [check-dependencies, changelog-entry]
+    if: github.event.pull_request.merged && github.repository_owner == 'entur' && needs.check-dependencies.outputs.needs_changelog == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Waiting for changelog-entry job to complete"
+
+  # Job to wait for serialization if needed
+  wait-for-serialization:
+    needs: [check-dependencies, serialization-version]
+    if: github.event.pull_request.merged && github.repository_owner == 'entur' && needs.check-dependencies.outputs.needs_serialization == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Waiting for serialization-version job to complete"
+
+  # Final job to trigger CI
+  trigger-ci:
+    # This job will run after all required dependencies, or immediately if none are required
+    if: always() && github.event.pull_request.merged && github.repository_owner == 'entur'
+    runs-on: ubuntu-latest
+    needs: [check-dependencies, wait-for-changelog, wait-for-serialization]
+    steps:
+      - name: Trigger CI workflow
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: ci.yml
+          repo: ${{ github.repository }}
+          token: ${{ secrets.GITFLOW_PAT }}
+          # Using GITFLOW_PAT which should have sufficient permissions to trigger workflows
+          # This PAT is already used in the CI workflow for triggering downstream CI
