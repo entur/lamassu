@@ -38,6 +38,8 @@ jobs:
           mvn --batch-mode jib:dockerBuild -Dmaven.test.skip -P prettierSkip
 
       - name: Sonar Scan
+        # Skip for external PRs where secrets are not available
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
         env:
           SONAR_TOKEN: ${{ secrets.ENTUR_SONAR_PASSWORD }}
           SONAR_PROJECT_NAME: ${{ github.event.repository.name }}
