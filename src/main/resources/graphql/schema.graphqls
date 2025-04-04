@@ -1,3 +1,55 @@
+type Subscription {
+    vehicles(
+        lat: Float
+        lon: Float
+        range: Int
+        minimumLatitude: Float
+        minimumLongitude: Float
+        maximumLatitude: Float
+        maximumLongitude: Float
+        codespaces: [String]
+        systems: [String]
+        operators: [String]
+        formFactors: [FormFactor]
+        propulsionTypes: [PropulsionType]
+        includeReserved: Boolean = false
+        includeDisabled: Boolean = false
+    ): VehicleUpdate
+    
+    stations(
+        lat: Float
+        lon: Float
+        range: Int
+        minimumLatitude: Float
+        minimumLongitude: Float
+        maximumLatitude: Float
+        maximumLongitude: Float
+        codespaces: [String]
+        systems: [String]
+        operators: [String]
+        availableFormFactors: [FormFactor]
+        availablePropulsionTypes: [PropulsionType]
+    ): StationUpdate
+}
+
+type VehicleUpdate {
+    vehicleId: String!
+    updateType: UpdateType!
+    vehicle: Vehicle
+}
+
+type StationUpdate {
+    stationId: String!
+    updateType: UpdateType!
+    station: Station
+}
+
+enum UpdateType {
+    CREATE
+    UPDATE
+    DELETE
+}
+
 type Query {
     codespaces: [String]
 

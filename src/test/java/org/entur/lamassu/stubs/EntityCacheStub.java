@@ -4,13 +4,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.entur.lamassu.cache.EntityCache;
+import org.entur.lamassu.cache.EntityListener;
 import org.entur.lamassu.model.entities.Entity;
 
 public class EntityCacheStub<E extends Entity> implements EntityCache<E> {
 
   private final Map<String, E> map = new HashMap<>();
+  private final Map<Integer, EntityListener<E>> listeners = new ConcurrentHashMap<>();
+  private final AtomicInteger listenerIdCounter = new AtomicInteger(0);
 
   @Override
   public List<E> getAll(Set<String> keys) {
@@ -57,5 +63,17 @@ public class EntityCacheStub<E extends Entity> implements EntityCache<E> {
   @Override
   public int count() {
     return map.size();
+  }
+  
+  @Override
+  public int addListener(EntityListener<E> listener) {
+    int listenerId = listenerIdCounter.incrementAndGet();
+    listeners.put(listenerId, listener);
+    return listenerId;
+  }
+  
+  @Override
+  public void removeListener(int listenerId) {
+    listeners.remove(listenerId);
   }
 }
