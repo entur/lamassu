@@ -119,6 +119,7 @@ type Vehicle {
     vehicleEquipment: [VehicleEquipment]
     rentalUris: RentalUris
     system: System!
+    station: Station
     availableUntil: String
 }
 

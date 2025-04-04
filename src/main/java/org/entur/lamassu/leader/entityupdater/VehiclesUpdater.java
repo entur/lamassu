@@ -31,6 +31,7 @@ import org.entur.lamassu.delta.GBFSEntityDelta;
 import org.entur.lamassu.delta.GBFSFileDelta;
 import org.entur.lamassu.mapper.entitymapper.VehicleMapper;
 import org.entur.lamassu.metrics.MetricsService;
+import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.service.SpatialIndexIdGeneratorService;
@@ -59,6 +60,7 @@ public class VehiclesUpdater {
 
   private final EntityCache<Vehicle> vehicleCache;
   private final VehicleSpatialIndex spatialIndex;
+  private final EntityCache<Station> stationCache;
   private final VehicleMapper vehicleMapper;
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
   private final MetricsService metricsService;
@@ -72,7 +74,8 @@ public class VehiclesUpdater {
     VehicleMapper vehicleMapper,
     MetricsService metricsService,
     SpatialIndexIdGeneratorService spatialIndexService,
-    VehicleFilter vehicleFilter
+    VehicleFilter vehicleFilter,
+    EntityCache<Station> stationCache
   ) {
     this.vehicleCache = vehicleCache;
     this.spatialIndex = spatialIndex;
@@ -80,6 +83,7 @@ public class VehiclesUpdater {
     this.metricsService = metricsService;
     this.spatialIndexService = spatialIndexService;
     this.vehicleFilter = vehicleFilter;
+    this.stationCache = stationCache;
   }
 
   public void update(FeedProvider feedProvider, GBFSFileDelta<GBFSVehicle> delta) {
@@ -155,9 +159,13 @@ public class VehiclesUpdater {
     UpdateContext context,
     GBFSEntityDelta<GBFSVehicle> entityDelta
   ) {
-    if (vehicleFilter.test(entityDelta.entity())) {
+    final GBFSVehicle deltaVehicle = entityDelta.entity();
+    if (vehicleFilter.test(deltaVehicle)) {
       Vehicle mappedVehicle = vehicleMapper.mapVehicle(
-        entityDelta.entity(),
+        deltaVehicle,
+        deltaVehicle.getStationId() != null
+          ? stationCache.get(deltaVehicle.getStationId())
+          : null,
         context.feedProvider.getSystemId()
       );
       context.addedAndUpdatedVehicles.put(mappedVehicle.getId(), mappedVehicle);
@@ -180,8 +188,12 @@ public class VehiclesUpdater {
         spatialIndexService.createVehicleIndexId(currentVehicle, context.feedProvider)
       );
 
+      final GBFSVehicle deltaVehicle = entityDelta.entity();
       Vehicle mappedVehicle = vehicleMapper.mapVehicle(
-        entityDelta.entity(),
+        deltaVehicle,
+        deltaVehicle.getStationId() != null
+          ? stationCache.get(deltaVehicle.getStationId())
+          : null,
         context.feedProvider.getSystemId()
       );
 

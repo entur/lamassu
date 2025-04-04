@@ -21,6 +21,7 @@ public class Vehicle implements LocationEntity {
   private String vehicleTypeId;
   private String pricingPlanId;
   private String systemId;
+  private String stationId;
 
   @Override
   public String getId() {
@@ -153,6 +154,14 @@ public class Vehicle implements LocationEntity {
     this.systemId = systemId;
   }
 
+  public String getStationId() {
+    return stationId;
+  }
+
+  public void setStationId(String stationId) {
+    this.stationId = stationId;
+  }
+
   @Override
   public String toString() {
     return (
@@ -186,6 +195,8 @@ public class Vehicle implements LocationEntity {
       system +
       ", rentalUris=" +
       rentalUris +
+      ", stationId=" +
+      stationId +
       '}'
     );
   }
