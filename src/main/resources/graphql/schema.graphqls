@@ -14,8 +14,8 @@ type Subscription {
         propulsionTypes: [PropulsionType]
         includeReserved: Boolean = false
         includeDisabled: Boolean = false
-    ): VehicleUpdate
-    
+    ): [VehicleUpdate]
+
     stations(
         lat: Float
         lon: Float
@@ -29,7 +29,7 @@ type Subscription {
         operators: [String]
         availableFormFactors: [FormFactor]
         availablePropulsionTypes: [PropulsionType]
-    ): StationUpdate
+    ): [StationUpdate]
 }
 
 type VehicleUpdate {

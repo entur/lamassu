@@ -7,7 +7,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.cache.EntityListener;
 import org.entur.lamassu.model.entities.Entity;
@@ -64,14 +63,14 @@ public class EntityCacheStub<E extends Entity> implements EntityCache<E> {
   public int count() {
     return map.size();
   }
-  
+
   @Override
   public int addListener(EntityListener<E> listener) {
     int listenerId = listenerIdCounter.incrementAndGet();
     listeners.put(listenerId, listener);
     return listenerId;
   }
-  
+
   @Override
   public void removeListener(int listenerId) {
     listeners.remove(listenerId);
