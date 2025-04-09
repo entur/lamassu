@@ -1,14 +1,11 @@
 package org.entur.lamassu.graphql.subscription;
 
 import java.util.List;
-import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.graphql.validation.QueryParameterValidator;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PropulsionType;
-import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.subscription.StationUpdate;
 import org.entur.lamassu.service.BoundingBoxQueryParameters;
-import org.entur.lamassu.service.GeoSearchService;
 import org.entur.lamassu.service.RangeQueryParameters;
 import org.entur.lamassu.service.StationFilterParameters;
 import org.reactivestreams.Publisher;
@@ -23,24 +20,20 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class StationSubscriptionController {
 
-  private final GeoSearchService geoSearchService;
-  private final EntityCache<Station> stationCache;
+  private final StationSubscriptionHandler stationSubscriptionHandler;
   private final QueryParameterValidator validationService;
 
   /**
    * Creates a new StationSubscriptionController.
    *
-   * @param geoSearchService The geo search service
-   * @param stationCache The station cache
+   * @param stationSubscriptionHandler the subscription handler
    * @param validationService The query parameter validator
    */
   public StationSubscriptionController(
-    GeoSearchService geoSearchService,
-    EntityCache<Station> stationCache,
+    StationSubscriptionHandler stationSubscriptionHandler,
     QueryParameterValidator validationService
   ) {
-    this.geoSearchService = geoSearchService;
-    this.stationCache = stationCache;
+    this.stationSubscriptionHandler = stationSubscriptionHandler;
     this.validationService = validationService;
   }
 
@@ -100,8 +93,8 @@ public class StationSubscriptionController {
       availablePropulsionTypes
     );
 
-    // Create subscription handler
-    StationSubscriptionHandler handler;
+    StationUpdateFilter stationUpdateFilter;
+
     if (
       validationService.isRangeSearch(range != null ? (double) range : null, lat, lon)
     ) {
@@ -110,8 +103,8 @@ public class StationSubscriptionController {
         lon,
         range != null ? (double) range : null
       );
-      handler =
-        new StationSubscriptionHandler(filterParams, geoSearchService, queryParams);
+
+      stationUpdateFilter = new StationUpdateFilter(filterParams, queryParams);
     } else {
       var queryParams = new BoundingBoxQueryParameters(
         minimumLatitude,
@@ -119,14 +112,10 @@ public class StationSubscriptionController {
         maximumLatitude,
         maximumLongitude
       );
-      handler =
-        new StationSubscriptionHandler(filterParams, geoSearchService, queryParams);
+
+      stationUpdateFilter = new StationUpdateFilter(filterParams, queryParams);
     }
 
-    // Register handler as listener and store the ID for cleanup
-    handler.setListenerId(stationCache.addListener(handler));
-
-    // Return publisher and ensure listener is removed when subscription ends
-    return handler.getPublisher();
+    return stationSubscriptionHandler.getPublisher(stationUpdateFilter);
   }
 }

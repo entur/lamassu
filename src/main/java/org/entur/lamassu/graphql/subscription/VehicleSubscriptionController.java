@@ -1,14 +1,11 @@
 package org.entur.lamassu.graphql.subscription;
 
 import java.util.List;
-import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.graphql.validation.QueryParameterValidator;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PropulsionType;
-import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.subscription.VehicleUpdate;
 import org.entur.lamassu.service.BoundingBoxQueryParameters;
-import org.entur.lamassu.service.GeoSearchService;
 import org.entur.lamassu.service.RangeQueryParameters;
 import org.entur.lamassu.service.VehicleFilterParameters;
 import org.reactivestreams.Publisher;
@@ -23,24 +20,20 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class VehicleSubscriptionController {
 
-  private final GeoSearchService geoSearchService;
-  private final EntityCache<Vehicle> vehicleCache;
+  private final VehicleSubscriptionHandler vehicleSubscriptionHandler;
   private final QueryParameterValidator validationService;
 
   /**
    * Creates a new VehicleSubscriptionController.
    *
-   * @param geoSearchService The geo search service
-   * @param vehicleCache The vehicle cache
+   * @param vehicleSubscriptionHandler
    * @param validationService The query parameter validator
    */
   public VehicleSubscriptionController(
-    GeoSearchService geoSearchService,
-    EntityCache<Vehicle> vehicleCache,
+    VehicleSubscriptionHandler vehicleSubscriptionHandler,
     QueryParameterValidator validationService
   ) {
-    this.geoSearchService = geoSearchService;
-    this.vehicleCache = vehicleCache;
+    this.vehicleSubscriptionHandler = vehicleSubscriptionHandler;
     this.validationService = validationService;
   }
 
@@ -107,7 +100,7 @@ public class VehicleSubscriptionController {
     );
 
     // Create subscription handler
-    VehicleSubscriptionHandler handler;
+    VehicleUpdateFilter filter;
     if (
       validationService.isRangeSearch(range != null ? (double) range : null, lat, lon)
     ) {
@@ -116,8 +109,7 @@ public class VehicleSubscriptionController {
         lon,
         range != null ? (double) range : null
       );
-      handler =
-        new VehicleSubscriptionHandler(filterParams, geoSearchService, queryParams);
+      filter = new VehicleUpdateFilter(filterParams, queryParams);
     } else {
       var queryParams = new BoundingBoxQueryParameters(
         minimumLatitude,
@@ -125,14 +117,10 @@ public class VehicleSubscriptionController {
         maximumLatitude,
         maximumLongitude
       );
-      handler =
-        new VehicleSubscriptionHandler(filterParams, geoSearchService, queryParams);
+      filter = new VehicleUpdateFilter(filterParams, queryParams);
     }
 
-    // Register handler as listener and store the ID for cleanup
-    handler.setListenerId(vehicleCache.addListener(handler));
-
     // Return publisher and ensure listener is removed when subscription ends
-    return handler.getPublisher();
+    return vehicleSubscriptionHandler.getPublisher(filter);
   }
 }
