@@ -70,8 +70,6 @@ class StationSubscriptionHandlerTest {
   private StationSubscriptionHandler handler;
 
   private static final String TEST_SYSTEM_ID = "test-system";
-  // Used in createStation method to construct station IDs
-  private static final String TEST_CODESPACE = "TST";
 
   @BeforeEach
   void setUp() {

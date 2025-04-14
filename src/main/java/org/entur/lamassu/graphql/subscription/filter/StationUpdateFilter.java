@@ -82,7 +82,7 @@ public class StationUpdateFilter
     List<FormFactor> availableFormFactors = filterParameters.getAvailableFormFactors();
     if (
       hasFilterValues(availableFormFactors) &&
-      !hasMatchingVehicleTypeAttribute(
+      hasNoMatchingVehicleTypeAttribute(
         vehicleTypesAvailable,
         availableFormFactors,
         VehicleType::getFormFactor
@@ -94,24 +94,15 @@ public class StationUpdateFilter
     // Check propulsion type filter if specified
     List<PropulsionType> availablePropulsionTypes =
       filterParameters.getAvailablePropulsionTypes();
-    if (
-      hasFilterValues(availablePropulsionTypes) &&
-      !hasMatchingVehicleTypeAttribute(
+    return (
+      !hasFilterValues(availablePropulsionTypes) ||
+      !hasNoMatchingVehicleTypeAttribute(
         vehicleTypesAvailable,
         availablePropulsionTypes,
         VehicleType::getPropulsionType
       )
-    ) {
-      return false;
-    }
-
-    return true;
+    );
   }
-
-  /**
-   * Checks if a list of filter values is non-null and non-empty.
-   */
-  // This method is now provided by the parent class
 
   /**
    * Checks if any vehicle type availability matches the specified attribute values.
@@ -121,14 +112,14 @@ public class StationUpdateFilter
    * @param attributeExtractor Function to extract the attribute from a vehicle type
    * @return true if at least one vehicle type has a matching attribute, false otherwise
    */
-  private <T> boolean hasMatchingVehicleTypeAttribute(
+  private <T> boolean hasNoMatchingVehicleTypeAttribute(
     List<VehicleTypeAvailability> vehicleTypesAvailable,
     List<T> attributeValues,
     Function<VehicleType, T> attributeExtractor
   ) {
     // If no vehicle types are available, we can't match any attributes
     if (vehicleTypesAvailable == null || vehicleTypesAvailable.isEmpty()) {
-      return false;
+      return true;
     }
 
     // Check each vehicle type for a matching attribute
@@ -139,10 +130,10 @@ public class StationUpdateFilter
       }
 
       if (hasMatchingAttribute(vehicleType, attributeValues, attributeExtractor)) {
-        return true;
+        return false;
       }
     }
 
-    return false;
+    return true;
   }
 }

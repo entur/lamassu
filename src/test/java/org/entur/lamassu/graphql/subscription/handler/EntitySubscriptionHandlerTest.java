@@ -90,7 +90,7 @@ class EntitySubscriptionHandlerTest {
   @Test
   void testEntityListenerEvents() {
     // Arrange
-    List<TestUpdate> initialUpdates = Arrays.asList(
+    List<TestUpdate> initialUpdates = List.of(
       new TestUpdate("initial", UpdateType.CREATE, new TestEntity("initial"))
     );
 
@@ -108,7 +108,7 @@ class EntitySubscriptionHandlerTest {
         // First batch should contain only the initial entity
         // This tests the startWith pattern for initial data loading
         return (
-          updates.size() == 1 && updates.get(0).getEntity().getId().equals("initial")
+          updates.size() == 1 && updates.getFirst().getEntity().getId().equals("initial")
         );
       })
       .then(() -> {
@@ -131,8 +131,8 @@ class EntitySubscriptionHandlerTest {
         // Third batch should contain the updated entity
         return (
           updates.size() == 1 &&
-          updates.get(0).getEntity().getId().equals("updated") &&
-          updates.get(0).getUpdateType() == UpdateType.UPDATE
+          updates.getFirst().getEntity().getId().equals("updated") &&
+          updates.getFirst().getUpdateType() == UpdateType.UPDATE
         );
       })
       .then(() -> {
@@ -143,8 +143,8 @@ class EntitySubscriptionHandlerTest {
         // Fourth batch should contain the deleted entity
         return (
           updates.size() == 1 &&
-          updates.get(0).getEntity().getId().equals("deleted") &&
-          updates.get(0).getUpdateType() == UpdateType.DELETE
+          updates.getFirst().getEntity().getId().equals("deleted") &&
+          updates.getFirst().getUpdateType() == UpdateType.DELETE
         );
       })
       .thenCancel()
@@ -177,7 +177,7 @@ class EntitySubscriptionHandlerTest {
       .expectNextMatches(updates -> {
         // Should only contain entity "2"
         // This tests that the filter is applied to the initial data
-        return updates.size() == 1 && updates.get(0).getEntity().getId().equals("2");
+        return updates.size() == 1 && updates.getFirst().getEntity().getId().equals("2");
       })
       .thenCancel()
       .verify(Duration.ofSeconds(2));
@@ -186,7 +186,7 @@ class EntitySubscriptionHandlerTest {
   @Test
   void testBufferingBehavior() {
     // Arrange
-    List<TestUpdate> initialUpdates = Arrays.asList(
+    List<TestUpdate> initialUpdates = List.of(
       new TestUpdate("initial", UpdateType.CREATE, new TestEntity("initial"))
     );
 
@@ -218,7 +218,7 @@ class EntitySubscriptionHandlerTest {
   @Test
   void testLargeDatasetHandling() {
     // Arrange - create a large dataset of 2500 entities
-    List<TestUpdate> initialUpdates = Arrays.asList(
+    List<TestUpdate> initialUpdates = List.of(
       new TestUpdate("large-dataset", UpdateType.CREATE, new TestEntity("large-dataset"))
     );
 
@@ -260,13 +260,11 @@ class EntitySubscriptionHandlerTest {
   // Test update class
   private static class TestUpdate {
 
-    // The id field is needed for the constructor but not used directly
-    private final String id;
     private final UpdateType updateType;
     private final TestEntity entity;
 
     public TestUpdate(String id, UpdateType updateType, TestEntity entity) {
-      this.id = id;
+      // The id field is needed for the constructor but not used directly
       this.updateType = updateType;
       this.entity = entity;
     }
