@@ -84,33 +84,32 @@ public class VehicleUpdateFilter
   }
 
   private boolean matchesVehicleTypeFilters(Vehicle vehicle) {
-    // Skip vehicle type filtering if no filter parameters are set
-    if (filterParameters == null) {
-      return true;
-    }
-
     // Filter by form factor
     List<FormFactor> formFactors = filterParameters.getFormFactors();
-    if (formFactors != null && !formFactors.isEmpty()) {
-      if (
+    if (
+      formFactors != null &&
+      !formFactors.isEmpty() &&
+      (
         vehicle.getVehicleType() == null ||
         vehicle.getVehicleType().getFormFactor() == null ||
         !formFactors.contains(vehicle.getVehicleType().getFormFactor())
-      ) {
-        return false;
-      }
+      )
+    ) {
+      return false;
     }
 
     // Filter by propulsion type
     List<PropulsionType> propulsionTypes = filterParameters.getPropulsionTypes();
-    if (propulsionTypes != null && !propulsionTypes.isEmpty()) {
-      if (
+    if (
+      propulsionTypes != null &&
+      !propulsionTypes.isEmpty() &&
+      (
         vehicle.getVehicleType() == null ||
         vehicle.getVehicleType().getPropulsionType() == null ||
         !propulsionTypes.contains(vehicle.getVehicleType().getPropulsionType())
-      ) {
-        return false;
-      }
+      )
+    ) {
+      return false;
     }
 
     return true;
@@ -126,7 +125,7 @@ public class VehicleUpdateFilter
     if (
       !filterParameters.getIncludeReserved() &&
       vehicle.getReserved() != null &&
-      vehicle.getReserved()
+      Boolean.TRUE.equals(vehicle.getReserved())
     ) {
       return false;
     }
@@ -135,7 +134,7 @@ public class VehicleUpdateFilter
     if (
       !filterParameters.getIncludeDisabled() &&
       vehicle.getDisabled() != null &&
-      vehicle.getDisabled()
+      Boolean.TRUE.equals(vehicle.getDisabled())
     ) {
       return false;
     }

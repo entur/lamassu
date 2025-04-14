@@ -76,11 +76,6 @@ public class StationUpdateFilter
   }
 
   private boolean matchesVehicleTypeFilters(Station station) {
-    // Skip vehicle type filtering if no filter parameters are set
-    if (filterParameters == null) {
-      return true;
-    }
-
     // Filter by available form factors
     List<FormFactor> availableFormFactors = filterParameters.getAvailableFormFactors();
     if (availableFormFactors != null && !availableFormFactors.isEmpty()) {
