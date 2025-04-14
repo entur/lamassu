@@ -127,10 +127,6 @@ public class AbstractEntityUpdateFilter<
   }
 
   protected boolean doesNotMatchBasicFilters(SystemEntity entity) {
-    // Skip filtering if no filter parameters are set
-    if (filterParameters == null) {
-      return false;
-    }
 
     // Filter by codespace
     if (
