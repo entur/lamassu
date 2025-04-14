@@ -24,7 +24,6 @@ abstract class EntityCacheImpl<T extends Entity>
   RMapCache<String, T> cache;
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
-  private final List<EntityListener<T>> listeners = new ArrayList<>();
   // Store Redisson listener IDs for cleanup
   private final List<Integer> redissonListenerIds = new ArrayList<>();
 
@@ -104,8 +103,7 @@ abstract class EntityCacheImpl<T extends Entity>
 
   @Override
   public void addListener(EntityListener<T> listener) {
-    synchronized (listeners) {
-      listeners.add(listener);
+    synchronized (redissonListenerIds) {
       logger.debug("Added entity listener");
 
       // Register Redisson listeners
@@ -140,8 +138,9 @@ abstract class EntityCacheImpl<T extends Entity>
   public void destroy() {
     logger.info("Removing all entity listeners during application shutdown");
 
-    synchronized (listeners) {
+    synchronized (redissonListenerIds) {
       // Remove all Redisson listeners
+      int count = redissonListenerIds.size();
       for (Integer redissonId : redissonListenerIds) {
         try {
           cache.removeListener(redissonId);
@@ -154,11 +153,9 @@ abstract class EntityCacheImpl<T extends Entity>
         }
       }
 
-      // Clear the collections
-      int count = listeners.size();
-      listeners.clear();
+      // Clear the collection
       redissonListenerIds.clear();
-      logger.info("Removed {} entity listeners and associated Redisson listeners", count);
+      logger.info("Removed {} Redisson listeners during shutdown", count);
     }
   }
 }
