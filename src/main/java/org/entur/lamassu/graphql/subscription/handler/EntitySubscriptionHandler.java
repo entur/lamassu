@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.function.Predicate;
 import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.cache.EntityListener;
-import org.entur.lamassu.model.entities.Entity;
 import org.entur.lamassu.graphql.subscription.model.UpdateType;
+import org.entur.lamassu.model.entities.Entity;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +40,9 @@ import reactor.core.publisher.Sinks;
 public abstract class EntitySubscriptionHandler<T extends Entity, U>
   implements EntityListener<T> {
 
-  private static final Logger logger = LoggerFactory.getLogger(EntitySubscriptionHandler.class);
+  private static final Logger logger = LoggerFactory.getLogger(
+    EntitySubscriptionHandler.class
+  );
 
   // Using onBackpressureBuffer for better handling of large initial datasets
   protected final Sinks.Many<U> sink = Sinks.many().multicast().onBackpressureBuffer();

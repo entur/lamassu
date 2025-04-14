@@ -168,7 +168,7 @@ public class GeoUtils {
   }
 
   /**
-   * Calculate distance between two points in kilometers using the Haversine formula
+   * Calculate distance between two points in meters using the Haversine formula
    */
   public static double calculateDistance(
     double lat1,
@@ -176,7 +176,7 @@ public class GeoUtils {
     double lat2,
     double lon2
   ) {
-    final int EARTH_RADIUS = 6371; // Earth's radius in kilometers
+    final int EARTH_RADIUS = 6371000; // Earth's radius in meters
 
     double latDistance = Math.toRadians(lat2 - lat1);
     double lonDistance = Math.toRadians(lon2 - lon1);

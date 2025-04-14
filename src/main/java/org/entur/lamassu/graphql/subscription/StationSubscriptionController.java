@@ -1,13 +1,12 @@
 package org.entur.lamassu.graphql.subscription;
 
 import java.util.List;
-
 import org.entur.lamassu.graphql.subscription.filter.StationUpdateFilter;
 import org.entur.lamassu.graphql.subscription.handler.StationSubscriptionHandler;
+import org.entur.lamassu.graphql.subscription.model.StationUpdate;
 import org.entur.lamassu.graphql.validation.QueryParameterValidator;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PropulsionType;
-import org.entur.lamassu.graphql.subscription.model.StationUpdate;
 import org.entur.lamassu.service.BoundingBoxQueryParameters;
 import org.entur.lamassu.service.FeedProviderService;
 import org.entur.lamassu.service.RangeQueryParameters;

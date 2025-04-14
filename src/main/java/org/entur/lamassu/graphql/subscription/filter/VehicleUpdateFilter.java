@@ -38,10 +38,10 @@ package org.entur.lamassu.graphql.subscription.filter;
 
 import java.util.List;
 import java.util.function.UnaryOperator;
+import org.entur.lamassu.graphql.subscription.model.VehicleUpdate;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PropulsionType;
 import org.entur.lamassu.model.entities.Vehicle;
-import org.entur.lamassu.graphql.subscription.model.VehicleUpdate;
 import org.entur.lamassu.service.BoundingBoxQueryParameters;
 import org.entur.lamassu.service.RangeQueryParameters;
 import org.entur.lamassu.service.VehicleFilterParameters;
