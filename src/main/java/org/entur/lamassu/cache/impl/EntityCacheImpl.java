@@ -4,31 +4,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.cache.EntityListener;
 import org.entur.lamassu.model.entities.Entity;
 import org.redisson.api.RMapCache;
 import org.redisson.api.map.event.EntryCreatedListener;
-import org.redisson.api.map.event.EntryEvent;
-import org.redisson.api.map.event.EntryExpiredListener;
 import org.redisson.api.map.event.EntryRemovedListener;
 import org.redisson.api.map.event.EntryUpdatedListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.DisposableBean;
 
-abstract class EntityCacheImpl<T extends Entity> implements EntityCache<T> {
+abstract class EntityCacheImpl<T extends Entity>
+  implements EntityCache<T>, DisposableBean {
 
   RMapCache<String, T> cache;
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
-  private final Map<Integer, EntityListener<T>> listeners = new ConcurrentHashMap<>();
-  private final AtomicInteger listenerIdCounter = new AtomicInteger(0);
-  private final Map<Integer, Integer> redissonListenerIds = new ConcurrentHashMap<>();
+  private final List<EntityListener<T>> listeners = new ArrayList<>();
+  // Store Redisson listener IDs for cleanup
+  private final List<Integer> redissonListenerIds = new ArrayList<>();
 
   protected EntityCacheImpl(RMapCache<String, T> cache) {
     this.cache = cache;
@@ -105,77 +103,62 @@ abstract class EntityCacheImpl<T extends Entity> implements EntityCache<T> {
   }
 
   @Override
-  public int addListener(EntityListener<T> listener) {
-    int listenerId = listenerIdCounter.incrementAndGet();
-    listeners.put(listenerId, listener);
+  public void addListener(EntityListener<T> listener) {
+    synchronized (listeners) {
+      listeners.add(listener);
+      logger.debug("Added entity listener");
 
-    // Register Redisson listeners
-    int createdListenerId = cache.addListener(
-      new EntryCreatedListener<String, T>() {
-        @Override
-        public void onCreated(EntryEvent<String, T> event) {
-          listener.onEntityCreated(event.getKey(), event.getValue());
-        }
-      }
-    );
+      // Register Redisson listeners
+      redissonListenerIds.add(
+        cache.addListener(
+          (EntryCreatedListener<String, T>) event ->
+            listener.onEntityCreated(event.getKey(), event.getValue())
+        )
+      );
 
-    int updatedListenerId = cache.addListener(
-      new EntryUpdatedListener<String, T>() {
-        @Override
-        public void onUpdated(EntryEvent<String, T> event) {
-          listener.onEntityUpdated(event.getKey(), event.getValue());
-        }
-      }
-    );
+      redissonListenerIds.add(
+        cache.addListener(
+          (EntryUpdatedListener<String, T>) event ->
+            listener.onEntityUpdated(event.getKey(), event.getValue())
+        )
+      );
 
-    int removedListenerId = cache.addListener(
-      new EntryRemovedListener<String, T>() {
-        @Override
-        public void onRemoved(EntryEvent<String, T> event) {
-          listener.onEntityDeleted(event.getKey(), event.getValue());
-        }
-      }
-    );
-
-    int expiredListenerId = cache.addListener(
-      new EntryExpiredListener<String, T>() {
-        @Override
-        public void onExpired(EntryEvent<String, T> event) {
-          listener.onEntityDeleted(event.getKey(), event.getValue());
-        }
-      }
-    );
-
-    // Store the Redisson listener IDs for later removal
-    redissonListenerIds.put(listenerId, createdListenerId);
-    redissonListenerIds.put(-listenerId, updatedListenerId); // Using negative values as keys to store multiple IDs
-    redissonListenerIds.put(-listenerId * 2, removedListenerId);
-    redissonListenerIds.put(-listenerId * 3, expiredListenerId);
-
-    return listenerId;
+      redissonListenerIds.add(
+        cache.addListener(
+          (EntryRemovedListener<String, T>) event ->
+            listener.onEntityDeleted(event.getKey(), event.getValue())
+        )
+      );
+    }
   }
 
+  /**
+   * Removes all listeners when the Spring application context is destroyed.
+   * This ensures proper cleanup of resources during application shutdown.
+   */
   @Override
-  public void removeListener(int listenerId) {
-    listeners.remove(listenerId);
+  public void destroy() {
+    logger.info("Removing all entity listeners during application shutdown");
 
-    // Remove all Redisson listeners associated with this ID
-    Integer createdListenerId = redissonListenerIds.remove(listenerId);
-    Integer updatedListenerId = redissonListenerIds.remove(-listenerId);
-    Integer removedListenerId = redissonListenerIds.remove(-listenerId * 2);
-    Integer expiredListenerId = redissonListenerIds.remove(-listenerId * 3);
+    synchronized (listeners) {
+      // Remove all Redisson listeners
+      for (Integer redissonId : redissonListenerIds) {
+        try {
+          cache.removeListener(redissonId);
+        } catch (Exception e) {
+          logger.warn(
+            "Error removing Redisson listener {}: {}",
+            redissonId,
+            e.getMessage()
+          );
+        }
+      }
 
-    if (createdListenerId != null) {
-      cache.removeListener(createdListenerId);
-    }
-    if (updatedListenerId != null) {
-      cache.removeListener(updatedListenerId);
-    }
-    if (removedListenerId != null) {
-      cache.removeListener(removedListenerId);
-    }
-    if (expiredListenerId != null) {
-      cache.removeListener(expiredListenerId);
+      // Clear the collections
+      int count = listeners.size();
+      listeners.clear();
+      redissonListenerIds.clear();
+      logger.info("Removed {} entity listeners and associated Redisson listeners", count);
     }
   }
 }

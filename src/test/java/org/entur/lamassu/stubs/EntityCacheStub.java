@@ -65,14 +65,8 @@ public class EntityCacheStub<E extends Entity> implements EntityCache<E> {
   }
 
   @Override
-  public int addListener(EntityListener<E> listener) {
+  public void addListener(EntityListener<E> listener) {
     int listenerId = listenerIdCounter.incrementAndGet();
     listeners.put(listenerId, listener);
-    return listenerId;
-  }
-
-  @Override
-  public void removeListener(int listenerId) {
-    listeners.remove(listenerId);
   }
 }

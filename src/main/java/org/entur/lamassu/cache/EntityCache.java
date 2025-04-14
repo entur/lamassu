@@ -39,14 +39,6 @@ public interface EntityCache<T extends Entity> extends EntityReader<T> {
    * Registers a listener for entity events (create, update, delete).
    *
    * @param listener The listener to register
-   * @return A unique ID for the registered listener, which can be used to unregister it
    */
-  int addListener(EntityListener<T> listener);
-
-  /**
-   * Unregisters a previously registered listener.
-   *
-   * @param listenerId The ID of the listener to unregister, as returned by addListener
-   */
-  void removeListener(int listenerId);
+  void addListener(EntityListener<T> listener);
 }
