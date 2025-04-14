@@ -6,6 +6,7 @@ import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PropulsionType;
 import org.entur.lamassu.model.subscription.StationUpdate;
 import org.entur.lamassu.service.BoundingBoxQueryParameters;
+import org.entur.lamassu.service.FeedProviderService;
 import org.entur.lamassu.service.RangeQueryParameters;
 import org.entur.lamassu.service.StationFilterParameters;
 import org.reactivestreams.Publisher;
@@ -22,6 +23,7 @@ public class StationSubscriptionController {
 
   private final StationSubscriptionHandler stationSubscriptionHandler;
   private final QueryParameterValidator validationService;
+  private final FeedProviderService feedProviderService;
 
   /**
    * Creates a new StationSubscriptionController.
@@ -31,10 +33,12 @@ public class StationSubscriptionController {
    */
   public StationSubscriptionController(
     StationSubscriptionHandler stationSubscriptionHandler,
-    QueryParameterValidator validationService
+    QueryParameterValidator validationService,
+    FeedProviderService feedProviderService
   ) {
     this.stationSubscriptionHandler = stationSubscriptionHandler;
     this.validationService = validationService;
+    this.feedProviderService = feedProviderService;
   }
 
   /**
@@ -104,7 +108,13 @@ public class StationSubscriptionController {
         range != null ? (double) range : null
       );
 
-      stationUpdateFilter = new StationUpdateFilter(filterParams, queryParams);
+      stationUpdateFilter =
+        new StationUpdateFilter(
+          filterParams,
+          queryParams,
+          systemId ->
+            feedProviderService.getFeedProviderBySystemId(systemId).getCodespace()
+        );
     } else {
       var queryParams = new BoundingBoxQueryParameters(
         minimumLatitude,
@@ -113,7 +123,13 @@ public class StationSubscriptionController {
         maximumLongitude
       );
 
-      stationUpdateFilter = new StationUpdateFilter(filterParams, queryParams);
+      stationUpdateFilter =
+        new StationUpdateFilter(
+          filterParams,
+          queryParams,
+          systemId ->
+            feedProviderService.getFeedProviderBySystemId(systemId).getCodespace()
+        );
     }
 
     return stationSubscriptionHandler.getPublisher(stationUpdateFilter);

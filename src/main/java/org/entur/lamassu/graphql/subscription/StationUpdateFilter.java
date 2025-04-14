@@ -18,49 +18,132 @@
 
 package org.entur.lamassu.graphql.subscription;
 
+import java.util.List;
+import java.util.function.UnaryOperator;
+import org.entur.lamassu.model.entities.FormFactor;
+import org.entur.lamassu.model.entities.PropulsionType;
+import org.entur.lamassu.model.entities.Station;
+import org.entur.lamassu.model.entities.VehicleTypeAvailability;
 import org.entur.lamassu.model.subscription.StationUpdate;
 import org.entur.lamassu.service.BoundingBoxQueryParameters;
 import org.entur.lamassu.service.RangeQueryParameters;
 import org.entur.lamassu.service.StationFilterParameters;
 
-public class StationUpdateFilter implements EntityUpdateFilter<StationUpdate> {
+public class StationUpdateFilter
+  extends AbstractEntityUpdateFilter<Station, StationFilterParameters>
+  implements EntityUpdateFilter<StationUpdate> {
 
   private final StationFilterParameters filterParameters;
-  private final BoundingBoxQueryParameters boundingBoxParameters;
-  private final RangeQueryParameters rangeQueryParameters;
 
   public StationUpdateFilter(
     StationFilterParameters filterParameters,
-    RangeQueryParameters rangeQueryParameters
+    RangeQueryParameters rangeQueryParameters,
+    UnaryOperator<String> codespaceResolver
   ) {
+    super(filterParameters, rangeQueryParameters, codespaceResolver);
     this.filterParameters = filterParameters;
-    this.rangeQueryParameters = rangeQueryParameters;
-    this.boundingBoxParameters = null;
   }
 
   public StationUpdateFilter(
     StationFilterParameters filterParameters,
-    BoundingBoxQueryParameters boundingBoxParameters
+    BoundingBoxQueryParameters boundingBoxParameters,
+    UnaryOperator<String> codespaceResolver
   ) {
+    super(filterParameters, boundingBoxParameters, codespaceResolver);
     this.filterParameters = filterParameters;
-    this.boundingBoxParameters = boundingBoxParameters;
-    this.rangeQueryParameters = null;
   }
 
   @Override
-  public boolean matches(StationUpdate entity) {
+  public boolean test(StationUpdate entity) {
+    if (entity == null || entity.getStation() == null) {
+      return false;
+    }
+
+    Station station = entity.getStation();
+
+    // Check basic filter parameters
+    if (doesNotMatchBasicFilters(station)) {
+      return false;
+    }
+
+    // Check spatial filters
+    if (doesNotMatchSpatialFilters(station)) {
+      return false;
+    }
+
+    // Check form factor and propulsion type filters
+    if (!matchesVehicleTypeFilters(station)) {
+      return false;
+    }
+
     return true;
   }
 
-  public StationFilterParameters getFilterParameters() {
-    return filterParameters;
-  }
+  private boolean matchesVehicleTypeFilters(Station station) {
+    // Skip vehicle type filtering if no filter parameters are set
+    if (filterParameters == null) {
+      return true;
+    }
 
-  public BoundingBoxQueryParameters getBoundingBoxParameters() {
-    return boundingBoxParameters;
-  }
+    // Filter by available form factors
+    List<FormFactor> availableFormFactors = filterParameters.getAvailableFormFactors();
+    if (availableFormFactors != null && !availableFormFactors.isEmpty()) {
+      // Check if station has vehicle types available with the requested form factors
+      List<VehicleTypeAvailability> vehicleTypesAvailable =
+        station.getVehicleTypesAvailable();
 
-  public RangeQueryParameters getRangeQueryParameters() {
-    return rangeQueryParameters;
+      // If no vehicle types are available, we can't filter by form factor
+      if (vehicleTypesAvailable == null || vehicleTypesAvailable.isEmpty()) {
+        return false;
+      }
+
+      boolean hasMatchingFormFactor = false;
+      for (VehicleTypeAvailability typeAvailability : vehicleTypesAvailable) {
+        if (
+          typeAvailability.getVehicleType() != null &&
+          typeAvailability.getVehicleType().getFormFactor() != null &&
+          availableFormFactors.contains(typeAvailability.getVehicleType().getFormFactor())
+        ) {
+          hasMatchingFormFactor = true;
+          break;
+        }
+      }
+
+      if (!hasMatchingFormFactor) {
+        return false;
+      }
+    }
+
+    // Filter by available propulsion types
+    List<PropulsionType> availablePropulsionTypes =
+      filterParameters.getAvailablePropulsionTypes();
+    if (availablePropulsionTypes != null && !availablePropulsionTypes.isEmpty()) {
+      // Check if station has vehicle types available with the requested propulsion types
+      List<VehicleTypeAvailability> vehicleTypesAvailable =
+        station.getVehicleTypesAvailable();
+
+      // If no vehicle types are available, we can't filter by propulsion type
+      if (vehicleTypesAvailable == null || vehicleTypesAvailable.isEmpty()) {
+        return false;
+      }
+
+      boolean hasMatchingPropulsionType = false;
+      for (VehicleTypeAvailability typeAvailability : vehicleTypesAvailable) {
+        if (
+          typeAvailability.getVehicleType() != null &&
+          typeAvailability.getVehicleType().getPropulsionType() != null &&
+          availablePropulsionTypes.contains(
+            typeAvailability.getVehicleType().getPropulsionType()
+          )
+        ) {
+          hasMatchingPropulsionType = true;
+          break;
+        }
+      }
+
+      return hasMatchingPropulsionType;
+    }
+
+    return true;
   }
 }

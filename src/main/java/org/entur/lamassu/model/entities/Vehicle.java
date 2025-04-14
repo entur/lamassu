@@ -3,7 +3,7 @@ package org.entur.lamassu.model.entities;
 import java.util.List;
 import java.util.Objects;
 
-public class Vehicle implements LocationEntity {
+public class Vehicle implements LocationEntity, SystemEntity {
 
   private String id;
   private Double lat;

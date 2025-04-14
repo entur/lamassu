@@ -16,8 +16,9 @@
  *
  */
 
-package org.entur.lamassu.graphql.subscription;
+package org.entur.lamassu.model.entities;
 
-import java.util.function.Predicate;
-
-public interface EntityUpdateFilter<E> extends Predicate<E> {}
+public interface SystemEntity {
+  String getSystemId();
+  System getSystem();
+}

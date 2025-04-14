@@ -8,6 +8,8 @@ import org.entur.lamassu.cache.EntityListener;
 import org.entur.lamassu.model.entities.Entity;
 import org.entur.lamassu.model.subscription.UpdateType;
 import org.reactivestreams.Publisher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Sinks;
 
 /**
@@ -20,6 +22,8 @@ import reactor.core.publisher.Sinks;
 public abstract class EntitySubscriptionHandler<T extends Entity, U>
   implements EntityListener<T> {
 
+  private static Logger logger = LoggerFactory.getLogger(EntitySubscriptionHandler.class);
+
   // Using onBackpressureBuffer for better handling of large initial datasets
   protected final Sinks.Many<U> sink = Sinks.many().multicast().onBackpressureBuffer();
 
@@ -29,15 +33,12 @@ public abstract class EntitySubscriptionHandler<T extends Entity, U>
 
   /**
    * Gets the publisher for this subscription handler.
-   * Initializes the publisher with initial data from getInitialUpdates().
    *
    * @return The publisher with initial data
    */
   protected Publisher<List<U>> getPublisher(List<U> initialUpdates, Predicate<U> filter) {
-    System.out.println("Preparing to send " + initialUpdates.size() + " initial updates");
+    logger.trace("Preparing to send {} initial updates", initialUpdates.size());
 
-    // For initial data, use a smaller buffer size with shorter timeout for faster delivery
-    // For ongoing updates, use a larger buffer with longer timeout to reduce message frequency
     return sink
       .asFlux()
       .startWith(initialUpdates)

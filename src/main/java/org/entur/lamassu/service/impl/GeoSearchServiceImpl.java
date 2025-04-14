@@ -17,6 +17,7 @@ import org.entur.lamassu.service.GeoSearchService;
 import org.entur.lamassu.service.RangeQueryParameters;
 import org.entur.lamassu.service.StationFilterParameters;
 import org.entur.lamassu.service.VehicleFilterParameters;
+import org.entur.lamassu.util.GeoUtils;
 import org.entur.lamassu.util.SpatialIndexIdFilter;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.redisson.api.GeoOrder;

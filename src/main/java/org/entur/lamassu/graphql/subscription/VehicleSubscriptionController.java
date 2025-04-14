@@ -6,6 +6,7 @@ import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PropulsionType;
 import org.entur.lamassu.model.subscription.VehicleUpdate;
 import org.entur.lamassu.service.BoundingBoxQueryParameters;
+import org.entur.lamassu.service.FeedProviderService;
 import org.entur.lamassu.service.RangeQueryParameters;
 import org.entur.lamassu.service.VehicleFilterParameters;
 import org.reactivestreams.Publisher;
@@ -22,6 +23,7 @@ public class VehicleSubscriptionController {
 
   private final VehicleSubscriptionHandler vehicleSubscriptionHandler;
   private final QueryParameterValidator validationService;
+  private final FeedProviderService feedProviderService;
 
   /**
    * Creates a new VehicleSubscriptionController.
@@ -31,10 +33,12 @@ public class VehicleSubscriptionController {
    */
   public VehicleSubscriptionController(
     VehicleSubscriptionHandler vehicleSubscriptionHandler,
-    QueryParameterValidator validationService
+    QueryParameterValidator validationService,
+    FeedProviderService feedProviderService
   ) {
     this.vehicleSubscriptionHandler = vehicleSubscriptionHandler;
     this.validationService = validationService;
+    this.feedProviderService = feedProviderService;
   }
 
   /**
@@ -109,7 +113,13 @@ public class VehicleSubscriptionController {
         lon,
         range != null ? (double) range : null
       );
-      filter = new VehicleUpdateFilter(filterParams, queryParams);
+      filter =
+        new VehicleUpdateFilter(
+          filterParams,
+          queryParams,
+          systemId ->
+            feedProviderService.getFeedProviderBySystemId(systemId).getCodespace()
+        );
     } else {
       var queryParams = new BoundingBoxQueryParameters(
         minimumLatitude,
@@ -117,7 +127,13 @@ public class VehicleSubscriptionController {
         maximumLatitude,
         maximumLongitude
       );
-      filter = new VehicleUpdateFilter(filterParams, queryParams);
+      filter =
+        new VehicleUpdateFilter(
+          filterParams,
+          queryParams,
+          systemId ->
+            feedProviderService.getFeedProviderBySystemId(systemId).getCodespace()
+        );
     }
 
     // Return publisher and ensure listener is removed when subscription ends

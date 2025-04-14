@@ -10,6 +10,8 @@ import org.entur.lamassu.service.GeoSearchService;
 import org.entur.lamassu.service.RangeQueryParameters;
 import org.entur.lamassu.service.StationFilterParameters;
 import org.reactivestreams.Publisher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -19,6 +21,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class StationSubscriptionHandler
   extends EntitySubscriptionHandler<Station, StationUpdate> {
+
+  private static Logger logger = LoggerFactory.getLogger(
+    StationSubscriptionHandler.class
+  );
 
   private final GeoSearchService geoSearchService;
 
@@ -45,9 +51,8 @@ public class StationSubscriptionHandler
   }
 
   public Publisher<List<StationUpdate>> getPublisher(StationUpdateFilter filter) {
-    List<StationUpdate> initialUpdates = getInitialUpdates(filter);
-    System.out.println("Preparing to send " + initialUpdates.size() + " initial updates");
-    return super.getPublisher(initialUpdates, filter::matches);
+    var initialUpdates = getInitialUpdates(filter);
+    return super.getPublisher(initialUpdates, filter);
   }
 
   private List<StationUpdate> getInitialUpdates(StationUpdateFilter filter) {
@@ -64,15 +69,15 @@ public class StationSubscriptionHandler
         getInitialUpdates(filter.getFilterParameters(), filter.getRangeQueryParameters());
     }
 
-    System.out.println("Found " + initialStations.size() + " stations for subscription");
+    logger.trace("Found {} stations for subscription", initialStations.size());
 
     // Convert to list of updates
     List<StationUpdate> initialUpdates = initialStations
       .stream()
       .map(station -> createUpdate(station.getId(), station, UpdateType.CREATE))
-      .collect(java.util.stream.Collectors.toList());
+      .toList();
 
-    System.out.println("Mapped to " + initialUpdates.size() + " matching stations");
+    logger.trace("Mapped to {} matching stations", initialUpdates.size());
 
     return initialUpdates;
   }

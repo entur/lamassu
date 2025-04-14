@@ -10,13 +10,21 @@ import org.entur.lamassu.service.GeoSearchService;
 import org.entur.lamassu.service.RangeQueryParameters;
 import org.entur.lamassu.service.VehicleFilterParameters;
 import org.reactivestreams.Publisher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 /**
  * Subscription handler for vehicle updates.
  * Filters vehicle updates based on subscription parameters.
  */
+@Component
 public class VehicleSubscriptionHandler
   extends EntitySubscriptionHandler<Vehicle, VehicleUpdate> {
+
+  private static Logger logger = LoggerFactory.getLogger(
+    VehicleSubscriptionHandler.class
+  );
 
   private final GeoSearchService geoSearchService;
 
@@ -44,8 +52,8 @@ public class VehicleSubscriptionHandler
 
   public Publisher<List<VehicleUpdate>> getPublisher(VehicleUpdateFilter filter) {
     List<VehicleUpdate> initialUpdates = getInitialUpdates(filter);
-    System.out.println("Preparing to send " + initialUpdates.size() + " initial updates");
-    return super.getPublisher(initialUpdates, filter::matches);
+    logger.trace("Preparing to send {} initial updates", initialUpdates.size());
+    return super.getPublisher(initialUpdates, filter);
   }
 
   private List<VehicleUpdate> getInitialUpdates(VehicleUpdateFilter filter) {
@@ -62,7 +70,7 @@ public class VehicleSubscriptionHandler
         getInitialUpdates(filter.getFilterParameters(), filter.getRangeQueryParameters());
     }
 
-    System.out.println("Found " + initialStations.size() + " stations for subscription");
+    logger.trace("Found {} stations for subscription", initialStations.size());
 
     // Convert to list of updates
     List<VehicleUpdate> initialUpdates = initialStations
@@ -70,7 +78,7 @@ public class VehicleSubscriptionHandler
       .map(vehicle -> createUpdate(vehicle.getId(), vehicle, UpdateType.CREATE))
       .collect(java.util.stream.Collectors.toList());
 
-    System.out.println("Mapped to " + initialUpdates.size() + " matching stations");
+    logger.trace("Mapped to {} matching stations", initialUpdates.size());
 
     return initialUpdates;
   }
