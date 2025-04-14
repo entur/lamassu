@@ -16,8 +16,24 @@
  *
  */
 
-package org.entur.lamassu.graphql.subscription;
+package org.entur.lamassu.graphql.subscription.model;
 
-import java.util.function.Predicate;
+/**
+ * Enum representing the type of update that occurred to an entity.
+ */
+public enum UpdateType {
+  /**
+   * A new entity was created
+   */
+  CREATE,
 
-public interface EntityUpdateFilter<E> extends Predicate<E> {}
+  /**
+   * An existing entity was updated
+   */
+  UPDATE,
+
+  /**
+   * An entity was deleted
+   */
+  DELETE,
+}
