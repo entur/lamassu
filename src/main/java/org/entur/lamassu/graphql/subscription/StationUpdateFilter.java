@@ -72,11 +72,7 @@ public class StationUpdateFilter
     }
 
     // Check form factor and propulsion type filters
-    if (!matchesVehicleTypeFilters(station)) {
-      return false;
-    }
-
-    return true;
+      return matchesVehicleTypeFilters(station);
   }
 
   private boolean matchesVehicleTypeFilters(Station station) {

@@ -22,12 +22,12 @@ import reactor.core.publisher.Sinks;
 public abstract class EntitySubscriptionHandler<T extends Entity, U>
   implements EntityListener<T> {
 
-  private static Logger logger = LoggerFactory.getLogger(EntitySubscriptionHandler.class);
+  private static final Logger logger = LoggerFactory.getLogger(EntitySubscriptionHandler.class);
 
   // Using onBackpressureBuffer for better handling of large initial datasets
   protected final Sinks.Many<U> sink = Sinks.many().multicast().onBackpressureBuffer();
 
-  public EntitySubscriptionHandler(EntityCache<T> entityCache) {
+  protected EntitySubscriptionHandler(EntityCache<T> entityCache) {
     entityCache.addListener(this);
   }
 
