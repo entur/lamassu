@@ -282,6 +282,166 @@ public class StationUpdateFilterTest {
     );
   }
 
+  @Test
+  void testFilterBySystem() {
+    // Create filter parameters with specific system ID
+    StationFilterParameters filterParams = new StationFilterParameters(
+      null, // codespaces
+      List.of(TEST_SYSTEM_ID), // systems
+      null, // operators
+      null, // count
+      null, // availableFormFactors
+      null // availablePropulsionTypes
+    );
+
+    // Create range parameters
+    RangeQueryParameters rangeParams = new RangeQueryParameters(59.911, 10.753, 1000.0);
+
+    StationUpdateFilter filter = new StationUpdateFilter(
+      filterParams,
+      rangeParams,
+      CODESPACE_RESOLVER
+    );
+
+    // Create test updates with matching and non-matching system IDs
+    StationUpdate matchingUpdate = createStationUpdate(59.912, 10.755); // Has TEST_SYSTEM_ID
+    StationUpdate nonMatchingUpdate = createStationUpdateWithDifferentSystem(
+      59.912,
+      10.755,
+      "different-system"
+    );
+
+    // Assert
+    assertTrue(
+      filter.test(matchingUpdate),
+      "Station with matching system ID should pass filter"
+    );
+    assertFalse(
+      filter.test(nonMatchingUpdate),
+      "Station with non-matching system ID should not pass filter"
+    );
+  }
+
+  @Test
+  void testFilterByOperator() {
+    // Create an operator ID
+    String operatorId = "test-operator";
+
+    // Create filter parameters with specific operator ID
+    StationFilterParameters filterParams = new StationFilterParameters(
+      null, // codespaces
+      null, // systems
+      List.of(operatorId), // operators
+      null, // count
+      null, // availableFormFactors
+      null // availablePropulsionTypes
+    );
+
+    // Create range parameters
+    RangeQueryParameters rangeParams = new RangeQueryParameters(59.911, 10.753, 1000.0);
+
+    StationUpdateFilter filter = new StationUpdateFilter(
+      filterParams,
+      rangeParams,
+      CODESPACE_RESOLVER
+    );
+
+    // Create test updates with matching and non-matching operator IDs
+    StationUpdate matchingUpdate = createStationUpdateWithOperator(
+      59.912,
+      10.755,
+      operatorId
+    );
+    StationUpdate nonMatchingUpdate = createStationUpdateWithOperator(
+      59.912,
+      10.755,
+      "different-operator"
+    );
+    StationUpdate nullOperatorUpdate = createStationUpdateWithNullOperator(
+      59.912,
+      10.755
+    );
+
+    // Assert
+    assertTrue(
+      filter.test(matchingUpdate),
+      "Station with matching operator ID should pass filter"
+    );
+    assertFalse(
+      filter.test(nonMatchingUpdate),
+      "Station with non-matching operator ID should not pass filter"
+    );
+    assertFalse(
+      filter.test(nullOperatorUpdate),
+      "Station with null operator should not pass filter"
+    );
+  }
+
+  @Test
+  void testStationWithNoCoordinates() {
+    // Create filter parameters
+    StationFilterParameters filterParams = new StationFilterParameters(
+      null, // codespaces
+      null, // systems
+      null, // operators
+      null, // count
+      null, // availableFormFactors
+      null // availablePropulsionTypes
+    );
+
+    // Create range parameters
+    RangeQueryParameters rangeParams = new RangeQueryParameters(59.911, 10.753, 1000.0);
+
+    StationUpdateFilter filter = new StationUpdateFilter(
+      filterParams,
+      rangeParams,
+      CODESPACE_RESOLVER
+    );
+
+    // Create a station update with null coordinates
+    StationUpdate updateWithNullCoordinates = createStationUpdateWithNullCoordinates();
+
+    // Assert
+    assertFalse(
+      filter.test(updateWithNullCoordinates),
+      "Station with null coordinates should not pass spatial filter"
+    );
+  }
+
+  @Test
+  void testStationWithNoVehicleTypes() {
+    // Create filter parameters with form factor
+    StationFilterParameters filterParams = new StationFilterParameters(
+      null, // codespaces
+      null, // systems
+      null, // operators
+      null, // count
+      Arrays.asList(FormFactor.BICYCLE), // availableFormFactors
+      null // availablePropulsionTypes
+    );
+
+    // Create range parameters
+    RangeQueryParameters rangeParams = new RangeQueryParameters(59.911, 10.753, 1000.0);
+
+    StationUpdateFilter filter = new StationUpdateFilter(
+      filterParams,
+      rangeParams,
+      CODESPACE_RESOLVER
+    );
+
+    // Create a station update with no vehicle types available
+    StationUpdate updateWithNoVehicleTypes = createStationUpdateWithNoVehicleTypes(
+      59.912,
+      10.755
+    );
+
+    // Assert
+    assertFalse(
+      filter.test(updateWithNoVehicleTypes),
+      "Station with no vehicle types should not pass form factor filter"
+    );
+  }
+
   // Helper methods to create test data
   private StationUpdate createStationUpdate(double lat, double lon) {
     Station station = createStation(lat, lon);
@@ -375,6 +535,71 @@ public class StationUpdateFilterTest {
     List<VehicleTypeAvailability> vehicleTypesAvailable = new ArrayList<>();
     vehicleTypesAvailable.add(availability);
     station.setVehicleTypesAvailable(vehicleTypesAvailable);
+
+    return new StationUpdate(station.getId(), UpdateType.CREATE, station);
+  }
+
+  private StationUpdate createStationUpdateWithDifferentSystem(
+    double lat,
+    double lon,
+    String systemId
+  ) {
+    Station station = createStation(lat, lon);
+    station.setSystemId(systemId);
+
+    // Set up system with the different system ID
+    System system = new System();
+    system.setId(systemId);
+    system.setOperator(new org.entur.lamassu.model.entities.Operator());
+    station.setSystem(system);
+
+    return new StationUpdate(station.getId(), UpdateType.CREATE, station);
+  }
+
+  private StationUpdate createStationUpdateWithOperator(
+    double lat,
+    double lon,
+    String operatorId
+  ) {
+    Station station = createStation(lat, lon);
+
+    // Set up system with the specified operator ID
+    System system = new System();
+    system.setId(TEST_SYSTEM_ID);
+    org.entur.lamassu.model.entities.Operator operator =
+      new org.entur.lamassu.model.entities.Operator();
+    operator.setId(operatorId);
+    system.setOperator(operator);
+    station.setSystem(system);
+
+    return new StationUpdate(station.getId(), UpdateType.CREATE, station);
+  }
+
+  private StationUpdate createStationUpdateWithNullOperator(double lat, double lon) {
+    Station station = createStation(lat, lon);
+
+    // Set up system with null operator
+    System system = new System();
+    system.setId(TEST_SYSTEM_ID);
+    system.setOperator(null);
+    station.setSystem(system);
+
+    return new StationUpdate(station.getId(), UpdateType.CREATE, station);
+  }
+
+  private StationUpdate createStationUpdateWithNullCoordinates() {
+    Station station = createStation(59.912, 10.755);
+    // Set coordinates to null
+    station.setLat(null);
+    station.setLon(null);
+
+    return new StationUpdate(station.getId(), UpdateType.CREATE, station);
+  }
+
+  private StationUpdate createStationUpdateWithNoVehicleTypes(double lat, double lon) {
+    Station station = createStation(lat, lon);
+    // Set vehicle types to empty list
+    station.setVehicleTypesAvailable(new ArrayList<>());
 
     return new StationUpdate(station.getId(), UpdateType.CREATE, station);
   }

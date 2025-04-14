@@ -460,6 +460,180 @@ class VehicleUpdateFilterTest {
     );
   }
 
+  @Test
+  void testFilterBySystem() {
+    // Arrange
+    VehicleFilterParameters filterParams = new VehicleFilterParameters(
+      null,
+      List.of(TEST_SYSTEM_ID),
+      null,
+      null,
+      null,
+      null,
+      true,
+      true
+    );
+
+    BoundingBoxQueryParameters bbox = new BoundingBoxQueryParameters(
+      59.0,
+      10.0,
+      60.0,
+      11.0
+    );
+
+    VehicleUpdateFilter filter = new VehicleUpdateFilter(
+      filterParams,
+      bbox,
+      CODESPACE_RESOLVER
+    );
+
+    // Create test updates with matching and non-matching system IDs
+    VehicleUpdate matchingUpdate = createVehicleUpdate(59.5, 10.5); // Has TEST_SYSTEM_ID
+    VehicleUpdate nonMatchingUpdate = createVehicleUpdateWithDifferentSystem(
+      59.5,
+      10.5,
+      "different-system"
+    );
+
+    // Assert
+    assertTrue(
+      filter.test(matchingUpdate),
+      "Vehicle with matching system ID should pass filter"
+    );
+    assertFalse(
+      filter.test(nonMatchingUpdate),
+      "Vehicle with non-matching system ID should not pass filter"
+    );
+  }
+
+  @Test
+  void testFilterByOperator() {
+    // Arrange
+    VehicleFilterParameters filterParams = new VehicleFilterParameters(
+      null,
+      null,
+      List.of(TEST_OPERATOR_ID),
+      null,
+      null,
+      null,
+      true,
+      true
+    );
+
+    BoundingBoxQueryParameters bbox = new BoundingBoxQueryParameters(
+      59.0,
+      10.0,
+      60.0,
+      11.0
+    );
+
+    VehicleUpdateFilter filter = new VehicleUpdateFilter(
+      filterParams,
+      bbox,
+      CODESPACE_RESOLVER
+    );
+
+    // Create test updates with matching and non-matching operator IDs
+    VehicleUpdate matchingUpdate = createVehicleUpdate(59.5, 10.5); // Has TEST_OPERATOR_ID
+    VehicleUpdate nonMatchingUpdate = createVehicleUpdateWithDifferentOperator(
+      59.5,
+      10.5,
+      "different-operator"
+    );
+    VehicleUpdate nullOperatorUpdate = createVehicleUpdateWithNullOperator(59.5, 10.5);
+
+    // Assert
+    assertTrue(
+      filter.test(matchingUpdate),
+      "Vehicle with matching operator ID should pass filter"
+    );
+    assertFalse(
+      filter.test(nonMatchingUpdate),
+      "Vehicle with non-matching operator ID should not pass filter"
+    );
+    assertFalse(
+      filter.test(nullOperatorUpdate),
+      "Vehicle with null operator should not pass filter"
+    );
+  }
+
+  @Test
+  void testVehicleWithNoCoordinates() {
+    // Arrange
+    VehicleFilterParameters filterParams = new VehicleFilterParameters(
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      true,
+      true
+    );
+
+    BoundingBoxQueryParameters bbox = new BoundingBoxQueryParameters(
+      59.0,
+      10.0,
+      60.0,
+      11.0
+    );
+
+    VehicleUpdateFilter filter = new VehicleUpdateFilter(
+      filterParams,
+      bbox,
+      CODESPACE_RESOLVER
+    );
+
+    // Create a vehicle update with null coordinates
+    VehicleUpdate updateWithNullCoordinates = createVehicleUpdateWithNullCoordinates();
+
+    // Assert
+    assertFalse(
+      filter.test(updateWithNullCoordinates),
+      "Vehicle with null coordinates should not pass spatial filter"
+    );
+  }
+
+  @Test
+  void testVehicleWithNullVehicleType() {
+    // Arrange
+    VehicleFilterParameters filterParams = new VehicleFilterParameters(
+      null,
+      null,
+      null,
+      null,
+      List.of(FormFactor.BICYCLE),
+      null,
+      true,
+      true
+    );
+
+    BoundingBoxQueryParameters bbox = new BoundingBoxQueryParameters(
+      59.0,
+      10.0,
+      60.0,
+      11.0
+    );
+
+    VehicleUpdateFilter filter = new VehicleUpdateFilter(
+      filterParams,
+      bbox,
+      CODESPACE_RESOLVER
+    );
+
+    // Create a vehicle update with null vehicle type
+    VehicleUpdate updateWithNullVehicleType = createVehicleUpdateWithNullVehicleType(
+      59.5,
+      10.5
+    );
+
+    // Assert
+    assertFalse(
+      filter.test(updateWithNullVehicleType),
+      "Vehicle with null vehicle type should not pass form factor filter"
+    );
+  }
+
   // Helper methods to create test data
   private VehicleUpdate createVehicleUpdate(double lat, double lon) {
     Vehicle vehicle = createVehicle(lat, lon);
@@ -529,6 +703,71 @@ class VehicleUpdateFilterTest {
   ) {
     Vehicle vehicle = createVehicle(lat, lon);
     vehicle.setDisabled(disabled);
+    return new VehicleUpdate("test-id", UpdateType.CREATE, vehicle);
+  }
+
+  private VehicleUpdate createVehicleUpdateWithDifferentSystem(
+    double lat,
+    double lon,
+    String systemId
+  ) {
+    Vehicle vehicle = createVehicle(lat, lon);
+    vehicle.setSystemId(systemId);
+
+    // Set up system with the different system ID
+    System system = new System();
+    system.setId(systemId);
+    system.setOperator(new org.entur.lamassu.model.entities.Operator());
+    vehicle.setSystem(system);
+
+    return new VehicleUpdate("test-id", UpdateType.CREATE, vehicle);
+  }
+
+  private VehicleUpdate createVehicleUpdateWithDifferentOperator(
+    double lat,
+    double lon,
+    String operatorId
+  ) {
+    Vehicle vehicle = createVehicle(lat, lon);
+
+    // Set up system with the specified operator ID
+    System system = new System();
+    system.setId(TEST_SYSTEM_ID);
+    org.entur.lamassu.model.entities.Operator operator =
+      new org.entur.lamassu.model.entities.Operator();
+    operator.setId(operatorId);
+    system.setOperator(operator);
+    vehicle.setSystem(system);
+
+    return new VehicleUpdate("test-id", UpdateType.CREATE, vehicle);
+  }
+
+  private VehicleUpdate createVehicleUpdateWithNullOperator(double lat, double lon) {
+    Vehicle vehicle = createVehicle(lat, lon);
+
+    // Set up system with null operator
+    System system = new System();
+    system.setId(TEST_SYSTEM_ID);
+    system.setOperator(null);
+    vehicle.setSystem(system);
+
+    return new VehicleUpdate("test-id", UpdateType.CREATE, vehicle);
+  }
+
+  private VehicleUpdate createVehicleUpdateWithNullCoordinates() {
+    Vehicle vehicle = createVehicle(59.5, 10.5);
+    // Set coordinates to null
+    vehicle.setLat(null);
+    vehicle.setLon(null);
+
+    return new VehicleUpdate("test-id", UpdateType.CREATE, vehicle);
+  }
+
+  private VehicleUpdate createVehicleUpdateWithNullVehicleType(double lat, double lon) {
+    Vehicle vehicle = createVehicle(lat, lon);
+    // Set vehicle type to null
+    vehicle.setVehicleType(null);
+
     return new VehicleUpdate("test-id", UpdateType.CREATE, vehicle);
   }
 }
