@@ -90,10 +90,6 @@ public class AbstractEntityUpdateFilter<
   }
 
   protected boolean doesNotMatchSpatialFilters(E entity) {
-    // Skip spatial filtering if coordinates are not available
-    if (entity.getLat() == null || entity.getLon() == null) {
-      return true;
-    }
 
     // Check bounding box filter
     if (boundingBoxParameters != null) {
