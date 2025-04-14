@@ -675,15 +675,6 @@ class VehicleUpdateFilterTest {
     return new VehicleUpdate("test-id", UpdateType.CREATE, vehicle);
   }
 
-  private VehicleUpdate createVehicleUpdateWithNullCoordinates() {
-    Vehicle vehicle = createVehicle(59.5, 10.5);
-    // Set coordinates to null
-    vehicle.setLat(null);
-    vehicle.setLon(null);
-
-    return new VehicleUpdate("test-id", UpdateType.CREATE, vehicle);
-  }
-
   private VehicleUpdate createVehicleUpdateWithNullVehicleType(double lat, double lon) {
     Vehicle vehicle = createVehicle(lat, lon);
     // Set vehicle type to null

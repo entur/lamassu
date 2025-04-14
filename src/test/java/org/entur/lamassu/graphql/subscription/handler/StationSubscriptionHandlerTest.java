@@ -59,7 +59,7 @@ import reactor.test.StepVerifier;
  * focusing on the template method pattern implementation and the reactive stream optimizations.
  */
 @ExtendWith(MockitoExtension.class)
-public class StationSubscriptionHandlerTest {
+class StationSubscriptionHandlerTest {
 
   @Mock
   private GeoSearchService geoSearchService;

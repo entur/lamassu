@@ -42,7 +42,7 @@ import org.junit.jupiter.api.Test;
  * Unit tests for the StationUpdateFilter class.
  * Tests filtering logic for station updates based on various criteria.
  */
-public class StationUpdateFilterTest {
+class StationUpdateFilterTest {
 
   private static final String TEST_CODESPACE = "TST";
   private static final String TEST_SYSTEM_ID = "test-system";
@@ -523,15 +523,6 @@ public class StationUpdateFilterTest {
     system.setId(TEST_SYSTEM_ID);
     system.setOperator(null);
     station.setSystem(system);
-
-    return new StationUpdate(station.getId(), UpdateType.CREATE, station);
-  }
-
-  private StationUpdate createStationUpdateWithNullCoordinates() {
-    Station station = createStation(59.912, 10.755);
-    // Set coordinates to null
-    station.setLat(null);
-    station.setLon(null);
 
     return new StationUpdate(station.getId(), UpdateType.CREATE, station);
   }

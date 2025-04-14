@@ -95,7 +95,7 @@ public class VehicleSubscriptionHandler
     List<VehicleUpdate> initialUpdates = initialStations
       .stream()
       .map(vehicle -> createUpdate(vehicle.getId(), vehicle, UpdateType.CREATE))
-      .collect(java.util.stream.Collectors.toList());
+      .toList();
 
     logger.trace("Mapped to {} matching stations", initialUpdates.size());
 

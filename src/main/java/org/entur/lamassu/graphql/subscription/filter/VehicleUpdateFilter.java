@@ -73,11 +73,7 @@ public class VehicleUpdateFilter
     }
 
     // Check vehicle status filters (reserved, disabled)
-    if (!matchesStatusFilters(vehicle)) {
-      return false;
-    }
-
-    return true;
+    return matchesStatusFilters(vehicle);
   }
 
   private boolean matchesVehicleTypeFilters(Vehicle vehicle) {
@@ -99,14 +95,10 @@ public class VehicleUpdateFilter
 
     // Check propulsion type filter if specified
     List<PropulsionType> propulsionTypes = filterParameters.getPropulsionTypes();
-    if (
-      hasFilterValues(propulsionTypes) &&
-      !hasMatchingAttribute(vehicleType, propulsionTypes, VehicleType::getPropulsionType)
-    ) {
-      return false;
-    }
-
-    return true;
+    return (
+      !hasFilterValues(propulsionTypes) ||
+      hasMatchingAttribute(vehicleType, propulsionTypes, VehicleType::getPropulsionType)
+    );
   }
 
   /**
@@ -135,14 +127,10 @@ public class VehicleUpdateFilter
     }
 
     // Filter by disabled status
-    if (
-      !filterParameters.getIncludeDisabled() &&
-      vehicle.getDisabled() != null &&
-      Boolean.TRUE.equals(vehicle.getDisabled())
-    ) {
-      return false;
-    }
-
-    return true;
+    return (
+      filterParameters.getIncludeDisabled() ||
+      vehicle.getDisabled() == null ||
+      !Boolean.TRUE.equals(vehicle.getDisabled())
+    );
   }
 }
