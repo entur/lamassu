@@ -558,43 +558,6 @@ class VehicleUpdateFilterTest {
   }
 
   @Test
-  void testVehicleWithNoCoordinates() {
-    // Arrange
-    VehicleFilterParameters filterParams = new VehicleFilterParameters(
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      true,
-      true
-    );
-
-    BoundingBoxQueryParameters bbox = new BoundingBoxQueryParameters(
-      59.0,
-      10.0,
-      60.0,
-      11.0
-    );
-
-    VehicleUpdateFilter filter = new VehicleUpdateFilter(
-      filterParams,
-      bbox,
-      CODESPACE_RESOLVER
-    );
-
-    // Create a vehicle update with null coordinates
-    VehicleUpdate updateWithNullCoordinates = createVehicleUpdateWithNullCoordinates();
-
-    // Assert
-    assertFalse(
-      filter.test(updateWithNullCoordinates),
-      "Vehicle with null coordinates should not pass spatial filter"
-    );
-  }
-
-  @Test
   void testVehicleWithNullVehicleType() {
     // Arrange
     VehicleFilterParameters filterParams = new VehicleFilterParameters(

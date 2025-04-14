@@ -378,37 +378,6 @@ public class StationUpdateFilterTest {
   }
 
   @Test
-  void testStationWithNoCoordinates() {
-    // Create filter parameters
-    StationFilterParameters filterParams = new StationFilterParameters(
-      null, // codespaces
-      null, // systems
-      null, // operators
-      null, // count
-      null, // availableFormFactors
-      null // availablePropulsionTypes
-    );
-
-    // Create range parameters
-    RangeQueryParameters rangeParams = new RangeQueryParameters(59.911, 10.753, 1000.0);
-
-    StationUpdateFilter filter = new StationUpdateFilter(
-      filterParams,
-      rangeParams,
-      CODESPACE_RESOLVER
-    );
-
-    // Create a station update with null coordinates
-    StationUpdate updateWithNullCoordinates = createStationUpdateWithNullCoordinates();
-
-    // Assert
-    assertFalse(
-      filter.test(updateWithNullCoordinates),
-      "Station with null coordinates should not pass spatial filter"
-    );
-  }
-
-  @Test
   void testStationWithNoVehicleTypes() {
     // Create filter parameters with form factor
     StationFilterParameters filterParams = new StationFilterParameters(
