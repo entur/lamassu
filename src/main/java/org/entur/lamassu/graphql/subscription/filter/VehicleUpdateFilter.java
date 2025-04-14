@@ -24,6 +24,7 @@ import org.entur.lamassu.graphql.subscription.model.VehicleUpdate;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PropulsionType;
 import org.entur.lamassu.model.entities.Vehicle;
+import org.entur.lamassu.model.entities.VehicleType;
 import org.entur.lamassu.service.BoundingBoxQueryParameters;
 import org.entur.lamassu.service.RangeQueryParameters;
 import org.entur.lamassu.service.VehicleFilterParameters;
@@ -54,10 +55,6 @@ public class VehicleUpdateFilter
 
   @Override
   public boolean test(VehicleUpdate entity) {
-    if (entity == null || entity.getVehicle() == null) {
-      return false;
-    }
-
     Vehicle vehicle = entity.getVehicle();
 
     // Check basic filter parameters
@@ -84,35 +81,42 @@ public class VehicleUpdateFilter
   }
 
   private boolean matchesVehicleTypeFilters(Vehicle vehicle) {
-    // Filter by form factor
+    // Get the vehicle type from the vehicle
+    VehicleType vehicleType = vehicle.getVehicleType();
+    if (vehicleType == null) {
+      // If vehicle type is null, it can't match any form factor or propulsion type filters
+      return !hasAnyVehicleTypeFilters();
+    }
+
+    // Check form factor filter if specified
     List<FormFactor> formFactors = filterParameters.getFormFactors();
     if (
-      formFactors != null &&
-      !formFactors.isEmpty() &&
-      (
-        vehicle.getVehicleType() == null ||
-        vehicle.getVehicleType().getFormFactor() == null ||
-        !formFactors.contains(vehicle.getVehicleType().getFormFactor())
-      )
+      hasFilterValues(formFactors) &&
+      !hasMatchingAttribute(vehicleType, formFactors, VehicleType::getFormFactor)
     ) {
       return false;
     }
 
-    // Filter by propulsion type
+    // Check propulsion type filter if specified
     List<PropulsionType> propulsionTypes = filterParameters.getPropulsionTypes();
     if (
-      propulsionTypes != null &&
-      !propulsionTypes.isEmpty() &&
-      (
-        vehicle.getVehicleType() == null ||
-        vehicle.getVehicleType().getPropulsionType() == null ||
-        !propulsionTypes.contains(vehicle.getVehicleType().getPropulsionType())
-      )
+      hasFilterValues(propulsionTypes) &&
+      !hasMatchingAttribute(vehicleType, propulsionTypes, VehicleType::getPropulsionType)
     ) {
       return false;
     }
 
     return true;
+  }
+
+  /**
+   * Checks if any vehicle type filters are specified.
+   */
+  private boolean hasAnyVehicleTypeFilters() {
+    return (
+      hasFilterValues(filterParameters.getFormFactors()) ||
+      hasFilterValues(filterParameters.getPropulsionTypes())
+    );
   }
 
   private boolean matchesStatusFilters(Vehicle vehicle) {

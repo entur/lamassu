@@ -16,28 +16,11 @@
  *
  */
 
-/*
- *
- *
- *  * Licensed under the EUPL, Version 1.2 or – as soon they will be approved by
- *  * the European Commission - subsequent versions of the EUPL (the "Licence");
- *  * You may not use this work except in compliance with the Licence.
- *  * You may obtain a copy of the Licence at:
- *  *
- *  *   https://joinup.ec.europa.eu/software/page/eupl
- *  *
- *  * Unless required by applicable law or agreed to in writing, software
- *  * distributed under the Licence is distributed on an "AS IS" basis,
- *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  * See the Licence for the specific language governing permissions and
- *  * limitations under the Licence.
- *
- */
-
 package org.entur.lamassu.graphql.subscription.filter;
 
 import static org.entur.lamassu.util.GeoUtils.calculateDistance;
 
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import org.entur.lamassu.model.entities.LocationEntity;
@@ -157,5 +140,36 @@ public class AbstractEntityUpdateFilter<
     }
 
     return false;
+  }
+
+  /**
+   * Checks if a list of filter values is non-null and non-empty.
+   *
+   * @param filterValues The list of filter values to check
+   * @return true if the list is non-null and non-empty, false otherwise
+   */
+  protected <T> boolean hasFilterValues(List<T> filterValues) {
+    return filterValues != null && !filterValues.isEmpty();
+  }
+
+  /**
+   * Checks if a vehicle type has an attribute that matches one of the specified values.
+   *
+   * @param vehicleType The vehicle type to check
+   * @param attributeValues The list of attribute values to match against
+   * @param attributeExtractor Function to extract the attribute from a vehicle type
+   * @return true if the vehicle type has a matching attribute, false otherwise
+   */
+  protected <T, V> boolean hasMatchingAttribute(
+    V vehicleType,
+    List<T> attributeValues,
+    Function<V, T> attributeExtractor
+  ) {
+    if (vehicleType == null) {
+      return false;
+    }
+
+    T attributeValue = attributeExtractor.apply(vehicleType);
+    return attributeValue != null && attributeValues.contains(attributeValue);
   }
 }

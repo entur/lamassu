@@ -27,12 +27,6 @@ public class VehicleSubscriptionController {
   private final QueryParameterValidator validationService;
   private final FeedProviderService feedProviderService;
 
-  /**
-   * Creates a new VehicleSubscriptionController.
-   *
-   * @param vehicleSubscriptionHandler
-   * @param validationService The query parameter validator
-   */
   public VehicleSubscriptionController(
     VehicleSubscriptionHandler vehicleSubscriptionHandler,
     QueryParameterValidator validationService,
@@ -101,8 +95,8 @@ public class VehicleSubscriptionController {
       null, // count is not applicable for subscriptions
       formFactors,
       propulsionTypes,
-      includeReserved != null ? includeReserved : false,
-      includeDisabled != null ? includeDisabled : false
+      includeReserved != null && includeReserved,
+      includeDisabled != null && includeDisabled
     );
 
     // Create subscription handler

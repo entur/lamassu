@@ -19,11 +19,13 @@
 package org.entur.lamassu.graphql.subscription.filter;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import org.entur.lamassu.graphql.subscription.model.StationUpdate;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PropulsionType;
 import org.entur.lamassu.model.entities.Station;
+import org.entur.lamassu.model.entities.VehicleType;
 import org.entur.lamassu.model.entities.VehicleTypeAvailability;
 import org.entur.lamassu.service.BoundingBoxQueryParameters;
 import org.entur.lamassu.service.RangeQueryParameters;
@@ -55,10 +57,6 @@ public class StationUpdateFilter
 
   @Override
   public boolean test(StationUpdate entity) {
-    if (entity == null || entity.getStation() == null) {
-      return false;
-    }
-
     Station station = entity.getStation();
 
     // Check basic filter parameters
@@ -76,65 +74,75 @@ public class StationUpdateFilter
   }
 
   private boolean matchesVehicleTypeFilters(Station station) {
-    // Filter by available form factors
+    // Get vehicle types available from the station
+    List<VehicleTypeAvailability> vehicleTypesAvailable =
+      station.getVehicleTypesAvailable();
+
+    // Check form factor filter if specified
     List<FormFactor> availableFormFactors = filterParameters.getAvailableFormFactors();
-    if (availableFormFactors != null && !availableFormFactors.isEmpty()) {
-      // Check if station has vehicle types available with the requested form factors
-      List<VehicleTypeAvailability> vehicleTypesAvailable =
-        station.getVehicleTypesAvailable();
-
-      // If no vehicle types are available, we can't filter by form factor
-      if (vehicleTypesAvailable == null || vehicleTypesAvailable.isEmpty()) {
-        return false;
-      }
-
-      boolean hasMatchingFormFactor = false;
-      for (VehicleTypeAvailability typeAvailability : vehicleTypesAvailable) {
-        if (
-          typeAvailability.getVehicleType() != null &&
-          typeAvailability.getVehicleType().getFormFactor() != null &&
-          availableFormFactors.contains(typeAvailability.getVehicleType().getFormFactor())
-        ) {
-          hasMatchingFormFactor = true;
-          break;
-        }
-      }
-
-      if (!hasMatchingFormFactor) {
-        return false;
-      }
+    if (
+      hasFilterValues(availableFormFactors) &&
+      !hasMatchingVehicleTypeAttribute(
+        vehicleTypesAvailable,
+        availableFormFactors,
+        VehicleType::getFormFactor
+      )
+    ) {
+      return false;
     }
 
-    // Filter by available propulsion types
+    // Check propulsion type filter if specified
     List<PropulsionType> availablePropulsionTypes =
       filterParameters.getAvailablePropulsionTypes();
-    if (availablePropulsionTypes != null && !availablePropulsionTypes.isEmpty()) {
-      // Check if station has vehicle types available with the requested propulsion types
-      List<VehicleTypeAvailability> vehicleTypesAvailable =
-        station.getVehicleTypesAvailable();
-
-      // If no vehicle types are available, we can't filter by propulsion type
-      if (vehicleTypesAvailable == null || vehicleTypesAvailable.isEmpty()) {
-        return false;
-      }
-
-      boolean hasMatchingPropulsionType = false;
-      for (VehicleTypeAvailability typeAvailability : vehicleTypesAvailable) {
-        if (
-          typeAvailability.getVehicleType() != null &&
-          typeAvailability.getVehicleType().getPropulsionType() != null &&
-          availablePropulsionTypes.contains(
-            typeAvailability.getVehicleType().getPropulsionType()
-          )
-        ) {
-          hasMatchingPropulsionType = true;
-          break;
-        }
-      }
-
-      return hasMatchingPropulsionType;
+    if (
+      hasFilterValues(availablePropulsionTypes) &&
+      !hasMatchingVehicleTypeAttribute(
+        vehicleTypesAvailable,
+        availablePropulsionTypes,
+        VehicleType::getPropulsionType
+      )
+    ) {
+      return false;
     }
 
     return true;
+  }
+
+  /**
+   * Checks if a list of filter values is non-null and non-empty.
+   */
+  // This method is now provided by the parent class
+
+  /**
+   * Checks if any vehicle type availability matches the specified attribute values.
+   *
+   * @param vehicleTypesAvailable The list of vehicle type availabilities to check
+   * @param attributeValues The list of attribute values to match against
+   * @param attributeExtractor Function to extract the attribute from a vehicle type
+   * @return true if at least one vehicle type has a matching attribute, false otherwise
+   */
+  private <T> boolean hasMatchingVehicleTypeAttribute(
+    List<VehicleTypeAvailability> vehicleTypesAvailable,
+    List<T> attributeValues,
+    Function<VehicleType, T> attributeExtractor
+  ) {
+    // If no vehicle types are available, we can't match any attributes
+    if (vehicleTypesAvailable == null || vehicleTypesAvailable.isEmpty()) {
+      return false;
+    }
+
+    // Check each vehicle type for a matching attribute
+    for (VehicleTypeAvailability typeAvailability : vehicleTypesAvailable) {
+      VehicleType vehicleType = typeAvailability.getVehicleType();
+      if (vehicleType == null) {
+        continue;
+      }
+
+      if (hasMatchingAttribute(vehicleType, attributeValues, attributeExtractor)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }

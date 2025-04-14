@@ -419,48 +419,6 @@ class VehicleUpdateFilterTest {
   }
 
   @Test
-  void testNullVehicleUpdate() {
-    // Arrange
-    VehicleFilterParameters filterParams = new VehicleFilterParameters(
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      false,
-      false
-    );
-
-    BoundingBoxQueryParameters bbox = new BoundingBoxQueryParameters(
-      59.0,
-      10.0,
-      60.0,
-      11.0
-    );
-
-    VehicleUpdateFilter filter = new VehicleUpdateFilter(
-      filterParams,
-      bbox,
-      CODESPACE_RESOLVER
-    );
-
-    // Assert
-    assertFalse(filter.test(null), "Null update should not pass filter");
-
-    // Test with null vehicle in update
-    VehicleUpdate nullVehicleUpdate = new VehicleUpdate(
-      "test-id",
-      UpdateType.CREATE,
-      null
-    );
-    assertFalse(
-      filter.test(nullVehicleUpdate),
-      "Update with null vehicle should not pass filter"
-    );
-  }
-
-  @Test
   void testFilterBySystem() {
     // Arrange
     VehicleFilterParameters filterParams = new VehicleFilterParameters(

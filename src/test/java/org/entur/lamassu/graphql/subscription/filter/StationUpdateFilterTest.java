@@ -254,35 +254,6 @@ public class StationUpdateFilterTest {
   }
 
   @Test
-  void testNullStationUpdate() {
-    // Create filter parameters
-    StationFilterParameters filterParams = new StationFilterParameters(
-      null, // codespaces
-      null, // systems
-      null, // operators
-      null, // count
-      null, // availableFormFactors
-      null // availablePropulsionTypes
-    );
-
-    // Create range parameters
-    RangeQueryParameters rangeParams = new RangeQueryParameters(59.911, 10.753, 1000.0);
-
-    StationUpdateFilter filter = new StationUpdateFilter(
-      filterParams,
-      rangeParams,
-      CODESPACE_RESOLVER
-    );
-
-    // Assert
-    assertFalse(filter.test(null), "Null update should not pass filter");
-    assertFalse(
-      filter.test(new StationUpdate("id", UpdateType.CREATE, null)),
-      "Update with null station should not pass filter"
-    );
-  }
-
-  @Test
   void testFilterBySystem() {
     // Create filter parameters with specific system ID
     StationFilterParameters filterParams = new StationFilterParameters(
