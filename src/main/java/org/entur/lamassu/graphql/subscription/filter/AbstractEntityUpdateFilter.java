@@ -90,7 +90,6 @@ public class AbstractEntityUpdateFilter<
   }
 
   protected boolean doesNotMatchSpatialFilters(E entity) {
-
     // Check bounding box filter
     if (boundingBoxParameters != null) {
       double lat = entity.getLat();
@@ -123,7 +122,6 @@ public class AbstractEntityUpdateFilter<
   }
 
   protected boolean doesNotMatchBasicFilters(SystemEntity entity) {
-
     // Filter by codespace
     if (
       filterParameters.getCodespaces() != null &&
