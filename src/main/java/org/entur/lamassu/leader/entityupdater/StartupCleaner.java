@@ -19,6 +19,7 @@
 package org.entur.lamassu.leader.entityupdater;
 
 import org.entur.lamassu.cache.EntityCache;
+import org.entur.lamassu.leader.GbfsUpdateContinuityTracker;
 import org.entur.lamassu.model.entities.System;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.service.FeedProviderService;

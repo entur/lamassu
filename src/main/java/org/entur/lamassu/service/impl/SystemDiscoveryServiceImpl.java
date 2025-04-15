@@ -11,6 +11,8 @@ import org.mobilitydata.gbfs.v3_0.manifest.GBFSData;
 import org.mobilitydata.gbfs.v3_0.manifest.GBFSDataset;
 import org.mobilitydata.gbfs.v3_0.manifest.GBFSManifest;
 import org.mobilitydata.gbfs.v3_0.manifest.GBFSVersion;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -18,9 +20,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class SystemDiscoveryServiceImpl implements SystemDiscoveryService {
 
-  private final SystemDiscovery systemDiscovery;
+  private static final Logger logger = LoggerFactory.getLogger(
+    SystemDiscoveryServiceImpl.class
+  );
 
-  private final GBFSManifest gbfsManifest;
+  private final FeedProviderService feedProviderService;
+  private final SystemDiscoveryMapper systemDiscoveryMapper;
+  private final String baseUrl;
 
   @Autowired
   public SystemDiscoveryServiceImpl(
@@ -28,40 +34,56 @@ public class SystemDiscoveryServiceImpl implements SystemDiscoveryService {
     SystemDiscoveryMapper systemDiscoveryMapper,
     @Value("${org.entur.lamassu.baseUrl}") String baseUrl
   ) {
-    this.systemDiscovery = mapSystemDiscovery(feedProviderService, systemDiscoveryMapper);
-    this.gbfsManifest = mapGBFSManifest(systemDiscovery, baseUrl);
+    this.feedProviderService = feedProviderService;
+    this.systemDiscoveryMapper = systemDiscoveryMapper;
+    this.baseUrl = baseUrl;
   }
 
   @Override
   public SystemDiscovery getSystemDiscovery() {
-    return systemDiscovery;
+    return mapSystemDiscovery();
   }
 
   @Override
   public GBFSManifest getGBFSManifest() {
-    return gbfsManifest;
+    return mapGBFSManifest(mapSystemDiscovery());
   }
 
   @NotNull
-  private SystemDiscovery mapSystemDiscovery(
-    FeedProviderService feedProviderService,
-    SystemDiscoveryMapper systemDiscoveryMapper
-  ) {
-    var mappedSystemDiscovery = new SystemDiscovery();
-    mappedSystemDiscovery.setSystems(
-      feedProviderService
-        .getFeedProviders()
-        .stream()
-        .map(systemDiscoveryMapper::mapSystemDiscovery)
-        .toList()
+  private SystemDiscovery mapSystemDiscovery() {
+    logger.debug(
+      "Mapping system discovery with {} feed providers",
+      feedProviderService.getFeedProviders().size()
     );
+
+    var mappedSystemDiscovery = new SystemDiscovery();
+    var filteredSystems = feedProviderService
+      .getFeedProviders()
+      .stream()
+      .filter(feedProvider -> {
+        String systemId = feedProvider.getSystemId();
+        Boolean enabled = feedProvider.getEnabled();
+
+        logger.debug("Feed provider: systemId={}, enabled={}", systemId, enabled);
+
+        // Only include providers that are enabled
+        if (Boolean.FALSE.equals(enabled)) {
+          logger.debug("Excluding {} because it is disabled", systemId);
+          return false;
+        }
+
+        logger.debug("Including {} in system discovery", systemId);
+        return true;
+      })
+      .map(systemDiscoveryMapper::mapSystemDiscovery)
+      .toList();
+
+    logger.debug("Filtered to {} systems for discovery", filteredSystems.size());
+    mappedSystemDiscovery.setSystems(filteredSystems);
     return mappedSystemDiscovery;
   }
 
-  public GBFSManifest mapGBFSManifest(
-    SystemDiscovery mappedSystemDiscovery,
-    String baseUrl
-  ) {
+  public GBFSManifest mapGBFSManifest(SystemDiscovery mappedSystemDiscovery) {
     return new GBFSManifest()
       .withVersion(GBFSVersion.Version._3_0.toString())
       .withLastUpdated(new Date())

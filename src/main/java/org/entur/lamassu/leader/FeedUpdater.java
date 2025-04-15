@@ -29,7 +29,6 @@ import org.entur.gbfs.loader.v3.GbfsV3Delivery;
 import org.entur.gbfs.validation.model.ValidationResult;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.leader.entityupdater.EntityCachesUpdater;
-import org.entur.lamassu.leader.entityupdater.StartupCleaner;
 import org.entur.lamassu.leader.feedcachesupdater.V2FeedCachesUpdater;
 import org.entur.lamassu.leader.feedcachesupdater.V3FeedCachesUpdater;
 import org.entur.lamassu.mapper.feedmapper.GbfsFeedVersionMappers;
@@ -68,7 +67,7 @@ public class FeedUpdater {
   private GbfsSubscriptionManager subscriptionManager;
   private ForkJoinPool updaterThreadPool;
   private final RListMultimap<String, ValidationResult> validationResultsCache;
-  private final StartupCleaner startupCleaner;
+  private final CacheCleanupService cacheCleanupService;
 
   @Value("${org.entur.lamassu.enableValidation:false}")
   private boolean enableValidation;
@@ -89,7 +88,7 @@ public class FeedUpdater {
     RListMultimap<String, ValidationResult> validationResultsCache,
     RBucket<Boolean> cacheReady,
     MetricsService metricsService,
-    StartupCleaner startupCleaner,
+    CacheCleanupService cacheCleanupService,
     SubscriptionRegistry subscriptionRegistry
   ) {
     this.feedProviderConfig = feedProviderConfig;
@@ -101,12 +100,12 @@ public class FeedUpdater {
     this.validationResultsCache = validationResultsCache;
     this.cacheReady = cacheReady;
     this.metricsService = metricsService;
-    this.startupCleaner = startupCleaner;
+    this.cacheCleanupService = cacheCleanupService;
     this.subscriptionRegistry = subscriptionRegistry;
   }
 
   public void start() {
-    startupCleaner.cleanup();
+    cacheCleanupService.clearCache();
     subscriptionRegistry.clear(); // Clear any existing subscription registrations
     updaterThreadPool =
       new ForkJoinPool(
@@ -325,7 +324,7 @@ public class FeedUpdater {
       subscriptionRegistry.removeSubscription(feedProvider.getSystemId());
 
       // Clean up any cached data
-      startupCleaner.cleanupSystem(feedProvider.getSystemId());
+      cacheCleanupService.clearCacheForSystem(feedProvider.getSystemId());
 
       // Update status
       subscriptionRegistry.updateSubscriptionStatus(
