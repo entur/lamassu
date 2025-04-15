@@ -21,7 +21,8 @@ public class JacksonConfig {
    * This prevents serialization errors with implementations like Oauth2ClientCredentialsGrantRequestAuthenticator.
    */
   @JsonIgnoreType
-  public static abstract class MixInForRequestAuthenticator implements RequestAuthenticator {}
+  public abstract static class MixInForRequestAuthenticator
+    implements RequestAuthenticator {}
 
   /**
    * Configures the global ObjectMapper with custom settings.
@@ -32,9 +33,10 @@ public class JacksonConfig {
   @Bean
   @Primary
   public ObjectMapper objectMapper() {
-    return Jackson2ObjectMapperBuilder.json()
-        .mixIn(RequestAuthenticator.class, MixInForRequestAuthenticator.class)
-        .featuresToDisable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
-        .build();
+    return Jackson2ObjectMapperBuilder
+      .json()
+      .mixIn(RequestAuthenticator.class, MixInForRequestAuthenticator.class)
+      .featuresToDisable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+      .build();
   }
 }

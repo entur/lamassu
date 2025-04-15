@@ -29,9 +29,9 @@ public class FeedProviderSourceConfig {
   @Bean
   @Primary
   public FeedProviderConfig feedProviderConfig(
-      FeedProviderConfigFile fileConfig,
-      FeedProviderConfigRedis redisConfig) {
-    
+    FeedProviderConfigFile fileConfig,
+    FeedProviderConfigRedis redisConfig
+  ) {
     if ("redis".equalsIgnoreCase(feedProvidersSource)) {
       return redisConfig;
     } else {

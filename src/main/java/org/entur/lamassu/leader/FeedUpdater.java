@@ -199,10 +199,7 @@ public class FeedUpdater {
       logger.info("Setup subscription complete systemId={}", feedProvider.getSystemId());
       metricsService.registerSubscriptionSetup(feedProvider, true);
       // Register the subscription in the registry
-      subscriptionRegistry.registerSubscription(
-        feedProvider.getSystemId(), 
-        id
-      );
+      subscriptionRegistry.registerSubscription(feedProvider.getSystemId(), id);
       // after registration, immediately update the feed
       subscriptionManager.update(id);
     }
@@ -302,16 +299,24 @@ public class FeedUpdater {
     feedProvider.setEnabled(false);
 
     // Check if a subscription exists
-    String subscriptionId = subscriptionRegistry.getSubscriptionIdBySystemId(feedProvider.getSystemId());
+    String subscriptionId = subscriptionRegistry.getSubscriptionIdBySystemId(
+      feedProvider.getSystemId()
+    );
     if (subscriptionId == null) {
       // No subscription to stop
-      subscriptionRegistry.updateSubscriptionStatus(feedProvider.getSystemId(), SubscriptionStatus.STOPPED);
+      subscriptionRegistry.updateSubscriptionStatus(
+        feedProvider.getSystemId(),
+        SubscriptionStatus.STOPPED
+      );
       return true;
     }
 
     // Update status to STOPPING
-    subscriptionRegistry.updateSubscriptionStatus(feedProvider.getSystemId(), SubscriptionStatus.STOPPING);
-    
+    subscriptionRegistry.updateSubscriptionStatus(
+      feedProvider.getSystemId(),
+      SubscriptionStatus.STOPPING
+    );
+
     try {
       // Unsubscribe from the feed
       subscriptionManager.unsubscribe(subscriptionId);
@@ -323,14 +328,24 @@ public class FeedUpdater {
       startupCleaner.cleanupSystem(feedProvider.getSystemId());
 
       // Update status
-      subscriptionRegistry.updateSubscriptionStatus(feedProvider.getSystemId(), SubscriptionStatus.STOPPED);
+      subscriptionRegistry.updateSubscriptionStatus(
+        feedProvider.getSystemId(),
+        SubscriptionStatus.STOPPED
+      );
 
       logger.info("Stopped subscription for systemId={}", feedProvider.getSystemId());
       return true;
     } catch (Exception e) {
-      logger.error("Error stopping subscription for systemId={}", feedProvider.getSystemId(), e);
+      logger.error(
+        "Error stopping subscription for systemId={}",
+        feedProvider.getSystemId(),
+        e
+      );
       // Set status back to STARTED if there was an error
-      subscriptionRegistry.updateSubscriptionStatus(feedProvider.getSystemId(), SubscriptionStatus.STARTED);
+      subscriptionRegistry.updateSubscriptionStatus(
+        feedProvider.getSystemId(),
+        SubscriptionStatus.STARTED
+      );
       return false;
     }
   }
@@ -352,7 +367,10 @@ public class FeedUpdater {
     feedProvider.setEnabled(true);
 
     // Update status to STARTING
-    subscriptionRegistry.updateSubscriptionStatus(feedProvider.getSystemId(), SubscriptionStatus.STARTING);
+    subscriptionRegistry.updateSubscriptionStatus(
+      feedProvider.getSystemId(),
+      SubscriptionStatus.STARTING
+    );
 
     // Create the subscription in a separate thread
     updaterThreadPool.execute(() -> {
@@ -361,8 +379,15 @@ public class FeedUpdater {
         // If we get here, the subscription was created successfully
       } catch (Exception e) {
         // If there was an error, update the status
-        subscriptionRegistry.updateSubscriptionStatus(feedProvider.getSystemId(), SubscriptionStatus.STOPPED);
-        logger.error("Failed to start subscription for systemId={}", feedProvider.getSystemId(), e);
+        subscriptionRegistry.updateSubscriptionStatus(
+          feedProvider.getSystemId(),
+          SubscriptionStatus.STOPPED
+        );
+        logger.error(
+          "Failed to start subscription for systemId={}",
+          feedProvider.getSystemId(),
+          e
+        );
       }
     });
 
@@ -381,16 +406,25 @@ public class FeedUpdater {
     feedProvider.setEnabled(true);
 
     // Update status to STARTING
-    subscriptionRegistry.updateSubscriptionStatus(feedProvider.getSystemId(), SubscriptionStatus.STARTING);
+    subscriptionRegistry.updateSubscriptionStatus(
+      feedProvider.getSystemId(),
+      SubscriptionStatus.STARTING
+    );
 
     // Stop any existing subscription
-    String subscriptionId = subscriptionRegistry.getSubscriptionIdBySystemId(feedProvider.getSystemId());
+    String subscriptionId = subscriptionRegistry.getSubscriptionIdBySystemId(
+      feedProvider.getSystemId()
+    );
     if (subscriptionId != null) {
       try {
         subscriptionManager.unsubscribe(subscriptionId);
         subscriptionRegistry.removeSubscription(feedProvider.getSystemId());
       } catch (Exception e) {
-        logger.warn("Error unsubscribing during restart for systemId={}", feedProvider.getSystemId(), e);
+        logger.warn(
+          "Error unsubscribing during restart for systemId={}",
+          feedProvider.getSystemId(),
+          e
+        );
         // Continue with restart even if unsubscribe fails
       }
     }
@@ -401,8 +435,15 @@ public class FeedUpdater {
         createSubscription(feedProvider);
         logger.info("Restarted subscription for systemId={}", feedProvider.getSystemId());
       } catch (Exception e) {
-        subscriptionRegistry.updateSubscriptionStatus(feedProvider.getSystemId(), SubscriptionStatus.STOPPED);
-        logger.error("Failed to restart subscription for systemId={}", feedProvider.getSystemId(), e);
+        subscriptionRegistry.updateSubscriptionStatus(
+          feedProvider.getSystemId(),
+          SubscriptionStatus.STOPPED
+        );
+        logger.error(
+          "Failed to restart subscription for systemId={}",
+          feedProvider.getSystemId(),
+          e
+        );
       }
     });
 

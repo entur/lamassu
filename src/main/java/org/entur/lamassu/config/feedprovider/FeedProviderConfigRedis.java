@@ -19,13 +19,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class FeedProviderConfigRedis implements FeedProviderConfig {
 
-  private static final Logger logger = LoggerFactory.getLogger(FeedProviderConfigRedis.class);
+  private static final Logger logger = LoggerFactory.getLogger(
+    FeedProviderConfigRedis.class
+  );
   private static final String FEED_PROVIDERS_REDIS_KEY = "feedProviders";
 
   private final RBucket<String> feedProvidersBucket;
   private final ObjectMapper objectMapper;
 
-  public FeedProviderConfigRedis(RedissonClient redissonClient, ObjectMapper objectMapper) {
+  public FeedProviderConfigRedis(
+    RedissonClient redissonClient,
+    ObjectMapper objectMapper
+  ) {
     this.feedProvidersBucket = redissonClient.getBucket(FEED_PROVIDERS_REDIS_KEY);
     this.objectMapper = objectMapper;
   }
@@ -38,7 +43,10 @@ public class FeedProviderConfigRedis implements FeedProviderConfig {
     }
 
     try {
-      return objectMapper.readValue(feedProvidersJson, new TypeReference<List<FeedProvider>>() {});
+      return objectMapper.readValue(
+        feedProvidersJson,
+        new TypeReference<List<FeedProvider>>() {}
+      );
     } catch (JsonProcessingException e) {
       logger.error("Error deserializing feed providers from Redis", e);
       return new ArrayList<>();
@@ -71,13 +79,14 @@ public class FeedProviderConfigRedis implements FeedProviderConfig {
   public boolean addProvider(FeedProvider provider) {
     List<FeedProvider> providers = getProviders();
     // Check if a provider with the same systemId already exists
-    boolean exists = providers.stream()
-        .anyMatch(p -> p.getSystemId().equals(provider.getSystemId()));
-    
+    boolean exists = providers
+      .stream()
+      .anyMatch(p -> p.getSystemId().equals(provider.getSystemId()));
+
     if (exists) {
       return false; // Provider with this systemId already exists
     }
-    
+
     providers.add(provider);
     return saveProviders(providers);
   }
@@ -91,7 +100,7 @@ public class FeedProviderConfigRedis implements FeedProviderConfig {
   public boolean updateProvider(FeedProvider provider) {
     List<FeedProvider> providers = getProviders();
     boolean updated = false;
-    
+
     for (int i = 0; i < providers.size(); i++) {
       if (providers.get(i).getSystemId().equals(provider.getSystemId())) {
         providers.set(i, provider);
@@ -99,11 +108,11 @@ public class FeedProviderConfigRedis implements FeedProviderConfig {
         break;
       }
     }
-    
+
     if (!updated) {
       return false; // Provider with this systemId not found
     }
-    
+
     return saveProviders(providers);
   }
 
@@ -116,11 +125,11 @@ public class FeedProviderConfigRedis implements FeedProviderConfig {
   public boolean deleteProvider(String systemId) {
     List<FeedProvider> providers = getProviders();
     boolean removed = providers.removeIf(p -> p.getSystemId().equals(systemId));
-    
+
     if (!removed) {
       return false; // Provider with this systemId not found
     }
-    
+
     return saveProviders(providers);
   }
 
@@ -131,9 +140,10 @@ public class FeedProviderConfigRedis implements FeedProviderConfig {
    * @return The feed provider, or null if not found
    */
   public FeedProvider getProviderBySystemId(String systemId) {
-    return getProviders().stream()
-        .filter(p -> p.getSystemId().equals(systemId))
-        .findFirst()
-        .orElse(null);
+    return getProviders()
+      .stream()
+      .filter(p -> p.getSystemId().equals(systemId))
+      .findFirst()
+      .orElse(null);
   }
 }

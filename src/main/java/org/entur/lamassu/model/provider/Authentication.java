@@ -21,11 +21,11 @@ package org.entur.lamassu.model.provider;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.net.URI;
 import java.util.Map;
-import org.entur.lamassu.model.provider.AuthenticationScheme;
 import org.entur.gbfs.authentication.BearerTokenRequestAuthenticator;
 import org.entur.gbfs.authentication.HttpHeadersRequestAuthenticator;
 import org.entur.gbfs.authentication.Oauth2ClientCredentialsGrantRequestAuthenticator;
 import org.entur.gbfs.authentication.RequestAuthenticator;
+import org.entur.lamassu.model.provider.AuthenticationScheme;
 
 public class Authentication {
 

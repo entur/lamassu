@@ -18,10 +18,9 @@
 
 package org.entur.lamassu.leader;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -32,10 +31,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class SubscriptionRegistry {
 
-  private static final Logger logger = LoggerFactory.getLogger(SubscriptionRegistry.class);
+  private static final Logger logger = LoggerFactory.getLogger(
+    SubscriptionRegistry.class
+  );
 
   private final Map<String, String> subscriptionIdsBySystemId = new ConcurrentHashMap<>();
-  private final Map<String, SubscriptionStatus> subscriptionStatusBySystemId = new ConcurrentHashMap<>();
+  private final Map<String, SubscriptionStatus> subscriptionStatusBySystemId =
+    new ConcurrentHashMap<>();
 
   /**
    * Registers a subscription ID for a system ID.
@@ -47,7 +49,11 @@ public class SubscriptionRegistry {
     if (subscriptionId != null) {
       subscriptionIdsBySystemId.put(systemId, subscriptionId);
       subscriptionStatusBySystemId.put(systemId, SubscriptionStatus.STARTED);
-      logger.debug("Registered subscription ID {} for system ID {}", subscriptionId, systemId);
+      logger.debug(
+        "Registered subscription ID {} for system ID {}",
+        subscriptionId,
+        systemId
+      );
     }
   }
 
@@ -79,7 +85,10 @@ public class SubscriptionRegistry {
    * @return The subscription status, or null if not found
    */
   public SubscriptionStatus getSubscriptionStatusBySystemId(String systemId) {
-    return subscriptionStatusBySystemId.getOrDefault(systemId, SubscriptionStatus.STOPPED);
+    return subscriptionStatusBySystemId.getOrDefault(
+      systemId,
+      SubscriptionStatus.STOPPED
+    );
   }
 
   /**

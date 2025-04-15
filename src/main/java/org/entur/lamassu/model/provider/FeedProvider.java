@@ -39,7 +39,7 @@ public class FeedProvider {
   private List<GBFSPlan> pricingPlans;
 
   private String version;
-  
+
   private Boolean enabled = true;
 
   public String getSystemId() {
@@ -137,7 +137,7 @@ public class FeedProvider {
   public void setVersion(String version) {
     this.version = version;
   }
-  
+
   public Boolean getEnabled() {
     return enabled;
   }

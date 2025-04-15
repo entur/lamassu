@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-import org.entur.lamassu.config.project.LamassuProjectInfoConfiguration;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfigFile;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfigRedis;
+import org.entur.lamassu.config.project.LamassuProjectInfoConfiguration;
 import org.entur.lamassu.leader.FeedUpdater;
-import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.leader.SubscriptionStatus;
 import org.entur.lamassu.model.entities.Vehicle;
+import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.service.GeoSearchService;
 import org.redisson.api.RFuture;
 import org.redisson.api.RMapCache;
@@ -116,7 +116,9 @@ public class AdminController {
   }
 
   @GetMapping("/feed-providers/{systemId}")
-  public ResponseEntity<FeedProvider> getFeedProviderBySystemId(@PathVariable String systemId) {
+  public ResponseEntity<FeedProvider> getFeedProviderBySystemId(
+    @PathVariable String systemId
+  ) {
     FeedProvider provider = feedProviderConfigRedis.getProviderBySystemId(systemId);
     if (provider == null) {
       return ResponseEntity.notFound().build();
@@ -125,7 +127,9 @@ public class AdminController {
   }
 
   @PostMapping("/feed-providers")
-  public ResponseEntity<FeedProvider> createFeedProvider(@RequestBody FeedProvider feedProvider) {
+  public ResponseEntity<FeedProvider> createFeedProvider(
+    @RequestBody FeedProvider feedProvider
+  ) {
     // Validate the feed provider
     if (feedProvider.getSystemId() == null || feedProvider.getSystemId().isEmpty()) {
       return ResponseEntity.badRequest().build();
@@ -141,9 +145,9 @@ public class AdminController {
 
   @PutMapping("/feed-providers/{systemId}")
   public ResponseEntity<FeedProvider> updateFeedProvider(
-      @PathVariable String systemId,
-      @RequestBody FeedProvider feedProvider) {
-
+    @PathVariable String systemId,
+    @RequestBody FeedProvider feedProvider
+  ) {
     // Ensure the systemId in the path matches the one in the body
     if (!systemId.equals(feedProvider.getSystemId())) {
       return ResponseEntity.badRequest().build();
@@ -175,7 +179,6 @@ public class AdminController {
    */
   @PostMapping("/feed-providers/migrate-from-file")
   public ResponseEntity<Integer> migrateFeedProvidersFromFile() {
-
     List<FeedProvider> providers = feedProviderConfigFile.getProviders();
     if (providers == null) {
       providers = new ArrayList<>();
@@ -207,18 +210,18 @@ public class AdminController {
     if (provider == null) {
       return ResponseEntity.notFound().build();
     }
-    
+
     // Update the enabled status
     provider.setEnabled(enabled);
-    
+
     // If disabling, also stop any active subscription
     if (!enabled) {
       feedUpdater.stopSubscription(provider);
     }
-    
+
     // Update the provider in Redis
     feedProviderConfigRedis.updateProvider(provider);
-    
+
     return ResponseEntity.ok().build();
   }
 
@@ -302,7 +305,9 @@ public class AdminController {
    */
   @GetMapping("/feed-providers/subscription-statuses")
   public ResponseEntity<Map<String, SubscriptionStatus>> getSubscriptionStatuses() {
-    Map<String, SubscriptionStatus> statuses = feedUpdater.getSubscriptionRegistry().getAllSubscriptionStatuses();
+    Map<String, SubscriptionStatus> statuses = feedUpdater
+      .getSubscriptionRegistry()
+      .getAllSubscriptionStatuses();
     return ResponseEntity.ok(statuses);
   }
 
@@ -313,8 +318,12 @@ public class AdminController {
    * @return The subscription status
    */
   @GetMapping("/feed-providers/{systemId}/subscription-status")
-  public ResponseEntity<SubscriptionStatus> getSubscriptionStatus(@PathVariable String systemId) {
-    SubscriptionStatus status = feedUpdater.getSubscriptionRegistry().getSubscriptionStatusBySystemId(systemId);
+  public ResponseEntity<SubscriptionStatus> getSubscriptionStatus(
+    @PathVariable String systemId
+  ) {
+    SubscriptionStatus status = feedUpdater
+      .getSubscriptionRegistry()
+      .getSubscriptionStatusBySystemId(systemId);
     return ResponseEntity.ok(status);
   }
 }
