@@ -11,7 +11,8 @@ import org.springframework.context.annotation.PropertySource;
 @ConfigurationProperties(prefix = "lamassu")
 @PropertySource(
   value = "${org.entur.lamassu.feedproviders}",
-  factory = YamlPropertySourceFactory.class
+  factory = YamlPropertySourceFactory.class,
+  ignoreResourceNotFound = true
 )
 public class FeedProviderConfigFile implements FeedProviderConfig {
 
