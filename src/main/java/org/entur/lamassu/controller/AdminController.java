@@ -3,18 +3,20 @@ package org.entur.lamassu.controller;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import org.entur.lamassu.config.project.LamassuProjectInfoConfiguration;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfigFile;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfigRedis;
+import org.entur.lamassu.leader.FeedUpdater;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.entur.lamassu.leader.SubscriptionStatus;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.service.GeoSearchService;
 import org.redisson.api.RFuture;
 import org.redisson.api.RMapCache;
 import org.redisson.api.RedissonClient;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -36,6 +39,7 @@ public class AdminController {
   private final GeoSearchService geoSearchService;
   private final FeedProviderConfigRedis feedProviderConfigRedis;
   private final FeedProviderConfigFile feedProviderConfigFile;
+  private final FeedUpdater feedUpdater;
   RMapCache<String, Vehicle> vehicleCache;
 
   private final String serializationVersion;
@@ -46,6 +50,7 @@ public class AdminController {
     RMapCache<String, Vehicle> vehicleCache,
     FeedProviderConfigRedis feedProviderConfigRedis,
     FeedProviderConfigFile feedProviderConfigFile,
+    FeedUpdater feedUpdater,
     LamassuProjectInfoConfiguration lamassuProjectInfoConfiguration
   ) {
     this.redissonClient = redissonClient;
@@ -53,6 +58,7 @@ public class AdminController {
     this.vehicleCache = vehicleCache;
     this.feedProviderConfigRedis = feedProviderConfigRedis;
     this.feedProviderConfigFile = feedProviderConfigFile;
+    this.feedUpdater = feedUpdater;
     this.serializationVersion = lamassuProjectInfoConfiguration.getSerializationVersion();
   }
 
@@ -182,5 +188,133 @@ public class AdminController {
     }
 
     return ResponseEntity.ok(providers.size());
+  }
+
+  /**
+   * Enables or disables a feed provider.
+   * This affects whether a subscription will be started automatically when the app restarts.
+   *
+   * @param systemId The system ID of the feed provider
+   * @param enabled Whether the feed provider should be enabled
+   * @return ResponseEntity with success or error status
+   */
+  @PostMapping("/feed-providers/{systemId}/set-enabled")
+  public ResponseEntity<Void> setFeedProviderEnabled(
+    @PathVariable String systemId,
+    @RequestParam Boolean enabled
+  ) {
+    FeedProvider provider = feedProviderConfigRedis.getProviderBySystemId(systemId);
+    if (provider == null) {
+      return ResponseEntity.notFound().build();
+    }
+    
+    // Update the enabled status
+    provider.setEnabled(enabled);
+    
+    // If disabling, also stop any active subscription
+    if (!enabled) {
+      feedUpdater.stopSubscription(provider);
+    }
+    
+    // Update the provider in Redis
+    feedProviderConfigRedis.updateProvider(provider);
+    
+    return ResponseEntity.ok().build();
+  }
+
+  /**
+   * Subscription management endpoints
+   */
+
+  /**
+   * Starts a subscription for a feed provider.
+   *
+   * @param systemId The system ID of the feed provider
+   * @return ResponseEntity with success or error status
+   */
+  @PostMapping("/feed-providers/{systemId}/start")
+  public ResponseEntity<Void> startSubscription(@PathVariable String systemId) {
+    FeedProvider provider = feedProviderConfigRedis.getProviderBySystemId(systemId);
+    if (provider == null) {
+      return ResponseEntity.notFound().build();
+    }
+
+    boolean success = feedUpdater.startSubscription(provider);
+    if (success) {
+      // Update the provider in Redis with the new enabled status
+      feedProviderConfigRedis.updateProvider(provider);
+      return ResponseEntity.ok().build();
+    } else {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+  }
+
+  /**
+   * Stops a subscription for a feed provider.
+   *
+   * @param systemId The system ID of the feed provider
+   * @return ResponseEntity with success or error status
+   */
+  @PostMapping("/feed-providers/{systemId}/stop")
+  public ResponseEntity<Void> stopSubscription(@PathVariable String systemId) {
+    FeedProvider provider = feedProviderConfigRedis.getProviderBySystemId(systemId);
+    if (provider == null) {
+      return ResponseEntity.notFound().build();
+    }
+
+    boolean success = feedUpdater.stopSubscription(provider);
+    if (success) {
+      // Update the provider in Redis with the new enabled status
+      feedProviderConfigRedis.updateProvider(provider);
+      return ResponseEntity.ok().build();
+    } else {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+  }
+
+  /**
+   * Restarts a subscription for a feed provider.
+   *
+   * @param systemId The system ID of the feed provider
+   * @return ResponseEntity with success or error status
+   */
+  @PostMapping("/feed-providers/{systemId}/restart")
+  public ResponseEntity<Void> restartSubscription(@PathVariable String systemId) {
+    FeedProvider provider = feedProviderConfigRedis.getProviderBySystemId(systemId);
+    if (provider == null) {
+      return ResponseEntity.notFound().build();
+    }
+
+    boolean success = feedUpdater.restartSubscription(provider);
+    if (success) {
+      // Update the provider in Redis with the new enabled status
+      feedProviderConfigRedis.updateProvider(provider);
+      return ResponseEntity.ok().build();
+    } else {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+  }
+
+  /**
+   * Gets the current status of all feed provider subscriptions.
+   *
+   * @return Map of system IDs to subscription statuses
+   */
+  @GetMapping("/feed-providers/subscription-statuses")
+  public ResponseEntity<Map<String, SubscriptionStatus>> getSubscriptionStatuses() {
+    Map<String, SubscriptionStatus> statuses = feedUpdater.getSubscriptionRegistry().getAllSubscriptionStatuses();
+    return ResponseEntity.ok(statuses);
+  }
+
+  /**
+   * Gets the current status of a specific feed provider subscription.
+   *
+   * @param systemId The system ID of the feed provider
+   * @return The subscription status
+   */
+  @GetMapping("/feed-providers/{systemId}/subscription-status")
+  public ResponseEntity<SubscriptionStatus> getSubscriptionStatus(@PathVariable String systemId) {
+    SubscriptionStatus status = feedUpdater.getSubscriptionRegistry().getSubscriptionStatusBySystemId(systemId);
+    return ResponseEntity.ok(status);
   }
 }

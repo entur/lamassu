@@ -39,6 +39,8 @@ public class FeedProvider {
   private List<GBFSPlan> pricingPlans;
 
   private String version;
+  
+  private Boolean enabled = true;
 
   public String getSystemId() {
     return systemId;
@@ -135,6 +137,14 @@ public class FeedProvider {
   public void setVersion(String version) {
     this.version = version;
   }
+  
+  public Boolean getEnabled() {
+    return enabled;
+  }
+
+  public void setEnabled(Boolean enabled) {
+    this.enabled = enabled;
+  }
 
   @Override
   public String toString() {
@@ -171,6 +181,8 @@ public class FeedProvider {
       ", version='" +
       version +
       '\'' +
+      ", enabled=" +
+      enabled +
       '}'
     );
   }

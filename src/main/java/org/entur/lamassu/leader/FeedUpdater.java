@@ -64,6 +64,7 @@ public class FeedUpdater {
   private final V3FeedCachesUpdater v3FeedCachesUpdater;
   private final EntityCachesUpdater entityCachesUpdater;
   private final RBucket<Boolean> cacheReady;
+  private final SubscriptionRegistry subscriptionRegistry;
   private GbfsSubscriptionManager subscriptionManager;
   private ForkJoinPool updaterThreadPool;
   private final RListMultimap<String, ValidationResult> validationResultsCache;
@@ -88,7 +89,8 @@ public class FeedUpdater {
     RListMultimap<String, ValidationResult> validationResultsCache,
     RBucket<Boolean> cacheReady,
     MetricsService metricsService,
-    StartupCleaner startupCleaner
+    StartupCleaner startupCleaner,
+    SubscriptionRegistry subscriptionRegistry
   ) {
     this.feedProviderConfig = feedProviderConfig;
     this.gbfsV2DeliveryMapper = gbfsV2DeliveryMapper;
@@ -100,10 +102,12 @@ public class FeedUpdater {
     this.cacheReady = cacheReady;
     this.metricsService = metricsService;
     this.startupCleaner = startupCleaner;
+    this.subscriptionRegistry = subscriptionRegistry;
   }
 
   public void start() {
     startupCleaner.cleanup();
+    subscriptionRegistry.clear(); // Clear any existing subscription registrations
     updaterThreadPool =
       new ForkJoinPool(
         NUM_CORES * 2,
@@ -120,11 +124,16 @@ public class FeedUpdater {
   }
 
   public void stop() {
+    subscriptionRegistry.clear();
     updaterThreadPool.shutdown();
   }
 
   private void createSubscriptions() {
-    feedProviderConfig.getProviders().parallelStream().forEach(this::createSubscription);
+    feedProviderConfig
+      .getProviders()
+      .parallelStream()
+      .filter(feedProvider -> Boolean.TRUE.equals(feedProvider.getEnabled()))
+      .forEach(this::createSubscription);
   }
 
   private void createSubscription(FeedProvider feedProvider) {
@@ -189,6 +198,12 @@ public class FeedUpdater {
     } else {
       logger.info("Setup subscription complete systemId={}", feedProvider.getSystemId());
       metricsService.registerSubscriptionSetup(feedProvider, true);
+      // Register the subscription in the registry
+      subscriptionRegistry.registerSubscription(
+        feedProvider.getSystemId(),
+        URI.create(feedProvider.getUrl()),
+        id
+      );
       // after registration, immediately update the feed
       subscriptionManager.update(id);
     }
@@ -274,5 +289,128 @@ public class FeedUpdater {
     if (Boolean.TRUE.equals(feedProvider.getAggregate())) {
       entityCachesUpdater.updateEntityCaches(feedProvider, mappedDelivery, oldDelivery);
     }
+  }
+
+  /**
+   * Stops a subscription for a feed provider.
+   * If the feed provider doesn't have an active subscription, this is a no-op.
+   *
+   * @param feedProvider The feed provider to stop the subscription for
+   * @return true if the subscription was stopped or wasn't running, false if there was an error
+   */
+  public boolean stopSubscription(FeedProvider feedProvider) {
+    // Disable the feed provider
+    feedProvider.setEnabled(false);
+
+    // Check if a subscription exists
+    String subscriptionId = subscriptionRegistry.getSubscriptionIdBySystemId(feedProvider.getSystemId());
+    if (subscriptionId == null) {
+      // No subscription to stop
+      subscriptionRegistry.updateSubscriptionStatus(feedProvider.getSystemId(), SubscriptionStatus.STOPPED);
+      return true;
+    }
+
+    try {
+      // Unsubscribe from the feed
+      subscriptionManager.unsubscribe(subscriptionId);
+
+      // Remove from registry
+      subscriptionRegistry.removeSubscription(feedProvider.getSystemId(), URI.create(feedProvider.getUrl()));
+
+      // Clean up any cached data
+      startupCleaner.cleanupSystem(feedProvider.getSystemId());
+
+      // Update status
+      subscriptionRegistry.updateSubscriptionStatus(feedProvider.getSystemId(), SubscriptionStatus.STOPPED);
+
+      logger.info("Stopped subscription for systemId={}", feedProvider.getSystemId());
+      return true;
+    } catch (Exception e) {
+      logger.error("Error stopping subscription for systemId={}", feedProvider.getSystemId(), e);
+      return false;
+    }
+  }
+
+  /**
+   * Starts a subscription for a feed provider.
+   * If the feed provider already has an active subscription, this is a no-op.
+   *
+   * @param feedProvider The feed provider to start the subscription for
+   * @return true if the subscription was started or is already running, false otherwise
+   */
+  public boolean startSubscription(FeedProvider feedProvider) {
+    // Check if a subscription already exists
+    if (subscriptionRegistry.hasSubscription(feedProvider.getSystemId())) {
+      return true; // Already has a subscription
+    }
+
+    // Enable the feed provider
+    feedProvider.setEnabled(true);
+
+    // Update status to STARTING
+    subscriptionRegistry.updateSubscriptionStatus(feedProvider.getSystemId(), SubscriptionStatus.STARTING);
+
+    // Create the subscription in a separate thread
+    updaterThreadPool.execute(() -> {
+      try {
+        createSubscription(feedProvider);
+        // If we get here, the subscription was created successfully
+      } catch (Exception e) {
+        // If there was an error, update the status
+        subscriptionRegistry.updateSubscriptionStatus(feedProvider.getSystemId(), SubscriptionStatus.STOPPED);
+        logger.error("Failed to start subscription for systemId={}", feedProvider.getSystemId(), e);
+      }
+    });
+
+    return true;
+  }
+
+  /**
+   * Restarts a subscription for a feed provider.
+   * This will stop the subscription if it exists and then start a new one.
+   *
+   * @param feedProvider The feed provider to restart the subscription for
+   * @return true if the subscription was restarted, false otherwise
+   */
+  public boolean restartSubscription(FeedProvider feedProvider) {
+    // Make sure the feed provider is enabled
+    feedProvider.setEnabled(true);
+
+    // Update status to STARTING
+    subscriptionRegistry.updateSubscriptionStatus(feedProvider.getSystemId(), SubscriptionStatus.STARTING);
+
+    // Stop any existing subscription
+    String subscriptionId = subscriptionRegistry.getSubscriptionIdBySystemId(feedProvider.getSystemId());
+    if (subscriptionId != null) {
+      try {
+        subscriptionManager.unsubscribe(subscriptionId);
+        subscriptionRegistry.removeSubscription(feedProvider.getSystemId(), URI.create(feedProvider.getUrl()));
+      } catch (Exception e) {
+        logger.warn("Error unsubscribing during restart for systemId={}", feedProvider.getSystemId(), e);
+        // Continue with restart even if unsubscribe fails
+      }
+    }
+
+    // Create a new subscription in a separate thread
+    updaterThreadPool.execute(() -> {
+      try {
+        createSubscription(feedProvider);
+        logger.info("Restarted subscription for systemId={}", feedProvider.getSystemId());
+      } catch (Exception e) {
+        subscriptionRegistry.updateSubscriptionStatus(feedProvider.getSystemId(), SubscriptionStatus.STOPPED);
+        logger.error("Failed to restart subscription for systemId={}", feedProvider.getSystemId(), e);
+      }
+    });
+
+    return true;
+  }
+
+  /**
+   * Gets the subscription registry.
+   *
+   * @return The subscription registry
+   */
+  public SubscriptionRegistry getSubscriptionRegistry() {
+    return subscriptionRegistry;
   }
 }
