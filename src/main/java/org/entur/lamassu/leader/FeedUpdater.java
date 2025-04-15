@@ -309,6 +309,9 @@ public class FeedUpdater {
       return true;
     }
 
+    // Update status to STOPPING
+    subscriptionRegistry.updateSubscriptionStatus(feedProvider.getSystemId(), SubscriptionStatus.STOPPING);
+    
     try {
       // Unsubscribe from the feed
       subscriptionManager.unsubscribe(subscriptionId);
@@ -326,6 +329,8 @@ public class FeedUpdater {
       return true;
     } catch (Exception e) {
       logger.error("Error stopping subscription for systemId={}", feedProvider.getSystemId(), e);
+      // Set status back to STARTED if there was an error
+      subscriptionRegistry.updateSubscriptionStatus(feedProvider.getSystemId(), SubscriptionStatus.STARTED);
       return false;
     }
   }

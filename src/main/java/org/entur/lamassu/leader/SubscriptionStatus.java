@@ -44,12 +44,17 @@ public enum SubscriptionStatus {
    * The subscription is active and running.
    */
   STARTED,
-
+  
   /**
    * The subscription is in the process of starting up.
    */
   STARTING,
-
+  
+  /**
+   * The subscription is in the process of stopping.
+   */
+  STOPPING,
+  
   /**
    * The subscription is stopped and not receiving updates.
    */
