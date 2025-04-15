@@ -200,8 +200,7 @@ public class FeedUpdater {
       metricsService.registerSubscriptionSetup(feedProvider, true);
       // Register the subscription in the registry
       subscriptionRegistry.registerSubscription(
-        feedProvider.getSystemId(),
-        URI.create(feedProvider.getUrl()),
+        feedProvider.getSystemId(), 
         id
       );
       // after registration, immediately update the feed
@@ -315,7 +314,7 @@ public class FeedUpdater {
       subscriptionManager.unsubscribe(subscriptionId);
 
       // Remove from registry
-      subscriptionRegistry.removeSubscription(feedProvider.getSystemId(), URI.create(feedProvider.getUrl()));
+      subscriptionRegistry.removeSubscription(feedProvider.getSystemId());
 
       // Clean up any cached data
       startupCleaner.cleanupSystem(feedProvider.getSystemId());
@@ -384,7 +383,7 @@ public class FeedUpdater {
     if (subscriptionId != null) {
       try {
         subscriptionManager.unsubscribe(subscriptionId);
-        subscriptionRegistry.removeSubscription(feedProvider.getSystemId(), URI.create(feedProvider.getUrl()));
+        subscriptionRegistry.removeSubscription(feedProvider.getSystemId());
       } catch (Exception e) {
         logger.warn("Error unsubscribing during restart for systemId={}", feedProvider.getSystemId(), e);
         // Continue with restart even if unsubscribe fails

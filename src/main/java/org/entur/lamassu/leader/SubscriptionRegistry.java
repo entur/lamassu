@@ -18,7 +18,6 @@
 
 package org.entur.lamassu.leader;
 
-import java.net.URI;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,7 +27,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
- * Registry for tracking subscription IDs and statuses by feed provider system ID and URL.
+ * Registry for tracking subscription IDs and statuses by feed provider system ID.
  */
 @Component
 public class SubscriptionRegistry {
@@ -39,30 +38,28 @@ public class SubscriptionRegistry {
   private final Map<String, SubscriptionStatus> subscriptionStatusBySystemId = new ConcurrentHashMap<>();
 
   /**
-   * Registers a subscription ID for a system ID and URL.
+   * Registers a subscription ID for a system ID.
    *
    * @param systemId The system ID of the feed provider
-   * @param url The URL of the feed provider
    * @param subscriptionId The subscription ID
    */
-  public void registerSubscription(String systemId, URI url, String subscriptionId) {
+  public void registerSubscription(String systemId, String subscriptionId) {
     if (subscriptionId != null) {
       subscriptionIdsBySystemId.put(systemId, subscriptionId);
       subscriptionStatusBySystemId.put(systemId, SubscriptionStatus.STARTED);
-      logger.debug("Registered subscription ID {} for system ID {} and URL {}", subscriptionId, systemId, url);
+      logger.debug("Registered subscription ID {} for system ID {}", subscriptionId, systemId);
     }
   }
 
   /**
-   * Removes a subscription for a system ID and URL.
+   * Removes a subscription for a system ID.
    *
    * @param systemId The system ID of the feed provider
-   * @param url The URL of the feed provider
    */
-  public void removeSubscription(String systemId, URI url) {
+  public void removeSubscription(String systemId) {
     subscriptionIdsBySystemId.remove(systemId);
     subscriptionStatusBySystemId.remove(systemId);
-    logger.debug("Removed subscription for system ID {} and URL {}", systemId, url);
+    logger.debug("Removed subscription for system ID {}", systemId);
   }
 
   /**
