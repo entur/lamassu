@@ -14,7 +14,7 @@ type Subscription {
         propulsionTypes: [PropulsionType]
         includeReserved: Boolean = false
         includeDisabled: Boolean = false
-    ): [VehicleUpdate]
+    ): [VehicleUpdate] @deprecated(reason: "Experimental feature - API is subject to change")
 
     stations(
         lat: Float
@@ -29,7 +29,7 @@ type Subscription {
         operators: [String]
         availableFormFactors: [FormFactor]
         availablePropulsionTypes: [PropulsionType]
-    ): [StationUpdate]
+    ): [StationUpdate] @deprecated(reason: "Experimental feature - API is subject to change")
 }
 
 type VehicleUpdate {
