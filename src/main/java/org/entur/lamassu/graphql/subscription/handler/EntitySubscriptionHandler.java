@@ -28,6 +28,7 @@ import org.entur.lamassu.model.entities.Entity;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Sinks;
 
 /**
@@ -64,7 +65,8 @@ public abstract class EntitySubscriptionHandler<T extends Entity, U>
       .startWith(initialUpdates)
       .filter(filter)
       .bufferTimeout(100, Duration.ofMillis(50))
-      .onBackpressureBuffer(10000); // Buffer up to 10000 items before applying backpressure
+      .onBackpressureBuffer(10000) // Buffer up to 10000 items before applying backpressure
+      .mergeWith(Flux.never()); // This ensures the stream never completes
   }
 
   /**
