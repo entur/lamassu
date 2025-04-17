@@ -1,5 +1,6 @@
 package org.entur.lamassu.controller;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
  */
 @Controller
 @Profile("leader")
+@ConditionalOnProperty(name = "org.entur.lamassu.admin-ui.enabled", havingValue = "true")
 public class AdminUIController {
 
   /**
