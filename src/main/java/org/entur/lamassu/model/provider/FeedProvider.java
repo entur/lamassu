@@ -40,6 +40,8 @@ public class FeedProvider {
 
   private String version;
 
+  private Boolean enabled = true;
+
   public String getSystemId() {
     return systemId;
   }
@@ -136,6 +138,14 @@ public class FeedProvider {
     this.version = version;
   }
 
+  public Boolean getEnabled() {
+    return enabled;
+  }
+
+  public void setEnabled(Boolean enabled) {
+    this.enabled = enabled;
+  }
+
   @Override
   public String toString() {
     return (
@@ -171,6 +181,8 @@ public class FeedProvider {
       ", version='" +
       version +
       '\'' +
+      ", enabled=" +
+      enabled +
       '}'
     );
   }

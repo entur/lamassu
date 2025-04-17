@@ -18,18 +18,28 @@
 
 package org.entur.lamassu.model.provider;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.net.URI;
 import java.util.Map;
 import org.entur.gbfs.authentication.BearerTokenRequestAuthenticator;
 import org.entur.gbfs.authentication.HttpHeadersRequestAuthenticator;
 import org.entur.gbfs.authentication.Oauth2ClientCredentialsGrantRequestAuthenticator;
 import org.entur.gbfs.authentication.RequestAuthenticator;
+import org.entur.lamassu.model.provider.AuthenticationScheme;
 
 public class Authentication {
 
   private AuthenticationScheme scheme;
   private Map<String, String> properties;
 
+  /**
+   * Returns the request authenticator based on the authentication scheme.
+   * This method is marked with @JsonIgnore to prevent Jackson from trying to serialize
+   * the RequestAuthenticator implementations, which don't have proper serializers.
+   *
+   * @return The appropriate RequestAuthenticator implementation
+   */
+  @JsonIgnore
   public RequestAuthenticator getRequestAuthenticator() {
     if (scheme == AuthenticationScheme.OAUTH2_CLIENT_CREDENTIALS_GRANT) {
       return new Oauth2ClientCredentialsGrantRequestAuthenticator(

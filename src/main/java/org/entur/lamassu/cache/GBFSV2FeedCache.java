@@ -38,4 +38,5 @@ public interface GBFSV2FeedCache {
     int ttl,
     TimeUnit timeUnit
   );
+  void remove(GBFSFeedName feedName, FeedProvider feedProvider);
 }

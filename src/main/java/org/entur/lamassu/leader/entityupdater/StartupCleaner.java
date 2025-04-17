@@ -19,6 +19,7 @@
 package org.entur.lamassu.leader.entityupdater;
 
 import org.entur.lamassu.cache.EntityCache;
+import org.entur.lamassu.leader.GbfsUpdateContinuityTracker;
 import org.entur.lamassu.model.entities.System;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.service.FeedProviderService;
@@ -66,5 +67,15 @@ public class StartupCleaner {
         gbfsUpdateContinuityTracker.clearStationUpdateContinuity(system.getId());
         gbfsUpdateContinuityTracker.clearVehicleUpdateContinuity(system.getId());
       });
+  }
+
+  public void cleanupSystem(String systemId) {
+    var feedProvider = feedProviderService.getFeedProviderBySystemId(systemId);
+    if (feedProvider != null) {
+      vehiclesUpdater.clearExistingEntities(feedProvider);
+      stationsUpdater.clearExistingEntities(feedProvider);
+      gbfsUpdateContinuityTracker.clearStationUpdateContinuity(systemId);
+      gbfsUpdateContinuityTracker.clearVehicleUpdateContinuity(systemId);
+    }
   }
 }

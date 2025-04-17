@@ -64,6 +64,12 @@ public class GBFSV2FeedCacheImpl extends FeedCache implements GBFSV2FeedCache {
     return getAndUpdate(key, feed, ttl, timeUnit);
   }
 
+  @Override
+  public void remove(GBFSFeedName feedName, FeedProvider feedProvider) {
+    String key = getKey(feedName, feedProvider.getSystemId());
+    remove(key);
+  }
+
   private String getKey(GBFSFeedName feedName, String systemId) {
     return mergeStrings(feedName.value(), systemId);
   }
