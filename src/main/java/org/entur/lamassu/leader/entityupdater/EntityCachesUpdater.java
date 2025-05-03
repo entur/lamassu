@@ -22,6 +22,7 @@ import org.entur.gbfs.loader.v3.GbfsV3Delivery;
 import org.entur.lamassu.delta.GBFSFileDelta;
 import org.entur.lamassu.delta.GBFSStationStatusDeltaCalculator;
 import org.entur.lamassu.delta.GBFSVehicleStatusDeltaCalculator;
+import org.entur.lamassu.leader.GbfsUpdateContinuityTracker;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.mobilitydata.gbfs.v2_3.gbfs.GBFSFeedName;
 import org.mobilitydata.gbfs.v3_0.station_status.GBFSStation;
