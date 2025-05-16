@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Date;
 import org.entur.gbfs.loader.v3.GbfsV3Delivery;
+import org.entur.lamassu.leader.GbfsUpdateContinuityTracker;
 import org.entur.lamassu.stubs.StubUpdateContinuityCache;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

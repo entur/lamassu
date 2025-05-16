@@ -32,8 +32,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class FeedProviderServiceImpl implements FeedProviderService {
 
-  private final Map<String, FeedProvider> feedProvidersBySystemId;
-  private final List<FeedProvider> feedProviders;
+  private final FeedProviderConfig feedProviderConfig;
   private final TranslationMapper translationMapper;
 
   @Autowired
@@ -41,17 +40,13 @@ public class FeedProviderServiceImpl implements FeedProviderService {
     FeedProviderConfig feedProviderConfig,
     TranslationMapper translationMapper
   ) {
-    feedProviders = feedProviderConfig.getProviders();
-    feedProvidersBySystemId =
-      feedProviders
-        .stream()
-        .collect(Collectors.toMap(FeedProvider::getSystemId, fp -> fp));
+    this.feedProviderConfig = feedProviderConfig;
     this.translationMapper = translationMapper;
   }
 
   @Override
   public List<FeedProvider> getFeedProviders() {
-    return feedProviders;
+    return feedProviderConfig.getProviders();
   }
 
   @Override
@@ -77,7 +72,10 @@ public class FeedProviderServiceImpl implements FeedProviderService {
 
   @Override
   public FeedProvider getFeedProviderBySystemId(String systemId) {
-    return feedProvidersBySystemId.get(systemId);
+    return getFeedProviders()
+      .stream()
+      .collect(Collectors.toMap(FeedProvider::getSystemId, fp -> fp))
+      .get(systemId);
   }
 
   @Override
