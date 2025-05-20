@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfigFile;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfigRedis;
 import org.entur.lamassu.config.project.LamassuProjectInfoConfiguration;
@@ -41,10 +42,9 @@ public class AdminController {
 
   private final RedissonClient redissonClient;
   private final GeoSearchService geoSearchService;
-  private final FeedProviderConfigRedis feedProviderConfigRedis;
-  private final FeedProviderConfigFile feedProviderConfigFile;
+  private final FeedProviderConfig feedProviderConfig;
   private final FeedUpdater feedUpdater;
-  RMapCache<String, Vehicle> vehicleCache;
+  private final RMapCache<String, Vehicle> vehicleCache;
 
   private final String serializationVersion;
 
@@ -52,16 +52,14 @@ public class AdminController {
     RedissonClient redissonClient,
     GeoSearchService geoSearchService,
     RMapCache<String, Vehicle> vehicleCache,
-    FeedProviderConfigRedis feedProviderConfigRedis,
-    FeedProviderConfigFile feedProviderConfigFile,
+    FeedProviderConfig feedProviderConfig,
     FeedUpdater feedUpdater,
     LamassuProjectInfoConfiguration lamassuProjectInfoConfiguration
   ) {
     this.redissonClient = redissonClient;
     this.geoSearchService = geoSearchService;
     this.vehicleCache = vehicleCache;
-    this.feedProviderConfigRedis = feedProviderConfigRedis;
-    this.feedProviderConfigFile = feedProviderConfigFile;
+    this.feedProviderConfig = feedProviderConfig;
     this.feedUpdater = feedUpdater;
     this.serializationVersion = lamassuProjectInfoConfiguration.getSerializationVersion();
   }
@@ -116,14 +114,14 @@ public class AdminController {
 
   @GetMapping("/feed-providers")
   public ResponseEntity<List<FeedProvider>> getAllFeedProviders() {
-    return ResponseEntity.ok(feedProviderConfigRedis.getProviders());
+    return ResponseEntity.ok(feedProviderConfig.getProviders());
   }
 
   @GetMapping("/feed-providers/{systemId}")
   public ResponseEntity<FeedProvider> getFeedProviderBySystemId(
     @PathVariable String systemId
   ) {
-    FeedProvider provider = feedProviderConfigRedis.getProviderBySystemId(systemId);
+    FeedProvider provider = feedProviderConfig.getProviderBySystemId(systemId);
     if (provider == null) {
       return ResponseEntity.notFound().build();
     }
@@ -139,7 +137,7 @@ public class AdminController {
       return ResponseEntity.badRequest().build();
     }
 
-    boolean success = feedProviderConfigRedis.addProvider(feedProvider);
+    boolean success = feedProviderConfig.addProvider(feedProvider);
     if (!success) {
       return ResponseEntity.status(HttpStatus.CONFLICT).build(); // Provider with this systemId already exists
     }
@@ -157,7 +155,7 @@ public class AdminController {
       return ResponseEntity.badRequest().build();
     }
 
-    boolean success = feedProviderConfigRedis.updateProvider(feedProvider);
+    boolean success = feedProviderConfig.updateProvider(feedProvider);
     if (!success) {
       return ResponseEntity.notFound().build(); // Provider with this systemId not found
     }
@@ -167,34 +165,12 @@ public class AdminController {
 
   @DeleteMapping("/feed-providers/{systemId}")
   public ResponseEntity<Void> deleteFeedProvider(@PathVariable String systemId) {
-    boolean success = feedProviderConfigRedis.deleteProvider(systemId);
+    boolean success = feedProviderConfig.deleteProvider(systemId);
     if (!success) {
       return ResponseEntity.notFound().build(); // Provider with this systemId not found
     }
 
     return ResponseEntity.noContent().build();
-  }
-
-  /**
-   * Utility endpoint to migrate feed providers from file to Redis.
-   * This is useful when transitioning from file-based to Redis-based configuration.
-   *
-   * @return The number of feed providers migrated
-   */
-  @PostMapping("/feed-providers/migrate-from-file")
-  public ResponseEntity<Integer> migrateFeedProvidersFromFile() {
-    List<FeedProvider> providers = feedProviderConfigFile.getProviders();
-    if (providers == null) {
-      providers = new ArrayList<>();
-    }
-
-    boolean success = feedProviderConfigRedis.saveProviders(providers);
-
-    if (!success) {
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-    }
-
-    return ResponseEntity.ok(providers.size());
   }
 
   /**
@@ -210,7 +186,7 @@ public class AdminController {
     @PathVariable String systemId,
     @RequestParam Boolean enabled
   ) {
-    FeedProvider provider = feedProviderConfigRedis.getProviderBySystemId(systemId);
+    FeedProvider provider = feedProviderConfig.getProviderBySystemId(systemId);
     if (provider == null) {
       return ResponseEntity.notFound().build();
     }
@@ -224,7 +200,7 @@ public class AdminController {
     }
 
     // Update the provider in Redis
-    feedProviderConfigRedis.updateProvider(provider);
+    feedProviderConfig.updateProvider(provider);
 
     return ResponseEntity.ok().build();
   }
@@ -241,7 +217,7 @@ public class AdminController {
    */
   @PostMapping("/feed-providers/{systemId}/start")
   public ResponseEntity<Void> startSubscription(@PathVariable String systemId) {
-    FeedProvider provider = feedProviderConfigRedis.getProviderBySystemId(systemId);
+    FeedProvider provider = feedProviderConfig.getProviderBySystemId(systemId);
     if (provider == null) {
       return ResponseEntity.notFound().build();
     }
@@ -249,7 +225,7 @@ public class AdminController {
     boolean success = feedUpdater.startSubscription(provider);
     if (success) {
       // Update the provider in Redis with the new enabled status
-      feedProviderConfigRedis.updateProvider(provider);
+      feedProviderConfig.updateProvider(provider);
       return ResponseEntity.ok().build();
     } else {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -264,7 +240,7 @@ public class AdminController {
    */
   @PostMapping("/feed-providers/{systemId}/stop")
   public ResponseEntity<Void> stopSubscription(@PathVariable String systemId) {
-    FeedProvider provider = feedProviderConfigRedis.getProviderBySystemId(systemId);
+    FeedProvider provider = feedProviderConfig.getProviderBySystemId(systemId);
     if (provider == null) {
       return ResponseEntity.notFound().build();
     }
@@ -272,7 +248,7 @@ public class AdminController {
     boolean success = feedUpdater.stopSubscription(provider);
     if (success) {
       // Update the provider in Redis with the new enabled status
-      feedProviderConfigRedis.updateProvider(provider);
+      feedProviderConfig.updateProvider(provider);
       return ResponseEntity.ok().build();
     } else {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -287,7 +263,7 @@ public class AdminController {
    */
   @PostMapping("/feed-providers/{systemId}/restart")
   public ResponseEntity<Void> restartSubscription(@PathVariable String systemId) {
-    FeedProvider provider = feedProviderConfigRedis.getProviderBySystemId(systemId);
+    FeedProvider provider = feedProviderConfig.getProviderBySystemId(systemId);
     if (provider == null) {
       return ResponseEntity.notFound().build();
     }
@@ -295,7 +271,7 @@ public class AdminController {
     boolean success = feedUpdater.restartSubscription(provider);
     if (success) {
       // Update the provider in Redis with the new enabled status
-      feedProviderConfigRedis.updateProvider(provider);
+      feedProviderConfig.updateProvider(provider);
       return ResponseEntity.ok().build();
     } else {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

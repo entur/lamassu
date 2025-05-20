@@ -24,7 +24,7 @@ public class FeedProviderConfigRedis implements FeedProviderConfig {
   );
   private static final String FEED_PROVIDERS_REDIS_KEY = "feedProviders";
 
-  private final RBucket<String> feedProvidersBucket;
+  private final RBucket<List<FeedProvider>> feedProvidersBucket;
   private final ObjectMapper objectMapper;
 
   public FeedProviderConfigRedis(
@@ -37,37 +37,7 @@ public class FeedProviderConfigRedis implements FeedProviderConfig {
 
   @Override
   public List<FeedProvider> getProviders() {
-    String feedProvidersJson = feedProvidersBucket.get();
-    if (feedProvidersJson == null || feedProvidersJson.isEmpty()) {
-      return new ArrayList<>();
-    }
-
-    try {
-      return objectMapper.readValue(
-        feedProvidersJson,
-        new TypeReference<List<FeedProvider>>() {}
-      );
-    } catch (JsonProcessingException e) {
-      logger.error("Error deserializing feed providers from Redis", e);
-      return new ArrayList<>();
-    }
-  }
-
-  /**
-   * Saves the list of feed providers to Redis.
-   *
-   * @param providers The list of feed providers to save
-   * @return true if the operation was successful, false otherwise
-   */
-  public boolean saveProviders(List<FeedProvider> providers) {
-    try {
-      String feedProvidersJson = objectMapper.writeValueAsString(providers);
-      feedProvidersBucket.set(feedProvidersJson);
-      return true;
-    } catch (JsonProcessingException e) {
-      logger.error("Error serializing feed providers to Redis", e);
-      return false;
-    }
+    return feedProvidersBucket.get();
   }
 
   /**
@@ -76,6 +46,7 @@ public class FeedProviderConfigRedis implements FeedProviderConfig {
    * @param provider The feed provider to add
    * @return true if the operation was successful, false otherwise
    */
+  @Override
   public boolean addProvider(FeedProvider provider) {
     List<FeedProvider> providers = getProviders();
     // Check if a provider with the same systemId already exists
@@ -97,6 +68,7 @@ public class FeedProviderConfigRedis implements FeedProviderConfig {
    * @param provider The feed provider to update
    * @return true if the operation was successful, false otherwise
    */
+  @Override
   public boolean updateProvider(FeedProvider provider) {
     List<FeedProvider> providers = getProviders();
     boolean updated = false;
@@ -122,6 +94,7 @@ public class FeedProviderConfigRedis implements FeedProviderConfig {
    * @param systemId The systemId of the feed provider to delete
    * @return true if the operation was successful, false otherwise
    */
+  @Override
   public boolean deleteProvider(String systemId) {
     List<FeedProvider> providers = getProviders();
     boolean removed = providers.removeIf(p -> p.getSystemId().equals(systemId));
@@ -139,11 +112,23 @@ public class FeedProviderConfigRedis implements FeedProviderConfig {
    * @param systemId The systemId of the feed provider to get
    * @return The feed provider, or null if not found
    */
+  @Override
   public FeedProvider getProviderBySystemId(String systemId) {
     return getProviders()
       .stream()
       .filter(p -> p.getSystemId().equals(systemId))
       .findFirst()
       .orElse(null);
+  }
+
+  /**
+   * Saves the list of feed providers to Redis.
+   *
+   * @param providers The list of feed providers to save
+   * @return true if the operation was successful, false otherwise
+   */
+  public boolean saveProviders(List<FeedProvider> providers) {
+    feedProvidersBucket.set(providers);
+    return true;
   }
 }
