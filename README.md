@@ -57,6 +57,26 @@ Some providers may require authentication, e.g. via bearer token, OAuth2 or cust
 
 Note: Keep in mind you should be cautious about storing your credentials in plain text ! Instead of providing credentials in the feedproviders.yml, it might be more appropriate to provide them via ENV variables/system properties. 
 
+#### Migrating Feed Providers from File to Redis
+
+Lamassu supports migrating feed provider configurations from file-based storage (`feedproviders.yml`) to Redis. This is useful when transitioning to a more scalable and dynamic configuration approach. To enable migration:
+
+```properties
+# Enable migration from file to Redis
+org.entur.lamassu.feedprovider.migrate-from-file-to-redis=true
+
+# Choose a merge strategy: REPLACE_ALL, SKIP, or REPLACE
+org.entur.lamassu.feedprovider.migrate-from-file-to-redis.strategy=REPLACE
+```
+
+Available migration strategies:
+
+- `REPLACE_ALL`: Replaces all feed providers in Redis with those from the file
+- `SKIP`: Only adds providers from the file that don't already exist in Redis
+- `REPLACE`: Adds new providers and updates existing ones in Redis based on the file configuration
+
+The migration runs automatically on application startup when enabled. After successful migration, you can disable the migration property and manage feed providers through the admin interface or Redis directly.
+
 ### End-points
 
 #### `/gbfs`
