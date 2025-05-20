@@ -254,10 +254,10 @@ const FeedProviderForm = ({ provider, onSubmit, onCancel }) => {
     url: '',
     language: 'en',
     authentication: null,
-    excludeFeeds: [],
+    excludeFeeds: null,
     aggregate: true,
-    vehicleTypes: [],
-    pricingPlans: [],
+    vehicleTypes: null,
+    pricingPlans: null,
     version: '2.3'
   });
 
@@ -1173,9 +1173,9 @@ const App = () => {
   const renderEnabledStatus = (provider) => {
     const isLoading = actionLoading[provider.systemId] === 'toggle';
     const isEnabled = provider.enabled;
-    
+
     return (
-      <button 
+      <button
         className={`btn btn-sm ${isEnabled ? 'btn-success' : 'btn-outline-success'}`}
         onClick={() => handleToggleEnabled(provider.systemId, provider.enabled)}
         disabled={isLoading}
@@ -1192,7 +1192,7 @@ const App = () => {
     const isStartLoading = actionLoading[systemId] === 'start';
     const isStopLoading = actionLoading[systemId] === 'stop';
     const isRestartLoading = actionLoading[systemId] === 'restart';
-    
+
     // Show appropriate button based on current status
     if (status === 'STARTED') {
       return (
@@ -1203,15 +1203,15 @@ const App = () => {
           >
             Running
           </button>
-          <button 
-            className="btn btn-sm btn-warning" 
+          <button
+            className="btn btn-sm btn-warning"
             onClick={() => handleStopSubscription(systemId)}
             disabled={isStopLoading}
           >
             {isStopLoading ? <Spinner /> : 'Stop'}
           </button>
-          <button 
-            className="btn btn-sm btn-info" 
+          <button
+            className="btn btn-sm btn-info"
             onClick={() => handleRestartSubscription(systemId)}
             disabled={isRestartLoading}
           >
@@ -1228,8 +1228,8 @@ const App = () => {
           >
             Starting...
           </button>
-          <button 
-            className="btn btn-sm btn-warning" 
+          <button
+            className="btn btn-sm btn-warning"
             onClick={() => handleStopSubscription(systemId)}
             disabled={isStopLoading}
           >
@@ -1249,8 +1249,8 @@ const App = () => {
     } else {
       // STOPPED or unknown status
       return (
-        <button 
-          className="btn btn-sm btn-outline-success" 
+        <button
+          className="btn btn-sm btn-outline-success"
           onClick={() => handleStartSubscription(systemId)}
           disabled={isStartLoading}
         >
