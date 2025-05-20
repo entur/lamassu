@@ -46,7 +46,9 @@ public class Authentication {
         URI.create(properties.get("tokenUrl")),
         properties.get("clientId"),
         properties.get("clientPassword"),
-        properties.get("scope")
+        properties.get("scope") != null && !properties.get("scope").isEmpty()
+          ? properties.get("scope")
+          : null
       );
     } else if (scheme == AuthenticationScheme.BEARER_TOKEN) {
       return new BearerTokenRequestAuthenticator(properties.get("accessToken"));
