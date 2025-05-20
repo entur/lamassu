@@ -57,17 +57,6 @@ const api = {
     }
   },
 
-  // Migrate feed providers from file to Redis
-  migrateFromFile: async () => {
-    try {
-      const response = await axios.post('/admin/feed-providers/migrate-from-file');
-      return response.data;
-    } catch (error) {
-      console.error('Error migrating feed providers from file:', error);
-      throw error;
-    }
-  },
-
   // Start a feed provider subscription
   startSubscription: async (systemId) => {
     try {
@@ -1026,22 +1015,7 @@ const App = () => {
     }
   };
 
-  // Handle migrating feed providers from file to Redis
-  const handleMigrateFromFile = async () => {
-    setLoading(true);
-    setError('');
-
-    try {
-      const count = await api.migrateFromFile();
-      setSuccess(`Successfully migrated ${count} feed providers from file to Redis!`);
-      loadData();
-    } catch (err) {
-      setError('Failed to migrate feed providers from file. Please try again.');
-      setLoading(false);
-    }
-  };
-
-  // Handle starting a subscription
+// Handle starting a subscription
   const handleStartSubscription = async (systemId) => {
     setActionLoading(prev => ({ ...prev, [systemId]: 'start' }));
     setError('');
@@ -1408,7 +1382,6 @@ const App = () => {
           {activeTab === 'providers' && (
             <>
               <button className="btn" onClick={openCreateModal}>Add New Feed Provider</button>
-              <button className="btn" onClick={handleMigrateFromFile}>Migrate from File</button>
               <button className="btn" onClick={loadData}>Refresh</button>
             </>
           )}
