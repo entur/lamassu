@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
  */
 @Controller
 @Profile("leader")
-@ConditionalOnProperty(name = "org.entur.lamassu.admin-ui.enabled", havingValue = "true")
+@ConditionalOnProperty(name = "org.entur.lamassu.enable-admin-ui", havingValue = "true")
 public class AdminUIController {
 
   /**
