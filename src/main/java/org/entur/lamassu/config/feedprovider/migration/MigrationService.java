@@ -30,6 +30,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
+/**
+ * Service responsible for migrating feed providers from file-based configuration to Redis.
+ * The migration strategy can be configured via application properties.
+ */
 @ConditionalOnProperty(
   value = "org.entur.lamassu.feedprovider.migrate-from-file-to-redis",
   havingValue = "true"
@@ -40,7 +44,6 @@ public class MigrationService {
   private static final Logger logger = LoggerFactory.getLogger(MigrationService.class);
   private final FeedProviderConfigRedis feedProviderConfigRedis;
   private final FeedProviderConfigFile feedProviderConfigFile;
-
   private final FeedProviderMergeStrategy mergeStrategy;
 
   public MigrationService(
@@ -55,49 +58,133 @@ public class MigrationService {
     this.mergeStrategy = mergeStrategy;
   }
 
+  /**
+   * Initializes the migration process after bean construction.
+   */
   @PostConstruct
   public void init() {
     migrateFeedProviders();
   }
 
+  /**
+   * Migrates feed providers from file-based configuration to Redis.
+   * The migration strategy determines how existing providers in Redis are handled.
+   */
   public void migrateFeedProviders() {
-    List<FeedProvider> providers = feedProviderConfigFile.getProviders();
-    if (providers == null) {
-      providers = new ArrayList<>();
-    }
+    List<FeedProvider> providers = getProvidersFromFile();
+    int migratedCount = migrateProvidersBasedOnStrategy(providers);
+    logger.info("Migrated {} feed providers from file to Redis", migratedCount);
+  }
 
+  /**
+   * Gets the list of providers from the file-based configuration.
+   * Returns an empty list if no providers are found.
+   *
+   * @return List of feed providers
+   */
+  private List<FeedProvider> getProvidersFromFile() {
+    List<FeedProvider> providers = feedProviderConfigFile.getProviders();
+    return providers != null ? providers : new ArrayList<>();
+  }
+
+  /**
+   * Migrates providers based on the configured merge strategy.
+   *
+   * @param providers List of providers to migrate
+   * @return Number of successfully migrated providers
+   */
+  private int migrateProvidersBasedOnStrategy(List<FeedProvider> providers) {
+    switch (mergeStrategy) {
+      case REPLACE_ALL:
+        return migrateWithReplaceAllStrategy(providers);
+      case SKIP:
+        return migrateWithSkipStrategy(providers);
+      case REPLACE:
+      default:
+        return migrateWithReplaceStrategy(providers);
+    }
+  }
+
+  /**
+   * Migrates providers using the REPLACE_ALL strategy.
+   * This strategy replaces all providers in Redis with the ones from the file.
+   *
+   * @param providers List of providers to migrate
+   * @return Number of successfully migrated providers
+   */
+  private int migrateWithReplaceAllStrategy(List<FeedProvider> providers) {
+    return feedProviderConfigRedis.saveProviders(providers) ? providers.size() : 0;
+  }
+
+  /**
+   * Migrates providers using the SKIP strategy.
+   * This strategy only adds providers that don't already exist in Redis.
+   *
+   * @param providers List of providers to migrate
+   * @return Number of successfully migrated providers
+   */
+  private int migrateWithSkipStrategy(List<FeedProvider> providers) {
     int migratedCount = 0;
 
-    if (FeedProviderMergeStrategy.REPLACE_ALL.equals(mergeStrategy)) {
-      if (feedProviderConfigRedis.saveProviders(providers)) {
-        migratedCount = providers.size();
-      }
-    } else if (FeedProviderMergeStrategy.SKIP.equals(mergeStrategy)) {
-      for (FeedProvider provider : providers) {
-        if (
-          feedProviderConfigRedis.getProviderBySystemId(provider.getSystemId()) == null
-        ) {
-          if (feedProviderConfigRedis.addProvider(provider)) {
-            migratedCount++;
-          }
-        }
-      }
-    } else {
-      for (FeedProvider provider : providers) {
-        if (
-          feedProviderConfigRedis.getProviderBySystemId(provider.getSystemId()) == null
-        ) {
-          if (feedProviderConfigRedis.addProvider(provider)) {
-            migratedCount++;
-          }
-        } else {
-          if (feedProviderConfigRedis.updateProvider(provider)) {
-            migratedCount++;
-          }
-        }
+    for (FeedProvider provider : providers) {
+      if (isProviderMissing(provider) && addProvider(provider)) {
+        migratedCount++;
       }
     }
 
-    logger.info("Migrated {} feed providers from file to Redis", migratedCount);
+    return migratedCount;
+  }
+
+  /**
+   * Migrates providers using the REPLACE strategy.
+   * This strategy adds new providers and updates existing ones in Redis.
+   *
+   * @param providers List of providers to migrate
+   * @return Number of successfully migrated providers
+   */
+  private int migrateWithReplaceStrategy(List<FeedProvider> providers) {
+    int migratedCount = 0;
+
+    for (FeedProvider provider : providers) {
+      if (isProviderMissing(provider)) {
+        if (addProvider(provider)) {
+          migratedCount++;
+        }
+      } else if (updateProvider(provider)) {
+        migratedCount++;
+      }
+    }
+
+    return migratedCount;
+  }
+
+  /**
+   * Checks if a provider does not exist in Redis.
+   *
+   * @param provider Provider to check
+   * @return true if the provider does not exist in Redis, false otherwise
+   */
+  private boolean isProviderMissing(FeedProvider provider) {
+    return feedProviderConfigRedis.getProviderBySystemId(provider.getSystemId()) == null;
+  }
+
+  /**
+   * Adds a provider to Redis.
+   *
+   * @param provider Provider to add
+   * @return true if the provider was successfully added, false otherwise
+   */
+  private boolean addProvider(FeedProvider provider) {
+    return feedProviderConfigRedis.addProvider(provider);
+  }
+
+  /**
+   * Updates a provider in Redis.
+   *
+   * @param provider Provider to update
+   * @return true if the provider was successfully updated, false otherwise
+   */
+  private boolean updateProvider(FeedProvider provider) {
+    return feedProviderConfigRedis.updateProvider(provider);
   }
 }
