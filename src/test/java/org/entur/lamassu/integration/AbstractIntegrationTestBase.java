@@ -10,7 +10,10 @@ import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 import org.entur.lamassu.TestLamassuApplication;
+import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
+import org.entur.lamassu.leader.FeedUpdater;
 import org.entur.lamassu.leader.LeaderSingletonService;
+import org.entur.lamassu.leader.SubscriptionStatus;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -18,6 +21,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -35,7 +42,25 @@ public abstract class AbstractIntegrationTestBase {
   @Autowired
   private LeaderSingletonService leaderSingletonService;
 
+  @Autowired
+  private FeedProviderConfig feedProviderConfig;
+
+  @Autowired
+  private FeedUpdater feedUpdater;
+
   private static MockWebServer mockWebServer;
+
+  @Configuration
+  static class TestConfig {
+
+    @LocalServerPort
+    private int port;
+
+    @Bean
+    public TestRestTemplate testRestTemplate() {
+      return new TestRestTemplate("admin", "admin");
+    }
+  }
 
   @BeforeAll
   public static void setUp() throws IOException {
@@ -100,8 +125,8 @@ public abstract class AbstractIntegrationTestBase {
       }
     };
 
-    mockWebServer.start(8888);
     mockWebServer.setDispatcher(dispatcher);
+    mockWebServer.start(8888);
   }
 
   @NotNull
