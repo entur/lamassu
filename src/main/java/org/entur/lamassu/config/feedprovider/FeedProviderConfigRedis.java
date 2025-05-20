@@ -1,7 +1,5 @@
 package org.entur.lamassu.config.feedprovider;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +20,7 @@ public class FeedProviderConfigRedis implements FeedProviderConfig {
   private static final Logger logger = LoggerFactory.getLogger(
     FeedProviderConfigRedis.class
   );
+
   private static final String FEED_PROVIDERS_REDIS_KEY = "feedProviders";
 
   private final RBucket<List<FeedProvider>> feedProvidersBucket;
@@ -37,7 +36,8 @@ public class FeedProviderConfigRedis implements FeedProviderConfig {
 
   @Override
   public List<FeedProvider> getProviders() {
-    return feedProvidersBucket.get();
+    List<FeedProvider> providers = feedProvidersBucket.get();
+    return providers != null ? providers : new ArrayList<>();
   }
 
   /**
