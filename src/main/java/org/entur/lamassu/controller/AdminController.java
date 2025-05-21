@@ -4,11 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
-import org.entur.lamassu.config.feedprovider.FeedProviderConfigFile;
-import org.entur.lamassu.config.feedprovider.FeedProviderConfigRedis;
 import org.entur.lamassu.config.project.LamassuProjectInfoConfiguration;
 import org.entur.lamassu.leader.FeedUpdater;
 import org.entur.lamassu.leader.SubscriptionStatus;
@@ -19,7 +16,6 @@ import org.redisson.api.RFuture;
 import org.redisson.api.RMapCache;
 import org.redisson.api.RedissonClient;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -68,13 +64,13 @@ public class AdminController {
   public Collection<String> getCacheKeys() {
     return StreamSupport
       .stream(redissonClient.getKeys().getKeys().spliterator(), false)
-      .collect(Collectors.toList());
+      .toList();
   }
 
   @PostMapping("/clear_vehicle_cache")
   public Integer clearVehicleCache() {
     var keys = vehicleCache.keySet();
-    keys.forEach(key -> vehicleCache.remove(key));
+    keys.forEach(vehicleCache::remove);
     return keys.size();
   }
 
@@ -195,7 +191,7 @@ public class AdminController {
     provider.setEnabled(enabled);
 
     // If disabling, also stop any active subscription
-    if (!enabled) {
+    if (Boolean.FALSE.equals(enabled)) {
       feedUpdater.stopSubscription(provider);
     }
 
