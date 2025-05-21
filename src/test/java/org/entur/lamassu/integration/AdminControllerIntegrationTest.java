@@ -25,7 +25,7 @@ import org.springframework.http.ResponseEntity;
  * Integration tests for the AdminController focusing on subscription lifecycle management.
  * These tests verify the end-to-end functionality from admin endpoints to Redis storage.
  */
-public class AdminControllerIntegrationTest extends AbstractIntegrationTestBase {
+class AdminControllerIntegrationTest extends AbstractIntegrationTestBase {
 
   @Autowired
   private TestRestTemplate restTemplate;
@@ -51,7 +51,7 @@ public class AdminControllerIntegrationTest extends AbstractIntegrationTestBase 
    * 5. Restart the subscription
    */
   @Test
-  public void testSubscriptionLifecycle() throws InterruptedException {
+  void testSubscriptionLifecycle() throws InterruptedException {
     // Clean up any existing test provider
     feedProviderConfig.deleteProvider(TEST_SYSTEM_ID);
     subscriptionRegistry.clear();
@@ -178,7 +178,7 @@ public class AdminControllerIntegrationTest extends AbstractIntegrationTestBase 
    * Test setting a feed provider's enabled status and verifying it affects subscriptions.
    */
   @Test
-  public void testSetFeedProviderEnabled() throws InterruptedException {
+  void testSetFeedProviderEnabled() throws InterruptedException {
     // Set up test provider
     feedProviderConfig.deleteProvider(TEST_SYSTEM_ID);
     subscriptionRegistry.clear();
@@ -271,7 +271,7 @@ public class AdminControllerIntegrationTest extends AbstractIntegrationTestBase 
    * Test error handling for non-existent feed providers.
    */
   @Test
-  public void testNonExistentFeedProvider() {
+  void testNonExistentFeedProvider() {
     String nonExistentId = "non-existent-id";
 
     // 1. Try to start subscription for non-existent provider
