@@ -12,19 +12,19 @@ import org.junit.jupiter.api.Test;
 /**
  * Unit tests for the SubscriptionRegistry class.
  */
-public class SubscriptionRegistryTest {
+class SubscriptionRegistryTest {
 
   private SubscriptionRegistry subscriptionRegistry;
   private static final String SYSTEM_ID = "test-system-id";
   private static final String SUBSCRIPTION_ID = "test-subscription-id";
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     subscriptionRegistry = new SubscriptionRegistry();
   }
 
   @Test
-  public void testRegisterSubscription() {
+  void testRegisterSubscription() {
     // Register a subscription
     subscriptionRegistry.registerSubscription(SYSTEM_ID, SUBSCRIPTION_ID);
 
@@ -41,7 +41,7 @@ public class SubscriptionRegistryTest {
   }
 
   @Test
-  public void testRemoveSubscription() {
+  void testRemoveSubscription() {
     // Register and then remove a subscription
     subscriptionRegistry.registerSubscription(SYSTEM_ID, SUBSCRIPTION_ID);
     subscriptionRegistry.removeSubscription(SYSTEM_ID);
@@ -56,7 +56,7 @@ public class SubscriptionRegistryTest {
   }
 
   @Test
-  public void testUpdateSubscriptionStatus() {
+  void testUpdateSubscriptionStatus() {
     // Register a subscription
     subscriptionRegistry.registerSubscription(SYSTEM_ID, SUBSCRIPTION_ID);
 
@@ -87,7 +87,7 @@ public class SubscriptionRegistryTest {
   }
 
   @Test
-  public void testGetAllSubscriptionStatuses() {
+  void testGetAllSubscriptionStatuses() {
     // Register multiple subscriptions
     subscriptionRegistry.registerSubscription(SYSTEM_ID, SUBSCRIPTION_ID);
     subscriptionRegistry.registerSubscription("system-2", "subscription-2");
@@ -112,7 +112,7 @@ public class SubscriptionRegistryTest {
   }
 
   @Test
-  public void testClear() {
+  void testClear() {
     // Register multiple subscriptions
     subscriptionRegistry.registerSubscription(SYSTEM_ID, SUBSCRIPTION_ID);
     subscriptionRegistry.registerSubscription("system-2", "subscription-2");
@@ -127,7 +127,7 @@ public class SubscriptionRegistryTest {
   }
 
   @Test
-  public void testDefaultStatusForNonExistentSystem() {
+  void testDefaultStatusForNonExistentSystem() {
     // Verify that a non-existent system ID returns STOPPED status
     assertEquals(
       SubscriptionStatus.STOPPED,
@@ -136,7 +136,7 @@ public class SubscriptionRegistryTest {
   }
 
   @Test
-  public void testNullSubscriptionId() {
+  void testNullSubscriptionId() {
     // Verify that registering a null subscription ID is a no-op
     subscriptionRegistry.registerSubscription(SYSTEM_ID, null);
     assertFalse(subscriptionRegistry.hasSubscription(SYSTEM_ID));

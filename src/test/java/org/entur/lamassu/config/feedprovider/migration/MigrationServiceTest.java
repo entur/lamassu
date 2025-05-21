@@ -14,7 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class MigrationServiceTest {
+class MigrationServiceTest {
 
   @Mock
   private FeedProviderConfigRedis feedProviderConfigRedis;
