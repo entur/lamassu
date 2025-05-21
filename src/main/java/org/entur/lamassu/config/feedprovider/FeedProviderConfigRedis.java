@@ -6,8 +6,7 @@ import java.util.List;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.redisson.codec.JsonJacksonCodec;
 import org.springframework.stereotype.Component;
 
 /**
@@ -17,21 +16,19 @@ import org.springframework.stereotype.Component;
 @Component
 public class FeedProviderConfigRedis implements FeedProviderConfig {
 
-  private static final Logger logger = LoggerFactory.getLogger(
-    FeedProviderConfigRedis.class
-  );
-
   private static final String FEED_PROVIDERS_REDIS_KEY = "feedProviders";
 
   private final RBucket<List<FeedProvider>> feedProvidersBucket;
-  private final ObjectMapper objectMapper;
 
   public FeedProviderConfigRedis(
     RedissonClient redissonClient,
     ObjectMapper objectMapper
   ) {
-    this.feedProvidersBucket = redissonClient.getBucket(FEED_PROVIDERS_REDIS_KEY);
-    this.objectMapper = objectMapper;
+    this.feedProvidersBucket =
+      redissonClient.getBucket(
+        FEED_PROVIDERS_REDIS_KEY,
+        new JsonJacksonCodec(objectMapper)
+      );
   }
 
   @Override
