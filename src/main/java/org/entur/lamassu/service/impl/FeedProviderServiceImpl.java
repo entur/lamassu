@@ -19,7 +19,6 @@
 package org.entur.lamassu.service.impl;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.mapper.entitymapper.TranslationMapper;
@@ -55,7 +54,7 @@ public class FeedProviderServiceImpl implements FeedProviderService {
       .stream()
       .map(this::mapOperator)
       .distinct()
-      .collect(Collectors.toList());
+      .toList();
   }
 
   private Operator mapOperator(FeedProvider feedProvider) {
