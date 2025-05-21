@@ -50,7 +50,7 @@ public class MigrationService {
     FeedProviderConfigRedis feedProviderConfigRedis,
     FeedProviderConfigFile feedProviderConfigFile,
     @Value(
-      "${org.entur.lamassu.feedprovider.migrate-from-file-to-redis.strategy}"
+      "${org.entur.lamassu.feedprovider.migrate-from-file-to-redis.strategy:REPLACE_ALL}"
     ) FeedProviderMergeStrategy mergeStrategy
   ) {
     this.feedProviderConfigRedis = feedProviderConfigRedis;
