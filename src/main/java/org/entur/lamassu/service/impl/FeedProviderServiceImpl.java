@@ -50,11 +50,7 @@ public class FeedProviderServiceImpl implements FeedProviderService {
 
   @Override
   public List<Operator> getOperators() {
-    return getFeedProviders()
-      .stream()
-      .map(this::mapOperator)
-      .distinct()
-      .toList();
+    return getFeedProviders().stream().map(this::mapOperator).distinct().toList();
   }
 
   private Operator mapOperator(FeedProvider feedProvider) {
