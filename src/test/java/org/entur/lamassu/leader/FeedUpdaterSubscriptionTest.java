@@ -1,15 +1,14 @@
 package org.entur.lamassu.leader;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.util.concurrent.ForkJoinPool;
 import org.entur.gbfs.GbfsSubscriptionManager;
@@ -36,7 +35,7 @@ import org.redisson.api.RListMultimap;
  * These tests use mocks to isolate the subscription management functionality.
  */
 @ExtendWith(MockitoExtension.class)
-public class FeedUpdaterSubscriptionTest {
+class FeedUpdaterSubscriptionTest {
 
   @Mock
   private FeedProviderConfig feedProviderConfig;
@@ -81,7 +80,7 @@ public class FeedUpdaterSubscriptionTest {
   private static final String SUBSCRIPTION_ID = "test-subscription-id";
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     // Initialize the FeedUpdater manually with all required dependencies
     feedUpdater =
       new FeedUpdater(
@@ -129,7 +128,7 @@ public class FeedUpdaterSubscriptionTest {
   }
 
   @Test
-  public void testStartSubscription() {
+  void testStartSubscription() {
     // Act
     boolean result = feedUpdater.startSubscription(testProvider);
 
@@ -137,11 +136,11 @@ public class FeedUpdaterSubscriptionTest {
     assertTrue(result);
     assertTrue(testProvider.getEnabled());
     verify(subscriptionRegistry)
-      .updateSubscriptionStatus(eq(SYSTEM_ID), eq(SubscriptionStatus.STARTING));
+      .updateSubscriptionStatus(SYSTEM_ID, SubscriptionStatus.STARTING);
   }
 
   @Test
-  public void testStartSubscriptionAlreadyExists() {
+  void testStartSubscriptionAlreadyExists() {
     // Arrange
     subscriptionRegistry.registerSubscription(SYSTEM_ID, SUBSCRIPTION_ID);
 
@@ -155,7 +154,7 @@ public class FeedUpdaterSubscriptionTest {
   }
 
   @Test
-  public void testStopSubscription() {
+  void testStopSubscription() {
     // Arrange
     subscriptionRegistry.registerSubscription(SYSTEM_ID, SUBSCRIPTION_ID);
     doNothing().when(subscriptionManager).unsubscribe(SUBSCRIPTION_ID);
@@ -167,16 +166,16 @@ public class FeedUpdaterSubscriptionTest {
     assertTrue(result);
     assertFalse(testProvider.getEnabled());
     verify(subscriptionRegistry)
-      .updateSubscriptionStatus(eq(SYSTEM_ID), eq(SubscriptionStatus.STOPPING));
+      .updateSubscriptionStatus(SYSTEM_ID, SubscriptionStatus.STOPPING);
     verify(subscriptionManager).unsubscribe(SUBSCRIPTION_ID);
     verify(subscriptionRegistry).removeSubscription(SYSTEM_ID);
     verify(cacheCleanupService).clearCacheForSystem(SYSTEM_ID);
     verify(subscriptionRegistry)
-      .updateSubscriptionStatus(eq(SYSTEM_ID), eq(SubscriptionStatus.STOPPED));
+      .updateSubscriptionStatus(SYSTEM_ID, SubscriptionStatus.STOPPED);
   }
 
   @Test
-  public void testStopSubscriptionNoExistingSubscription() {
+  void testStopSubscriptionNoExistingSubscription() {
     // Act
     boolean result = feedUpdater.stopSubscription(testProvider);
 
@@ -184,12 +183,12 @@ public class FeedUpdaterSubscriptionTest {
     assertTrue(result);
     assertFalse(testProvider.getEnabled());
     verify(subscriptionRegistry)
-      .updateSubscriptionStatus(eq(SYSTEM_ID), eq(SubscriptionStatus.STOPPED));
+      .updateSubscriptionStatus(SYSTEM_ID, SubscriptionStatus.STOPPED);
     verify(subscriptionManager, never()).unsubscribe(anyString());
   }
 
   @Test
-  public void testRestartSubscription() {
+  void testRestartSubscription() {
     // Arrange
     subscriptionRegistry.registerSubscription(SYSTEM_ID, SUBSCRIPTION_ID);
     doNothing().when(subscriptionManager).unsubscribe(SUBSCRIPTION_ID);
@@ -201,13 +200,13 @@ public class FeedUpdaterSubscriptionTest {
     assertTrue(result);
     assertTrue(testProvider.getEnabled());
     verify(subscriptionRegistry)
-      .updateSubscriptionStatus(eq(SYSTEM_ID), eq(SubscriptionStatus.STARTING));
+      .updateSubscriptionStatus(SYSTEM_ID, SubscriptionStatus.STARTING);
     verify(subscriptionManager).unsubscribe(SUBSCRIPTION_ID);
     verify(subscriptionRegistry).removeSubscription(SYSTEM_ID);
   }
 
   @Test
-  public void testRestartSubscriptionNoExistingSubscription() {
+  void testRestartSubscriptionNoExistingSubscription() {
     // Act
     boolean result = feedUpdater.restartSubscription(testProvider);
 
@@ -215,16 +214,16 @@ public class FeedUpdaterSubscriptionTest {
     assertTrue(result);
     assertTrue(testProvider.getEnabled());
     verify(subscriptionRegistry)
-      .updateSubscriptionStatus(eq(SYSTEM_ID), eq(SubscriptionStatus.STARTING));
+      .updateSubscriptionStatus(SYSTEM_ID, SubscriptionStatus.STARTING);
     verify(subscriptionManager, never()).unsubscribe(anyString());
   }
 
   @Test
-  public void testGetSubscriptionRegistry() {
+  void testGetSubscriptionRegistry() {
     // Act
     SubscriptionRegistry registry = feedUpdater.getSubscriptionRegistry();
 
     // Assert
-    assertTrue(registry == subscriptionRegistry);
+    assertSame(registry, subscriptionRegistry);
   }
 }
