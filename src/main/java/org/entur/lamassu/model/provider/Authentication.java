@@ -25,10 +25,14 @@ import org.entur.gbfs.authentication.BearerTokenRequestAuthenticator;
 import org.entur.gbfs.authentication.HttpHeadersRequestAuthenticator;
 import org.entur.gbfs.authentication.Oauth2ClientCredentialsGrantRequestAuthenticator;
 import org.entur.gbfs.authentication.RequestAuthenticator;
-import org.entur.lamassu.model.provider.AuthenticationScheme;
 
 public class Authentication {
 
+  private static final String SCOPE = "scope";
+  private static final String CLIENT_PASSWORD = "clientPassword";
+  private static final String CLIENT_ID = "clientId";
+  private static final String TOKEN_URL = "tokenUrl";
+  private static final String ACCESS_TOKEN = "accessToken";
   private AuthenticationScheme scheme;
   private Map<String, String> properties;
 
@@ -43,15 +47,15 @@ public class Authentication {
   public RequestAuthenticator getRequestAuthenticator() {
     if (scheme == AuthenticationScheme.OAUTH2_CLIENT_CREDENTIALS_GRANT) {
       return new Oauth2ClientCredentialsGrantRequestAuthenticator(
-        URI.create(properties.get("tokenUrl")),
-        properties.get("clientId"),
-        properties.get("clientPassword"),
-        properties.get("scope") != null && !properties.get("scope").isEmpty()
-          ? properties.get("scope")
+        URI.create(properties.get(TOKEN_URL)),
+        properties.get(CLIENT_ID),
+        properties.get(CLIENT_PASSWORD),
+        properties.get(SCOPE) != null && !properties.get(SCOPE).isEmpty()
+          ? properties.get(SCOPE)
           : null
       );
     } else if (scheme == AuthenticationScheme.BEARER_TOKEN) {
-      return new BearerTokenRequestAuthenticator(properties.get("accessToken"));
+      return new BearerTokenRequestAuthenticator(properties.get(ACCESS_TOKEN));
     } else if (scheme == AuthenticationScheme.HTTP_HEADERS) {
       return new HttpHeadersRequestAuthenticator(properties);
     } else {
