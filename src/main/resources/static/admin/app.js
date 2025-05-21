@@ -234,7 +234,7 @@ const Modal = ({ isOpen, title, onClose, children }) => {
 };
 
 // Form for creating/editing feed providers
-const FeedProviderForm = ({ provider, onSubmit, onCancel }) => {
+const FeedProviderForm = ({ provider, onSubmit, onCancel, isCopyMode }) => {
   const [formData, setFormData] = React.useState(provider || {
     systemId: '',
     operatorId: '',
@@ -544,7 +544,7 @@ const FeedProviderForm = ({ provider, onSubmit, onCancel }) => {
           value={formData.systemId}
           onChange={handleChange}
           required
-          disabled={provider && provider.systemId} // Disable editing systemId for existing providers
+          disabled={provider && provider.systemId && !isCopyMode} // Disable editing systemId for existing providers
         />
       </div>
 
@@ -667,7 +667,7 @@ const FeedProviderForm = ({ provider, onSubmit, onCancel }) => {
         <button type="button" className="btn btn-secondary" onClick={onCancel}>Cancel</button>
         <button type="submit" className="btn btn-success" disabled={loading}>
           {loading ? <Spinner /> : null}
-          {provider ? 'Update' : 'Create'} Feed Provider
+          {isCopyMode ? 'Create Copy of' : provider ? 'Update' : 'Create'} Feed Provider
         </button>
       </div>
     </form>
@@ -947,6 +947,7 @@ const App = () => {
   const [success, setSuccess] = React.useState('');
   const [modalOpen, setModalOpen] = React.useState(false);
   const [currentProvider, setCurrentProvider] = React.useState(null);
+  const [isCopyMode, setIsCopyMode] = React.useState(false);
   const [confirmDelete, setConfirmDelete] = React.useState(null);
   const [actionLoading, setActionLoading] = React.useState({});
   const [activeTab, setActiveTab] = React.useState('providers');
@@ -1117,12 +1118,25 @@ const App = () => {
   // Open modal for creating a new feed provider
   const openCreateModal = () => {
     setCurrentProvider(null);
+    setIsCopyMode(false);
+    setModalOpen(true);
+  };
+
+  // Open modal for creating a new feed provider by copying an existing one
+  const openCopyModal = (provider) => {
+    // Create a copy of the provider without the systemId
+    const providerCopy = { ...provider };
+    delete providerCopy.systemId; // Remove systemId so user has to enter a new one
+    
+    setCurrentProvider(providerCopy);
+    setIsCopyMode(true);
     setModalOpen(true);
   };
 
   // Open modal for editing an existing feed provider
   const openEditModal = (provider) => {
     setCurrentProvider(provider);
+    setIsCopyMode(false);
     setModalOpen(true);
   };
 
@@ -1130,6 +1144,7 @@ const App = () => {
   const closeModal = () => {
     setModalOpen(false);
     setCurrentProvider(null);
+    setIsCopyMode(false);
   };
 
   // Clear alert messages
@@ -1281,6 +1296,12 @@ const App = () => {
                             onClick={() => openEditModal(provider)}
                           >
                             Edit
+                          </button>
+                          <button
+                            className="btn btn-sm btn-primary"
+                            onClick={() => openCopyModal(provider)}
+                          >
+                            Copy
                           </button>
                           <button
                             className="btn btn-sm btn-danger"
@@ -1449,13 +1470,14 @@ const App = () => {
       {/* Feed Provider Form Modal */}
       <Modal
         isOpen={modalOpen}
-        title={currentProvider ? 'Edit Feed Provider' : 'Add New Feed Provider'}
+        title={currentProvider ? (isCopyMode ? 'Copy Feed Provider' : 'Edit Feed Provider') : 'Add New Feed Provider'}
         onClose={closeModal}
       >
         <FeedProviderForm
           provider={currentProvider}
-          onSubmit={currentProvider ? handleUpdate : handleCreate}
+          onSubmit={currentProvider && !isCopyMode ? handleUpdate : handleCreate}
           onCancel={closeModal}
+          isCopyMode={isCopyMode}
         />
       </Modal>
     </div>
