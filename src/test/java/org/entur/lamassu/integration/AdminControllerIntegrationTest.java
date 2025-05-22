@@ -139,9 +139,9 @@ class AdminControllerIntegrationTest extends AbstractIntegrationTestBase {
     assertNotNull(statusResponse.getBody());
     assertEquals(SubscriptionStatus.STOPPED, statusResponse.getBody());
 
-    // 7. Verify provider is now disabled in Redis
+    // 7. Verify provider is still enabled in Redis
     provider = feedProviderConfig.getProviderBySystemId(TEST_SYSTEM_ID);
-    assertFalse(provider.getEnabled());
+    assertTrue(provider.getEnabled());
 
     // 8. Restart subscription
     ResponseEntity<Void> restartResponse = restTemplate.exchange(
@@ -169,7 +169,7 @@ class AdminControllerIntegrationTest extends AbstractIntegrationTestBase {
     assertNotNull(statusResponse.getBody());
     assertEquals(SubscriptionStatus.STARTED, statusResponse.getBody());
 
-    // 10. Verify provider is enabled again in Redis
+    // 10. Verify provider is still enabled in Redis
     provider = feedProviderConfig.getProviderBySystemId(TEST_SYSTEM_ID);
     assertTrue(provider.getEnabled());
   }

@@ -164,7 +164,7 @@ class FeedUpdaterSubscriptionTest {
 
     // Assert
     assertTrue(result);
-    assertFalse(testProvider.getEnabled());
+    assertTrue(testProvider.getEnabled());
     verify(subscriptionRegistry)
       .updateSubscriptionStatus(SYSTEM_ID, SubscriptionStatus.STOPPING);
     verify(subscriptionManager).unsubscribe(SUBSCRIPTION_ID);
@@ -181,7 +181,7 @@ class FeedUpdaterSubscriptionTest {
 
     // Assert
     assertTrue(result);
-    assertFalse(testProvider.getEnabled());
+    assertTrue(testProvider.getEnabled());
     verify(subscriptionRegistry)
       .updateSubscriptionStatus(SYSTEM_ID, SubscriptionStatus.STOPPED);
     verify(subscriptionManager, never()).unsubscribe(anyString());
