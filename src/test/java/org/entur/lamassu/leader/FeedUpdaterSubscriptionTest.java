@@ -1,6 +1,5 @@
 package org.entur.lamassu.leader;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -164,7 +163,7 @@ class FeedUpdaterSubscriptionTest {
 
     // Assert
     assertTrue(result);
-    assertFalse(testProvider.getEnabled());
+    assertTrue(testProvider.getEnabled());
     verify(subscriptionRegistry)
       .updateSubscriptionStatus(SYSTEM_ID, SubscriptionStatus.STOPPING);
     verify(subscriptionManager).unsubscribe(SUBSCRIPTION_ID);
@@ -181,7 +180,7 @@ class FeedUpdaterSubscriptionTest {
 
     // Assert
     assertTrue(result);
-    assertFalse(testProvider.getEnabled());
+    assertTrue(testProvider.getEnabled());
     verify(subscriptionRegistry)
       .updateSubscriptionStatus(SYSTEM_ID, SubscriptionStatus.STOPPED);
     verify(subscriptionManager, never()).unsubscribe(anyString());

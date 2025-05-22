@@ -294,9 +294,6 @@ public class FeedUpdater {
    * @return true if the subscription was stopped or wasn't running, false if there was an error
    */
   public boolean stopSubscription(FeedProvider feedProvider) {
-    // Disable the feed provider
-    feedProvider.setEnabled(false);
-
     // Check if a subscription exists
     String subscriptionId = subscriptionRegistry.getSubscriptionIdBySystemId(
       feedProvider.getSystemId()
