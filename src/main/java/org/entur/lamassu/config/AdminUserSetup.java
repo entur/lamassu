@@ -20,11 +20,16 @@ package org.entur.lamassu.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
+@ConditionalOnProperty(
+  name = "org.entur.lamassu.enable-admin-endpoints",
+  havingValue = "true"
+)
 public class AdminUserSetup {
 
   @Value("${org.entur.lamassu.adminPassword:admin}")

@@ -11,7 +11,8 @@ import org.springframework.context.annotation.PropertySource;
 @ConfigurationProperties(prefix = "lamassu")
 @PropertySource(
   value = "${org.entur.lamassu.feedproviders}",
-  factory = YamlPropertySourceFactory.class
+  factory = YamlPropertySourceFactory.class,
+  ignoreResourceNotFound = true
 )
 public class FeedProviderConfigFile implements FeedProviderConfig {
 
@@ -20,6 +21,47 @@ public class FeedProviderConfigFile implements FeedProviderConfig {
   @Override
   public List<FeedProvider> getProviders() {
     return providers;
+  }
+
+  @Override
+  public FeedProvider getProviderBySystemId(String systemId) {
+    return providers
+      .stream()
+      .filter(p -> p.getSystemId().equals(systemId))
+      .findFirst()
+      .orElse(null);
+  }
+
+  @Override
+  public boolean addProvider(FeedProvider feedProvider) {
+    if (
+      providers.stream().anyMatch(p -> p.getSystemId().equals(feedProvider.getSystemId()))
+    ) {
+      return false;
+    } else {
+      providers.add(feedProvider);
+      return true;
+    }
+  }
+
+  @Override
+  public boolean updateProvider(FeedProvider feedProvider) {
+    if (
+      providers
+        .stream()
+        .noneMatch(p -> p.getSystemId().equals(feedProvider.getSystemId()))
+    ) {
+      return false;
+    } else {
+      providers.removeIf(p -> p.getSystemId().equals(feedProvider.getSystemId()));
+      providers.add(feedProvider);
+      return true;
+    }
+  }
+
+  @Override
+  public boolean deleteProvider(String systemId) {
+    return providers.removeIf(p -> p.getSystemId().equals(systemId));
   }
 
   public void setProviders(List<FeedProvider> providers) {

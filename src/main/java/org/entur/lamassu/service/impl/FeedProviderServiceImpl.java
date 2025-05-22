@@ -19,7 +19,6 @@
 package org.entur.lamassu.service.impl;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.mapper.entitymapper.TranslationMapper;
@@ -32,8 +31,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class FeedProviderServiceImpl implements FeedProviderService {
 
-  private final Map<String, FeedProvider> feedProvidersBySystemId;
-  private final List<FeedProvider> feedProviders;
+  private final FeedProviderConfig feedProviderConfig;
   private final TranslationMapper translationMapper;
 
   @Autowired
@@ -41,26 +39,18 @@ public class FeedProviderServiceImpl implements FeedProviderService {
     FeedProviderConfig feedProviderConfig,
     TranslationMapper translationMapper
   ) {
-    feedProviders = feedProviderConfig.getProviders();
-    feedProvidersBySystemId =
-      feedProviders
-        .stream()
-        .collect(Collectors.toMap(FeedProvider::getSystemId, fp -> fp));
+    this.feedProviderConfig = feedProviderConfig;
     this.translationMapper = translationMapper;
   }
 
   @Override
   public List<FeedProvider> getFeedProviders() {
-    return feedProviders;
+    return feedProviderConfig.getProviders();
   }
 
   @Override
   public List<Operator> getOperators() {
-    return getFeedProviders()
-      .stream()
-      .map(this::mapOperator)
-      .distinct()
-      .collect(Collectors.toList());
+    return getFeedProviders().stream().map(this::mapOperator).distinct().toList();
   }
 
   private Operator mapOperator(FeedProvider feedProvider) {
@@ -77,7 +67,10 @@ public class FeedProviderServiceImpl implements FeedProviderService {
 
   @Override
   public FeedProvider getFeedProviderBySystemId(String systemId) {
-    return feedProvidersBySystemId.get(systemId);
+    return getFeedProviders()
+      .stream()
+      .collect(Collectors.toMap(FeedProvider::getSystemId, fp -> fp))
+      .get(systemId);
   }
 
   @Override

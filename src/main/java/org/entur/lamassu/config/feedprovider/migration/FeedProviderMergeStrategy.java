@@ -16,27 +16,10 @@
  *
  */
 
-package org.entur.lamassu.cache;
+package org.entur.lamassu.config.feedprovider.migration;
 
-import java.util.concurrent.TimeUnit;
-import org.entur.lamassu.model.provider.FeedProvider;
-import org.mobilitydata.gbfs.v2_3.gbfs.GBFSFeedName;
-
-public interface GBFSV2FeedCache {
-  <T> T find(GBFSFeedName feedName, FeedProvider feedProvider);
-  <T> void update(
-    GBFSFeedName feedName,
-    FeedProvider feedProvider,
-    T feed,
-    int ttl,
-    TimeUnit timeUnit
-  );
-  <T> T getAndUpdate(
-    GBFSFeedName feedName,
-    FeedProvider feedProvider,
-    T feed,
-    int ttl,
-    TimeUnit timeUnit
-  );
-  void remove(GBFSFeedName feedName, FeedProvider feedProvider);
+public enum FeedProviderMergeStrategy {
+  REPLACE_ALL,
+  REPLACE,
+  SKIP,
 }

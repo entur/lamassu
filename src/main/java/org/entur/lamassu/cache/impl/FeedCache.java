@@ -73,6 +73,17 @@ public abstract class FeedCache {
     return null;
   }
 
+  protected void remove(String key) {
+    try {
+      cache.removeAsync(key).get(5, TimeUnit.SECONDS);
+    } catch (ExecutionException | TimeoutException e) {
+      logger.warn("Unable to remove feed from cache within 5 seconds", e);
+    } catch (InterruptedException e) {
+      logger.warn("Interrupted while removing feed from cache", e);
+      Thread.currentThread().interrupt();
+    }
+  }
+
   protected String mergeStrings(String first, String second) {
     return String.format("%s_%s", first, second);
   }
