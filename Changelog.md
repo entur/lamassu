@@ -25,6 +25,7 @@ based on merged pull requests. Search GitHub issues and pull requests for smalle
 - Fix: Use station coords for docked vehicles without coords [bump serialization id] [#662](https://github.com/entur/lamassu/pull/662)
 - Feature/graphql subscriptions [#670](https://github.com/entur/lamassu/pull/670)
 - Manage feedproviders via admin api [#679](https://github.com/entur/lamassu/pull/679)
+- Do change enabled status when stopping a subscription [#694](https://github.com/entur/lamassu/pull/694)
   [](AUTOMATIC_CHANGELOG_PLACEHOLDER_DO_NOT_REMOVE)
 
 ## 1.1.0
