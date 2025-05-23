@@ -6,8 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Base64;
+import java.util.List;
 import java.util.Map;
+import org.entur.lamassu.cache.CacheManagementService;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
+import org.entur.lamassu.config.feedprovider.FeedProviderConfigRedis;
 import org.entur.lamassu.leader.FeedUpdater;
 import org.entur.lamassu.leader.SubscriptionRegistry;
 import org.entur.lamassu.leader.SubscriptionStatus;
@@ -38,6 +41,9 @@ class AdminControllerIntegrationTest extends AbstractIntegrationTestBase {
 
   @Autowired
   private SubscriptionRegistry subscriptionRegistry;
+
+  @Autowired
+  private CacheManagementService cacheManagementService;
 
   private static final String TEST_SYSTEM_ID = "test-system-id";
   private static final String TEST_FEED_URL = "http://localhost:8888/testatlantis/gbfs";
@@ -318,6 +324,59 @@ class AdminControllerIntegrationTest extends AbstractIntegrationTestBase {
     assertEquals(SubscriptionStatus.STOPPED, statusResponse.getBody());
   }
 
+  /**
+   * Tests the cache management endpoints:
+   * 1. Get cache keys
+   * 2. Clear old cache
+   * 3. Verify feed provider config is preserved
+   */
+  @Test
+  void testCacheManagementEndpoints() {
+    // Create a test feed provider to ensure we have something in Redis
+    FeedProvider testProvider = createTestFeedProvider();
+    feedProviderConfig.addProvider(testProvider);
+
+    // 1. Test getting cache keys
+    ResponseEntity<String[]> keysResponse = restTemplate.exchange(
+      "/admin/cache_keys",
+      HttpMethod.GET,
+      createAuthEntity(null),
+      String[].class
+    );
+    assertEquals(HttpStatus.OK, keysResponse.getStatusCode());
+    assertNotNull(keysResponse.getBody());
+    assertTrue(keysResponse.getBody().length > 0);
+
+    // Verify the feed provider key exists
+    boolean feedProviderKeyExists = false;
+    for (String key : keysResponse.getBody()) {
+      if (key.equals(FeedProviderConfigRedis.FEED_PROVIDERS_REDIS_KEY)) {
+        feedProviderKeyExists = true;
+        break;
+      }
+    }
+    assertTrue(feedProviderKeyExists, "Feed provider key should exist in Redis");
+
+    // 2. Test clearing old cache
+    ResponseEntity<List> clearResponse = restTemplate.exchange(
+      "/admin/clear_old_cache",
+      HttpMethod.POST,
+      createAuthEntity(null),
+      List.class
+    );
+    assertEquals(HttpStatus.OK, clearResponse.getStatusCode());
+
+    // 3. Verify feed provider config is preserved after clearing old cache
+    FeedProvider retrievedProvider = feedProviderConfig.getProviderBySystemId(
+      TEST_SYSTEM_ID
+    );
+    assertNotNull(
+      retrievedProvider,
+      "Feed provider should still exist after clearing old cache"
+    );
+    assertEquals(testProvider.getSystemId(), retrievedProvider.getSystemId());
+  }
+
   private HttpHeaders createAuthHeaders() {
     HttpHeaders headers = new HttpHeaders();
     String auth = "admin:admin";
@@ -325,5 +384,18 @@ class AdminControllerIntegrationTest extends AbstractIntegrationTestBase {
     String authHeader = "Basic " + new String(encodedAuth);
     headers.set("Authorization", authHeader);
     return headers;
+  }
+
+  private HttpEntity createAuthEntity(Object body) {
+    return new HttpEntity<>(body, createAuthHeaders());
+  }
+
+  private FeedProvider createTestFeedProvider() {
+    FeedProvider testProvider = new FeedProvider();
+    testProvider.setSystemId(TEST_SYSTEM_ID);
+    testProvider.setUrl(TEST_FEED_URL);
+    testProvider.setLanguage("en");
+    testProvider.setEnabled(false); // Start with disabled
+    return testProvider;
   }
 }
