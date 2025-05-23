@@ -6,9 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Base64;
+import java.util.List;
 import java.util.Map;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
-import org.entur.lamassu.leader.FeedUpdater;
 import org.entur.lamassu.leader.SubscriptionRegistry;
 import org.entur.lamassu.leader.SubscriptionStatus;
 import org.entur.lamassu.model.provider.FeedProvider;
@@ -32,9 +32,6 @@ class AdminControllerIntegrationTest extends AbstractIntegrationTestBase {
 
   @Autowired
   private FeedProviderConfig feedProviderConfig;
-
-  @Autowired
-  private FeedUpdater feedUpdater;
 
   @Autowired
   private SubscriptionRegistry subscriptionRegistry;
@@ -318,6 +315,37 @@ class AdminControllerIntegrationTest extends AbstractIntegrationTestBase {
     assertEquals(SubscriptionStatus.STOPPED, statusResponse.getBody());
   }
 
+  /**
+   * Tests the cache management endpoints:
+   * 1. Clear old cache
+   * 2. Get cache keys
+   *
+   * This test verifies that the cache management endpoints work correctly
+   * without making assumptions about specific Redis keys.
+   */
+  @Test
+  void testCacheManagementEndpoints() {
+    // Test clearing old cache
+    ResponseEntity<List> clearResponse = restTemplate.exchange(
+      "/admin/clear_old_cache",
+      HttpMethod.POST,
+      createAuthEntity(null),
+      List.class
+    );
+    assertEquals(HttpStatus.OK, clearResponse.getStatusCode());
+    assertNotNull(clearResponse.getBody(), "Clear cache response should not be null");
+
+    // Test getting cache keys endpoint
+    ResponseEntity<String[]> keysResponse = restTemplate.exchange(
+      "/admin/cache_keys",
+      HttpMethod.GET,
+      createAuthEntity(null),
+      String[].class
+    );
+    assertEquals(HttpStatus.OK, keysResponse.getStatusCode());
+    assertNotNull(keysResponse.getBody(), "Cache keys response should not be null");
+  }
+
   private HttpHeaders createAuthHeaders() {
     HttpHeaders headers = new HttpHeaders();
     String auth = "admin:admin";
@@ -325,5 +353,9 @@ class AdminControllerIntegrationTest extends AbstractIntegrationTestBase {
     String authHeader = "Basic " + new String(encodedAuth);
     headers.set("Authorization", authHeader);
     return headers;
+  }
+
+  private HttpEntity createAuthEntity(Object body) {
+    return new HttpEntity<>(body, createAuthHeaders());
   }
 }

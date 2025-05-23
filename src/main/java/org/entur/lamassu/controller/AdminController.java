@@ -1,12 +1,10 @@
 package org.entur.lamassu.controller;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.StreamSupport;
+import org.entur.lamassu.cache.CacheManagementService;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
-import org.entur.lamassu.config.project.LamassuProjectInfoConfiguration;
 import org.entur.lamassu.leader.FeedUpdater;
 import org.entur.lamassu.leader.SubscriptionStatus;
 import org.entur.lamassu.model.entities.Vehicle;
@@ -14,7 +12,6 @@ import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.service.GeoSearchService;
 import org.redisson.api.RFuture;
 import org.redisson.api.RMapCache;
-import org.redisson.api.RedissonClient;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,35 +33,29 @@ import org.springframework.web.bind.annotation.RestController;
 )
 public class AdminController {
 
-  private final RedissonClient redissonClient;
   private final GeoSearchService geoSearchService;
   private final FeedProviderConfig feedProviderConfig;
   private final FeedUpdater feedUpdater;
   private final RMapCache<String, Vehicle> vehicleCache;
-
-  private final String serializationVersion;
+  private final CacheManagementService cacheManagementService;
 
   public AdminController(
-    RedissonClient redissonClient,
     GeoSearchService geoSearchService,
     RMapCache<String, Vehicle> vehicleCache,
     FeedProviderConfig feedProviderConfig,
     FeedUpdater feedUpdater,
-    LamassuProjectInfoConfiguration lamassuProjectInfoConfiguration
+    CacheManagementService cacheManagementService
   ) {
-    this.redissonClient = redissonClient;
     this.geoSearchService = geoSearchService;
     this.vehicleCache = vehicleCache;
     this.feedProviderConfig = feedProviderConfig;
     this.feedUpdater = feedUpdater;
-    this.serializationVersion = lamassuProjectInfoConfiguration.getSerializationVersion();
+    this.cacheManagementService = cacheManagementService;
   }
 
   @GetMapping("/cache_keys")
   public Collection<String> getCacheKeys() {
-    return StreamSupport
-      .stream(redissonClient.getKeys().getKeys().spliterator(), false)
-      .toList();
+    return cacheManagementService.getCacheKeys();
   }
 
   @PostMapping("/clear_vehicle_cache")
@@ -86,22 +77,12 @@ public class AdminController {
 
   @PostMapping("/clear_db")
   public RFuture<Void> clearDb() {
-    return redissonClient.getKeys().flushdbParallelAsync();
+    return cacheManagementService.clearAllCaches();
   }
 
   @PostMapping("/clear_old_cache")
   public List<String> clearOldCache() {
-    var keys = redissonClient.getKeys();
-    List<String> deletedKeys = new ArrayList<>();
-    keys
-      .getKeys()
-      .forEach(key -> {
-        if (!key.endsWith("_" + serializationVersion)) {
-          keys.delete(key);
-          deletedKeys.add(key);
-        }
-      });
-    return deletedKeys;
+    return cacheManagementService.clearOldCaches();
   }
 
   /**

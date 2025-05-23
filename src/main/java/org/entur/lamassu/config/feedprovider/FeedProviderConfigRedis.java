@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class FeedProviderConfigRedis implements FeedProviderConfig {
 
-  private static final String FEED_PROVIDERS_REDIS_KEY = "feedProviders";
+  public static final String FEED_PROVIDERS_REDIS_KEY = "feedProviders";
 
   private final RBucket<List<FeedProvider>> feedProvidersBucket;
 
