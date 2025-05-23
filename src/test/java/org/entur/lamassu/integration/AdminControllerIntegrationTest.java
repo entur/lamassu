@@ -37,7 +37,6 @@ class AdminControllerIntegrationTest extends AbstractIntegrationTestBase {
   private SubscriptionRegistry subscriptionRegistry;
 
   private static final String TEST_SYSTEM_ID = "test-system-id";
-  private static final String CACHE_TEST_SYSTEM_ID = "cache-test-system-id";
   private static final String TEST_FEED_URL = "http://localhost:8888/testatlantis/gbfs";
 
   /**
@@ -358,14 +357,5 @@ class AdminControllerIntegrationTest extends AbstractIntegrationTestBase {
 
   private HttpEntity createAuthEntity(Object body) {
     return new HttpEntity<>(body, createAuthHeaders());
-  }
-
-  private FeedProvider createTestFeedProvider() {
-    FeedProvider testProvider = new FeedProvider();
-    testProvider.setSystemId(CACHE_TEST_SYSTEM_ID);
-    testProvider.setUrl(TEST_FEED_URL);
-    testProvider.setLanguage("en");
-    testProvider.setEnabled(false); // Start with disabled
-    return testProvider;
   }
 }
