@@ -1,0 +1,81 @@
+{
+  "close": "Close",
+  "save": "Save",
+  "cancel": "Cancel",
+  "details": "Details",
+
+  "map": "Map view",
+
+  "search.searchPlaceholder": "Search…",
+
+  "user.name": "Username",
+  "user.userAccount": "User account",
+  "user.logout": "Log out",
+
+  "data": "Data overview",
+  "data.title": "Stop Place Overview",
+  "data.loading": "Loading data...",
+  "data.errorPrefix": "Error",
+  "data.totalEntries": "Total entries: {{count}}",
+  "data.pagination.rowsPerPage": "Rows per page:",
+  "data.pagination.displayedRows": "{{from}}–{{to}} of {{count}}",
+  "data.pagination.displayedRowsOfMore": "{{from}}–{{to}} of more than {{count}}",
+
+  "data.table.header.name": "Name",
+  "data.table.header.id": "ID",
+  "data.table.header.longitude": "Longitude",
+  "data.table.header.latitude": "Latitude",
+  "data.table.header.type": "Type",
+
+  "data.table.row.typeIconAlt": "Stop place type icon",
+
+  "data.table.detail.coordinatesTitle": "Coordinates",
+  "data.table.detail.longitudeLabel": "Longitude:",
+  "data.table.detail.latitudeLabel": "Latitude:",
+  "data.table.detail.typeTitle": "Type",
+
+  "settings": "Settings",
+  "settings.language": "Language",
+  "settings.enableCustomTheme": "Enable custom theme & icons",
+
+  "home": "Home",
+  "home.welcomeMessage": "Welcome to Inanna",
+  "home.description": "Inanna is your React starter kit for Entur Open Source applications— providing a consistent, Material-UI based design system and out-of-the-box support for authentication, routing, and common data workflows.",
+  "home.features.title": "With Inanna you get:",
+
+  "home.features.layout.headline": "Responsive Layout",
+  "home.features.layout.description": "A responsive AppBar + Drawer layout, with built-in search and user menus.",
+  "home.features.map.headline": "Geospatial MapView",
+  "home.features.map.description": "A MapView scaffold powered by React-Map-GL/MapLibre for geospatial features.",
+  "home.features.data.headline": "Data Management",
+  "home.features.data.description": "A DataOverview page template for listing, filtering, and visualizing your Entur data.",
+  "home.features.auth.headline": "Authentication Ready",
+  "home.features.auth.description_prefix": "End-to-end authentication wiring via the ",
+  "home.features.auth.description_suffix": " hook.",
+  "home.features.ui.headline": "Themeable & Accessible",
+  "home.features.ui.description": "A themeable, accessible UI foundation so you can focus on your unique business logic—not boilerplate.",
+  "home.features.localization.headline": "Multi-Language Support",
+  "home.features.localization.description": "Experience the application in your preferred language with the localization feature",
+
+  "map.layers.title": "Map Layers",
+  "map.layers.circles": "Circles",
+  "map.layers.icons": "Icons",
+  "map.layers.text": "Text Labels",
+  "map.layers.toggleOpen": "Open layer controls",
+  "map.layers.toggleClose": "Close layer controls",
+  "map.layers.basemap": "OSM Basemap",
+
+  "workArea.title": "Work area",
+  "workArea.nameLabel": "Name",
+  "workArea.typeLabel": "Type",
+  "workArea.types.train": "Train",
+  "workArea.types.bus": "Bus",
+  "workArea.types.ferry": "Ferry",
+  "workArea.types.tram": "Tram",
+  "workArea.includeLabel": "Include",
+  "workArea.moreInfoTooltip": "More info",
+
+  "admin.feedProviders": "Feed Providers",
+  "admin.cacheManagement": "Cache Management",
+  "admin.spatialIndex": "Spatial Index"
+}

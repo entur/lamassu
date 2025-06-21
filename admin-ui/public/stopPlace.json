@@ -1,0 +1,69 @@
+{
+  "data": {
+    "stopPlace": [
+      {
+        "id": "NSR:StopPlace:933",
+        "weighting": null,
+        "name": {
+          "value": "Aspestrand",
+          "__typename": "EmbeddableMultilingualStringType"
+        },
+        "keyValues": [],
+        "submode": null,
+        "transportMode": null,
+        "version": 1,
+        "alternativeNames": [],
+        "tags": [],
+        "geometry": {
+          "legacyCoordinates": [[5.435734, 60.260427]]
+        },
+        "validBetween": {
+          "fromDate": "2017-05-26T14:52:10.096+0200",
+          "toDate": null
+        },
+        "stopPlaceType": "onstreetBus",
+        "topographicPlace": {
+          "name": {
+            "value": "Aremark",
+            "__typename": "EmbeddableMultilingualStringType"
+          },
+          "parentTopographicPlace": {
+            "name": {
+              "value": "Østfold",
+              "__typename": "EmbeddableMultilingualStringType"
+            },
+            "__typename": "TopographicPlaceType"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlaceType"
+        },
+        "permissions": {
+          "canEdit": true
+        },
+        "quays": [
+          {
+            "id": "NSR:Quay:1694",
+            "geometry": {
+              "legacyCoordinates": [[5.435734, 60.260427]]
+            },
+            "publicCode": "1",
+            "compassBearing": 344,
+            "keyValues": [],
+            "__typename": "quay"
+          },
+          {
+            "id": "NSR:Quay:1695",
+            "geometry": {
+              "legacyCoordinates": [[5.435734, 60.260427]]
+            },
+            "publicCode": "2",
+            "compassBearing": 164,
+            "keyValues": [],
+            "__typename": "quay"
+          }
+        ],
+        "__typename": "StopPlaceType"
+      }
+    ]
+  }
+}

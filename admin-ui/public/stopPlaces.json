@@ -1,0 +1,4683 @@
+{
+  "data": {
+    "stopPlace": [
+      {
+        "id": "NSR:StopPlace:58404",
+        "version": "42",
+        "geometry": {
+          "legacyCoordinates": [[10.7322, 59.914994]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Nationaltheatret",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2024-10-10T09:02:49.297+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "children": [
+          {
+            "id": "NSR:StopPlace:4067",
+            "version": "47",
+            "stopPlaceType": "metroStation",
+            "submode": "metro",
+            "geometry": {
+              "legacyCoordinates": [[10.732339, 59.91529]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:4081",
+            "version": "44",
+            "stopPlaceType": "onstreetTram",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.732892, 59.914627]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:4129",
+            "version": "41",
+            "stopPlaceType": "onstreetBus",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.73136, 59.913039]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:290",
+            "version": "34",
+            "stopPlaceType": "onstreetBus",
+            "submode": "railReplacementBus",
+            "geometry": {
+              "legacyCoordinates": [[10.730708, 59.914722]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:288",
+            "version": "41",
+            "stopPlaceType": "railStation",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.728133, 59.91539]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:4089",
+            "version": "42",
+            "stopPlaceType": "onstreetBus",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.731263, 59.914192]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:63475",
+            "version": "9",
+            "stopPlaceType": "onstreetBus",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.730373, 59.914096]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:4094",
+            "version": "43",
+            "stopPlaceType": "onstreetBus",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.733852, 59.916006]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:4099",
+            "version": "32",
+            "stopPlaceType": "onstreetBus",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.732669, 59.913414]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:64015",
+            "version": "17",
+            "stopPlaceType": "onstreetBus",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.73062, 59.915152]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:4076",
+            "version": "44",
+            "stopPlaceType": "onstreetBus",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.732827, 59.914663]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          }
+        ],
+        "__typename": "ParentStopPlace"
+      },
+      {
+        "id": "NSR:StopPlace:4016",
+        "version": "19",
+        "geometry": {
+          "legacyCoordinates": [[10.744216, 59.910398]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Kvadraturen",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2021-09-02T11:48:03.737+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetBus",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:59601",
+        "version": "6",
+        "geometry": {
+          "legacyCoordinates": [[10.746901, 59.910525]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Dronningens gate",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2022-11-18T13:33:42.820+0100",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "children": [
+          {
+            "id": "NSR:StopPlace:4024",
+            "version": "7",
+            "stopPlaceType": "onstreetTram",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.74698, 59.910511]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:59413",
+            "version": "9",
+            "stopPlaceType": "onstreetBus",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.746061, 59.910242]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:61631",
+            "version": "4",
+            "stopPlaceType": "onstreetBus",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.746836, 59.91054]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          }
+        ],
+        "__typename": "ParentStopPlace"
+      },
+      {
+        "id": "NSR:StopPlace:4029",
+        "version": "12",
+        "geometry": {
+          "legacyCoordinates": [[10.743256, 59.913437]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Stortinget",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2021-11-29T13:11:56.000+0100",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "metroStation",
+        "submode": "metro",
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:61633",
+        "version": "4",
+        "geometry": {
+          "legacyCoordinates": [[10.741697, 59.911798]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Øvre Slottsgate",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2023-03-10T10:42:10.488+0100",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "children": [
+          {
+            "id": "NSR:StopPlace:61632",
+            "version": "6",
+            "stopPlaceType": "onstreetBus",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.741619, 59.911819]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:4036",
+            "version": "7",
+            "stopPlaceType": "onstreetTram",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.741778, 59.911775]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          }
+        ],
+        "__typename": "ParentStopPlace"
+      },
+      {
+        "id": "NSR:StopPlace:4041",
+        "version": "4",
+        "geometry": {
+          "legacyCoordinates": [[10.738009, 59.913203]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Eidsvolls plass",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2021-09-02T11:18:35.230+0200",
+          "toDate": "2021-09-02T11:18:35.230+0200",
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetBus",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:4052",
+        "version": "2",
+        "geometry": {
+          "legacyCoordinates": [[10.742998, 59.910726]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Kongens gate",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2018-01-16T13:47:14.000+0100",
+          "toDate": "2018-01-16T13:48:14.000+0100",
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetBus",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:4055",
+        "version": "4",
+        "geometry": {
+          "legacyCoordinates": [[10.73913, 59.912233]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Wessels plass",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2021-09-02T11:21:10.000+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetBus",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:4059",
+        "version": "4",
+        "geometry": {
+          "legacyCoordinates": [[10.742429, 59.909922]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Rådhusgata",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2018-05-03T15:02:53.868+0200",
+          "toDate": "2018-05-03T15:02:53.868+0200",
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetBus",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:4064",
+        "version": "2",
+        "geometry": {
+          "legacyCoordinates": [[10.743714, 59.912212]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Kongens gate",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2020-01-15T14:54:54.474+0100",
+          "toDate": "2020-01-15T14:54:54.474+0100",
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetBus",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:4102",
+        "version": "3",
+        "geometry": {
+          "legacyCoordinates": [[10.729865, 59.912392]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Rådhuset",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2021-09-02T10:31:40.904+0200",
+          "toDate": "2021-09-02T10:31:40.904+0200",
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetBus",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:4107",
+        "version": "6",
+        "geometry": {
+          "legacyCoordinates": [[10.727361, 59.913072]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Dronning Mauds gate",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2024-04-18T08:03:53.917+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetBus",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:58382",
+        "version": "18",
+        "geometry": {
+          "legacyCoordinates": [[10.729592, 59.910729]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Aker brygge",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2023-09-28T12:07:40.588+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "children": [
+          {
+            "id": "NSR:StopPlace:4142",
+            "version": "41",
+            "stopPlaceType": "ferryStop",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.72992, 59.910707]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:4120",
+            "version": "21",
+            "stopPlaceType": "onstreetTram",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.729895, 59.911006]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          }
+        ],
+        "__typename": "ParentStopPlace"
+      },
+      {
+        "id": "NSR:StopPlace:4124",
+        "version": "4",
+        "geometry": {
+          "legacyCoordinates": [[10.727657, 59.912453]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Dokkveien",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2024-05-28T10:29:44.700+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetBus",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:4134",
+        "version": "5",
+        "geometry": {
+          "legacyCoordinates": [[10.744081, 59.91355]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Stortorvet",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2018-08-09T13:44:59.721+0200",
+          "toDate": "2018-08-09T13:44:59.721+0200",
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetTram",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:58358",
+        "version": "20",
+        "geometry": {
+          "legacyCoordinates": [[10.745452, 59.912961]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Stortorvet",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2024-10-30T12:09:58.758+0100",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "children": [
+          {
+            "id": "NSR:StopPlace:4160",
+            "version": "25",
+            "stopPlaceType": "onstreetTram",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.745383, 59.912988]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:4151",
+            "version": "27",
+            "stopPlaceType": "onstreetBus",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.745514, 59.912942]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          }
+        ],
+        "__typename": "ParentStopPlace"
+      },
+      {
+        "id": "NSR:StopPlace:4155",
+        "version": "6",
+        "geometry": {
+          "legacyCoordinates": [[10.744091, 59.913541]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Stortorvet",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2018-08-09T13:44:11.620+0200",
+          "toDate": "2018-08-09T13:44:11.620+0200",
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetBus",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:4163",
+        "version": "8",
+        "geometry": {
+          "legacyCoordinates": [[10.740555, 59.914761]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Prof. Aschehougs plass",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2021-09-02T11:14:34.000+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetBus",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:59833",
+        "version": "14",
+        "geometry": {
+          "legacyCoordinates": [[10.741268, 59.915183]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Tinghuset",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2021-09-02T11:10:19.000+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "children": [
+          {
+            "id": "NSR:StopPlace:4168",
+            "version": "16",
+            "stopPlaceType": "onstreetTram",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.741257, 59.915218]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:59832",
+            "version": "16",
+            "stopPlaceType": "onstreetBus",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.741284, 59.91515]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          }
+        ],
+        "__typename": "ParentStopPlace"
+      },
+      {
+        "id": "NSR:StopPlace:60322",
+        "version": "10",
+        "geometry": {
+          "legacyCoordinates": [[10.737197, 59.916817]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Tullinløkka",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2024-05-22T15:02:54.428+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "children": [
+          {
+            "id": "NSR:StopPlace:60321",
+            "version": "12",
+            "stopPlaceType": "onstreetBus",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.737124, 59.916838]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:4174",
+            "version": "13",
+            "stopPlaceType": "onstreetTram",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.737269, 59.916793]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          }
+        ],
+        "__typename": "ParentStopPlace"
+      },
+      {
+        "id": "NSR:StopPlace:4179",
+        "version": "4",
+        "geometry": {
+          "legacyCoordinates": [[10.73928, 59.917295]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "St. Olavs plass",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2021-09-02T11:06:48.000+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetBus",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:58407",
+        "version": "33",
+        "geometry": {
+          "legacyCoordinates": [[10.734538, 59.918739]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Holbergs plass",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2024-06-28T07:17:53.907+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "children": [
+          {
+            "id": "NSR:StopPlace:63280",
+            "version": "14",
+            "stopPlaceType": "onstreetBus",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.734476, 59.91777]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:4183",
+            "version": "40",
+            "stopPlaceType": "onstreetTram",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.734528, 59.918791]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:4187",
+            "version": "36",
+            "stopPlaceType": "onstreetBus",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.735547, 59.919882]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:62032",
+            "version": "40",
+            "stopPlaceType": "onstreetBus",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.734541, 59.918686]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          }
+        ],
+        "__typename": "ParentStopPlace"
+      },
+      {
+        "id": "NSR:StopPlace:4192",
+        "version": "2",
+        "geometry": {
+          "legacyCoordinates": [[10.733889, 59.918824]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Radisson Blu Scandinavia",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2021-08-06T13:30:24.000+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetBus",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:58292",
+        "version": "5",
+        "geometry": {
+          "legacyCoordinates": [[10.73935, 59.911159]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Christiania torv",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2018-12-10T16:20:39.819+0100",
+          "toDate": "2018-12-10T16:20:39.819+0100",
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "children": [
+          {
+            "id": "NSR:StopPlace:4235",
+            "version": "6",
+            "stopPlaceType": "onstreetBus",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.739323, 59.911135]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:4231",
+            "version": "6",
+            "stopPlaceType": "onstreetTram",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.73931, 59.911116]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          }
+        ],
+        "__typename": "ParentStopPlace"
+      },
+      {
+        "id": "NSR:StopPlace:4240",
+        "version": "3",
+        "geometry": {
+          "legacyCoordinates": [[10.731953, 59.911885]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Rådhuset",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2019-01-11T12:17:28.973+0100",
+          "toDate": "2019-01-11T12:17:28.973+0100",
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetBus",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:4245",
+        "version": "5",
+        "geometry": {
+          "legacyCoordinates": [[10.735779, 59.91089]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Kontraskjæret",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2021-09-02T11:24:02.370+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetTram",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:4249",
+        "version": "5",
+        "geometry": {
+          "legacyCoordinates": [[10.74457, 59.916548]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Arne Garborgs plass",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2021-08-31T14:01:35.000+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetBus",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:4254",
+        "version": "3",
+        "geometry": {
+          "legacyCoordinates": [[10.743693, 59.916938]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Keysers gate",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2021-09-02T13:32:42.000+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetBus",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:4258",
+        "version": "7",
+        "geometry": {
+          "legacyCoordinates": [[10.722069, 59.909746]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Tjuvholmen",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2023-01-19T10:00:39.904+0100",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetBus",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:4263",
+        "version": "4",
+        "geometry": {
+          "legacyCoordinates": [[10.722659, 59.910792]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Vika atrium",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2021-09-02T09:59:55.000+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetBus",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:4268",
+        "version": "2",
+        "geometry": {
+          "legacyCoordinates": [[10.709752, 59.908529]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Filipstad",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2021-09-02T09:55:55.000+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetBus",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:4273",
+        "version": "5",
+        "geometry": {
+          "legacyCoordinates": [[10.713236, 59.90857]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Filipstadveien",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2021-09-02T09:53:56.000+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetBus",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:60031",
+        "version": "8",
+        "geometry": {
+          "legacyCoordinates": [[10.721194, 59.915856]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Inkognitogata",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2021-09-24T13:02:28.000+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "children": [
+          {
+            "id": "NSR:StopPlace:60030",
+            "version": "9",
+            "stopPlaceType": "onstreetBus",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.721202, 59.915899]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:4277",
+            "version": "10",
+            "stopPlaceType": "onstreetTram",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.721186, 59.915806]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          }
+        ],
+        "__typename": "ParentStopPlace"
+      },
+      {
+        "id": "NSR:StopPlace:58289",
+        "version": "24",
+        "geometry": {
+          "legacyCoordinates": [[10.717914, 59.914768]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Solli",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2024-09-03T11:34:47.529+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "children": [
+          {
+            "id": "NSR:StopPlace:4290",
+            "version": "27",
+            "stopPlaceType": "onstreetBus",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.717281, 59.915246]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:62019",
+            "version": "27",
+            "stopPlaceType": "onstreetBus",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.718877, 59.914827]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:4281",
+            "version": "26",
+            "stopPlaceType": "onstreetTram",
+            "submode": "localTram",
+            "geometry": {
+              "legacyCoordinates": [[10.719027, 59.914853]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:59287",
+            "version": "27",
+            "stopPlaceType": "onstreetTram",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.71734, 59.915182]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          }
+        ],
+        "__typename": "ParentStopPlace"
+      },
+      {
+        "id": "NSR:StopPlace:4285",
+        "version": "2",
+        "geometry": {
+          "legacyCoordinates": [[10.717322, 59.915096]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Lapsetorvet",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2017-10-04T12:10:23.545+0200",
+          "toDate": "2017-10-04T12:10:23.544+0200",
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetBus",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:58363",
+        "version": "8",
+        "geometry": {
+          "legacyCoordinates": [[10.715221, 59.916332]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Niels Juels gate",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2021-08-26T10:08:14.000+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "children": [
+          {
+            "id": "NSR:StopPlace:4293",
+            "version": "10",
+            "stopPlaceType": "onstreetTram",
+            "submode": "localTram",
+            "geometry": {
+              "legacyCoordinates": [[10.715157, 59.91634]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:62020",
+            "version": "10",
+            "stopPlaceType": "onstreetBus",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.715296, 59.916325]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          }
+        ],
+        "__typename": "ParentStopPlace"
+      },
+      {
+        "id": "NSR:StopPlace:58364",
+        "version": "11",
+        "geometry": {
+          "legacyCoordinates": [[10.711096, 59.912814]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Skillebekk",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2021-08-26T09:46:49.000+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "children": [
+          {
+            "id": "NSR:StopPlace:58311",
+            "version": "15",
+            "stopPlaceType": "onstreetBus",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.711061, 59.912815]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:4300",
+            "version": "12",
+            "stopPlaceType": "onstreetTram",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.71113, 59.912813]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          }
+        ],
+        "__typename": "ParentStopPlace"
+      },
+      {
+        "id": "NSR:StopPlace:58365",
+        "version": "6",
+        "geometry": {
+          "legacyCoordinates": [[10.702414, 59.914323]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Skarpsno",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2021-08-26T09:50:32.000+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "children": [
+          {
+            "id": "NSR:StopPlace:58312",
+            "version": "9",
+            "stopPlaceType": "onstreetBus",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.702357, 59.914348]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:4304",
+            "version": "8",
+            "stopPlaceType": "onstreetTram",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.70247, 59.914301]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          }
+        ],
+        "__typename": "ParentStopPlace"
+      },
+      {
+        "id": "NSR:StopPlace:59603",
+        "version": "5",
+        "geometry": {
+          "legacyCoordinates": [[10.698248, 59.917652]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Nobels gate",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2021-08-26T09:53:51.000+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "children": [
+          {
+            "id": "NSR:StopPlace:59419",
+            "version": "6",
+            "stopPlaceType": "onstreetBus",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.698178, 59.917664]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:4309",
+            "version": "6",
+            "stopPlaceType": "onstreetTram",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.698318, 59.917641]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          }
+        ],
+        "__typename": "ParentStopPlace"
+      },
+      {
+        "id": "NSR:StopPlace:4314",
+        "version": "3",
+        "geometry": {
+          "legacyCoordinates": [[10.719552, 59.91283]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Observatoriegata",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2021-09-08T15:26:39.000+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetBus",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:59602",
+        "version": "9",
+        "geometry": {
+          "legacyCoordinates": [[10.724107, 59.912856]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Ruseløkka",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2021-09-02T10:10:12.000+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "children": [
+          {
+            "id": "NSR:StopPlace:59288",
+            "version": "11",
+            "stopPlaceType": "onstreetBus",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.724038, 59.912892]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:4317",
+            "version": "10",
+            "stopPlaceType": "onstreetTram",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.724174, 59.91282]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          }
+        ],
+        "__typename": "ParentStopPlace"
+      },
+      {
+        "id": "NSR:StopPlace:58361",
+        "version": "10",
+        "geometry": {
+          "legacyCoordinates": [[10.70876, 59.919455]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Elisenberg",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2021-08-26T10:27:51.000+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "children": [
+          {
+            "id": "NSR:StopPlace:62023",
+            "version": "12",
+            "stopPlaceType": "onstreetBus",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.708819, 59.919418]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:4322",
+            "version": "12",
+            "stopPlaceType": "onstreetTram",
+            "submode": "localTram",
+            "geometry": {
+              "legacyCoordinates": [[10.708719, 59.919492]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          }
+        ],
+        "__typename": "ParentStopPlace"
+      },
+      {
+        "id": "NSR:StopPlace:4327",
+        "version": "3",
+        "geometry": {
+          "legacyCoordinates": [[10.70732, 59.917678]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Frogner kirke",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2021-08-26T09:31:28.000+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetBus",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:4332",
+        "version": "2",
+        "geometry": {
+          "legacyCoordinates": [[10.703625, 59.919467]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Odins gate",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2021-08-26T10:47:23.000+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetBus",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:58362",
+        "version": "12",
+        "geometry": {
+          "legacyCoordinates": [[10.712201, 59.917923]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Lille Frogner allé",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2021-08-26T10:16:28.000+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "children": [
+          {
+            "id": "NSR:StopPlace:4336",
+            "version": "14",
+            "stopPlaceType": "onstreetTram",
+            "submode": "localTram",
+            "geometry": {
+              "legacyCoordinates": [[10.712244, 59.917896]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:62021",
+            "version": "14",
+            "stopPlaceType": "onstreetBus",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.712171, 59.917954]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          }
+        ],
+        "__typename": "ParentStopPlace"
+      },
+      {
+        "id": "NSR:StopPlace:4341",
+        "version": "2",
+        "geometry": {
+          "legacyCoordinates": [[10.697834, 59.919242]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Olav Kyrres plass",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2021-08-25T15:16:43.000+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetBus",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:4346",
+        "version": "2",
+        "geometry": {
+          "legacyCoordinates": [[10.688446, 59.91834]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Karenslyst allé",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2021-08-25T15:13:03.000+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetBus",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:4350",
+        "version": "2",
+        "geometry": {
+          "legacyCoordinates": [[10.686918, 59.916842]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Frognerkilen",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2018-09-19T15:19:43.000+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetBus",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:4355",
+        "version": "2",
+        "geometry": {
+          "legacyCoordinates": [[10.680964, 59.909299]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Kongsgården",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2021-08-25T14:42:49.000+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetBus",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:4389",
+        "version": "3",
+        "geometry": {
+          "legacyCoordinates": [[10.686893, 59.907515]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Folkemuseet",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2024-09-26T15:24:51.104+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetBus",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:60034",
+        "version": "5",
+        "geometry": {
+          "legacyCoordinates": [[10.718013, 59.920034]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Briskeby",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2021-08-31T12:49:42.000+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "children": [
+          {
+            "id": "NSR:StopPlace:4547",
+            "version": "7",
+            "stopPlaceType": "onstreetTram",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.718067, 59.919992]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:60033",
+            "version": "6",
+            "stopPlaceType": "onstreetBus",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.71796, 59.920076]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          }
+        ],
+        "__typename": "ParentStopPlace"
+      },
+      {
+        "id": "NSR:StopPlace:4552",
+        "version": "4",
+        "geometry": {
+          "legacyCoordinates": [[10.72245, 59.92109]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Uranienborgveien",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2025-05-07T11:34:21.090+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetBus",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:58290",
+        "version": "12",
+        "geometry": {
+          "legacyCoordinates": [[10.719545, 59.918858]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Riddervolds plass",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2024-04-04T10:28:48.990+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "children": [
+          {
+            "id": "NSR:StopPlace:4557",
+            "version": "13",
+            "stopPlaceType": "onstreetTram",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.720277, 59.918944]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:60032",
+            "version": "12",
+            "stopPlaceType": "onstreetBus",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.720202, 59.918951]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:6253",
+            "version": "13",
+            "stopPlaceType": "onstreetBus",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.718826, 59.918309]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          }
+        ],
+        "__typename": "ParentStopPlace"
+      },
+      {
+        "id": "NSR:StopPlace:57960",
+        "version": "3",
+        "geometry": {
+          "legacyCoordinates": [[10.709331, 59.908545]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Oslo Hjortneskaien",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2018-03-23T09:19:03.000+0100",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "harbourPort",
+        "submode": "internationalCarFerry",
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:57989",
+        "version": "2",
+        "geometry": {
+          "legacyCoordinates": [[10.696317, 59.907367]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Dronningen",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2023-09-06T22:26:10.072+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "ferryStop",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:58100",
+        "version": "7",
+        "geometry": {
+          "legacyCoordinates": [[10.710329, 59.910091]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Hjortnes",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2024-08-22T11:04:11.347+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetBus",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:58175",
+        "version": "2",
+        "geometry": {
+          "legacyCoordinates": [[10.731717, 59.910649]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Rådhusbrygge 3",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2018-12-13T13:20:00.000+0100",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "ferryStop",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:59377",
+        "version": "9",
+        "geometry": {
+          "legacyCoordinates": [[10.740804, 59.914674]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Prof. Aschehougs plass",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2021-09-02T11:15:04.465+0200",
+          "toDate": "2021-09-02T11:15:04.465+0200",
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetTram",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:58366",
+        "version": "92",
+        "geometry": {
+          "legacyCoordinates": [[10.75038, 59.911898]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Jernbanetorget",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2025-02-17T12:21:10.378+0100",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "children": [
+          {
+            "id": "NSR:StopPlace:4004",
+            "version": "99",
+            "stopPlaceType": "onstreetTram",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.750063, 59.91156]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:3995",
+            "version": "101",
+            "stopPlaceType": "onstreetBus",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.751377, 59.912204]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:61733",
+            "version": "19",
+            "stopPlaceType": "onstreetBus",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.754652, 59.911877]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:3990",
+            "version": "98",
+            "stopPlaceType": "metroStation",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.751147, 59.912244]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:4000",
+            "version": "89",
+            "stopPlaceType": "onstreetBus",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.750103, 59.911596]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:3978",
+            "version": "27",
+            "stopPlaceType": "onstreetBus",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.749779, 59.909785]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:59569",
+            "version": "71",
+            "stopPlaceType": "onstreetBus",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.747429, 59.909201]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:62091",
+            "version": "17",
+            "stopPlaceType": "onstreetTram",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.749983, 59.910465]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:59734",
+            "version": "63",
+            "stopPlaceType": "onstreetBus",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.749948, 59.912244]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:4013",
+            "version": "72",
+            "stopPlaceType": "onstreetBus",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.749009, 59.909414]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:59562",
+            "version": "74",
+            "stopPlaceType": "onstreetBus",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.748502, 59.910223]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:62122",
+            "version": "19",
+            "stopPlaceType": "onstreetBus",
+            "submode": "localBus",
+            "geometry": {
+              "legacyCoordinates": [[10.748797, 59.909264]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:3986",
+            "version": "94",
+            "stopPlaceType": "onstreetTram",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.749892, 59.912282]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          }
+        ],
+        "__typename": "ParentStopPlace"
+      },
+      {
+        "id": "NSR:StopPlace:58361",
+        "version": "7",
+        "geometry": {
+          "legacyCoordinates": [[10.70876, 59.919455]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Elisenberg",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2019-06-17T14:29:58.000+0200",
+          "toDate": "2021-08-26T10:23:09.703+0200",
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "children": [
+          {
+            "id": "NSR:StopPlace:62023",
+            "version": "9",
+            "stopPlaceType": "onstreetBus",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.708811, 59.919426]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:4322",
+            "version": "9",
+            "stopPlaceType": "onstreetTram",
+            "submode": "localTram",
+            "geometry": {
+              "legacyCoordinates": [[10.708736, 59.919484]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:59736",
+            "version": "5",
+            "stopPlaceType": "onstreetTram",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.706201, 59.921247]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          }
+        ],
+        "__typename": "ParentStopPlace"
+      },
+      {
+        "id": "NSR:StopPlace:59747",
+        "version": "10",
+        "geometry": {
+          "legacyCoordinates": [[10.744953, 59.910262]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Kvadraturen",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2021-09-02T11:48:03.737+0200",
+          "toDate": "2021-09-02T11:48:03.736+0200",
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetBus",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:60011",
+        "version": "3",
+        "geometry": {
+          "legacyCoordinates": [[10.73507, 59.907077]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Skur 35",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2021-09-02T11:26:19.349+0200",
+          "toDate": "2021-09-02T11:26:19.349+0200",
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetBus",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:60012",
+        "version": "5",
+        "geometry": {
+          "legacyCoordinates": [[10.734737, 59.91096]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Kontraskjæret",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2021-09-02T11:24:14.114+0200",
+          "toDate": "2021-09-02T11:24:14.114+0200",
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetBus",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:60130",
+        "version": "5",
+        "geometry": {
+          "legacyCoordinates": [[10.733444, 59.909556]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Rådhusbrygge 1",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2021-09-08T13:42:55.033+0200",
+          "toDate": "2021-09-08T13:42:55.032+0200",
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "ferryStop",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:60802",
+        "version": "3",
+        "geometry": {
+          "legacyCoordinates": [[10.739484, 59.910122]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Christiania torv",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2021-09-02T11:28:57.150+0200",
+          "toDate": "2021-09-02T11:28:57.150+0200",
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetBus",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:61467",
+        "version": "2",
+        "geometry": {
+          "legacyCoordinates": [[10.714851, 59.910266]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Vy-tomta",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2021-05-31T10:53:01.000+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetBus",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:61483",
+        "version": "1",
+        "geometry": {
+          "legacyCoordinates": [[10.747142, 59.906629]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Salt brygge",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2021-06-07T14:49:04.000+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "ferryStop",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:58405",
+        "version": "11",
+        "geometry": {
+          "legacyCoordinates": [[10.733114, 59.920872]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Frydenlund",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2021-08-31T13:16:26.000+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "children": [
+          {
+            "id": "NSR:StopPlace:6258",
+            "version": "16",
+            "stopPlaceType": "onstreetTram",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.733055, 59.920898]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          },
+          {
+            "id": "NSR:StopPlace:62036",
+            "version": "16",
+            "stopPlaceType": "onstreetBus",
+            "submode": null,
+            "geometry": {
+              "legacyCoordinates": [[10.733171, 59.920847]],
+              "__typename": "GeoJSON"
+            },
+            "topographicPlace": {
+              "id": "KVE:TopographicPlace:0301",
+              "name": {
+                "value": "Oslo",
+                "__typename": "EmbeddableMultilingualString"
+              },
+              "__typename": "TopographicPlace"
+            },
+            "permissions": {
+              "allowedStopPlaceTypes": [],
+              "allowedSubmodes": [],
+              "bannedStopPlaceTypes": [],
+              "bannedSubmodes": [],
+              "canDelete": false,
+              "canEdit": false,
+              "__typename": "EntityPermissions"
+            },
+            "__typename": "StopPlace"
+          }
+        ],
+        "__typename": "ParentStopPlace"
+      },
+      {
+        "id": "NSR:StopPlace:6283",
+        "version": "2",
+        "geometry": {
+          "legacyCoordinates": [[10.743647, 59.919415]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Nordahl Bruns gate",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2021-08-31T13:29:20.000+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetBus",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:63206",
+        "version": "2",
+        "geometry": {
+          "legacyCoordinates": [[10.725859, 59.915279]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Huitfeldts gate",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2024-03-18T11:47:39.767+0100",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetBus",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      },
+      {
+        "id": "NSR:StopPlace:63281",
+        "version": "6",
+        "geometry": {
+          "legacyCoordinates": [[10.735021, 59.916915]],
+          "__typename": "GeoJSON"
+        },
+        "name": {
+          "value": "Historisk museum",
+          "lang": "nor",
+          "__typename": "EmbeddableMultilingualString"
+        },
+        "topographicPlace": {
+          "id": "KVE:TopographicPlace:0301",
+          "name": {
+            "value": "Oslo",
+            "__typename": "EmbeddableMultilingualString"
+          },
+          "topographicPlaceType": "municipality",
+          "__typename": "TopographicPlace"
+        },
+        "validBetween": {
+          "fromDate": "2024-05-23T10:07:09.668+0200",
+          "toDate": null,
+          "__typename": "ValidBetween"
+        },
+        "modificationEnumeration": null,
+        "__typename": "StopPlace",
+        "stopPlaceType": "onstreetBus",
+        "submode": null,
+        "permissions": {
+          "allowedStopPlaceTypes": [],
+          "allowedSubmodes": [],
+          "bannedStopPlaceTypes": [],
+          "bannedSubmodes": [],
+          "canDelete": false,
+          "canEdit": false,
+          "__typename": "EntityPermissions"
+        }
+      }
+    ]
+  }
+}
