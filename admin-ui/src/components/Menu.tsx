@@ -34,8 +34,6 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
 
 const menuItems = [
   { textKey: 'home', path: '/', iconKey: 'home' },
-  { textKey: 'data', path: '/data', iconKey: 'data' },
-  { textKey: 'map', path: '/map', iconKey: 'map' },
 ];
 
 const adminMenuItems = [

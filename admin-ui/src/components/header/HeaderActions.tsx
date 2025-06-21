@@ -1,5 +1,4 @@
 import { Box, IconButton, Avatar, Typography, useTheme } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
 import { getIconUrl } from '../../utils/iconLoaderUtils.ts';
 
 interface HeaderActionsProps {
@@ -34,12 +33,6 @@ export default function HeaderActions({
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', ml: 'auto' }}>
-      {isMobile && (
-        <IconButton color="inherit" onClick={onSearchIconClick} aria-label="search">
-          <SearchIcon />
-        </IconButton>
-      )}
-
       <IconButton color="inherit" onClick={onUserIconClick} aria-label="user account">
         {isAuthenticated && userInitials ? (
           <Avatar

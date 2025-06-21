@@ -6,16 +6,12 @@ import UserDialog from '../dialogs/UserDialog.tsx';
 import { useAuth } from '../../auth';
 import { useTranslation } from 'react-i18next';
 import HeaderBranding from './HeaderBranding.tsx';
-import DesktopSearchBar from './DesktopSearchBar.tsx';
-import MobileSearchBar from './MobileSearchBar.tsx';
 import HeaderActions from './HeaderActions.tsx';
 
 export default function Header() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [userOpen, setUserOpen] = useState(false);
-  const [searchActive, setSearchActive] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const auth = useAuth();
   const { t } = useTranslation();
 
@@ -35,11 +31,6 @@ export default function Header() {
     return '';
   }, [auth.user]);
 
-  const handleMobileSearchClose = () => {
-    setSearchActive(false);
-    setSearchQuery('');
-  };
-
   return (
     <>
       <AppBar position="fixed">
@@ -50,34 +41,16 @@ export default function Header() {
             width: '100%',
           }}
         >
-          {isMobile && searchActive ? (
-            <MobileSearchBar
-              searchQuery={searchQuery}
-              onSearchQueryChange={setSearchQuery}
-              onClose={handleMobileSearchClose}
-              placeholder={t('search.searchPlaceholder')}
-            />
-          ) : (
-            <>
-              <HeaderBranding />
-              {!isMobile && (
-                <DesktopSearchBar
-                  searchQuery={searchQuery}
-                  onSearchQueryChange={setSearchQuery}
-                  placeholder={t('search.searchPlaceholder')}
-                />
-              )}
-              <HeaderActions
-                isMobile={isMobile}
-                onSearchIconClick={() => setSearchActive(true)}
-                onUserIconClick={() => (auth.isAuthenticated ? setUserOpen(true) : auth.login())}
-                onSettingsIconClick={() => setSettingsOpen(true)}
-                onMenuIconClick={() => setDrawerOpen(o => !o)}
-                isAuthenticated={auth.isAuthenticated}
-                userInitials={initials}
-              />
-            </>
-          )}
+          <HeaderBranding />
+          <HeaderActions
+            isMobile={isMobile}
+            onSearchIconClick={() => {}} // No search functionality
+            onUserIconClick={() => (auth.isAuthenticated ? setUserOpen(true) : auth.login())}
+            onSettingsIconClick={() => setSettingsOpen(true)}
+            onMenuIconClick={() => setDrawerOpen(o => !o)}
+            isAuthenticated={auth.isAuthenticated}
+            userInitials={initials}
+          />
         </Toolbar>
       </AppBar>
 
