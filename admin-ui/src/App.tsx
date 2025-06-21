@@ -23,9 +23,9 @@ export default function App() {
           <Box className="app-content">
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/admin/feed-providers" element={<AdminFeedProviders />} />
-              <Route path="/admin/cache" element={<AdminCacheManagement />} />
-              <Route path="/admin/spatial-index" element={<AdminSpatialIndex />} />
+              <Route path="/feed-providers" element={<AdminFeedProviders />} />
+              <Route path="/cache" element={<AdminCacheManagement />} />
+              <Route path="/spatial-index" element={<AdminSpatialIndex />} />
             </Routes>
           </Box>
         </Box>

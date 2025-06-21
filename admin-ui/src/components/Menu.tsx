@@ -32,14 +32,12 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
   },
 }));
 
-const menuItems = [
-  { textKey: 'home', path: '/', iconKey: 'home' },
-];
+const menuItems = [{ textKey: 'home', path: '/', iconKey: 'home' }];
 
 const adminMenuItems = [
-  { textKey: 'admin.feedProviders', path: '/admin/feed-providers', iconKey: 'settings' },
-  { textKey: 'admin.cacheManagement', path: '/admin/cache', iconKey: 'settings' },
-  { textKey: 'admin.spatialIndex', path: '/admin/spatial-index', iconKey: 'settings' },
+  { textKey: 'admin.feedProviders', path: '/feed-providers', iconKey: 'settings' },
+  { textKey: 'admin.cacheManagement', path: '/cache', iconKey: 'settings' },
+  { textKey: 'admin.spatialIndex', path: '/spatial-index', iconKey: 'settings' },
 ];
 
 interface SideMenuProps {
@@ -109,11 +107,7 @@ export default function Menu({ open, onClose }: SideMenuProps) {
       </List>
 
       <Divider />
-      <Box p={1}>
-        <Typography variant="overline" color="text.secondary" sx={{ px: 2 }}>
-          Admin
-        </Typography>
-      </Box>
+
       <List disablePadding>
         {adminMenuItems.map(({ textKey, path, iconKey }) => (
           <ListItem key={path} disablePadding>
