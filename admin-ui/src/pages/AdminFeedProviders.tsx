@@ -32,14 +32,59 @@ import {
   Stop as StopIcon,
   Refresh as RestartIcon,
   PowerSettingsNew as PowerIcon,
+  SyncLock,
+  Search,
+  Checklist,
+  DatasetLinked,
+  Error,
+  Check,
+  FactCheck,
 } from '@mui/icons-material';
 import { FeedProviderForm } from '../components/admin/FeedProviderForm';
 import { adminApi } from '../services/adminApi';
 import type { FeedProvider, SubscriptionStatus } from '../types/admin';
+import { validationApi } from '../services/validationApi.ts';
+import type { ShortValidationReport } from '../types/validation.ts';
+import ValidationReport, {
+  type ValidationResult,
+} from '../components/validation/ValidationReport.tsx';
+
+const mapValidationReport = (source: ShortValidationReport): ValidationResult => {
+  return {
+    summary: {
+      validatorVersion: source.summary.version,
+      files: Object.entries(source.files).map(([file, result]) => {
+        return {
+          name: file,
+          url: `${file}.json`,
+          version: result.version,
+          language: 'no',
+          errors: result.errors.map(err => {
+            return {
+              keyword: 'N/A',
+              instancePath: err.violationPath,
+              schemaPath: err.schemaPath,
+              message: err.message,
+            };
+          }),
+          schema: {},
+        };
+      }),
+    },
+  };
+};
 
 export default function AdminFeedProviders() {
   const [providers, setProviders] = useState<FeedProvider[]>([]);
-  const [subscriptionStatuses, setSubscriptionStatuses] = useState<Record<string, SubscriptionStatus>>({});
+  const [subscriptionStatuses, setSubscriptionStatuses] = useState<
+    Record<string, SubscriptionStatus>
+  >({});
+  const [validationReports, setValidationReports] = useState<Record<string, ShortValidationReport>>(
+    {}
+  );
+  const [showValidationReportForSystem, setShowValidationReportForSystem] = useState<string | null>(
+    null
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
   const [success, setSuccess] = useState<string>('');
@@ -57,12 +102,14 @@ export default function AdminFeedProviders() {
     setLoading(true);
     setError('');
     try {
-      const [providersData, statusesData] = await Promise.all([
+      const [providersData, statusesData, validationData] = await Promise.all([
         adminApi.getAllProviders(),
-        adminApi.getSubscriptionStatuses()
+        adminApi.getSubscriptionStatuses(),
+        validationApi.getValidationReports(),
       ]);
       setProviders(providersData);
       setSubscriptionStatuses(statusesData || {});
+      setValidationReports(validationData);
     } catch (err) {
       setError('Failed to load data. Please try again.');
     } finally {
@@ -157,7 +204,9 @@ export default function AdminFeedProviders() {
       setSuccess(`Successfully ${newEnabled ? 'enabled' : 'disabled'} feed provider ${systemId}!`);
       loadData();
     } catch (err: any) {
-      setError(`Failed to ${newEnabled ? 'enable' : 'disable'} feed provider: ${err.response?.data?.message || err.message}`);
+      setError(
+        `Failed to ${newEnabled ? 'enable' : 'disable'} feed provider: ${err.response?.data?.message || err.message}`
+      );
     } finally {
       setActionLoading(prev => ({ ...prev, [systemId]: '' }));
     }
@@ -295,19 +344,14 @@ export default function AdminFeedProviders() {
           title="Feed Providers"
           action={
             <Box sx={{ display: 'flex', gap: 1 }}>
-              <Button
-                variant="contained"
-                startIcon={<AddIcon />}
-                onClick={openCreateModal}
-              >
+              <Button variant="contained" startIcon={<AddIcon />} onClick={openCreateModal}>
                 Add New Feed Provider
               </Button>
-              <Button
-                variant="outlined"
-                startIcon={<RestartIcon />}
-                onClick={loadData}
-              >
+              <Button variant="outlined" startIcon={<RestartIcon />} onClick={loadData}>
                 Refresh
+              </Button>
+              <Button variant="outlined" startIcon={<Search />}>
+                Discover feeds
               </Button>
             </Box>
           }
@@ -344,10 +388,12 @@ export default function AdminFeedProviders() {
                     <TableCell>Config</TableCell>
                     <TableCell>Status</TableCell>
                     <TableCell>Actions</TableCell>
+                    <TableCell>Validation</TableCell>
+                    <TableCell>MobilityData</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {providers.map((provider) => (
+                  {providers.map(provider => (
                     <TableRow key={provider.systemId}>
                       <TableCell>{provider.systemId}</TableCell>
                       <TableCell>
@@ -360,7 +406,7 @@ export default function AdminFeedProviders() {
                       </TableCell>
                       <TableCell>{provider.codespace}</TableCell>
                       <TableCell>
-                        <Chip label={provider.version} size="small" />
+                        <Chip label={provider.version || 'N/A'} size="small" />
                       </TableCell>
                       <TableCell>{renderEnabledStatus(provider)}</TableCell>
                       <TableCell>{renderSubscriptionStatus(provider)}</TableCell>
@@ -389,6 +435,40 @@ export default function AdminFeedProviders() {
                           </IconButton>
                         </Box>
                       </TableCell>
+                      <TableCell>
+                        <Box sx={{ display: 'flex', gap: 0.5 }}>
+                          {(validationReports[provider.systemId]?.summary.errorsCount > 0 && (
+                            <IconButton
+                              size="small"
+                              color="error"
+                              onClick={() => setShowValidationReportForSystem(provider.systemId)}
+                            >
+                              <Error />
+                            </IconButton>
+                          )) || (
+                            <IconButton
+                              size="small"
+                              color="success"
+                              onClick={() => setShowValidationReportForSystem(provider.systemId)}
+                            >
+                              <Check />
+                            </IconButton>
+                          )}
+                          <IconButton size="small" color="normal">
+                            <FactCheck />
+                          </IconButton>
+                        </Box>
+                      </TableCell>
+                      <TableCell>
+                        <Box sx={{ display: 'flex', gap: 0.5 }}>
+                          <IconButton size="small" color="primary">
+                            <SyncLock />
+                          </IconButton>
+                          <IconButton size="small" color="primary">
+                            <DatasetLinked />
+                          </IconButton>
+                        </Box>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -399,14 +479,12 @@ export default function AdminFeedProviders() {
       </Card>
 
       {/* Confirm Delete Dialog */}
-      <Dialog
-        open={!!confirmDelete}
-        onClose={() => setConfirmDelete(null)}
-      >
+      <Dialog open={!!confirmDelete} onClose={() => setConfirmDelete(null)}>
         <DialogTitle>Confirm Delete</DialogTitle>
         <DialogContent>
           <Typography>
-            Are you sure you want to delete the feed provider with System ID <strong>{confirmDelete}</strong>?
+            Are you sure you want to delete the feed provider with System ID{' '}
+            <strong>{confirmDelete}</strong>?
           </Typography>
           <Typography color="error" sx={{ mt: 1 }}>
             This action cannot be undone!
@@ -426,14 +504,13 @@ export default function AdminFeedProviders() {
       </Dialog>
 
       {/* Feed Provider Form Dialog */}
-      <Dialog
-        open={modalOpen}
-        onClose={closeModal}
-        maxWidth="md"
-        fullWidth
-      >
+      <Dialog open={modalOpen} onClose={closeModal} maxWidth="md" fullWidth>
         <DialogTitle>
-          {currentProvider ? (isCopyMode ? 'Copy Feed Provider' : 'Edit Feed Provider') : 'Add New Feed Provider'}
+          {currentProvider
+            ? isCopyMode
+              ? 'Copy Feed Provider'
+              : 'Edit Feed Provider'
+            : 'Add New Feed Provider'}
         </DialogTitle>
         <DialogContent>
           <FeedProviderForm
@@ -443,6 +520,19 @@ export default function AdminFeedProviders() {
             isCopyMode={isCopyMode}
           />
         </DialogContent>
+      </Dialog>
+
+      <Dialog
+        maxWidth="md"
+        fullWidth
+        open={!!showValidationReportForSystem}
+        onClose={() => setShowValidationReportForSystem(null)}
+      >
+        {!!showValidationReportForSystem && (
+          <ValidationReport
+            validationResult={mapValidationReport(validationReports[showValidationReportForSystem])}
+          />
+        )}
       </Dialog>
     </Box>
   );
