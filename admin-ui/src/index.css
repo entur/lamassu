@@ -1,0 +1,62 @@
+body {
+  margin: 0;
+}
+
+.app-root {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - var(--MuiToolbar-minHeight));
+  overflow: hidden;
+}
+
+.app-content {
+  flex: 1;
+  overflow: auto;
+}
+
+.map-container {
+  display: flex;
+  width: 100vw;
+  height: calc(100vh - 64px);
+  position: relative;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.resizer {
+  width: 4px;
+  cursor: col-resize;
+}
+
+.toggle-button {
+  position: absolute;
+  z-index: 10;
+  border-radius: 0 4px 4px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.map-box {
+  flex: 1;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 1;
+}
+
+.initials {
+  font-size: 12px !important;
+  font-weight: bold !important;
+}
+
+.avatar {
+  width: 24px !important;
+  height: 24px !important;
+}
