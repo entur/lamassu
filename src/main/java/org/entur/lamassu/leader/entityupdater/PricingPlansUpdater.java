@@ -26,10 +26,14 @@ import org.entur.lamassu.mapper.entitymapper.PricingPlanMapper;
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.util.CacheUtil;
 import org.mobilitydata.gbfs.v3_0.system_pricing_plans.GBFSSystemPricingPlans;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
 public class PricingPlansUpdater {
+
+  private static final Logger log = LoggerFactory.getLogger(PricingPlansUpdater.class);
 
   private final EntityCache<PricingPlan> pricingPlanCache;
   private final PricingPlanMapper pricingPlanMapper;
@@ -48,7 +52,19 @@ public class PricingPlansUpdater {
       .getPlans()
       .stream()
       .map(pricingPlanMapper::mapPricingPlan)
-      .collect(Collectors.toMap(PricingPlan::getId, pricingPlan -> pricingPlan));
+      .collect(
+        Collectors.toMap(
+          PricingPlan::getId,
+          pricingPlan -> pricingPlan,
+          (existing, duplicate) -> {
+            log.warn(
+              "Duplicate pricing plan found with ID: {}. Keeping first occurrence.",
+              existing.getId()
+            );
+            return existing;
+          }
+        )
+      );
 
     var lastUpdated = gbfsSystemPricingPlans.getLastUpdated();
     var ttl = gbfsSystemPricingPlans.getTtl();

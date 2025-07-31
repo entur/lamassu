@@ -26,10 +26,14 @@ import org.entur.lamassu.mapper.entitymapper.RegionMapper;
 import org.entur.lamassu.model.entities.Region;
 import org.entur.lamassu.util.CacheUtil;
 import org.mobilitydata.gbfs.v3_0.system_regions.GBFSSystemRegions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
 public class RegionsUpdater {
+
+  private static final Logger log = LoggerFactory.getLogger(RegionsUpdater.class);
 
   private final EntityCache<Region> regionCache;
   private final RegionMapper regionMapper;
@@ -45,7 +49,19 @@ public class RegionsUpdater {
       .getRegions()
       .stream()
       .map(region -> regionMapper.mapRegion(region, language))
-      .collect(Collectors.toMap(Region::getId, region -> region));
+      .collect(
+        Collectors.toMap(
+          Region::getId,
+          region -> region,
+          (existing, duplicate) -> {
+            log.warn(
+              "Duplicate region found with ID: {}. Keeping first occurrence.",
+              existing.getId()
+            );
+            return existing;
+          }
+        )
+      );
 
     var lastUpdated = systemRegions.getLastUpdated();
     var ttl = systemRegions.getTtl();
