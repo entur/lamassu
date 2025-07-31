@@ -20,21 +20,16 @@ package org.entur.lamassu.leader.entityupdater;
 
 import java.time.Instant;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.mapper.entitymapper.VehicleTypeMapper;
 import org.entur.lamassu.model.entities.VehicleType;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.util.CacheUtil;
 import org.mobilitydata.gbfs.v3_0.vehicle_types.GBFSVehicleTypes;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
 public class VehicleTypesUpdater {
-
-  private static final Logger log = LoggerFactory.getLogger(VehicleTypesUpdater.class);
 
   private final EntityCache<VehicleType> vehicleTypeCache;
   private final VehicleTypeMapper vehicleTypeMapper;
@@ -55,19 +50,7 @@ public class VehicleTypesUpdater {
       .map(vehicleType ->
         vehicleTypeMapper.mapVehicleType(vehicleType, feedProvider.getLanguage())
       )
-      .collect(
-        Collectors.toMap(
-          VehicleType::getId,
-          vehicleType -> vehicleType,
-          (existing, duplicate) -> {
-            log.warn(
-              "Duplicate vehicle type found with ID: {}. Keeping first occurrence.",
-              existing.getId()
-            );
-            return existing;
-          }
-        )
-      );
+      .collect(EntityCollectors.toMapWithDuplicateWarning(VehicleType.class));
 
     var lastUpdated = gbfsVehicleTypes.getLastUpdated();
     var ttl = gbfsVehicleTypes.getTtl();
