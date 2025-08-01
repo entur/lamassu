@@ -20,7 +20,6 @@ package org.entur.lamassu.leader.entityupdater;
 
 import java.time.Instant;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.mapper.entitymapper.VehicleTypeMapper;
 import org.entur.lamassu.model.entities.VehicleType;
@@ -51,7 +50,7 @@ public class VehicleTypesUpdater {
       .map(vehicleType ->
         vehicleTypeMapper.mapVehicleType(vehicleType, feedProvider.getLanguage())
       )
-      .collect(Collectors.toMap(VehicleType::getId, vehicleType -> vehicleType));
+      .collect(EntityCollectors.toMapWithDuplicateWarning(VehicleType.class));
 
     var lastUpdated = gbfsVehicleTypes.getLastUpdated();
     var ttl = gbfsVehicleTypes.getTtl();
