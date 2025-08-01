@@ -220,4 +220,52 @@ class BaseGBFSFileDeltaCalculatorTest {
     var entityDelta = delta.entityDelta().get(0);
     assertEquals(42, entityDelta.entity().getNumber());
   }
+
+  @Test
+  void shouldHandleDuplicateEntitiesInBase() {
+    // Base feed has duplicate entities with same ID
+    TestFeed base = new TestFeed(
+      1000L,
+      60L,
+      List.of(
+        new TestEntity("1", "first", 42),
+        new TestEntity("2", "second", 100),
+        new TestEntity("1", "duplicate", 99) // Duplicate ID - should keep first
+      )
+    );
+
+    TestFeed compare = new TestFeed(
+      2000L,
+      60L,
+      List.of(new TestEntity("1", "updated", 42))
+    );
+
+    GBFSFileDelta<TestEntity> delta = calculator.calculateDelta(base, compare);
+
+    // Should have one update (for ID "1") and one delete (for ID "2")
+    assertEquals(2, delta.entityDelta().size());
+
+    // Find the update delta
+    var updateDelta = delta
+      .entityDelta()
+      .stream()
+      .filter(d -> d.type() == DeltaType.UPDATE)
+      .findFirst()
+      .orElse(null);
+
+    assertNotNull(updateDelta);
+    assertEquals("1", updateDelta.entityId());
+    assertEquals("updated", updateDelta.entity().getValue());
+
+    // Find the delete delta
+    var deleteDelta = delta
+      .entityDelta()
+      .stream()
+      .filter(d -> d.type() == DeltaType.DELETE)
+      .findFirst()
+      .orElse(null);
+
+    assertNotNull(deleteDelta);
+    assertEquals("2", deleteDelta.entityId());
+  }
 }
