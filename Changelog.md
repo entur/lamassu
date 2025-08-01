@@ -28,6 +28,7 @@ based on merged pull requests. Search GitHub issues and pull requests for smalle
 - Do change enabled status when stopping a subscription [#694](https://github.com/entur/lamassu/pull/694)
 - Protect feed provider config from cache clearing [#697](https://github.com/entur/lamassu/pull/697)
 - Enable system hours to opening hours mapping [#715](https://github.com/entur/lamassu/pull/715)
+- fix: handle duplicate entities gracefully with warning logs [#730](https://github.com/entur/lamassu/pull/730)
   [](AUTOMATIC_CHANGELOG_PLACEHOLDER_DO_NOT_REMOVE)
 
 ## 1.1.0
