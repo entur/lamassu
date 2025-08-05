@@ -28,9 +28,15 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class BaseGBFSFileDeltaCalculator<S, T>
   implements GBFSFileDeltaCalculator<S, T> {
+
+  private static final Logger log = LoggerFactory.getLogger(
+    BaseGBFSFileDeltaCalculator.class
+  );
 
   private static final List<String> EXCLUDE_METHODS = List.of(
     "toString",
@@ -86,7 +92,21 @@ public abstract class BaseGBFSFileDeltaCalculator<S, T>
   }
 
   private @NotNull Map<String, T> getBaseEntityMap(List<T> baseEntities) {
-    return baseEntities.stream().collect(Collectors.toMap(this::getEntityId, v -> v));
+    return baseEntities
+      .stream()
+      .collect(
+        Collectors.toMap(
+          this::getEntityId,
+          v -> v,
+          (existing, duplicate) -> {
+            log.warn(
+              "Duplicate entity found with ID: {}. Keeping first occurrence.",
+              this.getEntityId(existing)
+            );
+            return existing;
+          }
+        )
+      );
   }
 
   private @NotNull List<GBFSEntityDelta<T>> getDeletedEntityDeltas(
