@@ -56,10 +56,10 @@ jobs:
 
   image:
     # Build and push the image when:
-    # 1. It's a direct push to the repository, or
+    # 1. It's a direct push to the repository (excluding PRs), or
     # 2. It's triggered by workflow_dispatch (either from post-merge workflow or manually)
     #    and build_image is true or not specified
-    if: github.repository_owner == 'entur' && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && (github.event.inputs.build_image == 'true' || github.event.inputs.build_image == '')))
+    if: github.repository_owner == 'entur' && github.event_name != 'pull_request' && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && (github.event.inputs.build_image == 'true' || github.event.inputs.build_image == '')))
     runs-on: ubuntu-latest
     needs: [ tests ]
     env:
