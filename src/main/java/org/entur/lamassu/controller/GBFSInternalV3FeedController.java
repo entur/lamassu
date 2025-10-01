@@ -101,10 +101,9 @@ public class GBFSInternalV3FeedController {
   ) {
     try {
       var feedName = GBFSFeed.Name.fromValue(feed);
-      var feedProvider = feedProviderService.getFeedProviderBySystemId(systemId);
       Object data = getFeed(systemId, feed);
       if (feedName.equals(GBFSFeed.Name.GBFS)) {
-        data = modifyDiscoveryUrls(feedProvider, (GBFSGbfs) data);
+        data = modifyDiscoveryUrls((GBFSGbfs) data);
       }
 
       return ResponseEntity
@@ -186,7 +185,7 @@ public class GBFSInternalV3FeedController {
     return manifest;
   }
 
-  private GBFSGbfs modifyDiscoveryUrls(FeedProvider feedProvider, GBFSGbfs data) {
+  private GBFSGbfs modifyDiscoveryUrls(GBFSGbfs data) {
     var gbfs = new GBFSGbfs();
     gbfs.setLastUpdated(data.getLastUpdated());
     gbfs.setTtl(data.getTtl());
@@ -248,10 +247,7 @@ public class GBFSInternalV3FeedController {
     FeedProvider feedProvider
   ) {
     try {
-      GBFSGbfs discoveryFile = (GBFSGbfs) feedCache.find(
-        GBFSFeed.Name.GBFS,
-        feedProvider
-      );
+      GBFSGbfs discoveryFile = feedCache.find(GBFSFeed.Name.GBFS, feedProvider);
       if (
         discoveryFile == null ||
         discoveryFile
