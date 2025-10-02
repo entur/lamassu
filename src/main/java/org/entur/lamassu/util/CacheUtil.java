@@ -135,7 +135,7 @@ public class CacheUtil {
         lastUpdatedStr = String.valueOf(lastUpdated);
       }
 
-      String content = systemId + "-" + feed + "-" + data.hashCode() + "-" + lastUpdatedStr;
+      String content = systemId + "-" + feed + "-" + lastUpdatedStr;
       return "\"" + DigestUtils.md5DigestAsHex(content.getBytes()) + "\"";
     } catch (
       IllegalAccessException | InvocationTargetException | NoSuchMethodException e
@@ -144,7 +144,7 @@ public class CacheUtil {
       return (
         "\"" +
         DigestUtils.md5DigestAsHex(
-          (systemId + "-" + feed + "-" + data.hashCode()).getBytes()
+          (systemId + "-" + feed + "-" + System.currentTimeMillis()).getBytes()
         ) +
         "\""
       );
