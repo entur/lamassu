@@ -1,8 +1,11 @@
 package org.entur.lamassu.controller;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.Date;
 import java.util.List;
 import org.entur.lamassu.cache.GBFSV3FeedCache;
 import org.entur.lamassu.model.provider.FeedProvider;
@@ -15,6 +18,8 @@ import org.junit.rules.ExpectedException;
 import org.mobilitydata.gbfs.v3_0.gbfs.GBFSData;
 import org.mobilitydata.gbfs.v3_0.gbfs.GBFSFeed;
 import org.mobilitydata.gbfs.v3_0.gbfs.GBFSGbfs;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 
 public class GBFSV3FeedControllerTest {
@@ -113,6 +118,53 @@ public class GBFSV3FeedControllerTest {
       .thenReturn(null);
     expectedException.expect(UpstreamFeedNotYetAvailableException.class);
     feedController.getV3Feed(KNOWN_SYSTEM_ID, "geofencing_zones", null);
+  }
+
+  @Test
+  public void returnsETagHeaderInResponse() {
+    var feedProvider = new FeedProvider();
+    feedProvider.setSystemId(KNOWN_SYSTEM_ID);
+    var gbfs = new GBFSGbfs().withLastUpdated(new Date(1640000000000L)).withTtl(60);
+
+    when(mockedFeedProviderService.getFeedProviderBySystemId(KNOWN_SYSTEM_ID))
+      .thenReturn(feedProvider);
+    when(mockedFeedCache.find(GBFSFeed.Name.GBFS, feedProvider)).thenReturn(gbfs);
+
+    ResponseEntity<Object> response = feedController.getV3Feed(
+      KNOWN_SYSTEM_ID,
+      "gbfs",
+      null
+    );
+
+    assertNotNull(response.getHeaders().getETag());
+  }
+
+  @Test
+  public void returns304WhenETagMatches() {
+    var feedProvider = new FeedProvider();
+    feedProvider.setSystemId(KNOWN_SYSTEM_ID);
+    var gbfs = new GBFSGbfs().withLastUpdated(new Date(1640000000000L)).withTtl(60);
+
+    when(mockedFeedProviderService.getFeedProviderBySystemId(KNOWN_SYSTEM_ID))
+      .thenReturn(feedProvider);
+    when(mockedFeedCache.find(GBFSFeed.Name.GBFS, feedProvider)).thenReturn(gbfs);
+
+    // First request to get the ETag
+    ResponseEntity<Object> firstResponse = feedController.getV3Feed(
+      KNOWN_SYSTEM_ID,
+      "gbfs",
+      null
+    );
+    String etag = firstResponse.getHeaders().getETag();
+
+    // Second request with If-None-Match
+    ResponseEntity<Object> response = feedController.getV3Feed(
+      KNOWN_SYSTEM_ID,
+      "gbfs",
+      etag
+    );
+
+    assertEquals(HttpStatus.NOT_MODIFIED, response.getStatusCode());
   }
 
   public GBFSGbfs createDiscoveryFileWithFeed(GBFSFeed.Name feedName) {
