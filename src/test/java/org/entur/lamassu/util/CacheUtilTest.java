@@ -125,7 +125,6 @@ class CacheUtilTest {
     Assertions.assertEquals(34, etag.length()); // 32 hex chars + 2 quotes
   }
 
-
   @Test
   void generateETagWithV3DateTimestamp() {
     // V3 uses Date for lastUpdated
