@@ -19,9 +19,12 @@
 package org.entur.lamassu.util;
 
 import java.lang.reflect.InvocationTargetException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.DigestUtils;
 
 public class CacheUtil {
 
@@ -117,6 +120,34 @@ public class CacheUtil {
         e
       );
       return System.currentTimeMillis();
+    }
+  }
+
+  public static String generateETag(Object data, String systemId, String feed) {
+    try {
+      Object lastUpdated = data.getClass().getMethod("getLastUpdated").invoke(data);
+      String lastUpdatedStr;
+
+      if (lastUpdated instanceof Date) {
+        lastUpdatedStr = String.valueOf(((Date) lastUpdated).getTime() / 1000);
+      } else {
+        // Handle both Integer (v2) and String (v3 ISO timestamp)
+        lastUpdatedStr = String.valueOf(lastUpdated);
+      }
+
+      String content = systemId + "-" + feed + "-" + data.hashCode() + "-" + lastUpdatedStr;
+      return "\"" + DigestUtils.md5DigestAsHex(content.getBytes()) + "\"";
+    } catch (
+      IllegalAccessException | InvocationTargetException | NoSuchMethodException e
+    ) {
+      logger.warn("Unable to generate ETag for systemId={} feed={}", systemId, feed, e);
+      return (
+        "\"" +
+        DigestUtils.md5DigestAsHex(
+          (systemId + "-" + feed + "-" + data.hashCode()).getBytes()
+        ) +
+        "\""
+      );
     }
   }
 }

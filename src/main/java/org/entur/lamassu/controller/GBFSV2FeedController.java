@@ -39,6 +39,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -79,11 +80,36 @@ public class GBFSV2FeedController {
   @GetMapping(value = { "/{systemId}/{feed}", "/{systemId}/{feed}.json" })
   public ResponseEntity<Object> getGbfsFeedForProvider(
     @PathVariable String systemId,
-    @PathVariable String feed
+    @PathVariable String feed,
+    @RequestHeader(value = "If-None-Match", required = false) String ifNoneMatch
   ) {
     try {
       var feedName = GBFSFeedName.fromValue(feed);
       Object data = getFeed(systemId, feed);
+      String etag = CacheUtil.generateETag(data, systemId, feed);
+
+      if (ifNoneMatch != null && ifNoneMatch.equals(etag)) {
+        return ResponseEntity
+          .status(HttpStatus.NOT_MODIFIED)
+          .cacheControl(
+            CacheControl
+              .maxAge(
+                CacheUtil.getMaxAge(
+                  feedName.implementingClass(),
+                  data,
+                  systemId,
+                  feed,
+                  (int) Instant.now().getEpochSecond(),
+                  cacheControlMinimumTtl
+                ),
+                TimeUnit.SECONDS
+              )
+              .cachePublic()
+          )
+          .eTag(etag)
+          .build();
+      }
+
       return ResponseEntity
         .ok()
         .cacheControl(
@@ -104,6 +130,7 @@ public class GBFSV2FeedController {
         .lastModified(
           CacheUtil.getLastModified(feedName.implementingClass(), data, systemId, feed)
         )
+        .eTag(etag)
         .body(data);
     } catch (IllegalArgumentException e) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST);

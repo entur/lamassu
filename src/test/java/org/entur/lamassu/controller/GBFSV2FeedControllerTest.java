@@ -49,14 +49,14 @@ public class GBFSV2FeedControllerTest {
     expectedException.expect(ResponseStatusException.class);
     expectedException.expectMessage("400 BAD_REQUEST");
 
-    feedController.getGbfsFeedForProvider("anySystem", "no-gbfs-feed");
+    feedController.getGbfsFeedForProvider("anySystem", "no-gbfs-feed", null);
   }
 
   @Test
   public void throws404OnNonConfiguredSystemRequest() {
     expectedException.expect(ResponseStatusException.class);
     expectedException.expectMessage("404 NOT_FOUND");
-    feedController.getGbfsFeedForProvider("unknownSystem", "gbfs");
+    feedController.getGbfsFeedForProvider("unknownSystem", "gbfs", null);
   }
 
   @Test
@@ -67,7 +67,7 @@ public class GBFSV2FeedControllerTest {
       .thenReturn(feedProvider);
 
     expectedException.expect(UpstreamFeedNotYetAvailableException.class);
-    feedController.getGbfsFeedForProvider(KNOWN_SYSTEM_ID, "gbfs");
+    feedController.getGbfsFeedForProvider(KNOWN_SYSTEM_ID, "gbfs", null);
   }
 
   @Test
@@ -83,7 +83,7 @@ public class GBFSV2FeedControllerTest {
       .thenReturn(null);
     expectedException.expect(ResponseStatusException.class);
     expectedException.expectMessage("404 NOT_FOUND");
-    feedController.getGbfsFeedForProvider(KNOWN_SYSTEM_ID, "geofencing_zones");
+    feedController.getGbfsFeedForProvider(KNOWN_SYSTEM_ID, "geofencing_zones", null);
   }
 
   @Test
@@ -98,7 +98,7 @@ public class GBFSV2FeedControllerTest {
     when(mockedFeedCache.find(GBFSFeedName.GeofencingZones, feedProvider))
       .thenReturn(null);
     expectedException.expect(UpstreamFeedNotYetAvailableException.class);
-    feedController.getGbfsFeedForProvider(KNOWN_SYSTEM_ID, "geofencing_zones");
+    feedController.getGbfsFeedForProvider(KNOWN_SYSTEM_ID, "geofencing_zones", null);
   }
 
   @Test
@@ -114,7 +114,7 @@ public class GBFSV2FeedControllerTest {
     when(mockedFeedCache.find(GBFSFeedName.GeofencingZones, feedProvider))
       .thenReturn(null);
     expectedException.expect(UpstreamFeedNotYetAvailableException.class);
-    feedController.getGbfsFeedForProvider(KNOWN_SYSTEM_ID, "geofencing_zones");
+    feedController.getGbfsFeedForProvider(KNOWN_SYSTEM_ID, "geofencing_zones", null);
   }
 
   public GBFS createDiscoveryFileWithFeed(GBFSFeedName feedName) {

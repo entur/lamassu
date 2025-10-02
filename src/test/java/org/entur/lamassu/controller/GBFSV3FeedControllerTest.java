@@ -47,14 +47,14 @@ public class GBFSV3FeedControllerTest {
     expectedException.expect(ResponseStatusException.class);
     expectedException.expectMessage("400 BAD_REQUEST");
 
-    feedController.getV3Feed("anySystem", "no-gbfs-feed");
+    feedController.getV3Feed("anySystem", "no-gbfs-feed", null);
   }
 
   @Test
   public void throws404OnNonConfiguredSystemRequest() {
     expectedException.expect(ResponseStatusException.class);
     expectedException.expectMessage("404 NOT_FOUND");
-    feedController.getV3Feed("unknownSystem", "gbfs");
+    feedController.getV3Feed("unknownSystem", "gbfs", null);
   }
 
   @Test
@@ -65,7 +65,7 @@ public class GBFSV3FeedControllerTest {
       .thenReturn(feedProvider);
 
     expectedException.expect(UpstreamFeedNotYetAvailableException.class);
-    feedController.getV3Feed(KNOWN_SYSTEM_ID, "gbfs");
+    feedController.getV3Feed(KNOWN_SYSTEM_ID, "gbfs", null);
   }
 
   @Test
@@ -81,7 +81,7 @@ public class GBFSV3FeedControllerTest {
       .thenReturn(null);
     expectedException.expect(ResponseStatusException.class);
     expectedException.expectMessage("404 NOT_FOUND");
-    feedController.getV3Feed(KNOWN_SYSTEM_ID, "geofencing_zones");
+    feedController.getV3Feed(KNOWN_SYSTEM_ID, "geofencing_zones", null);
   }
 
   @Test
@@ -96,7 +96,7 @@ public class GBFSV3FeedControllerTest {
     when(mockedFeedCache.find(GBFSFeed.Name.GEOFENCING_ZONES, feedProvider))
       .thenReturn(null);
     expectedException.expect(UpstreamFeedNotYetAvailableException.class);
-    feedController.getV3Feed(KNOWN_SYSTEM_ID, "geofencing_zones");
+    feedController.getV3Feed(KNOWN_SYSTEM_ID, "geofencing_zones", null);
   }
 
   @Test
@@ -112,7 +112,7 @@ public class GBFSV3FeedControllerTest {
     when(mockedFeedCache.find(GBFSFeed.Name.GEOFENCING_ZONES, feedProvider))
       .thenReturn(null);
     expectedException.expect(UpstreamFeedNotYetAvailableException.class);
-    feedController.getV3Feed(KNOWN_SYSTEM_ID, "geofencing_zones");
+    feedController.getV3Feed(KNOWN_SYSTEM_ID, "geofencing_zones", null);
   }
 
   public GBFSGbfs createDiscoveryFileWithFeed(GBFSFeed.Name feedName) {
