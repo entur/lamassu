@@ -29,6 +29,8 @@ import org.springframework.util.DigestUtils;
 public class CacheUtil {
 
   private static final Logger logger = LoggerFactory.getLogger(CacheUtil.class);
+  private static final String GET_LAST_UPDATED = "getLastUpdated";
+  private static final String GET_TTL = "getTtl";
 
   private CacheUtil() {}
 
@@ -67,7 +69,7 @@ public class CacheUtil {
     int maxAge = 60;
     try {
       int lastUpdated;
-      Object lastUpdatedObject = clazz.getMethod("getLastUpdated").invoke(data);
+      Object lastUpdatedObject = clazz.getMethod(GET_LAST_UPDATED).invoke(data);
 
       if (lastUpdatedObject instanceof Date) {
         lastUpdated = (int) ((Date) lastUpdatedObject).getTime() / 1000;
@@ -75,7 +77,7 @@ public class CacheUtil {
         lastUpdated = (int) lastUpdatedObject;
       }
 
-      Integer ttl = (Integer) clazz.getMethod("getTtl").invoke(data);
+      Integer ttl = (Integer) clazz.getMethod(GET_TTL).invoke(data);
 
       maxAge = getTtl(now, lastUpdated, ttl, minimumTtl);
     } catch (
@@ -98,7 +100,7 @@ public class CacheUtil {
   ) {
     try {
       int lastUpdated;
-      Object lastUpdatedObject = clazz.getMethod("getLastUpdated").invoke(data);
+      Object lastUpdatedObject = clazz.getMethod(GET_LAST_UPDATED).invoke(data);
 
       if (lastUpdatedObject instanceof Date) {
         lastUpdated = (int) ((Date) lastUpdatedObject).getTime() / 1000;
@@ -125,11 +127,11 @@ public class CacheUtil {
 
   public static String generateETag(Object data, String systemId, String feed) {
     try {
-      Object lastUpdated = data.getClass().getMethod("getLastUpdated").invoke(data);
+      Object lastUpdated = data.getClass().getMethod(GET_LAST_UPDATED).invoke(data);
       String lastUpdatedStr;
 
-      if (lastUpdated instanceof Date) {
-        lastUpdatedStr = String.valueOf(((Date) lastUpdated).getTime() / 1000);
+      if (lastUpdated instanceof Date date) {
+        lastUpdatedStr = String.valueOf(date.getTime() / 1000);
       } else {
         // Handle both Integer (v2) and String (v3 ISO timestamp)
         lastUpdatedStr = String.valueOf(lastUpdated);
