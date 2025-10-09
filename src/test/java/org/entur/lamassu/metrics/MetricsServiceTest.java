@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.Map;
 import org.entur.gbfs.validation.model.FileValidationResult;
 import org.entur.gbfs.validation.model.ValidationResult;
@@ -126,7 +127,8 @@ class MetricsServiceTest {
       null,
       null,
       "3.0",
-      null
+      Collections.emptyList(),
+      Collections.emptyList()
     );
 
     return new ValidationResult(validationSummary, Map.of("gbfs", fileValidationResult));
@@ -149,7 +151,8 @@ class MetricsServiceTest {
       null,
       null,
       "3.0",
-      null
+      Collections.emptyList(),
+      Collections.emptyList()
     );
 
     return new ValidationResult(validationSummary, Map.of("gbfs", fileValidationResult));
