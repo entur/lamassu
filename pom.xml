@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.entur.ror</groupId>
         <artifactId>superpom</artifactId>
-        <version>4.5</version>
+        <version>5.3.0</version>
     </parent>
     <groupId>org.entur</groupId>
     <artifactId>lamassu</artifactId>
@@ -21,14 +21,14 @@
         <java.version>21</java.version>
 
         <entur.ror.helpers.version>1.101</entur.ror.helpers.version>
-        <redisson.version>3.50.0</redisson.version>
+        <redisson.version>3.52.0</redisson.version>
         <embedded-redis.version>0.9.1</embedded-redis.version>
-        <okhttp.version>4.12.0</okhttp.version>
+        <okhttp.version>5.2.1</okhttp.version>
         <kryo.version>5.6.2</kryo.version>
-        <jackson.version>2.19.1</jackson.version>
-        <gbfs-loader-java.version>4.0.41</gbfs-loader-java.version>
-        <gbfs-validator-java.version>2.0.36</gbfs-validator-java.version>
-        <gbfs-mapper-java.version>2.0.36</gbfs-mapper-java.version>
+        <jackson.version>2.20.0</jackson.version>
+        <gbfs-loader-java.version>4.0.52</gbfs-loader-java.version>
+        <gbfs-validator-java.version>2.0.48</gbfs-validator-java.version>
+        <gbfs-mapper-java.version>2.0.50</gbfs-mapper-java.version>
         <prettier-java.version>2.1.0</prettier-java.version>
         <prettier-maven-plugin.version>0.22</prettier-maven-plugin.version>
         <plugin.prettier.goal>write</plugin.prettier.goal>
@@ -199,7 +199,7 @@
             <groupId>io.netty</groupId>
             <artifactId>netty-resolver-dns-native-macos</artifactId>
             <classifier>osx-aarch_64</classifier>
-            <version>4.2.2.Final</version>
+            <version>4.2.6.Final</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>

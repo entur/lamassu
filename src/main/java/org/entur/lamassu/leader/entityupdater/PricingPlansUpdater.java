@@ -20,7 +20,6 @@ package org.entur.lamassu.leader.entityupdater;
 
 import java.time.Instant;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.mapper.entitymapper.PricingPlanMapper;
 import org.entur.lamassu.model.entities.PricingPlan;
@@ -48,7 +47,7 @@ public class PricingPlansUpdater {
       .getPlans()
       .stream()
       .map(pricingPlanMapper::mapPricingPlan)
-      .collect(Collectors.toMap(PricingPlan::getId, pricingPlan -> pricingPlan));
+      .collect(EntityCollectors.toMapWithDuplicateWarning(PricingPlan.class));
 
     var lastUpdated = gbfsSystemPricingPlans.getLastUpdated();
     var ttl = gbfsSystemPricingPlans.getTtl();

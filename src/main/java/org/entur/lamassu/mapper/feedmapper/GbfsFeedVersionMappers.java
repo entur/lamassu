@@ -58,7 +58,11 @@ public class GbfsFeedVersionMappers {
       GBFSMapper.INSTANCE.map(source.discovery(), languageCode),
       // TODO since we now produce v2.x and v3.x we can generate the versions feed
       null,
-      GBFSMapper.INSTANCE.map(source.systemInformation(), languageCode),
+      GBFSMapper.INSTANCE.map(
+        source.systemInformation(),
+        source.systemHours(),
+        languageCode
+      ),
       GBFSMapper.INSTANCE.map(source.vehicleTypes(), languageCode),
       GBFSMapper.INSTANCE.map(source.stationInformation(), languageCode),
       GBFSMapper.INSTANCE.map(source.stationStatus(), languageCode),

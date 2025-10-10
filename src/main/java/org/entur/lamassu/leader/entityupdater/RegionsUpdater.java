@@ -20,7 +20,6 @@ package org.entur.lamassu.leader.entityupdater;
 
 import java.time.Instant;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.mapper.entitymapper.RegionMapper;
 import org.entur.lamassu.model.entities.Region;
@@ -45,7 +44,7 @@ public class RegionsUpdater {
       .getRegions()
       .stream()
       .map(region -> regionMapper.mapRegion(region, language))
-      .collect(Collectors.toMap(Region::getId, region -> region));
+      .collect(EntityCollectors.toMapWithDuplicateWarning(Region.class));
 
     var lastUpdated = systemRegions.getLastUpdated();
     var ttl = systemRegions.getTtl();
