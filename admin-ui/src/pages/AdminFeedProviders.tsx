@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -32,13 +32,8 @@ import {
   Stop as StopIcon,
   Refresh as RestartIcon,
   PowerSettingsNew as PowerIcon,
-  SyncLock,
-  Search,
-  Checklist,
-  DatasetLinked,
-  Error,
+  Error as ErrorIcon,
   Check,
-  FactCheck,
 } from '@mui/icons-material';
 import { FeedProviderForm } from '../components/admin/FeedProviderForm';
 import { adminApi } from '../services/adminApi';
@@ -350,9 +345,6 @@ export default function AdminFeedProviders() {
               <Button variant="outlined" startIcon={<RestartIcon />} onClick={loadData}>
                 Refresh
               </Button>
-              <Button variant="outlined" startIcon={<Search />}>
-                Discover feeds
-              </Button>
             </Box>
           }
         />
@@ -389,7 +381,6 @@ export default function AdminFeedProviders() {
                     <TableCell>Status</TableCell>
                     <TableCell>Actions</TableCell>
                     <TableCell>Validation</TableCell>
-                    <TableCell>MobilityData</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -443,7 +434,7 @@ export default function AdminFeedProviders() {
                               color="error"
                               onClick={() => setShowValidationReportForSystem(provider.systemId)}
                             >
-                              <Error />
+                              <ErrorIcon />
                             </IconButton>
                           )) || (
                             <IconButton
@@ -454,19 +445,6 @@ export default function AdminFeedProviders() {
                               <Check />
                             </IconButton>
                           )}
-                          <IconButton size="small" color="normal">
-                            <FactCheck />
-                          </IconButton>
-                        </Box>
-                      </TableCell>
-                      <TableCell>
-                        <Box sx={{ display: 'flex', gap: 0.5 }}>
-                          <IconButton size="small" color="primary">
-                            <SyncLock />
-                          </IconButton>
-                          <IconButton size="small" color="primary">
-                            <DatasetLinked />
-                          </IconButton>
                         </Box>
                       </TableCell>
                     </TableRow>

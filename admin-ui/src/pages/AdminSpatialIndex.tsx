@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -126,7 +126,7 @@ export default function AdminSpatialIndex() {
                   <Typography variant="body2" sx={{ mb: 2 }}>
                     Found {orphans.length} orphaned vehicle entries in the spatial index.
                   </Typography>
-                  
+
                   <TableContainer component={Paper} sx={{ maxHeight: 400 }}>
                     <Table stickyHeader>
                       <TableHead>

@@ -9,7 +9,6 @@ import {
   DialogActions,
   FormControl,
   FormControlLabel,
-  FormHelperText,
   IconButton,
   InputLabel,
   MenuItem,
@@ -37,46 +36,56 @@ interface FeedProviderFormProps {
   isCopyMode?: boolean;
 }
 
-export function FeedProviderForm({ provider, onSubmit, onCancel, isCopyMode }: FeedProviderFormProps) {
-  const [formData, setFormData] = useState<FeedProvider>(provider || {
-    systemId: '',
-    operatorId: '',
-    operatorName: '',
-    codespace: '',
-    url: '',
-    language: 'en',
-    authentication: null,
-    excludeFeeds: null,
-    aggregate: true,
-    vehicleTypes: null,
-    pricingPlans: null,
-    version: '2.3',
-    enabled: true,
-  });
+export function FeedProviderForm({
+  provider,
+  onSubmit,
+  onCancel,
+  isCopyMode,
+}: FeedProviderFormProps) {
+  const [formData, setFormData] = useState<FeedProvider>(
+    provider || {
+      systemId: '',
+      operatorId: '',
+      operatorName: '',
+      codespace: '',
+      url: '',
+      language: 'en',
+      authentication: null,
+      excludeFeeds: null,
+      aggregate: true,
+      vehicleTypes: null,
+      pricingPlans: null,
+      version: '2.3',
+      enabled: true,
+    }
+  );
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [newHeaderKey, setNewHeaderKey] = useState('');
   const [newHeaderValue, setNewHeaderValue] = useState('');
 
-  const handleChange = (field: keyof FeedProvider) => (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | { target: { value: unknown } }
-  ) => {
-    const value = event.target.value;
-    setFormData(prev => ({
-      ...prev,
-      [field]: field === 'aggregate' || field === 'enabled' ? Boolean(value) : value
-    }));
-  };
+  const handleChange =
+    (field: keyof FeedProvider) =>
+    (
+      event:
+        | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+        | { target: { value: unknown } }
+    ) => {
+      const value = event.target.value;
+      setFormData(prev => ({
+        ...prev,
+        [field]: field === 'aggregate' || field === 'enabled' ? Boolean(value) : value,
+      }));
+    };
 
-  const handleCheckboxChange = (field: keyof FeedProvider) => (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: event.target.checked
-    }));
-  };
+  const handleCheckboxChange =
+    (field: keyof FeedProvider) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      setFormData(prev => ({
+        ...prev,
+        [field]: event.target.checked,
+      }));
+    };
 
   const handleAuthTypeChange = (value: string) => {
     let newAuth: Authentication | null = null;
@@ -84,7 +93,7 @@ export function FeedProviderForm({ provider, onSubmit, onCancel, isCopyMode }: F
     if (value) {
       newAuth = {
         scheme: value as Authentication['scheme'],
-        properties: {}
+        properties: {},
       };
 
       if (value === 'OAUTH2_CLIENT_CREDENTIALS_GRANT') {
@@ -92,11 +101,11 @@ export function FeedProviderForm({ provider, onSubmit, onCancel, isCopyMode }: F
           tokenUrl: '',
           clientId: '',
           clientPassword: '',
-          scope: ''
+          scope: '',
         };
       } else if (value === 'BEARER_TOKEN') {
         newAuth.properties = {
-          accessToken: ''
+          accessToken: '',
         };
       } else if (value === 'HTTP_HEADERS') {
         newAuth.properties = {};
@@ -105,36 +114,39 @@ export function FeedProviderForm({ provider, onSubmit, onCancel, isCopyMode }: F
 
     setFormData(prev => ({
       ...prev,
-      authentication: newAuth
+      authentication: newAuth,
     }));
   };
 
-  const handleAuthPropChange = (propName: string) => (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setFormData(prev => ({
-      ...prev,
-      authentication: prev.authentication ? {
-        ...prev.authentication,
-        properties: {
-          ...prev.authentication.properties,
-          [propName]: event.target.value
-        }
-      } : prev.authentication
-    }));
-  };
+  const handleAuthPropChange =
+    (propName: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      setFormData(prev => ({
+        ...prev,
+        authentication: prev.authentication
+          ? {
+              ...prev.authentication,
+              properties: {
+                ...prev.authentication.properties,
+                [propName]: event.target.value,
+              },
+            }
+          : prev.authentication,
+      }));
+    };
 
   const addHeader = () => {
     if (newHeaderKey && newHeaderValue && formData.authentication) {
       setFormData(prev => ({
         ...prev,
-        authentication: prev.authentication ? {
-          ...prev.authentication,
-          properties: {
-            ...prev.authentication.properties,
-            [newHeaderKey]: newHeaderValue
-          }
-        } : prev.authentication
+        authentication: prev.authentication
+          ? {
+              ...prev.authentication,
+              properties: {
+                ...prev.authentication.properties,
+                [newHeaderKey]: newHeaderValue,
+              },
+            }
+          : prev.authentication,
       }));
       setNewHeaderKey('');
       setNewHeaderValue('');
@@ -147,10 +159,12 @@ export function FeedProviderForm({ provider, onSubmit, onCancel, isCopyMode }: F
       delete newProps[key];
       setFormData(prev => ({
         ...prev,
-        authentication: prev.authentication ? {
-          ...prev.authentication,
-          properties: newProps
-        } : prev.authentication
+        authentication: prev.authentication
+          ? {
+              ...prev.authentication,
+              properties: newProps,
+            }
+          : prev.authentication,
       }));
     }
   };
@@ -273,13 +287,13 @@ export function FeedProviderForm({ provider, onSubmit, onCancel, isCopyMode }: F
                   <TextField
                     label="Header Name"
                     value={newHeaderKey}
-                    onChange={(e) => setNewHeaderKey(e.target.value)}
+                    onChange={e => setNewHeaderKey(e.target.value)}
                     size="small"
                   />
                   <TextField
                     label="Header Value"
                     value={newHeaderValue}
-                    onChange={(e) => setNewHeaderValue(e.target.value)}
+                    onChange={e => setNewHeaderValue(e.target.value)}
                     size="small"
                   />
                   <Button
@@ -315,9 +329,11 @@ export function FeedProviderForm({ provider, onSubmit, onCancel, isCopyMode }: F
         value={formData.systemId}
         onChange={handleChange('systemId')}
         required
-        disabled={provider && provider.systemId && !isCopyMode}
+        disabled={!!provider && !!provider.systemId && !isCopyMode}
         sx={{ mb: 2 }}
-        helperText={provider && provider.systemId && !isCopyMode ? "System ID cannot be changed" : ""}
+        helperText={
+          provider && provider.systemId && !isCopyMode ? 'System ID cannot be changed' : ''
+        }
       />
 
       <TextField
@@ -367,11 +383,7 @@ export function FeedProviderForm({ provider, onSubmit, onCancel, isCopyMode }: F
 
       <FormControl fullWidth sx={{ mb: 2 }}>
         <InputLabel>GBFS Version</InputLabel>
-        <Select
-          value={formData.version}
-          onChange={handleChange('version')}
-          label="GBFS Version"
-        >
+        <Select value={formData.version} onChange={handleChange('version')} label="GBFS Version">
           <MenuItem value="1.0">1.0</MenuItem>
           <MenuItem value="1.1">1.1</MenuItem>
           <MenuItem value="2.0">2.0</MenuItem>
@@ -384,22 +396,14 @@ export function FeedProviderForm({ provider, onSubmit, onCancel, isCopyMode }: F
 
       <FormControlLabel
         control={
-          <Checkbox
-            checked={formData.aggregate}
-            onChange={handleCheckboxChange('aggregate')}
-          />
+          <Checkbox checked={formData.aggregate} onChange={handleCheckboxChange('aggregate')} />
         }
         label="Aggregate"
         sx={{ mb: 2, display: 'block' }}
       />
 
       <FormControlLabel
-        control={
-          <Checkbox
-            checked={formData.enabled}
-            onChange={handleCheckboxChange('enabled')}
-          />
-        }
+        control={<Checkbox checked={formData.enabled} onChange={handleCheckboxChange('enabled')} />}
         label="Enabled"
         sx={{ mb: 3, display: 'block' }}
       />
@@ -412,7 +416,7 @@ export function FeedProviderForm({ provider, onSubmit, onCancel, isCopyMode }: F
         <InputLabel>Authentication Type</InputLabel>
         <Select
           value={formData.authentication?.scheme || ''}
-          onChange={(e) => handleAuthTypeChange(e.target.value as string)}
+          onChange={e => handleAuthTypeChange(e.target.value as string)}
           label="Authentication Type"
         >
           <MenuItem value="">None</MenuItem>

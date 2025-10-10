@@ -2,8 +2,6 @@ import { Box, IconButton, Avatar, Typography, useTheme } from '@mui/material';
 import { getIconUrl } from '../../utils/iconLoaderUtils.ts';
 
 interface HeaderActionsProps {
-  isMobile: boolean;
-  onSearchIconClick: () => void;
   onUserIconClick: () => void;
   onSettingsIconClick: () => void;
   onMenuIconClick: () => void;
@@ -12,8 +10,6 @@ interface HeaderActionsProps {
 }
 
 export default function HeaderActions({
-  isMobile,
-  onSearchIconClick,
   onUserIconClick,
   onSettingsIconClick,
   onMenuIconClick,

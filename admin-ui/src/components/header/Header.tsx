@@ -1,10 +1,9 @@
 import { useState, useMemo } from 'react';
-import { AppBar, Toolbar, useTheme, useMediaQuery } from '@mui/material';
+import { AppBar, Toolbar } from '@mui/material';
 import Menu from '../Menu.tsx';
 import SettingsDialog from '../dialogs/SettingsDialog.tsx';
 import UserDialog from '../dialogs/UserDialog.tsx';
 import { useAuth } from '../../auth';
-import { useTranslation } from 'react-i18next';
 import HeaderBranding from './HeaderBranding.tsx';
 import HeaderActions from './HeaderActions.tsx';
 
@@ -13,10 +12,6 @@ export default function Header() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [userOpen, setUserOpen] = useState(false);
   const auth = useAuth();
-  const { t } = useTranslation();
-
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const initials = useMemo(() => {
     const profile = auth.user;
@@ -43,8 +38,6 @@ export default function Header() {
         >
           <HeaderBranding />
           <HeaderActions
-            isMobile={isMobile}
-            onSearchIconClick={() => {}} // No search functionality
             onUserIconClick={() => (auth.isAuthenticated ? setUserOpen(true) : auth.login())}
             onSettingsIconClick={() => setSettingsOpen(true)}
             onMenuIconClick={() => setDrawerOpen(o => !o)}
