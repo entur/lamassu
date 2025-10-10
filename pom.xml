@@ -23,7 +23,7 @@
         <entur.ror.helpers.version>1.101</entur.ror.helpers.version>
         <redisson.version>3.52.0</redisson.version>
         <embedded-redis.version>0.9.1</embedded-redis.version>
-        <okhttp.version>5.2.0</okhttp.version>
+        <okhttp.version>5.2.1</okhttp.version>
         <kryo.version>5.6.2</kryo.version>
         <jackson.version>2.20.0</jackson.version>
         <gbfs-loader-java.version>4.0.52</gbfs-loader-java.version>
