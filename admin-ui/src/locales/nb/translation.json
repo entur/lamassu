@@ -1,0 +1,81 @@
+{
+  "close": "Lukk",
+  "save": "Lagre",
+  "cancel": "Avbryt",
+  "details": "Detaljer",
+
+  "map": "Kartvisning",
+
+  "search.searchPlaceholder": "Søk…",
+
+  "user.name": "Brukernavn",
+  "user.userAccount": "Brukerkonto",
+  "user.logout": "Logg ut",
+
+  "data": "Dataoversikt",
+  "data.title": "Oversikt over stoppesteder",
+  "data.loading": "Laster data...",
+  "data.errorPrefix": "Feil",
+  "data.totalEntries": "Totalt antall oppføringer: {{count}}",
+  "data.pagination.rowsPerPage": "Rader per side:",
+  "data.pagination.displayedRows": "{{from}}–{{to}} av {{count}}",
+  "data.pagination.displayedRowsOfMore": "{{from}}–{{to}} av mer enn {{count}}",
+
+  "data.table.header.name": "Navn",
+  "data.table.header.id": "ID",
+  "data.table.header.longitude": "Lengdegrad",
+  "data.table.header.latitude": "Breddegrad",
+  "data.table.header.type": "Type",
+
+  "data.table.row.typeIconAlt": "Stoppestedstypeikon",
+
+  "data.table.detail.coordinatesTitle": "Koordinater",
+  "data.table.detail.longitudeLabel": "Lengdegrad:",
+  "data.table.detail.latitudeLabel": "Breddegrad:",
+  "data.table.detail.typeTitle": "Type",
+
+  "settings": "Innstillinger",
+  "settings.language": "Språk",
+  "settings.enableCustomTheme": "Aktiver egendefinert tema & ikoner",
+
+  "home": "Hjem",
+  "home.welcomeMessage": "Velkommen til Inanna",
+  "home.description": "Inanna er ditt React-startsett for Entur Open Source-applikasjoner – og tilbyr et konsistent, Material-UI-basert designsystem og umiddelbar støtte for autentisering, ruting og vanlige dataflyter.",
+  "home.features.title": "Med Inanna får du:",
+
+  "home.features.layout.headline": "Responsivt oppsett",
+  "home.features.layout.description": "Et responsivt header og meny oppsett, med innebygd søk.",
+  "home.features.map.headline": "Geospatial kartvisning",
+  "home.features.map.description": "Et MapView-rammeverk drevet av React-Map-GL/MapLibre for geospatiale funksjoner.",
+  "home.features.data.headline": "Databehandling",
+  "home.features.data.description": "En data-sidemal for listing, filtrering og visualisering av Entur-dataene dine.",
+  "home.features.auth.headline": "Klar for autentisering",
+  "home.features.auth.description_prefix": "Ende-til-ende autentiseringskobling via ",
+  "home.features.auth.description_suffix": "-hooken.",
+  "home.features.ui.headline": "Tema-basert & tilgjengelig",
+  "home.features.ui.description": "Et tema-basert UI-fundament slik at du kan fokusere på din unike forretningslogikk – ikke standardkode.",
+  "home.features.localization.headline": "Støtte for flere språk",
+  "home.features.localization.description": "Opplev applikasjonen på ditt foretrukne språk med lokaliseringsfunksjonen. Også støtte for RTL-språk.",
+
+  "map.layers.title": "Kartlag",
+  "map.layers.circles": "Sirkler",
+  "map.layers.icons": "Ikoner",
+  "map.layers.text": "Tekstetiketter",
+  "map.layers.toggleOpen": "Åpne lagkontroller",
+  "map.layers.toggleClose": "Lukk lagkontroller",
+  "map.layers.basemap": "OSM kart",
+
+  "workArea.title": "Arbeidsområde",
+  "workArea.nameLabel": "Navn",
+  "workArea.typeLabel": "Type",
+  "workArea.types.train": "Tog",
+  "workArea.types.bus": "Buss",
+  "workArea.types.ferry": "Ferge",
+  "workArea.types.tram": "Trikk",
+  "workArea.includeLabel": "Inkluder",
+  "workArea.moreInfoTooltip": "Mer info",
+
+  "admin.feedProviders": "Feed-leverandører",
+  "admin.cacheManagement": "Cache-behandling",
+  "admin.spatialIndex": "Spatial indeks"
+}
