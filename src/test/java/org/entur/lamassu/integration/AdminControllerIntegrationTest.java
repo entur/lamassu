@@ -358,4 +358,362 @@ class AdminControllerIntegrationTest extends AbstractIntegrationTestBase {
   private HttpEntity createAuthEntity(Object body) {
     return new HttpEntity<>(body, createAuthHeaders());
   }
+
+  /**
+   * Test bulk start subscriptions for multiple feed providers.
+   */
+  @Test
+  void testBulkStartSubscriptions() throws InterruptedException {
+    // Clean up and create test providers
+    String systemId1 = "test-bulk-system-1";
+    String systemId2 = "test-bulk-system-2";
+    String systemId3 = "test-bulk-system-3";
+
+    feedProviderConfig.deleteProvider(systemId1);
+    feedProviderConfig.deleteProvider(systemId2);
+    feedProviderConfig.deleteProvider(systemId3);
+    subscriptionRegistry.clear();
+
+    // Create test feed providers
+    createTestProvider(systemId1, false);
+    createTestProvider(systemId2, false);
+    createTestProvider(systemId3, false);
+
+    // Bulk start subscriptions
+    List<String> systemIds = List.of(systemId1, systemId2, systemId3);
+    HttpHeaders headers = createAuthHeaders();
+    ResponseEntity<Map> bulkStartResponse = restTemplate.exchange(
+      "/admin/feed-providers/bulk/start",
+      HttpMethod.POST,
+      new HttpEntity<>(systemIds, headers),
+      Map.class
+    );
+
+    assertEquals(HttpStatus.OK, bulkStartResponse.getStatusCode());
+    assertNotNull(bulkStartResponse.getBody());
+
+    Map<String, String> results = bulkStartResponse.getBody();
+    assertEquals("SUCCESS", results.get(systemId1));
+    assertEquals("SUCCESS", results.get(systemId2));
+    assertEquals("SUCCESS", results.get(systemId3));
+
+    // Wait for subscriptions to be established
+    Thread.sleep(2000);
+
+    // Verify all providers are enabled
+    assertTrue(feedProviderConfig.getProviderBySystemId(systemId1).getEnabled());
+    assertTrue(feedProviderConfig.getProviderBySystemId(systemId2).getEnabled());
+    assertTrue(feedProviderConfig.getProviderBySystemId(systemId3).getEnabled());
+
+    // Verify all subscriptions are started
+    assertEquals(
+      SubscriptionStatus.STARTED,
+      subscriptionRegistry.getSubscriptionStatusBySystemId(systemId1)
+    );
+    assertEquals(
+      SubscriptionStatus.STARTED,
+      subscriptionRegistry.getSubscriptionStatusBySystemId(systemId2)
+    );
+    assertEquals(
+      SubscriptionStatus.STARTED,
+      subscriptionRegistry.getSubscriptionStatusBySystemId(systemId3)
+    );
+  }
+
+  /**
+   * Test bulk stop subscriptions for multiple feed providers.
+   */
+  @Test
+  void testBulkStopSubscriptions() throws InterruptedException {
+    // Clean up and create test providers
+    String systemId1 = "test-bulk-stop-1";
+    String systemId2 = "test-bulk-stop-2";
+
+    feedProviderConfig.deleteProvider(systemId1);
+    feedProviderConfig.deleteProvider(systemId2);
+    subscriptionRegistry.clear();
+
+    // Create and start test providers
+    createTestProvider(systemId1, true);
+    createTestProvider(systemId2, true);
+
+    HttpHeaders headers = createAuthHeaders();
+
+    // Start the subscriptions first
+    restTemplate.exchange(
+      "/admin/feed-providers/{systemId}/start",
+      HttpMethod.POST,
+      new HttpEntity<>(headers),
+      Void.class,
+      systemId1
+    );
+    restTemplate.exchange(
+      "/admin/feed-providers/{systemId}/start",
+      HttpMethod.POST,
+      new HttpEntity<>(headers),
+      Void.class,
+      systemId2
+    );
+
+    Thread.sleep(2000);
+
+    // Bulk stop subscriptions
+    List<String> systemIds = List.of(systemId1, systemId2);
+    ResponseEntity<Map> bulkStopResponse = restTemplate.exchange(
+      "/admin/feed-providers/bulk/stop",
+      HttpMethod.POST,
+      new HttpEntity<>(systemIds, headers),
+      Map.class
+    );
+
+    assertEquals(HttpStatus.OK, bulkStopResponse.getStatusCode());
+    assertNotNull(bulkStopResponse.getBody());
+
+    Map<String, String> results = bulkStopResponse.getBody();
+    assertEquals("SUCCESS", results.get(systemId1));
+    assertEquals("SUCCESS", results.get(systemId2));
+
+    // Wait for subscriptions to be stopped
+    Thread.sleep(1000);
+
+    // Verify all subscriptions are stopped
+    assertEquals(
+      SubscriptionStatus.STOPPED,
+      subscriptionRegistry.getSubscriptionStatusBySystemId(systemId1)
+    );
+    assertEquals(
+      SubscriptionStatus.STOPPED,
+      subscriptionRegistry.getSubscriptionStatusBySystemId(systemId2)
+    );
+  }
+
+  /**
+   * Test bulk restart subscriptions for multiple feed providers.
+   */
+  @Test
+  void testBulkRestartSubscriptions() throws InterruptedException {
+    // Clean up and create test providers
+    String systemId1 = "test-bulk-restart-1";
+    String systemId2 = "test-bulk-restart-2";
+
+    feedProviderConfig.deleteProvider(systemId1);
+    feedProviderConfig.deleteProvider(systemId2);
+    subscriptionRegistry.clear();
+
+    // Create and start test providers
+    createTestProvider(systemId1, true);
+    createTestProvider(systemId2, true);
+
+    HttpHeaders headers = createAuthHeaders();
+
+    // Start the subscriptions first
+    restTemplate.exchange(
+      "/admin/feed-providers/{systemId}/start",
+      HttpMethod.POST,
+      new HttpEntity<>(headers),
+      Void.class,
+      systemId1
+    );
+    restTemplate.exchange(
+      "/admin/feed-providers/{systemId}/start",
+      HttpMethod.POST,
+      new HttpEntity<>(headers),
+      Void.class,
+      systemId2
+    );
+
+    Thread.sleep(2000);
+
+    // Bulk restart subscriptions
+    List<String> systemIds = List.of(systemId1, systemId2);
+    ResponseEntity<Map> bulkRestartResponse = restTemplate.exchange(
+      "/admin/feed-providers/bulk/restart",
+      HttpMethod.POST,
+      new HttpEntity<>(systemIds, headers),
+      Map.class
+    );
+
+    assertEquals(HttpStatus.OK, bulkRestartResponse.getStatusCode());
+    assertNotNull(bulkRestartResponse.getBody());
+
+    Map<String, String> results = bulkRestartResponse.getBody();
+    assertEquals("SUCCESS", results.get(systemId1));
+    assertEquals("SUCCESS", results.get(systemId2));
+
+    // Wait for subscriptions to be restarted
+    Thread.sleep(2000);
+
+    // Verify all subscriptions are started again
+    assertEquals(
+      SubscriptionStatus.STARTED,
+      subscriptionRegistry.getSubscriptionStatusBySystemId(systemId1)
+    );
+    assertEquals(
+      SubscriptionStatus.STARTED,
+      subscriptionRegistry.getSubscriptionStatusBySystemId(systemId2)
+    );
+  }
+
+  /**
+   * Test bulk enable/disable feed providers.
+   */
+  @Test
+  void testBulkSetEnabled() throws InterruptedException {
+    // Clean up and create test providers
+    String systemId1 = "test-bulk-enable-1";
+    String systemId2 = "test-bulk-enable-2";
+    String systemId3 = "test-bulk-enable-3";
+
+    feedProviderConfig.deleteProvider(systemId1);
+    feedProviderConfig.deleteProvider(systemId2);
+    feedProviderConfig.deleteProvider(systemId3);
+    subscriptionRegistry.clear();
+
+    // Create disabled test providers
+    createTestProvider(systemId1, false);
+    createTestProvider(systemId2, false);
+    createTestProvider(systemId3, false);
+
+    HttpHeaders headers = createAuthHeaders();
+
+    // Test bulk enable
+    List<String> systemIds = List.of(systemId1, systemId2, systemId3);
+    Map<String, Object> enableRequest = Map.of("systemIds", systemIds, "enabled", true);
+
+    ResponseEntity<Map> bulkEnableResponse = restTemplate.exchange(
+      "/admin/feed-providers/bulk/set-enabled",
+      HttpMethod.POST,
+      new HttpEntity<>(enableRequest, headers),
+      Map.class
+    );
+
+    assertEquals(HttpStatus.OK, bulkEnableResponse.getStatusCode());
+    assertNotNull(bulkEnableResponse.getBody());
+
+    Map<String, String> results = bulkEnableResponse.getBody();
+    assertEquals("SUCCESS", results.get(systemId1));
+    assertEquals("SUCCESS", results.get(systemId2));
+    assertEquals("SUCCESS", results.get(systemId3));
+
+    // Verify all providers are enabled
+    assertTrue(feedProviderConfig.getProviderBySystemId(systemId1).getEnabled());
+    assertTrue(feedProviderConfig.getProviderBySystemId(systemId2).getEnabled());
+    assertTrue(feedProviderConfig.getProviderBySystemId(systemId3).getEnabled());
+
+    // Start subscriptions for testing disable
+    restTemplate.exchange(
+      "/admin/feed-providers/{systemId}/start",
+      HttpMethod.POST,
+      new HttpEntity<>(headers),
+      Void.class,
+      systemId1
+    );
+    restTemplate.exchange(
+      "/admin/feed-providers/{systemId}/start",
+      HttpMethod.POST,
+      new HttpEntity<>(headers),
+      Void.class,
+      systemId2
+    );
+
+    Thread.sleep(2000);
+
+    // Test bulk disable
+    Map<String, Object> disableRequest = Map.of("systemIds", systemIds, "enabled", false);
+
+    ResponseEntity<Map> bulkDisableResponse = restTemplate.exchange(
+      "/admin/feed-providers/bulk/set-enabled",
+      HttpMethod.POST,
+      new HttpEntity<>(disableRequest, headers),
+      Map.class
+    );
+
+    assertEquals(HttpStatus.OK, bulkDisableResponse.getStatusCode());
+    assertNotNull(bulkDisableResponse.getBody());
+
+    results = bulkDisableResponse.getBody();
+    assertEquals("SUCCESS", results.get(systemId1));
+    assertEquals("SUCCESS", results.get(systemId2));
+    assertEquals("SUCCESS", results.get(systemId3));
+
+    // Verify all providers are disabled
+    assertFalse(feedProviderConfig.getProviderBySystemId(systemId1).getEnabled());
+    assertFalse(feedProviderConfig.getProviderBySystemId(systemId2).getEnabled());
+    assertFalse(feedProviderConfig.getProviderBySystemId(systemId3).getEnabled());
+
+    Thread.sleep(1000);
+
+    // Verify subscriptions were stopped when disabled
+    assertEquals(
+      SubscriptionStatus.STOPPED,
+      subscriptionRegistry.getSubscriptionStatusBySystemId(systemId1)
+    );
+    assertEquals(
+      SubscriptionStatus.STOPPED,
+      subscriptionRegistry.getSubscriptionStatusBySystemId(systemId2)
+    );
+  }
+
+  /**
+   * Test bulk operations with mixed results (some providers exist, some don't).
+   */
+  @Test
+  void testBulkOperationsWithMixedResults() {
+    // Clean up and create test provider
+    String existingSystemId = "test-bulk-mixed-existing";
+    String nonExistentSystemId = "test-bulk-mixed-nonexistent";
+
+    feedProviderConfig.deleteProvider(existingSystemId);
+    subscriptionRegistry.clear();
+
+    // Create only one test provider
+    createTestProvider(existingSystemId, false);
+
+    HttpHeaders headers = createAuthHeaders();
+
+    // Test bulk start with mixed results
+    List<String> systemIds = List.of(existingSystemId, nonExistentSystemId);
+    ResponseEntity<Map> bulkStartResponse = restTemplate.exchange(
+      "/admin/feed-providers/bulk/start",
+      HttpMethod.POST,
+      new HttpEntity<>(systemIds, headers),
+      Map.class
+    );
+
+    assertEquals(HttpStatus.OK, bulkStartResponse.getStatusCode());
+    assertNotNull(bulkStartResponse.getBody());
+
+    Map<String, String> results = bulkStartResponse.getBody();
+    assertEquals("SUCCESS", results.get(existingSystemId));
+    assertEquals("NOT_FOUND", results.get(nonExistentSystemId));
+
+    // Test bulk enable with mixed results
+    Map<String, Object> enableRequest = Map.of("systemIds", systemIds, "enabled", true);
+
+    ResponseEntity<Map> bulkEnableResponse = restTemplate.exchange(
+      "/admin/feed-providers/bulk/set-enabled",
+      HttpMethod.POST,
+      new HttpEntity<>(enableRequest, headers),
+      Map.class
+    );
+
+    assertEquals(HttpStatus.OK, bulkEnableResponse.getStatusCode());
+    assertNotNull(bulkEnableResponse.getBody());
+
+    results = bulkEnableResponse.getBody();
+    assertEquals("SUCCESS", results.get(existingSystemId));
+    assertEquals("NOT_FOUND", results.get(nonExistentSystemId));
+  }
+
+  /**
+   * Helper method to create a test feed provider.
+   */
+  private void createTestProvider(String systemId, boolean enabled) {
+    FeedProvider testProvider = new FeedProvider();
+    testProvider.setSystemId(systemId);
+    testProvider.setUrl(TEST_FEED_URL);
+    testProvider.setLanguage("en");
+    testProvider.setEnabled(enabled);
+    feedProviderConfig.addProvider(testProvider);
+  }
 }
