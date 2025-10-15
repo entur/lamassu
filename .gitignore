@@ -34,3 +34,6 @@ build/
 
 ### terraform ###
 .terraform/
+
+# Ignore build folder for admin ui
+src/main/resources/static/admin
