@@ -6,7 +6,7 @@
   "scripts": {
     "predev": "run-p --race copy:config",
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build --base /admin",
     "copy:config": "ncp ./config-dev.json public/config.json",
     "lint": "eslint .",
     "check": "prettier . --check",

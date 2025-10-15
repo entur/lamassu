@@ -13,7 +13,7 @@ export const fetchConfig = async (): Promise<Config> => {
     return Object.assign({}, fetchedConfig, overrides);
   }
 
-  const response = await fetch(`${import.meta.env.BASE_URL}config.json`);
+  const response = await fetch(`${import.meta.env.BASE_URL}/config.json`);
   fetchedConfig = await response.json();
 
   return Object.assign({}, fetchedConfig, overrides);

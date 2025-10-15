@@ -17,14 +17,14 @@ export function useAppTheme(useCustomFeatures: boolean): {
 
       try {
         if (useCustomFeatures) {
-          const customRes = await fetch('/custom-theme-config.json');
+          const customRes = await fetch(`${import.meta.env.BASE_URL}/custom-theme-config.json`);
           if (customRes.ok) {
             configToSet = await customRes.json();
           } else {
             console.warn(
               `Custom theme config '/custom-theme-config.json' not found or failed (status: ${customRes.status}). Falling back to default theme.`
             );
-            const defaultRes = await fetch('/default-theme-config.json');
+            const defaultRes = await fetch(`${import.meta.env.BASE_URL}/default-theme-config.json`);
             if (defaultRes.ok) {
               configToSet = await defaultRes.json();
             } else {
@@ -34,7 +34,7 @@ export function useAppTheme(useCustomFeatures: boolean): {
             }
           }
         } else {
-          const defaultRes = await fetch('/default-theme-config.json');
+          const defaultRes = await fetch(`${import.meta.env.BASE_URL}/default-theme-config.json`);
           if (defaultRes.ok) {
             configToSet = await defaultRes.json();
           } else {

@@ -35,9 +35,21 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
 const menuItems = [{ textKey: 'home', path: '/', iconKey: 'home' }];
 
 const adminMenuItems = [
-  { textKey: 'admin.feedProviders', path: '/feed-providers', iconKey: 'settings' },
-  { textKey: 'admin.cacheManagement', path: '/cache', iconKey: 'settings' },
-  { textKey: 'admin.spatialIndex', path: '/spatial-index', iconKey: 'settings' },
+  {
+    textKey: 'admin.feedProviders',
+    path: `/feed-providers`,
+    iconKey: 'settings',
+  },
+  {
+    textKey: 'admin.cacheManagement',
+    path: `/cache`,
+    iconKey: 'settings',
+  },
+  {
+    textKey: 'admin.spatialIndex',
+    path: `/spatial-index`,
+    iconKey: 'settings',
+  },
 ];
 
 interface SideMenuProps {
@@ -77,7 +89,7 @@ export default function Menu({ open, onClose }: SideMenuProps) {
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <img src={theme.logoUrl} alt="logo" height={24} />
+          <img src={`${import.meta.env.BASE_URL}/${theme.logoUrl}`} alt="logo" height={24} />
           <Typography variant="h6" noWrap sx={{ ml: 1 }}>
             {theme.applicationName}
           </Typography>

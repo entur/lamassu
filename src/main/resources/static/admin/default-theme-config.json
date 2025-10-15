@@ -1,0 +1,29 @@
+{
+  "applicationName": "Lamassu Admin",
+  "companyName": "Entur",
+  "palette": {
+    "primary": { "main": "#75ccdd" },
+    "secondary": { "main": "#ed3e42" },
+    "info": { "main": "#ed3e42" },
+    "background": { "default": "#ffffff" },
+    "action": { "hover": "#ec83ad", "active": "#ec83ad" }
+  },
+  "typography": {
+    "fontFamily": "\"Patrick Hand\", \"Helvetica\", \"Arial\", sans-serif",
+    "fontSize": 18
+  },
+  "shape": {
+    "borderRadius": 30
+  },
+  "components": {
+    "MuiButton": {
+      "styleOverrides": {
+        "root": {
+          "textTransform": "uppercase"
+        }
+      }
+    }
+  },
+  "logoUrl": "/assets/inanna-logo.png",
+  "logoHeight": 48
+}

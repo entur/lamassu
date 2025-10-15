@@ -6,16 +6,21 @@ export default defineConfig({
   server: {
     port: process.env.PORT ? Number(process.env.PORT) : 5000,
     proxy: {
-      '/admin': {
+      '/admin/': {
         target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
       },
-      '/validation': {
+      '/validation/': {
         target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
       },
     },
+  },
+  base: '/admin-ui',
+  build: {
+    outDir: '../src/main/resources/static/admin',
+    emptyOutDir: true,
   },
 });

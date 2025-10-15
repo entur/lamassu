@@ -15,7 +15,11 @@ export default function HeaderBranding() {
           color: 'inherit',
         }}
       >
-        <img src={theme.logoUrl} alt="logo" height={theme.logoHeight} />
+        <img
+          src={`${import.meta.env.BASE_URL}/${theme.logoUrl}`}
+          alt="logo"
+          height={theme.logoHeight}
+        />
         <Typography variant="h6" sx={{ ml: 1, mr: 1, fontWeight: 'bold' }}>
           {theme.applicationName}
         </Typography>
