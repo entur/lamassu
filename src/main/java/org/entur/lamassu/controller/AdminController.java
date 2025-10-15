@@ -283,4 +283,139 @@ public class AdminController {
       .getSubscriptionStatusBySystemId(systemId);
     return ResponseEntity.ok(status);
   }
+
+  /**
+   * Bulk operations endpoints
+   */
+
+  /**
+   * Starts subscriptions for multiple feed providers.
+   *
+   * @param systemIds List of system IDs
+   * @return Map of system IDs to success/error status
+   */
+  @PostMapping("/feed-providers/bulk/start")
+  public ResponseEntity<Map<String, String>> bulkStartSubscriptions(
+    @RequestBody List<String> systemIds
+  ) {
+    Map<String, String> results = new java.util.HashMap<>();
+
+    for (String systemId : systemIds) {
+      FeedProvider provider = feedProviderConfig.getProviderBySystemId(systemId);
+      if (provider == null) {
+        results.put(systemId, "NOT_FOUND");
+        continue;
+      }
+
+      boolean success = feedUpdater.startSubscription(provider);
+      if (success) {
+        feedProviderConfig.updateProvider(provider);
+        results.put(systemId, "SUCCESS");
+      } else {
+        results.put(systemId, "FAILED");
+      }
+    }
+
+    return ResponseEntity.ok(results);
+  }
+
+  /**
+   * Stops subscriptions for multiple feed providers.
+   *
+   * @param systemIds List of system IDs
+   * @return Map of system IDs to success/error status
+   */
+  @PostMapping("/feed-providers/bulk/stop")
+  public ResponseEntity<Map<String, String>> bulkStopSubscriptions(
+    @RequestBody List<String> systemIds
+  ) {
+    Map<String, String> results = new java.util.HashMap<>();
+
+    for (String systemId : systemIds) {
+      FeedProvider provider = feedProviderConfig.getProviderBySystemId(systemId);
+      if (provider == null) {
+        results.put(systemId, "NOT_FOUND");
+        continue;
+      }
+
+      boolean success = feedUpdater.stopSubscription(provider);
+      if (success) {
+        feedProviderConfig.updateProvider(provider);
+        results.put(systemId, "SUCCESS");
+      } else {
+        results.put(systemId, "FAILED");
+      }
+    }
+
+    return ResponseEntity.ok(results);
+  }
+
+  /**
+   * Restarts subscriptions for multiple feed providers.
+   *
+   * @param systemIds List of system IDs
+   * @return Map of system IDs to success/error status
+   */
+  @PostMapping("/feed-providers/bulk/restart")
+  public ResponseEntity<Map<String, String>> bulkRestartSubscriptions(
+    @RequestBody List<String> systemIds
+  ) {
+    Map<String, String> results = new java.util.HashMap<>();
+
+    for (String systemId : systemIds) {
+      FeedProvider provider = feedProviderConfig.getProviderBySystemId(systemId);
+      if (provider == null) {
+        results.put(systemId, "NOT_FOUND");
+        continue;
+      }
+
+      boolean success = feedUpdater.restartSubscription(provider);
+      if (success) {
+        feedProviderConfig.updateProvider(provider);
+        results.put(systemId, "SUCCESS");
+      } else {
+        results.put(systemId, "FAILED");
+      }
+    }
+
+    return ResponseEntity.ok(results);
+  }
+
+  /**
+   * Enables or disables multiple feed providers.
+   *
+   * @param request Object containing systemIds list and enabled boolean
+   * @return Map of system IDs to success/error status
+   */
+  @PostMapping("/feed-providers/bulk/set-enabled")
+  public ResponseEntity<Map<String, String>> bulkSetEnabled(
+    @RequestBody BulkSetEnabledRequest request
+  ) {
+    Map<String, String> results = new java.util.HashMap<>();
+
+    for (String systemId : request.systemIds()) {
+      FeedProvider provider = feedProviderConfig.getProviderBySystemId(systemId);
+      if (provider == null) {
+        results.put(systemId, "NOT_FOUND");
+        continue;
+      }
+
+      provider.setEnabled(request.enabled());
+
+      // If disabling, also stop any active subscription
+      if (Boolean.FALSE.equals(request.enabled())) {
+        feedUpdater.stopSubscription(provider);
+      }
+
+      feedProviderConfig.updateProvider(provider);
+      results.put(systemId, "SUCCESS");
+    }
+
+    return ResponseEntity.ok(results);
+  }
+
+  /**
+   * Request object for bulk set-enabled operation
+   */
+  public record BulkSetEnabledRequest(List<String> systemIds, Boolean enabled) {}
 }
