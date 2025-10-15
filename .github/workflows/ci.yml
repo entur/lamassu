@@ -54,6 +54,24 @@ jobs:
         with:
           files: ./target/site/jacoco/jacoco.xml
 
+  admin-ui:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: admin-ui
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.ref || github.ref }}
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22.20.0
+      - name: Check admin ui
+        run: |
+          npm install
+          npm run check
+          npm run build
+
   image:
     # Build and push the image when:
     # 1. It's a direct push to the repository (excluding PRs), or
@@ -77,9 +95,17 @@ jobs:
           java-version: 21
           distribution: temurin
           cache: maven
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22.20.0
+
       - name: set variables
         run: |
           echo "GHA_DOCKER_PUSH_IMAGE_TAG=`date +%Y-%m-%dT%H-%M`" >> $GITHUB_ENV
+
+      - name: Build admin ui
+        run: npm install --prefix admin-ui && npm run build --prefix admin-ui -- --base /admin
 
       - name: Build container image with Jib, push to container repo
         run: |

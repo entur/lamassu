@@ -1,0 +1,17 @@
+# Ignore artifacts
+dist
+node_modules
+
+# Ignore build files
+build
+
+# Ignore coverage reports
+coverage
+
+# Ignore other files
+.github
+.husky
+.vscode
+*.lock
+*.log
+*.md
