@@ -22,6 +22,8 @@ import {
   Alert,
   CircularProgress,
   ButtonGroup,
+  Checkbox,
+  Toolbar,
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -88,6 +90,8 @@ export default function AdminFeedProviders() {
   const [isCopyMode, setIsCopyMode] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState<Record<string, string>>({});
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [bulkActionLoading, setBulkActionLoading] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -242,6 +246,140 @@ export default function AdminFeedProviders() {
     return subscriptionStatuses[systemId] || 'STOPPED';
   };
 
+  // Selection handlers
+  const handleSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.checked) {
+      setSelectedIds(new Set(providers.map(p => p.systemId)));
+    } else {
+      setSelectedIds(new Set());
+    }
+  };
+
+  const handleSelectOne = (systemId: string) => {
+    const newSelected = new Set(selectedIds);
+    if (newSelected.has(systemId)) {
+      newSelected.delete(systemId);
+    } else {
+      newSelected.add(systemId);
+    }
+    setSelectedIds(newSelected);
+  };
+
+  const clearSelection = () => {
+    setSelectedIds(new Set());
+  };
+
+  // Bulk operation handlers
+  const handleBulkStart = async () => {
+    setBulkActionLoading(true);
+    setError('');
+    try {
+      const results = await adminApi.bulkStartSubscriptions(Array.from(selectedIds));
+      const failed = Object.entries(results).filter(([_, status]) => status !== 'SUCCESS');
+      if (failed.length > 0) {
+        setError(
+          `Started ${Object.keys(results).length - failed.length} subscriptions. Failed: ${failed.map(([id]) => id).join(', ')}`
+        );
+      } else {
+        setSuccess(`Successfully started ${Object.keys(results).length} subscriptions!`);
+      }
+      clearSelection();
+      loadData();
+    } catch (err: any) {
+      setError(`Failed to start subscriptions: ${err.response?.data?.message || err.message}`);
+    } finally {
+      setBulkActionLoading(false);
+    }
+  };
+
+  const handleBulkStop = async () => {
+    setBulkActionLoading(true);
+    setError('');
+    try {
+      const results = await adminApi.bulkStopSubscriptions(Array.from(selectedIds));
+      const failed = Object.entries(results).filter(([_, status]) => status !== 'SUCCESS');
+      if (failed.length > 0) {
+        setError(
+          `Stopped ${Object.keys(results).length - failed.length} subscriptions. Failed: ${failed.map(([id]) => id).join(', ')}`
+        );
+      } else {
+        setSuccess(`Successfully stopped ${Object.keys(results).length} subscriptions!`);
+      }
+      clearSelection();
+      loadData();
+    } catch (err: any) {
+      setError(`Failed to stop subscriptions: ${err.response?.data?.message || err.message}`);
+    } finally {
+      setBulkActionLoading(false);
+    }
+  };
+
+  const handleBulkRestart = async () => {
+    setBulkActionLoading(true);
+    setError('');
+    try {
+      const results = await adminApi.bulkRestartSubscriptions(Array.from(selectedIds));
+      const failed = Object.entries(results).filter(([_, status]) => status !== 'SUCCESS');
+      if (failed.length > 0) {
+        setError(
+          `Restarted ${Object.keys(results).length - failed.length} subscriptions. Failed: ${failed.map(([id]) => id).join(', ')}`
+        );
+      } else {
+        setSuccess(`Successfully restarted ${Object.keys(results).length} subscriptions!`);
+      }
+      clearSelection();
+      loadData();
+    } catch (err: any) {
+      setError(`Failed to restart subscriptions: ${err.response?.data?.message || err.message}`);
+    } finally {
+      setBulkActionLoading(false);
+    }
+  };
+
+  const handleBulkEnable = async () => {
+    setBulkActionLoading(true);
+    setError('');
+    try {
+      const results = await adminApi.bulkSetEnabled(Array.from(selectedIds), true);
+      const failed = Object.entries(results).filter(([_, status]) => status !== 'SUCCESS');
+      if (failed.length > 0) {
+        setError(
+          `Enabled ${Object.keys(results).length - failed.length} providers. Failed: ${failed.map(([id]) => id).join(', ')}`
+        );
+      } else {
+        setSuccess(`Successfully enabled ${Object.keys(results).length} providers!`);
+      }
+      clearSelection();
+      loadData();
+    } catch (err: any) {
+      setError(`Failed to enable providers: ${err.response?.data?.message || err.message}`);
+    } finally {
+      setBulkActionLoading(false);
+    }
+  };
+
+  const handleBulkDisable = async () => {
+    setBulkActionLoading(true);
+    setError('');
+    try {
+      const results = await adminApi.bulkSetEnabled(Array.from(selectedIds), false);
+      const failed = Object.entries(results).filter(([_, status]) => status !== 'SUCCESS');
+      if (failed.length > 0) {
+        setError(
+          `Disabled ${Object.keys(results).length - failed.length} providers. Failed: ${failed.map(([id]) => id).join(', ')}`
+        );
+      } else {
+        setSuccess(`Successfully disabled ${Object.keys(results).length} providers!`);
+      }
+      clearSelection();
+      loadData();
+    } catch (err: any) {
+      setError(`Failed to disable providers: ${err.response?.data?.message || err.message}`);
+    } finally {
+      setBulkActionLoading(false);
+    }
+  };
+
   const renderEnabledStatus = (provider: FeedProvider) => {
     const isLoading = actionLoading[provider.systemId] === 'toggle';
     const isEnabled = provider.enabled;
@@ -332,6 +470,10 @@ export default function AdminFeedProviders() {
     }
   };
 
+  const selectedCount = selectedIds.size;
+  const isAllSelected = providers.length > 0 && selectedCount === providers.length;
+  const isIndeterminate = selectedCount > 0 && selectedCount < providers.length;
+
   return (
     <Box sx={{ p: 3 }}>
       <Card>
@@ -349,6 +491,65 @@ export default function AdminFeedProviders() {
           }
         />
         <CardContent>
+          {/* Bulk Action Toolbar */}
+          {selectedCount > 0 && (
+            <Toolbar
+              sx={{
+                pl: { sm: 2 },
+                pr: { xs: 1, sm: 1 },
+                mb: 2,
+                bgcolor: theme => theme.palette.action.selected,
+                borderRadius: 1,
+              }}
+            >
+              <Typography sx={{ flex: '1 1 100%' }} color="inherit" variant="subtitle1">
+                {selectedCount} selected
+              </Typography>
+              <Box sx={{ display: 'flex', gap: 1 }}>
+                <ButtonGroup size="small" disabled={bulkActionLoading}>
+                  <Button
+                    onClick={handleBulkEnable}
+                    startIcon={bulkActionLoading ? <CircularProgress size={16} /> : <PowerIcon />}
+                    color="success"
+                  >
+                    Enable
+                  </Button>
+                  <Button
+                    onClick={handleBulkDisable}
+                    startIcon={bulkActionLoading ? <CircularProgress size={16} /> : <PowerIcon />}
+                  >
+                    Disable
+                  </Button>
+                </ButtonGroup>
+                <ButtonGroup size="small" disabled={bulkActionLoading}>
+                  <Button
+                    onClick={handleBulkStart}
+                    startIcon={bulkActionLoading ? <CircularProgress size={16} /> : <StartIcon />}
+                    color="success"
+                  >
+                    Start
+                  </Button>
+                  <Button
+                    onClick={handleBulkStop}
+                    startIcon={bulkActionLoading ? <CircularProgress size={16} /> : <StopIcon />}
+                    color="warning"
+                  >
+                    Stop
+                  </Button>
+                  <Button
+                    onClick={handleBulkRestart}
+                    startIcon={bulkActionLoading ? <CircularProgress size={16} /> : <RestartIcon />}
+                    color="info"
+                  >
+                    Restart
+                  </Button>
+                </ButtonGroup>
+                <Button size="small" onClick={clearSelection}>
+                  Clear
+                </Button>
+              </Box>
+            </Toolbar>
+          )}
           {error && (
             <Alert severity="error" onClose={clearAlerts} sx={{ mb: 2 }}>
               {error}
@@ -373,6 +574,13 @@ export default function AdminFeedProviders() {
               <Table>
                 <TableHead>
                   <TableRow>
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                        indeterminate={isIndeterminate}
+                        checked={isAllSelected}
+                        onChange={handleSelectAll}
+                      />
+                    </TableCell>
                     <TableCell>System ID</TableCell>
                     <TableCell>Operator</TableCell>
                     <TableCell>Codespace</TableCell>
@@ -386,6 +594,12 @@ export default function AdminFeedProviders() {
                 <TableBody>
                   {providers.map(provider => (
                     <TableRow key={provider.systemId}>
+                      <TableCell padding="checkbox">
+                        <Checkbox
+                          checked={selectedIds.has(provider.systemId)}
+                          onChange={() => handleSelectOne(provider.systemId)}
+                        />
+                      </TableCell>
                       <TableCell>{provider.systemId}</TableCell>
                       <TableCell>
                         <Box>

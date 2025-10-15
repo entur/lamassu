@@ -105,14 +105,17 @@ export default function AdminCacheManagement() {
     setSuccess('');
   };
 
-  const groupedKeys = cacheKeys.reduce((acc, key) => {
-    const type = key.includes('_') ? key.split('_')[0] : 'Other';
-    if (!acc[type]) {
-      acc[type] = [];
-    }
-    acc[type].push(key);
-    return acc;
-  }, {} as Record<string, string[]>);
+  const groupedKeys = cacheKeys.reduce(
+    (acc, key) => {
+      const type = key.includes('_') ? key.split('_')[0] : 'Other';
+      if (!acc[type]) {
+        acc[type] = [];
+      }
+      acc[type].push(key);
+      return acc;
+    },
+    {} as Record<string, string[]>
+  );
 
   const openConfirmDialog = (
     action: string,
@@ -157,39 +160,51 @@ export default function AdminCacheManagement() {
               <ButtonGroup variant="outlined" sx={{ flexWrap: 'wrap', gap: 1 }}>
                 <Button
                   color="warning"
-                  startIcon={actionLoading === 'vehicle' ? <CircularProgress size={20} /> : <ClearIcon />}
-                  onClick={() => openConfirmDialog(
-                    'vehicle',
-                    'Clear Vehicle Cache',
-                    'Are you sure you want to clear the vehicle cache?',
-                    handleClearVehicleCache
-                  )}
+                  startIcon={
+                    actionLoading === 'vehicle' ? <CircularProgress size={20} /> : <ClearIcon />
+                  }
+                  onClick={() =>
+                    openConfirmDialog(
+                      'vehicle',
+                      'Clear Vehicle Cache',
+                      'Are you sure you want to clear the vehicle cache?',
+                      handleClearVehicleCache
+                    )
+                  }
                   disabled={!!actionLoading}
                 >
                   Clear Vehicle Cache
                 </Button>
                 <Button
                   color="warning"
-                  startIcon={actionLoading === 'old' ? <CircularProgress size={20} /> : <ClearIcon />}
-                  onClick={() => openConfirmDialog(
-                    'old',
-                    'Clear Old Cache',
-                    'Are you sure you want to clear old cache entries?',
-                    handleClearOldCache
-                  )}
+                  startIcon={
+                    actionLoading === 'old' ? <CircularProgress size={20} /> : <ClearIcon />
+                  }
+                  onClick={() =>
+                    openConfirmDialog(
+                      'old',
+                      'Clear Old Cache',
+                      'Are you sure you want to clear old cache entries?',
+                      handleClearOldCache
+                    )
+                  }
                   disabled={!!actionLoading}
                 >
                   Clear Old Cache
                 </Button>
                 <Button
                   color="error"
-                  startIcon={actionLoading === 'database' ? <CircularProgress size={20} /> : <WarningIcon />}
-                  onClick={() => openConfirmDialog(
-                    'database',
-                    'Clear Entire Database',
-                    'WARNING: This will clear ALL data in Redis. This action cannot be undone!',
-                    handleClearDatabase
-                  )}
+                  startIcon={
+                    actionLoading === 'database' ? <CircularProgress size={20} /> : <WarningIcon />
+                  }
+                  onClick={() =>
+                    openConfirmDialog(
+                      'database',
+                      'Clear Entire Database',
+                      'WARNING: This will clear ALL data in Redis. This action cannot be undone!',
+                      handleClearDatabase
+                    )
+                  }
                   disabled={!!actionLoading}
                 >
                   Clear Entire Database
@@ -225,13 +240,13 @@ export default function AdminCacheManagement() {
                       </AccordionSummary>
                       <AccordionDetails>
                         <List dense>
-                          {keys.map((key) => (
+                          {keys.map(key => (
                             <ListItem key={key}>
                               <ListItemText
                                 primary={key}
                                 primaryTypographyProps={{
                                   variant: 'body2',
-                                  sx: { fontFamily: 'monospace' }
+                                  sx: { fontFamily: 'monospace' },
                                 }}
                               />
                             </ListItem>
@@ -248,15 +263,10 @@ export default function AdminCacheManagement() {
       </Card>
 
       {/* Confirmation Dialog */}
-      <Dialog
-        open={!!confirmAction}
-        onClose={() => setConfirmAction(null)}
-      >
+      <Dialog open={!!confirmAction} onClose={() => setConfirmAction(null)}>
         <DialogTitle>{confirmAction?.title}</DialogTitle>
         <DialogContent>
-          <Typography>
-            {confirmAction?.message}
-          </Typography>
+          <Typography>{confirmAction?.message}</Typography>
           {confirmAction?.action === 'database' && (
             <Alert severity="error" sx={{ mt: 2 }}>
               This action cannot be undone!
@@ -264,15 +274,15 @@ export default function AdminCacheManagement() {
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setConfirmAction(null)}>
-            Cancel
-          </Button>
+          <Button onClick={() => setConfirmAction(null)}>Cancel</Button>
           <Button
             color={confirmAction?.action === 'database' ? 'error' : 'warning'}
             variant="contained"
             onClick={confirmAction?.handler}
             disabled={!!actionLoading}
-            startIcon={actionLoading === confirmAction?.action ? <CircularProgress size={20} /> : null}
+            startIcon={
+              actionLoading === confirmAction?.action ? <CircularProgress size={20} /> : null
+            }
           >
             {confirmAction?.action === 'database' ? 'Clear Database' : 'Clear Cache'}
           </Button>

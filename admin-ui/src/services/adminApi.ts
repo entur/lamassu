@@ -58,6 +58,30 @@ export const adminApi = {
     await api.post(`/feed-providers/${systemId}/set-enabled?enabled=${enabled}`);
   },
 
+  // Bulk operations
+  bulkStartSubscriptions: async (systemIds: string[]): Promise<Record<string, string>> => {
+    const response = await api.post('/feed-providers/bulk/start', systemIds);
+    return response.data;
+  },
+
+  bulkStopSubscriptions: async (systemIds: string[]): Promise<Record<string, string>> => {
+    const response = await api.post('/feed-providers/bulk/stop', systemIds);
+    return response.data;
+  },
+
+  bulkRestartSubscriptions: async (systemIds: string[]): Promise<Record<string, string>> => {
+    const response = await api.post('/feed-providers/bulk/restart', systemIds);
+    return response.data;
+  },
+
+  bulkSetEnabled: async (
+    systemIds: string[],
+    enabled: boolean
+  ): Promise<Record<string, string>> => {
+    const response = await api.post('/feed-providers/bulk/set-enabled', { systemIds, enabled });
+    return response.data;
+  },
+
   // Cache operations
   getCacheKeys: async (): Promise<string[]> => {
     const response = await api.get('/cache_keys');

@@ -20,10 +20,7 @@ import {
   DialogContent,
   DialogTitle,
 } from '@mui/material';
-import {
-  Refresh as RefreshIcon,
-  DeleteSweep as ClearIcon,
-} from '@mui/icons-material';
+import { Refresh as RefreshIcon, DeleteSweep as ClearIcon } from '@mui/icons-material';
 import { adminApi } from '../services/adminApi';
 
 export default function AdminSpatialIndex() {
@@ -135,11 +132,9 @@ export default function AdminSpatialIndex() {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {orphans.map((id) => (
+                        {orphans.map(id => (
                           <TableRow key={id}>
-                            <TableCell sx={{ fontFamily: 'monospace' }}>
-                              {id}
-                            </TableCell>
+                            <TableCell sx={{ fontFamily: 'monospace' }}>{id}</TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
@@ -153,23 +148,19 @@ export default function AdminSpatialIndex() {
       </Card>
 
       {/* Confirmation Dialog */}
-      <Dialog
-        open={confirmClear}
-        onClose={() => setConfirmClear(false)}
-      >
+      <Dialog open={confirmClear} onClose={() => setConfirmClear(false)}>
         <DialogTitle>Clear Orphaned Vehicle Entries</DialogTitle>
         <DialogContent>
           <Typography>
             Are you sure you want to clear all {orphans.length} orphaned vehicle entries?
           </Typography>
           <Typography sx={{ mt: 1, color: 'text.secondary' }}>
-            This will remove orphaned entries from the spatial index that no longer have corresponding vehicle data.
+            This will remove orphaned entries from the spatial index that no longer have
+            corresponding vehicle data.
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setConfirmClear(false)}>
-            Cancel
-          </Button>
+          <Button onClick={() => setConfirmClear(false)}>Cancel</Button>
           <Button
             color="warning"
             variant="contained"
