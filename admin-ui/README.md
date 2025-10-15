@@ -1,291 +1,251 @@
-# Inanna
+# Lamassu Admin UI
 
-A Structured Starting Point for Open-Source Frontend Applications.
+Web-based administration interface for managing Lamassu's GBFS feed aggregation service.
 
----
+## Overview
 
-## What is Inanna?
+The Admin UI is a React + TypeScript single-page application built on the [Inanna](https://github.com/entur/inanna) template. It provides a graphical interface for managing feed providers, monitoring subscriptions, controlling caches, and viewing validation reports.
 
-**Inanna** is an open-source starter template designed to streamline the creation of structured, maintainable, themeable and scalable frontend applications. Leveraging modern best practices, Inanna provides a robust foundational framework that developers can easily customize to kickstart their projects.
-
-## Core Technologies
-
-* **React** with **TypeScript**
-* **Vite** for fast and efficient builds
-* **Material UI (MUI)** for consistent and configurable UI components
-* **MapLibre** for interactive map functionalities
-
----
+The application is served by the Lamassu Spring Boot backend at `/admin` when `org.entur.lamassu.enable-admin-ui=true` is configured.
 
 ## Features
 
-* **Configurable Theming:**
+### Feed Provider Management
 
-  Customize your application's look and feel dynamically via a simple configuration file—perfect for branding, logos, and color schemes.
+**CRUD Operations:**
+- Create, read, update, and delete GBFS feed provider configurations
+- Copy existing providers to quickly create similar configurations
+- Configure authentication (OAuth2, Bearer Token, HTTP Headers)
+- Set GBFS version (2.x or 3.x), codespace, operator details, and language preferences
 
-* **Responsive Layout:**
+**Subscription Control:**
+- Start, stop, and restart individual feed subscriptions in real-time
+- Monitor subscription status (STARTED, STOPPED, STARTING, STOPPING)
+- Enable/disable providers to control whether they are polled
 
-  Ensures your application maintains aesthetic appeal across desktop and mobile devices.
+**Bulk Operations:**
+- Select multiple feed providers for batch operations
+- Bulk start, stop, restart subscriptions
+- Bulk enable/disable providers
+- Useful for managing many feeds efficiently
 
-* **State Management:**
+**Validation Reports:**
+- View GBFS validation results for each feed provider
+- Identify errors and warnings in feed data
+- Quick access to validation status with visual indicators
 
-  Integrates modern state management techniques (React Context, optional Redux) for efficient application state handling.
+### Cache Management
+
+- View all Redis cache keys
+- Clear vehicle cache
+- Clear old/stale cache entries
+- Full database wipe (use with caution)
+
+### Vehicle Orphan Management
+
+- Identify "orphaned" vehicles (vehicles in cache without an active feed provider)
+- Remove orphaned vehicles to keep the cache clean
+
+### Spatial Index Management
+
+- Monitor and manage geospatial indexes used for location-based queries
 
-* **Interactive Maps:**
+## Tech Stack
+
+- **React 19** with **TypeScript**
+- **Vite** - Fast development server and build tool
+- **Material UI (MUI)** - Component library for UI
+- **React Router** - Client-side routing
+- **Axios** - HTTP client for API calls
+- **i18next** - Internationalization framework
+- **MapLibre** - Interactive maps (via Inanna template)
 
-  Pre-configured interactive mapping components powered by MapLibre, excellent for building location-based applications.
+## Development
 
----
+### Prerequisites
 
-## How to Use Inanna in Your Project
+- Node.js 22.x
+- Running Lamassu backend on `localhost:8080` (see main README)
 
-## Getting Started
+### Getting Started
 
-* **Clone the repository:**
+```bash
+# Install dependencies
+npm install
 
-  ```bash
-  git clone https://github.com/entur/inanna.git
-  ```
+# Start development server (runs on port 5000 by default)
+npm run dev
+```
 
-* **Install dependencies:**
+The dev server automatically proxies API requests to the backend:
+- `/admin/*` → `http://localhost:8080/admin/*`
+- `/validation/*` → `http://localhost:8080/validation/*`
 
-  ```bash
-  npm install
-  ```
+Open [http://localhost:5000/admin](http://localhost:5000/admin) in your browser.
 
-* **Run the development server:**
+### Available Scripts
 
-  ```bash
-  npm run dev
-  ```
+```bash
+# Development server with hot reload
+npm run dev
 
-## Customizing the Project
+# Build for production (outputs to ../src/main/resources/static/admin)
+npm run build
 
-* **Update Theme Configuration:**
+# Lint code
+npm run lint
 
-  Modify `public/custom-theme-config.json` or `public/default-theme-config.json` to adjust colors, logos, typography, and other MUI theme options.
+# Check code formatting
+npm run check
 
-* **Add New Pages and Components:**
+# Format code with Prettier
+npm run format
+```
 
-  Follow provided examples (e.g., `Home.tsx`, `MapView.tsx`) to create pages. Components are organized in the `src/components/` directory.
+### Build Integration
 
-* **Customize the Map:**
+The production build is integrated into the Spring Boot application:
 
-  Adjust the map style via `src/mapStyle.ts`, or add layers and interactivity directly.
+1. **Output Directory**: `npm run build` outputs to `../src/main/resources/static/admin`
+2. **Base Path**: The build uses `--base /admin` to ensure assets load correctly
+3. **Docker Build**: The CI pipeline runs `npm install && npm run build` before building the Docker image
+4. **Static Serving**: Spring Boot serves the built assets when the admin UI is enabled
 
-* **Bring Your Own Icons:**
+## Project Structure
 
-  Add custom icons to `public/static/customIcons/` (SVG or PNG). Override default icons by matching filenames.
+```
+admin-ui/
+├── src/
+│   ├── components/       # Reusable UI components
+│   │   ├── admin/        # Admin-specific components (FeedProviderForm, etc.)
+│   │   ├── common/       # Shared components
+│   │   ├── dialogs/      # Dialog components
+│   │   ├── header/       # Header and navigation
+│   │   └── validation/   # Validation report components
+│   ├── pages/            # Page components (route targets)
+│   │   ├── Home.tsx                    # Landing page
+│   │   ├── AdminFeedProviders.tsx      # Feed provider management
+│   │   ├── AdminCacheManagement.tsx    # Cache operations
+│   │   └── AdminSpatialIndex.tsx       # Spatial index management
+│   ├── services/         # API client services
+│   │   ├── adminApi.ts       # Admin API endpoints
+│   │   └── validationApi.ts  # Validation API endpoints
+│   ├── types/            # TypeScript type definitions
+│   ├── contexts/         # React contexts (theme, customization)
+│   ├── hooks/            # Custom React hooks
+│   ├── locales/          # i18n translation files
+│   ├── theme/            # MUI theme configuration
+│   ├── utils/            # Utility functions
+│   └── App.tsx           # Root application component
+├── public/               # Static assets
+├── vite.config.ts        # Vite configuration
+├── package.json          # Dependencies and scripts
+└── tsconfig.json         # TypeScript configuration
+```
 
----
+## Configuration
 
-## 1. Setting Up a Custom Theme
+### Environment Variables
 
-Your application can switch between a default theme and a custom theme. This behavior is controlled by the **Enable Custom Theme & Icons** switch in the settings dialog, which toggles a value in `localStorage`.
+The Vite dev server port can be configured:
 
-## How it works
+```bash
+PORT=3000 npm run dev  # Start on port 3000 instead of default 5000
+```
 
-* **`CustomizationContext.tsx`:** Manages the `useCustomFeatures` state. When `true`, the app attempts to load the custom theme.
+### Theme Customization
 
-* **`App.tsx`:**
+The UI supports custom theming via the Inanna template's theme system:
 
-    * Uses the `useCustomFeatures` hook.
-    * If enabled, fetches `/custom-theme-config.json`.
-    * Otherwise or on failure, fetches `/default-theme-config.json`.
+- **Default theme**: `public/default-theme-config.json`
+- **Custom theme**: `public/custom-theme-config.json`
 
-* **`public/default-theme-config.json`:** Default Inanna theme settings.
+Enable custom features in the settings dialog to apply custom themes and icons.
 
-* **`public/custom-theme-config.json`:** Define or override any MUI theme options here.
+## Backend Integration
 
-* **`src/utils/createThemeFromConfig.ts`:** Converts the JSON configuration into an MUI theme object.
+The Admin UI communicates with Lamassu's Admin API endpoints:
 
-## Steps to customize your theme
+### Admin API (`/admin/*`)
 
-* **Edit `public/custom-theme-config.json`:**
+- `GET /admin/feed-providers` - List all feed providers
+- `POST /admin/feed-providers` - Create new feed provider
+- `PUT /admin/feed-providers/{systemId}` - Update feed provider
+- `DELETE /admin/feed-providers/{systemId}` - Delete feed provider
+- `POST /admin/feed-providers/{systemId}/start` - Start subscription
+- `POST /admin/feed-providers/{systemId}/stop` - Stop subscription
+- `POST /admin/feed-providers/{systemId}/restart` - Restart subscription
+- `POST /admin/feed-providers/{systemId}/set-enabled` - Enable/disable provider
+- `POST /admin/feed-providers/bulk/*` - Bulk operations
+- `GET /admin/cache_keys` - Get cache keys
+- `POST /admin/clear_vehicle_cache` - Clear vehicle cache
+- `POST /admin/clear_old_cache` - Clear old cache
+- `POST /admin/clear_db` - Clear database
+- `GET /admin/vehicle_orphans` - Get orphaned vehicles
+- `DELETE /admin/vehicle_orphans` - Clear orphaned vehicles
 
-  ```json
-  {
-    "applicationName": "My Custom App",
-    "companyName": "My Company",
-    "palette": {
-      "primary": { "main": "#A020F0" },
-      "secondary": { "main": "#00BFFF" },
-      "background": { "default": "#F5F5F5" }
-    },
-    "typography": {
-      "fontFamily": "\"Open Sans\", \"Helvetica\", \"Arial\", sans-serif",
-      "h1": { "fontSize": "2.8rem" }
-    },
-    "shape": { "borderRadius": 8 },
-    "components": {
-      "MuiButton": {
-        "styleOverrides": {
-          "root": { "textTransform": "capitalize" }
-        }
-      }
-    },
-    "logoUrl": "/assets/my-custom-logo.png",
-    "logoHeight": 32
-  }
-  ```
+### Validation API (`/validation/*`)
 
-* **Enable Custom Features:**
+- `GET /validation/reports` - Get validation reports for all systems
 
-    * Start the app.
-    * Open settings (gear icon).
-    * Toggle **Enable Custom Theme & Icons**.
-    * The app will apply `custom-theme-config.json` on reload.
+## Authentication
 
----
+The Admin API requires authentication when `org.entur.lamassu.enable-admin-endpoints=true` is configured with security enabled. Ensure your Lamassu backend is properly configured for authentication.
 
-## 2. Adding Custom Icons
+## Production Deployment
 
-The application’s icon loader resolves custom and default icons based on the **Enable Custom Theme & Icons** setting.
+The admin UI is automatically included in the Lamassu Docker image when built via CI:
 
-## How it works
+1. CI runs `npm install --prefix admin-ui && npm run build --prefix admin-ui -- --base /admin`
+2. Built files are placed in `src/main/resources/static/admin/`
+3. Maven packages these static files into the JAR
+4. Spring Boot serves the UI at `/admin` when enabled
 
-* **`src/data/iconLoaderUtils.ts`** – `getIconUrl(name: string)` checks:
+### Enabling in Production
 
-    1. If custom features enabled:
+Add to `application.properties`:
 
-        * `public/static/customIcons/[name].svg` or `.png`
-    2. Otherwise or not found:
+```properties
+org.entur.lamassu.enable-admin-ui=true
+org.entur.lamassu.enable-admin-endpoints=true
+```
 
-        * `public/static/defaultIcons/[name].svg` or `.png`
-    3. Fallback to `default.svg` / `default.png` in `defaultIcons`.
+Access the UI at `http://your-lamassu-host:8080/admin`
 
-## Steps to add/override icons
+## Development Tips
 
-* **Prepare icons** in SVG or PNG.
+- **Hot Reload**: Vite provides instant hot module replacement during development
+- **Type Safety**: Use TypeScript types from `src/types/` for API contracts
+- **Code Formatting**: Run `npm run format` before committing (enforced by lint-staged)
+- **Component Library**: Leverage MUI's extensive component library for UI consistency
+- **API Errors**: The UI displays error messages from backend API responses
 
-* **Place in `public/static/customIcons/`:**
+## Troubleshooting
 
-    * Override: same filename as default.
-    * Add new: unique filename (e.g., `analytics.svg`).
+**Port 5000 already in use:**
+```bash
+PORT=3001 npm run dev  # Use a different port
+```
 
-* **Use in components:**
+**Proxy errors:**
+- Ensure Lamassu backend is running on `localhost:8080`
+- Check that admin endpoints are enabled in backend configuration
 
-  ```tsx
-  import { getIconUrl } from '../data/iconLoader';
-  import { Box } from '@mui/material';
+**Build fails:**
+- Ensure TypeScript compilation succeeds: `tsc -b`
+- Check for missing dependencies: `npm install`
 
-  const analyticsIconUrl = getIconUrl('analytics');
+## Contributing
 
-  return (
-    <Box
-      component="img"
-      src={analyticsIconUrl}
-      alt="Analytics"
-      sx={{ width: 24, height: 24 }}
-    />
-  );
-  ```
-
-* **Enable Custom Features** in settings to view your icons.
-
----
-
-## 3. Expanding Theming with TypeScript Definitions
-
-Extend MUI’s theme object in `src/types/theme-config.d.ts` for additional custom properties.
-
-## How it works
-
-* **`ThemeConfig` Interface:** Extends MUI’s `ThemeOptions` with custom fields.
-
-* **Module Augmentation:** Adds these fields to `Theme` and `ThemeOptions` via `declare module '@mui/material/styles'`.
-
-## Steps to extend the theme
-
-* **Define new properties** in `src/types/theme-config.d.ts`:
-
-  ```ts
-  import type { ThemeOptions } from '@mui/material/styles';
-
-  export interface ThemeConfig extends ThemeOptions {
-    applicationName: string;
-    companyName: string;
-    logoUrl: string;
-    logoHeight: number;
-    customSpacing: { small: number; medium: number; large: string };
-    brandColors: { accentFocus: string };
-  }
-
-  declare module '@mui/material/styles' {
-    interface Theme {
-      applicationName: string;
-      companyName: string;
-      logoUrl: string;
-      logoHeight: number;
-      customSpacing: { small: number; medium: number; large: string };
-      brandColors: { accentFocus: string };
-    }
-    interface ThemeOptions {
-      applicationName?: string;
-      companyName?: string;
-      logoUrl?: string;
-      logoHeight?: number;
-      customSpacing?: { small?: number; medium?: number; large?: string };
-      brandColors?: { accentFocus?: string };
-    }
-  }
-  ```
-
-* **Add to JSON configs:**
-
-    * In **`public/default-theme-config.json`**:
-
-      ```json
-      {
-        "applicationName": "INANNA",
-        "companyName": "ROR",
-        "logoUrl": "/assets/inanna-logo.png",
-        "logoHeight": 48,
-        "customSpacing": { "small": 8, "medium": 16, "large": "32px" },
-        "brandColors": { "accentFocus": "#FFD700" }
-      }
-      ```
-
-    * In **`public/custom-theme-config.json`**:
-
-      ```json
-      {
-        "applicationName": "My Custom App",
-        "companyName": "My Company",
-        "logoUrl": "/assets/my-custom-logo.png",
-        "logoHeight": 32,
-        "customSpacing": { "small": 4, "medium": 12, "large": "24px" },
-        "brandColors": { "accentFocus": "#10A37F" }
-      }
-      ```
-
-* **Use custom properties** in components:
-
-  ```tsx
-  import { Box, Typography, useTheme } from '@mui/material';
-
-  function MyCustomComponent() {
-    const theme = useTheme();
-    return (
-      <Box sx={{
-        padding: theme.customSpacing.medium,
-        border: `2px solid ${theme.brandColors.accentFocus}`,
-      }}>
-        <Typography sx={{ marginBottom: theme.customSpacing.small }}>
-          This component uses custom theme properties!
-        </Typography>
-        <Typography sx={{ fontSize: theme.customSpacing.large }}>
-          Large Text!
-        </Typography>
-      </Box>
-    );
-  }
-
-  export default MyCustomComponent;
-  ```
-
-The `createThemeFromConfig` utility in `src/utils/createThemeFromConfig.ts` will automatically include all custom properties defined in your theme configs.
-
----
-
-By following these instructions, you can fully customize the Inanna application’s theme, icons, and extend its theming system in a type-safe manner.
+When adding new features to the admin UI:
+
+1. Add TypeScript types to `src/types/`
+2. Create API client methods in `src/services/`
+3. Build UI components in `src/components/`
+4. Add routes in `App.tsx` and pages in `src/pages/`
+5. Follow existing patterns for error handling and loading states
+6. Format code with Prettier before committing
+
+## License
+
+See [LICENSE.txt](../LICENSE.txt) in the root of the Lamassu repository.
