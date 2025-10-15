@@ -30,6 +30,7 @@ based on merged pull requests. Search GitHub issues and pull requests for smalle
 - Enable system hours to opening hours mapping [#715](https://github.com/entur/lamassu/pull/715)
 - fix: handle duplicate entities gracefully with warning logs [#730](https://github.com/entur/lamassu/pull/730)
 - fix: handle duplicate entities in delta calculator [#731](https://github.com/entur/lamassu/pull/731)
+- New admin UI [#716](https://github.com/entur/lamassu/pull/716)
   [](AUTOMATIC_CHANGELOG_PLACEHOLDER_DO_NOT_REMOVE)
 
 ## 1.1.0
