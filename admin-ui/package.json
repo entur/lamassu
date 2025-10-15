@@ -7,7 +7,6 @@
     "predev": "run-p --race copy:config",
     "dev": "vite",
     "build": "tsc -b && vite build --base /admin",
-    "copy:config": "ncp ./config-dev.json public/config.json",
     "lint": "eslint .",
     "check": "prettier . --check",
     "format": "prettier --write .",
@@ -32,11 +31,9 @@
     "i18next": "^25.2.1",
     "i18next-browser-languagedetector": "^8.1.0",
     "npm-run-all": "^4.1.5",
-    "oidc-client-ts": "^3.2.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-i18next": "^15.5.2",
-    "react-oidc-context": "^3.3.0",
     "react-router-dom": "^6.30.0"
   },
   "devDependencies": {
