@@ -90,11 +90,49 @@ export default function AdminFeedProviders() {
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState<Record<string, string>>({});
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [pollingSystemIds, setPollingSystemIds] = useState<Set<string>>(new Set());
   const [bulkActionLoading, setBulkActionLoading] = useState(false);
 
   useEffect(() => {
     loadData();
   }, []);
+
+  // Polling effect for subscription status updates
+  useEffect(() => {
+    if (pollingSystemIds.size === 0) return;
+
+    const interval = setInterval(async () => {
+      try {
+        const statuses: Record<string, SubscriptionStatus> = {};
+        await Promise.all(
+          Array.from(pollingSystemIds).map(async systemId => {
+            const status = await adminApi.getSubscriptionStatus(systemId);
+            statuses[systemId] = status;
+          })
+        );
+        setSubscriptionStatuses(prev => ({ ...prev, ...statuses }));
+
+        // Remove systems that have reached a stable state (STARTED or STOPPED)
+        setPollingSystemIds(prev => {
+          const next = new Set(prev);
+          Object.entries(statuses).forEach(([systemId, status]) => {
+            if (status === 'STARTED' || status === 'STOPPED') {
+              next.delete(systemId);
+              setActionLoading(prevLoading => ({ ...prevLoading, [systemId]: '' }));
+              setSuccess(
+                `Subscription for ${systemId} is now ${status === 'STARTED' ? 'running' : 'stopped'}!`
+              );
+            }
+          });
+          return next;
+        });
+      } catch (err) {
+        console.error('Error polling subscription statuses:', err);
+      }
+    }, 1000); // Poll every second
+
+    return () => clearInterval(interval);
+  }, [pollingSystemIds]);
 
   const loadData = async () => {
     setError('');
@@ -154,11 +192,11 @@ export default function AdminFeedProviders() {
     setError('');
     try {
       await adminApi.startSubscription(systemId);
-      setSuccess(`Successfully started subscription for ${systemId}!`);
-      loadData();
+      setSuccess(`Starting subscription for ${systemId}...`);
+      // Start polling for status updates
+      setPollingSystemIds(prev => new Set(prev).add(systemId));
     } catch (err: any) {
       setError(`Failed to start subscription: ${err.response?.data?.message || err.message}`);
-    } finally {
       setActionLoading(prev => ({ ...prev, [systemId]: '' }));
     }
   };
@@ -168,11 +206,11 @@ export default function AdminFeedProviders() {
     setError('');
     try {
       await adminApi.stopSubscription(systemId);
-      setSuccess(`Successfully stopped subscription for ${systemId}!`);
-      loadData();
+      setSuccess(`Stopping subscription for ${systemId}...`);
+      // Start polling for status updates
+      setPollingSystemIds(prev => new Set(prev).add(systemId));
     } catch (err: any) {
       setError(`Failed to stop subscription: ${err.response?.data?.message || err.message}`);
-    } finally {
       setActionLoading(prev => ({ ...prev, [systemId]: '' }));
     }
   };
@@ -182,11 +220,11 @@ export default function AdminFeedProviders() {
     setError('');
     try {
       await adminApi.restartSubscription(systemId);
-      setSuccess(`Successfully restarted subscription for ${systemId}!`);
-      loadData();
+      setSuccess(`Restarting subscription for ${systemId}...`);
+      // Start polling for status updates
+      setPollingSystemIds(prev => new Set(prev).add(systemId));
     } catch (err: any) {
       setError(`Failed to restart subscription: ${err.response?.data?.message || err.message}`);
-    } finally {
       setActionLoading(prev => ({ ...prev, [systemId]: '' }));
     }
   };
