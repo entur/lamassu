@@ -350,7 +350,9 @@ export default function AdminFeedProviders() {
           })
         );
       } else {
-        setSuccess(t('admin.feedProviders.bulk.startSuccess', { count: Object.keys(results).length }));
+        setSuccess(
+          t('admin.feedProviders.bulk.startSuccess', { count: Object.keys(results).length })
+        );
       }
       clearSelection();
       loadData();
@@ -379,7 +381,9 @@ export default function AdminFeedProviders() {
           })
         );
       } else {
-        setSuccess(t('admin.feedProviders.bulk.stopSuccess', { count: Object.keys(results).length }));
+        setSuccess(
+          t('admin.feedProviders.bulk.stopSuccess', { count: Object.keys(results).length })
+        );
       }
       clearSelection();
       loadData();
@@ -500,7 +504,9 @@ export default function AdminFeedProviders() {
         disabled={isLoading}
         startIcon={isLoading ? <CircularProgress size={16} /> : <PowerIcon />}
       >
-        {isEnabled ? t('admin.feedProviders.status.enabled') : t('admin.feedProviders.status.enable')}
+        {isEnabled
+          ? t('admin.feedProviders.status.enabled')
+          : t('admin.feedProviders.status.enable')}
       </Button>
     );
   };

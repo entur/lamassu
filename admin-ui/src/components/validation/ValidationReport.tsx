@@ -206,7 +206,9 @@ export default function ValidationReport({
                             {error.instancePath}
                           </Typography>
                           <Typography variant="body1" sx={{ mb: 1 }}>
-                            <b style={{ marginRight: '16px' }}>{t('admin.validation.schemaPath')}</b>{' '}
+                            <b style={{ marginRight: '16px' }}>
+                              {t('admin.validation.schemaPath')}
+                            </b>{' '}
                             {error.schemaPath}
                           </Typography>
                         </Box>
