@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Box,
   Button,
@@ -42,6 +43,7 @@ export function FeedProviderForm({
   onCancel,
   isCopyMode,
 }: FeedProviderFormProps) {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState<FeedProvider>(
     provider || {
       systemId: '',
@@ -177,7 +179,7 @@ export function FeedProviderForm({
     try {
       await onSubmit(formData);
     } catch (err: any) {
-      setError(err.message || 'An error occurred while saving the feed provider');
+      setError(err.message || t('admin.feedProviderForm.errorSaving'));
     } finally {
       setLoading(false);
     }
@@ -197,7 +199,7 @@ export function FeedProviderForm({
           <Box sx={{ mt: 2 }}>
             <TextField
               fullWidth
-              label="Token URL"
+              label={t('admin.feedProviderForm.tokenUrl')}
               value={properties.tokenUrl || ''}
               onChange={handleAuthPropChange('tokenUrl')}
               required
@@ -205,7 +207,7 @@ export function FeedProviderForm({
             />
             <TextField
               fullWidth
-              label="Client ID"
+              label={t('admin.feedProviderForm.clientId')}
               value={properties.clientId || ''}
               onChange={handleAuthPropChange('clientId')}
               required
@@ -213,7 +215,7 @@ export function FeedProviderForm({
             />
             <TextField
               fullWidth
-              label="Client Secret"
+              label={t('admin.feedProviderForm.clientSecret')}
               type="password"
               value={properties.clientPassword || ''}
               onChange={handleAuthPropChange('clientPassword')}
@@ -222,7 +224,7 @@ export function FeedProviderForm({
             />
             <TextField
               fullWidth
-              label="Scope"
+              label={t('admin.feedProviderForm.scope')}
               value={properties.scope || ''}
               onChange={handleAuthPropChange('scope')}
               sx={{ mb: 2 }}
@@ -235,7 +237,7 @@ export function FeedProviderForm({
           <Box sx={{ mt: 2 }}>
             <TextField
               fullWidth
-              label="Access Token"
+              label={t('admin.feedProviderForm.accessToken')}
               value={properties.accessToken || ''}
               onChange={handleAuthPropChange('accessToken')}
               required
@@ -248,15 +250,15 @@ export function FeedProviderForm({
         return (
           <Box sx={{ mt: 2 }}>
             <Card>
-              <CardHeader title="HTTP Headers" />
+              <CardHeader title={t('admin.feedProviderForm.headersTitle')} />
               <CardContent>
                 {Object.entries(properties).length > 0 ? (
                   <Table size="small">
                     <TableHead>
                       <TableRow>
-                        <TableCell>Header Name</TableCell>
-                        <TableCell>Value</TableCell>
-                        <TableCell>Action</TableCell>
+                        <TableCell>{t('admin.feedProviderForm.headerName')}</TableCell>
+                        <TableCell>{t('admin.feedProviderForm.headerValue')}</TableCell>
+                        <TableCell>{t('admin.feedProviderForm.headerAction')}</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -279,19 +281,19 @@ export function FeedProviderForm({
                   </Table>
                 ) : (
                   <Typography variant="body2" color="text.secondary">
-                    No headers added yet. Add headers below.
+                    {t('admin.feedProviderForm.noHeaders')}
                   </Typography>
                 )}
 
                 <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
                   <TextField
-                    label="Header Name"
+                    label={t('admin.feedProviderForm.headerName')}
                     value={newHeaderKey}
                     onChange={e => setNewHeaderKey(e.target.value)}
                     size="small"
                   />
                   <TextField
-                    label="Header Value"
+                    label={t('admin.feedProviderForm.headerValue')}
                     value={newHeaderValue}
                     onChange={e => setNewHeaderValue(e.target.value)}
                     size="small"
@@ -302,7 +304,7 @@ export function FeedProviderForm({
                     onClick={addHeader}
                     disabled={!newHeaderKey || !newHeaderValue}
                   >
-                    Add Header
+                    {t('admin.feedProviderForm.addHeader')}
                   </Button>
                 </Box>
               </CardContent>
@@ -325,20 +327,22 @@ export function FeedProviderForm({
 
       <TextField
         fullWidth
-        label="System ID"
+        label={t('admin.feedProviderForm.systemId')}
         value={formData.systemId}
         onChange={handleChange('systemId')}
         required
         disabled={!!provider && !!provider.systemId && !isCopyMode}
         sx={{ mb: 2 }}
         helperText={
-          provider && provider.systemId && !isCopyMode ? 'System ID cannot be changed' : ''
+          provider && provider.systemId && !isCopyMode
+            ? t('admin.feedProviderForm.systemIdHelper')
+            : ''
         }
       />
 
       <TextField
         fullWidth
-        label="Operator ID"
+        label={t('admin.feedProviderForm.operatorId')}
         value={formData.operatorId}
         onChange={handleChange('operatorId')}
         required
@@ -347,7 +351,7 @@ export function FeedProviderForm({
 
       <TextField
         fullWidth
-        label="Operator Name"
+        label={t('admin.feedProviderForm.operatorName')}
         value={formData.operatorName}
         onChange={handleChange('operatorName')}
         required
@@ -356,7 +360,7 @@ export function FeedProviderForm({
 
       <TextField
         fullWidth
-        label="Codespace"
+        label={t('admin.feedProviderForm.codespace')}
         value={formData.codespace}
         onChange={handleChange('codespace')}
         required
@@ -365,7 +369,7 @@ export function FeedProviderForm({
 
       <TextField
         fullWidth
-        label="URL"
+        label={t('admin.feedProviderForm.url')}
         type="url"
         value={formData.url}
         onChange={handleChange('url')}
@@ -375,15 +379,19 @@ export function FeedProviderForm({
 
       <TextField
         fullWidth
-        label="Language"
+        label={t('admin.feedProviderForm.language')}
         value={formData.language}
         onChange={handleChange('language')}
         sx={{ mb: 2 }}
       />
 
       <FormControl fullWidth sx={{ mb: 2 }}>
-        <InputLabel>GBFS Version</InputLabel>
-        <Select value={formData.version} onChange={handleChange('version')} label="GBFS Version">
+        <InputLabel>{t('admin.feedProviderForm.version')}</InputLabel>
+        <Select
+          value={formData.version}
+          onChange={handleChange('version')}
+          label={t('admin.feedProviderForm.version')}
+        >
           <MenuItem value="1.0">1.0</MenuItem>
           <MenuItem value="1.1">1.1</MenuItem>
           <MenuItem value="2.0">2.0</MenuItem>
@@ -398,45 +406,52 @@ export function FeedProviderForm({
         control={
           <Checkbox checked={formData.aggregate} onChange={handleCheckboxChange('aggregate')} />
         }
-        label="Aggregate"
+        label={t('admin.feedProviderForm.aggregate')}
         sx={{ mb: 2, display: 'block' }}
       />
 
       <FormControlLabel
         control={<Checkbox checked={formData.enabled} onChange={handleCheckboxChange('enabled')} />}
-        label="Enabled"
+        label={t('admin.feedProviderForm.enabled')}
         sx={{ mb: 3, display: 'block' }}
       />
 
       <Typography variant="h6" gutterBottom>
-        Authentication (Optional)
+        {t('admin.feedProviderForm.authTitle')}
       </Typography>
 
       <FormControl fullWidth sx={{ mb: 2 }}>
-        <InputLabel>Authentication Type</InputLabel>
+        <InputLabel>{t('admin.feedProviderForm.authType')}</InputLabel>
         <Select
           value={formData.authentication?.scheme || ''}
           onChange={e => handleAuthTypeChange(e.target.value as string)}
-          label="Authentication Type"
+          label={t('admin.feedProviderForm.authType')}
         >
-          <MenuItem value="">None</MenuItem>
-          <MenuItem value="OAUTH2_CLIENT_CREDENTIALS_GRANT">OAuth2 Client Credentials</MenuItem>
-          <MenuItem value="BEARER_TOKEN">Bearer Token</MenuItem>
-          <MenuItem value="HTTP_HEADERS">HTTP Headers</MenuItem>
+          <MenuItem value="">{t('admin.feedProviderForm.authNone')}</MenuItem>
+          <MenuItem value="OAUTH2_CLIENT_CREDENTIALS_GRANT">
+            {t('admin.feedProviderForm.authOAuth2')}
+          </MenuItem>
+          <MenuItem value="BEARER_TOKEN">{t('admin.feedProviderForm.authBearer')}</MenuItem>
+          <MenuItem value="HTTP_HEADERS">{t('admin.feedProviderForm.authHeaders')}</MenuItem>
         </Select>
       </FormControl>
 
       {renderAuthenticationForm()}
 
       <DialogActions sx={{ px: 0, pt: 3 }}>
-        <Button onClick={onCancel}>Cancel</Button>
+        <Button onClick={onCancel}>{t('cancel')}</Button>
         <Button
           type="submit"
           variant="contained"
           disabled={loading}
           startIcon={loading ? <CircularProgress size={20} /> : null}
         >
-          {isCopyMode ? 'Create Copy' : provider ? 'Update' : 'Create'} Feed Provider
+          {isCopyMode
+            ? t('admin.feedProviderForm.createCopy')
+            : provider
+              ? t('admin.feedProviderForm.update')
+              : t('admin.feedProviderForm.create')}{' '}
+          {t('admin.feedProviderForm.feedProvider')}
         </Button>
       </DialogActions>
     </Box>

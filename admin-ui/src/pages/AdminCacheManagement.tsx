@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Box,
   Button,
@@ -29,6 +30,7 @@ import {
 import { adminApi } from '../services/adminApi';
 
 export default function AdminCacheManagement() {
+  const { t } = useTranslation();
   const [cacheKeys, setCacheKeys] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string>('');
@@ -52,7 +54,7 @@ export default function AdminCacheManagement() {
       const keys = await adminApi.getCacheKeys();
       setCacheKeys(keys);
     } catch (err: any) {
-      setError('Failed to load cache keys');
+      setError(t('admin.cacheManagement.errors.loadKeys'));
     } finally {
       setLoading(false);
     }
@@ -62,10 +64,10 @@ export default function AdminCacheManagement() {
     setActionLoading('vehicle');
     try {
       const count = await adminApi.clearVehicleCache();
-      setSuccess(`Successfully cleared ${count} vehicle cache entries`);
+      setSuccess(t('admin.cacheManagement.success.clearVehicle', { count }));
       loadCacheKeys();
     } catch (err: any) {
-      setError('Failed to clear vehicle cache');
+      setError(t('admin.cacheManagement.errors.clearVehicle'));
     } finally {
       setActionLoading('');
       setConfirmAction(null);
@@ -76,10 +78,10 @@ export default function AdminCacheManagement() {
     setActionLoading('old');
     try {
       const deletedKeys = await adminApi.clearOldCache();
-      setSuccess(`Successfully cleared ${deletedKeys.length} old cache entries`);
+      setSuccess(t('admin.cacheManagement.success.clearOld', { count: deletedKeys.length }));
       loadCacheKeys();
     } catch (err: any) {
-      setError('Failed to clear old cache');
+      setError(t('admin.cacheManagement.errors.clearOld'));
     } finally {
       setActionLoading('');
       setConfirmAction(null);
@@ -90,10 +92,10 @@ export default function AdminCacheManagement() {
     setActionLoading('database');
     try {
       await adminApi.clearDatabase();
-      setSuccess('Successfully cleared the entire database');
+      setSuccess(t('admin.cacheManagement.success.clearDatabase'));
       loadCacheKeys();
     } catch (err: any) {
-      setError('Failed to clear database');
+      setError(t('admin.cacheManagement.errors.clearDatabase'));
     } finally {
       setActionLoading('');
       setConfirmAction(null);
@@ -130,7 +132,7 @@ export default function AdminCacheManagement() {
     <Box sx={{ p: 3 }}>
       <Card sx={{ mb: 3 }}>
         <CardHeader
-          title="Cache Management"
+          title={t('admin.cacheManagement.title')}
           action={
             <Button
               variant="outlined"
@@ -138,7 +140,7 @@ export default function AdminCacheManagement() {
               onClick={loadCacheKeys}
               disabled={loading}
             >
-              Refresh
+              {t('admin.cacheManagement.refresh')}
             </Button>
           }
         />
@@ -155,7 +157,7 @@ export default function AdminCacheManagement() {
           )}
 
           <Card sx={{ mb: 3 }}>
-            <CardHeader title="Cache Actions" />
+            <CardHeader title={t('admin.cacheManagement.actions')} />
             <CardContent>
               <ButtonGroup variant="outlined" sx={{ flexWrap: 'wrap', gap: 1 }}>
                 <Button
@@ -166,14 +168,14 @@ export default function AdminCacheManagement() {
                   onClick={() =>
                     openConfirmDialog(
                       'vehicle',
-                      'Clear Vehicle Cache',
-                      'Are you sure you want to clear the vehicle cache?',
+                      t('admin.cacheManagement.confirmVehicle.title'),
+                      t('admin.cacheManagement.confirmVehicle.message'),
                       handleClearVehicleCache
                     )
                   }
                   disabled={!!actionLoading}
                 >
-                  Clear Vehicle Cache
+                  {t('admin.cacheManagement.clearVehicle')}
                 </Button>
                 <Button
                   color="warning"
@@ -183,14 +185,14 @@ export default function AdminCacheManagement() {
                   onClick={() =>
                     openConfirmDialog(
                       'old',
-                      'Clear Old Cache',
-                      'Are you sure you want to clear old cache entries?',
+                      t('admin.cacheManagement.confirmOld.title'),
+                      t('admin.cacheManagement.confirmOld.message'),
                       handleClearOldCache
                     )
                   }
                   disabled={!!actionLoading}
                 >
-                  Clear Old Cache
+                  {t('admin.cacheManagement.clearOld')}
                 </Button>
                 <Button
                   color="error"
@@ -200,42 +202,42 @@ export default function AdminCacheManagement() {
                   onClick={() =>
                     openConfirmDialog(
                       'database',
-                      'Clear Entire Database',
-                      'WARNING: This will clear ALL data in Redis. This action cannot be undone!',
+                      t('admin.cacheManagement.confirmDatabase.title'),
+                      t('admin.cacheManagement.confirmDatabase.message'),
                       handleClearDatabase
                     )
                   }
                   disabled={!!actionLoading}
                 >
-                  Clear Entire Database
+                  {t('admin.cacheManagement.clearDatabase')}
                 </Button>
               </ButtonGroup>
             </CardContent>
           </Card>
 
           <Card>
-            <CardHeader title="Cache Keys" />
+            <CardHeader title={t('admin.cacheManagement.keys')} />
             <CardContent>
               {loading ? (
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', p: 3 }}>
                   <CircularProgress />
-                  <Typography sx={{ ml: 2 }}>Loading...</Typography>
+                  <Typography sx={{ ml: 2 }}>{t('admin.cacheManagement.loading')}</Typography>
                 </Box>
               ) : cacheKeys.length === 0 ? (
                 <Typography variant="body1" sx={{ textAlign: 'center', p: 3 }}>
-                  No cache keys found.
+                  {t('admin.cacheManagement.noKeys')}
                 </Typography>
               ) : (
                 <Box>
                   <Typography variant="body2" sx={{ mb: 2 }}>
-                    Total keys: {cacheKeys.length}
+                    {t('admin.cacheManagement.totalKeys')} {cacheKeys.length}
                   </Typography>
 
                   {Object.entries(groupedKeys).map(([type, keys]) => (
                     <Accordion key={type}>
                       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                         <Typography variant="h6">
-                          {type} ({keys.length} keys)
+                          {type} ({t('admin.cacheManagement.keysCount', { count: keys.length })})
                         </Typography>
                       </AccordionSummary>
                       <AccordionDetails>
@@ -269,12 +271,12 @@ export default function AdminCacheManagement() {
           <Typography>{confirmAction?.message}</Typography>
           {confirmAction?.action === 'database' && (
             <Alert severity="error" sx={{ mt: 2 }}>
-              This action cannot be undone!
+              {t('admin.cacheManagement.confirmDatabase.warning')}
             </Alert>
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setConfirmAction(null)}>Cancel</Button>
+          <Button onClick={() => setConfirmAction(null)}>{t('cancel')}</Button>
           <Button
             color={confirmAction?.action === 'database' ? 'error' : 'warning'}
             variant="contained"
@@ -284,7 +286,9 @@ export default function AdminCacheManagement() {
               actionLoading === confirmAction?.action ? <CircularProgress size={20} /> : null
             }
           >
-            {confirmAction?.action === 'database' ? 'Clear Database' : 'Clear Cache'}
+            {confirmAction?.action === 'database'
+              ? t('admin.cacheManagement.confirmDatabase.button')
+              : t('admin.cacheManagement.confirmCache.button')}
           </Button>
         </DialogActions>
       </Dialog>

@@ -16,7 +16,7 @@ export default function HeaderBranding() {
         }}
       >
         <img
-          src={`${import.meta.env.BASE_URL}/${theme.logoUrl}`}
+          src={`${import.meta.env.BASE_URL}${theme.logoUrl}`}
           alt="logo"
           height={theme.logoHeight}
         />

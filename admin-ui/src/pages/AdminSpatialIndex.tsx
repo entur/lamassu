@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Box,
   Button,
@@ -24,6 +25,7 @@ import { Refresh as RefreshIcon, DeleteSweep as ClearIcon } from '@mui/icons-mat
 import { adminApi } from '../services/adminApi';
 
 export default function AdminSpatialIndex() {
+  const { t } = useTranslation();
   const [orphans, setOrphans] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
@@ -42,7 +44,7 @@ export default function AdminSpatialIndex() {
       const data = await adminApi.getVehicleOrphans();
       setOrphans(data);
     } catch (err: any) {
-      setError('Failed to load vehicle orphans');
+      setError(t('admin.spatialIndex.errors.load'));
     } finally {
       setLoading(false);
     }
@@ -52,11 +54,11 @@ export default function AdminSpatialIndex() {
     setActionLoading(true);
     try {
       const cleared = await adminApi.clearVehicleOrphans();
-      setSuccess(`Successfully cleared ${cleared.length} orphaned vehicle entries`);
+      setSuccess(t('admin.spatialIndex.success.clear', { count: cleared.length }));
       setOrphans([]);
       setConfirmClear(false);
     } catch (err: any) {
-      setError('Failed to clear orphaned entries');
+      setError(t('admin.spatialIndex.errors.clear'));
     } finally {
       setActionLoading(false);
     }
@@ -71,7 +73,7 @@ export default function AdminSpatialIndex() {
     <Box sx={{ p: 3 }}>
       <Card>
         <CardHeader
-          title="Spatial Index Management"
+          title={t('admin.spatialIndex.title')}
           action={
             <Box sx={{ display: 'flex', gap: 1 }}>
               <Button
@@ -80,7 +82,7 @@ export default function AdminSpatialIndex() {
                 onClick={loadOrphans}
                 disabled={loading}
               >
-                Refresh
+                {t('admin.spatialIndex.refresh')}
               </Button>
               <Button
                 variant="outlined"
@@ -89,7 +91,7 @@ export default function AdminSpatialIndex() {
                 onClick={() => setConfirmClear(true)}
                 disabled={loading || orphans.length === 0}
               >
-                Clear All Orphans
+                {t('admin.spatialIndex.clearOrphans')}
               </Button>
             </Box>
           }
@@ -107,28 +109,28 @@ export default function AdminSpatialIndex() {
           )}
 
           <Card>
-            <CardHeader title="Orphaned Vehicle Entries" />
+            <CardHeader title={t('admin.spatialIndex.orphanedEntries')} />
             <CardContent>
               {loading ? (
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', p: 3 }}>
                   <CircularProgress />
-                  <Typography sx={{ ml: 2 }}>Loading...</Typography>
+                  <Typography sx={{ ml: 2 }}>{t('admin.spatialIndex.loading')}</Typography>
                 </Box>
               ) : orphans.length === 0 ? (
                 <Typography variant="body1" sx={{ textAlign: 'center', p: 3 }}>
-                  No orphaned vehicle entries found.
+                  {t('admin.spatialIndex.noOrphans')}
                 </Typography>
               ) : (
                 <Box>
                   <Typography variant="body2" sx={{ mb: 2 }}>
-                    Found {orphans.length} orphaned vehicle entries in the spatial index.
+                    {t('admin.spatialIndex.foundOrphans', { count: orphans.length })}
                   </Typography>
 
                   <TableContainer component={Paper} sx={{ maxHeight: 400 }}>
                     <Table stickyHeader>
                       <TableHead>
                         <TableRow>
-                          <TableCell>Vehicle ID</TableCell>
+                          <TableCell>{t('admin.spatialIndex.vehicleId')}</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -149,18 +151,17 @@ export default function AdminSpatialIndex() {
 
       {/* Confirmation Dialog */}
       <Dialog open={confirmClear} onClose={() => setConfirmClear(false)}>
-        <DialogTitle>Clear Orphaned Vehicle Entries</DialogTitle>
+        <DialogTitle>{t('admin.spatialIndex.confirm.title')}</DialogTitle>
         <DialogContent>
           <Typography>
-            Are you sure you want to clear all {orphans.length} orphaned vehicle entries?
+            {t('admin.spatialIndex.confirm.message', { count: orphans.length })}
           </Typography>
           <Typography sx={{ mt: 1, color: 'text.secondary' }}>
-            This will remove orphaned entries from the spatial index that no longer have
-            corresponding vehicle data.
+            {t('admin.spatialIndex.confirm.description')}
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setConfirmClear(false)}>Cancel</Button>
+          <Button onClick={() => setConfirmClear(false)}>{t('cancel')}</Button>
           <Button
             color="warning"
             variant="contained"
@@ -168,7 +169,7 @@ export default function AdminSpatialIndex() {
             disabled={actionLoading}
             startIcon={actionLoading ? <CircularProgress size={20} /> : <ClearIcon />}
           >
-            Clear Orphans
+            {t('admin.spatialIndex.confirm.button')}
           </Button>
         </DialogActions>
       </Dialog>
