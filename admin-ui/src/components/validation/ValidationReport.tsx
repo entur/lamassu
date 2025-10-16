@@ -1,4 +1,5 @@
 import { Box, Typography, useTheme } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
@@ -30,6 +31,7 @@ export default function ValidationReport({
 }: {
   validationResult: ValidationResult;
 }): React.ReactElement {
+  const { t } = useTranslation();
   const theme = useTheme();
 
   const totalErrors = validationResult.summary.files.reduce(
@@ -49,13 +51,13 @@ export default function ValidationReport({
         }}
       >
         <Typography variant="h4" sx={{ fontWeight: 700, mb: 2 }}>
-          Validation Report
+          {t('admin.validation.title')}
         </Typography>
         <Typography variant="body1" sx={{ fontWeight: 700, mb: 2, ml: 2 }}>
           {validationResult.summary.files[0].url}
         </Typography>
         <Typography variant="body1" sx={{ fontWeight: 700, mb: 2, ml: 2 }}>
-          Validator Version: {validationResult.summary.validatorVersion}
+          {t('admin.validation.validatorVersion')} {validationResult.summary.validatorVersion}
         </Typography>
         <Typography
           variant="body1"
@@ -66,7 +68,7 @@ export default function ValidationReport({
             color: hasErrors ? theme.palette.error.main : theme.palette.success.main,
           }}
         >
-          {hasErrors ? 'Errors Found' : 'No Errors Found'}
+          {hasErrors ? t('admin.validation.errorsFound') : t('admin.validation.noErrors')}
         </Typography>
       </Box>
 
@@ -90,10 +92,10 @@ export default function ValidationReport({
           }}
         >
           <Typography variant="h5" sx={{ fontWeight: 700, p: 2, mb: 2 }}>
-            GBFS Feed Files Summary
+            {t('admin.validation.filesSummary')}
           </Typography>
           <Typography variant="h6" sx={{ mb: 1, ml: 2 }}>
-            Total Errors: <b>{totalErrors}</b>
+            {t('admin.validation.totalErrors')} <b>{totalErrors}</b>
           </Typography>
 
           {validationResult.summary.files.map((file: GbfsFile) => {
@@ -183,7 +185,7 @@ export default function ValidationReport({
                 {hasErrors && (
                   <>
                     <Typography variant="h6" sx={{ m: 1, ml: 2, color: theme.palette.error.dark }}>
-                      Errors:
+                      {t('admin.validation.errors')}
                     </Typography>
                     {file.errors.map((error, index) => (
                       <Box key={error.instancePath} sx={{ ml: 4 }}>
@@ -194,14 +196,18 @@ export default function ValidationReport({
                         </Box>
                         <Box sx={{ ml: 2 }}>
                           <Typography variant="body1" sx={{ mb: 1 }}>
-                            <b style={{ marginRight: '16px' }}>Message:</b> {error.message}
+                            <b style={{ marginRight: '16px' }}>{t('admin.validation.message')}</b>{' '}
+                            {error.message}
                           </Typography>
                           <Typography variant="body1" sx={{ mb: 1 }}>
-                            <b style={{ marginRight: '16px' }}>Instance Path:</b>{' '}
+                            <b style={{ marginRight: '16px' }}>
+                              {t('admin.validation.instancePath')}
+                            </b>{' '}
                             {error.instancePath}
                           </Typography>
                           <Typography variant="body1" sx={{ mb: 1 }}>
-                            <b style={{ marginRight: '16px' }}>Schema Path:</b> {error.schemaPath}
+                            <b style={{ marginRight: '16px' }}>{t('admin.validation.schemaPath')}</b>{' '}
+                            {error.schemaPath}
                           </Typography>
                         </Box>
                       </Box>

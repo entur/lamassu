@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Box,
   Button,
@@ -72,6 +73,7 @@ const mapValidationReport = (source: ShortValidationReport): ValidationResult =>
 };
 
 export default function AdminFeedProviders() {
+  const { t } = useTranslation();
   const [providers, setProviders] = useState<FeedProvider[]>([]);
   const [subscriptionStatuses, setSubscriptionStatuses] = useState<
     Record<string, SubscriptionStatus>
@@ -120,7 +122,12 @@ export default function AdminFeedProviders() {
               next.delete(systemId);
               setActionLoading(prevLoading => ({ ...prevLoading, [systemId]: '' }));
               setSuccess(
-                `Subscription for ${systemId} is now ${status === 'STARTED' ? 'running' : 'stopped'}!`
+                t(
+                  status === 'STARTED'
+                    ? 'admin.feedProviders.success.started'
+                    : 'admin.feedProviders.success.stopped',
+                  { systemId }
+                )
               );
             }
           });
@@ -146,7 +153,7 @@ export default function AdminFeedProviders() {
       setSubscriptionStatuses(statusesData || {});
       setValidationReports(validationData);
     } catch (err) {
-      setError('Failed to load data. Please try again.');
+      setError(t('admin.feedProviders.errors.loadFailed'));
     }
   };
 
@@ -154,10 +161,10 @@ export default function AdminFeedProviders() {
     try {
       await adminApi.createProvider(provider as FeedProvider);
       setModalOpen(false);
-      setSuccess('Feed provider created successfully!');
+      setSuccess(t('admin.feedProviders.success.created'));
       loadData();
     } catch (err: any) {
-      throw new Error(err.response?.data?.message || 'Failed to create feed provider');
+      throw new Error(err.response?.data?.message || t('admin.feedProviders.errors.createFailed'));
     }
   };
 
@@ -165,10 +172,10 @@ export default function AdminFeedProviders() {
     try {
       await adminApi.updateProvider(provider);
       setModalOpen(false);
-      setSuccess('Feed provider updated successfully!');
+      setSuccess(t('admin.feedProviders.success.updated'));
       loadData();
     } catch (err: any) {
-      throw new Error(err.response?.data?.message || 'Failed to update feed provider');
+      throw new Error(err.response?.data?.message || t('admin.feedProviders.errors.updateFailed'));
     }
   };
 
@@ -178,10 +185,14 @@ export default function AdminFeedProviders() {
     try {
       await adminApi.deleteProvider(systemId);
       setConfirmDelete(null);
-      setSuccess('Feed provider deleted successfully!');
+      setSuccess(t('admin.feedProviders.success.deleted'));
       loadData();
     } catch (err: any) {
-      setError(`Failed to delete feed provider: ${err.response?.data?.message || err.message}`);
+      setError(
+        t('admin.feedProviders.errors.deleteFailed', {
+          message: err.response?.data?.message || err.message,
+        })
+      );
     } finally {
       setActionLoading(prev => ({ ...prev, [systemId]: '' }));
     }
@@ -192,11 +203,15 @@ export default function AdminFeedProviders() {
     setError('');
     try {
       await adminApi.startSubscription(systemId);
-      setSuccess(`Starting subscription for ${systemId}...`);
+      setSuccess(t('admin.feedProviders.success.starting', { systemId }));
       // Start polling for status updates
       setPollingSystemIds(prev => new Set(prev).add(systemId));
     } catch (err: any) {
-      setError(`Failed to start subscription: ${err.response?.data?.message || err.message}`);
+      setError(
+        t('admin.feedProviders.errors.startFailed', {
+          message: err.response?.data?.message || err.message,
+        })
+      );
       setActionLoading(prev => ({ ...prev, [systemId]: '' }));
     }
   };
@@ -206,11 +221,15 @@ export default function AdminFeedProviders() {
     setError('');
     try {
       await adminApi.stopSubscription(systemId);
-      setSuccess(`Stopping subscription for ${systemId}...`);
+      setSuccess(t('admin.feedProviders.success.stopping', { systemId }));
       // Start polling for status updates
       setPollingSystemIds(prev => new Set(prev).add(systemId));
     } catch (err: any) {
-      setError(`Failed to stop subscription: ${err.response?.data?.message || err.message}`);
+      setError(
+        t('admin.feedProviders.errors.stopFailed', {
+          message: err.response?.data?.message || err.message,
+        })
+      );
       setActionLoading(prev => ({ ...prev, [systemId]: '' }));
     }
   };
@@ -220,11 +239,15 @@ export default function AdminFeedProviders() {
     setError('');
     try {
       await adminApi.restartSubscription(systemId);
-      setSuccess(`Restarting subscription for ${systemId}...`);
+      setSuccess(t('admin.feedProviders.success.restarting', { systemId }));
       // Start polling for status updates
       setPollingSystemIds(prev => new Set(prev).add(systemId));
     } catch (err: any) {
-      setError(`Failed to restart subscription: ${err.response?.data?.message || err.message}`);
+      setError(
+        t('admin.feedProviders.errors.restartFailed', {
+          message: err.response?.data?.message || err.message,
+        })
+      );
       setActionLoading(prev => ({ ...prev, [systemId]: '' }));
     }
   };
@@ -235,11 +258,19 @@ export default function AdminFeedProviders() {
     setError('');
     try {
       await adminApi.setFeedProviderEnabled(systemId, newEnabled);
-      setSuccess(`Successfully ${newEnabled ? 'enabled' : 'disabled'} feed provider ${systemId}!`);
+      setSuccess(
+        t('admin.feedProviders.success.enabled', {
+          action: newEnabled ? 'enabled' : 'disabled',
+          systemId,
+        })
+      );
       loadData();
     } catch (err: any) {
       setError(
-        `Failed to ${newEnabled ? 'enable' : 'disable'} feed provider: ${err.response?.data?.message || err.message}`
+        t('admin.feedProviders.errors.enableFailed', {
+          action: newEnabled ? 'enable' : 'disable',
+          message: err.response?.data?.message || err.message,
+        })
       );
     } finally {
       setActionLoading(prev => ({ ...prev, [systemId]: '' }));
@@ -313,15 +344,22 @@ export default function AdminFeedProviders() {
       const failed = Object.entries(results).filter(([_, status]) => status !== 'SUCCESS');
       if (failed.length > 0) {
         setError(
-          `Started ${Object.keys(results).length - failed.length} subscriptions. Failed: ${failed.map(([id]) => id).join(', ')}`
+          t('admin.feedProviders.bulk.startPartial', {
+            success: Object.keys(results).length - failed.length,
+            failed: failed.map(([id]) => id).join(', '),
+          })
         );
       } else {
-        setSuccess(`Successfully started ${Object.keys(results).length} subscriptions!`);
+        setSuccess(t('admin.feedProviders.bulk.startSuccess', { count: Object.keys(results).length }));
       }
       clearSelection();
       loadData();
     } catch (err: any) {
-      setError(`Failed to start subscriptions: ${err.response?.data?.message || err.message}`);
+      setError(
+        t('admin.feedProviders.bulk.startFailed', {
+          message: err.response?.data?.message || err.message,
+        })
+      );
     } finally {
       setBulkActionLoading(false);
     }
@@ -335,15 +373,22 @@ export default function AdminFeedProviders() {
       const failed = Object.entries(results).filter(([_, status]) => status !== 'SUCCESS');
       if (failed.length > 0) {
         setError(
-          `Stopped ${Object.keys(results).length - failed.length} subscriptions. Failed: ${failed.map(([id]) => id).join(', ')}`
+          t('admin.feedProviders.bulk.stopPartial', {
+            success: Object.keys(results).length - failed.length,
+            failed: failed.map(([id]) => id).join(', '),
+          })
         );
       } else {
-        setSuccess(`Successfully stopped ${Object.keys(results).length} subscriptions!`);
+        setSuccess(t('admin.feedProviders.bulk.stopSuccess', { count: Object.keys(results).length }));
       }
       clearSelection();
       loadData();
     } catch (err: any) {
-      setError(`Failed to stop subscriptions: ${err.response?.data?.message || err.message}`);
+      setError(
+        t('admin.feedProviders.bulk.stopFailed', {
+          message: err.response?.data?.message || err.message,
+        })
+      );
     } finally {
       setBulkActionLoading(false);
     }
@@ -357,15 +402,24 @@ export default function AdminFeedProviders() {
       const failed = Object.entries(results).filter(([_, status]) => status !== 'SUCCESS');
       if (failed.length > 0) {
         setError(
-          `Restarted ${Object.keys(results).length - failed.length} subscriptions. Failed: ${failed.map(([id]) => id).join(', ')}`
+          t('admin.feedProviders.bulk.restartPartial', {
+            success: Object.keys(results).length - failed.length,
+            failed: failed.map(([id]) => id).join(', '),
+          })
         );
       } else {
-        setSuccess(`Successfully restarted ${Object.keys(results).length} subscriptions!`);
+        setSuccess(
+          t('admin.feedProviders.bulk.restartSuccess', { count: Object.keys(results).length })
+        );
       }
       clearSelection();
       loadData();
     } catch (err: any) {
-      setError(`Failed to restart subscriptions: ${err.response?.data?.message || err.message}`);
+      setError(
+        t('admin.feedProviders.bulk.restartFailed', {
+          message: err.response?.data?.message || err.message,
+        })
+      );
     } finally {
       setBulkActionLoading(false);
     }
@@ -379,15 +433,24 @@ export default function AdminFeedProviders() {
       const failed = Object.entries(results).filter(([_, status]) => status !== 'SUCCESS');
       if (failed.length > 0) {
         setError(
-          `Enabled ${Object.keys(results).length - failed.length} providers. Failed: ${failed.map(([id]) => id).join(', ')}`
+          t('admin.feedProviders.bulk.enablePartial', {
+            success: Object.keys(results).length - failed.length,
+            failed: failed.map(([id]) => id).join(', '),
+          })
         );
       } else {
-        setSuccess(`Successfully enabled ${Object.keys(results).length} providers!`);
+        setSuccess(
+          t('admin.feedProviders.bulk.enableSuccess', { count: Object.keys(results).length })
+        );
       }
       clearSelection();
       loadData();
     } catch (err: any) {
-      setError(`Failed to enable providers: ${err.response?.data?.message || err.message}`);
+      setError(
+        t('admin.feedProviders.bulk.enableFailed', {
+          message: err.response?.data?.message || err.message,
+        })
+      );
     } finally {
       setBulkActionLoading(false);
     }
@@ -401,15 +464,24 @@ export default function AdminFeedProviders() {
       const failed = Object.entries(results).filter(([_, status]) => status !== 'SUCCESS');
       if (failed.length > 0) {
         setError(
-          `Disabled ${Object.keys(results).length - failed.length} providers. Failed: ${failed.map(([id]) => id).join(', ')}`
+          t('admin.feedProviders.bulk.disablePartial', {
+            success: Object.keys(results).length - failed.length,
+            failed: failed.map(([id]) => id).join(', '),
+          })
         );
       } else {
-        setSuccess(`Successfully disabled ${Object.keys(results).length} providers!`);
+        setSuccess(
+          t('admin.feedProviders.bulk.disableSuccess', { count: Object.keys(results).length })
+        );
       }
       clearSelection();
       loadData();
     } catch (err: any) {
-      setError(`Failed to disable providers: ${err.response?.data?.message || err.message}`);
+      setError(
+        t('admin.feedProviders.bulk.disableFailed', {
+          message: err.response?.data?.message || err.message,
+        })
+      );
     } finally {
       setBulkActionLoading(false);
     }
@@ -428,7 +500,7 @@ export default function AdminFeedProviders() {
         disabled={isLoading}
         startIcon={isLoading ? <CircularProgress size={16} /> : <PowerIcon />}
       >
-        {isEnabled ? 'Enabled' : 'Enable'}
+        {isEnabled ? t('admin.feedProviders.status.enabled') : t('admin.feedProviders.status.enable')}
       </Button>
     );
   };
@@ -444,7 +516,7 @@ export default function AdminFeedProviders() {
       return (
         <ButtonGroup size="small">
           <Button variant="contained" color="success" disabled>
-            Running
+            {t('admin.feedProviders.status.running')}
           </Button>
           <Button
             variant="outlined"
@@ -453,7 +525,7 @@ export default function AdminFeedProviders() {
             disabled={isStopLoading}
             startIcon={isStopLoading ? <CircularProgress size={16} /> : <StopIcon />}
           >
-            Stop
+            {t('admin.feedProviders.status.stop')}
           </Button>
           <Button
             variant="outlined"
@@ -462,7 +534,7 @@ export default function AdminFeedProviders() {
             disabled={isRestartLoading}
             startIcon={isRestartLoading ? <CircularProgress size={16} /> : <RestartIcon />}
           >
-            Restart
+            {t('admin.feedProviders.status.restart')}
           </Button>
         </ButtonGroup>
       );
@@ -470,7 +542,7 @@ export default function AdminFeedProviders() {
       return (
         <ButtonGroup size="small">
           <Button variant="contained" color="info" disabled>
-            Starting...
+            {t('admin.feedProviders.status.starting')}
           </Button>
           <Button
             variant="outlined"
@@ -479,14 +551,14 @@ export default function AdminFeedProviders() {
             disabled={isStopLoading}
             startIcon={isStopLoading ? <CircularProgress size={16} /> : <StopIcon />}
           >
-            Stop
+            {t('admin.feedProviders.status.stop')}
           </Button>
         </ButtonGroup>
       );
     } else if (status === 'STOPPING') {
       return (
         <Button variant="contained" color="warning" disabled size="small">
-          Stopping...
+          {t('admin.feedProviders.status.stopping')}
         </Button>
       );
     } else {
@@ -499,7 +571,7 @@ export default function AdminFeedProviders() {
           disabled={isStartLoading}
           startIcon={isStartLoading ? <CircularProgress size={16} /> : <StartIcon />}
         >
-          Start
+          {t('admin.feedProviders.status.start')}
         </Button>
       );
     }
@@ -513,14 +585,14 @@ export default function AdminFeedProviders() {
     <Box sx={{ p: 3 }}>
       <Card>
         <CardHeader
-          title="Feed Providers"
+          title={t('admin.feedProviders')}
           action={
             <Box sx={{ display: 'flex', gap: 1 }}>
               <Button variant="contained" startIcon={<AddIcon />} onClick={openCreateModal}>
-                Add New Feed Provider
+                {t('admin.feedProviders.addNew')}
               </Button>
               <Button variant="outlined" startIcon={<RestartIcon />} onClick={loadData}>
-                Refresh
+                {t('admin.feedProviders.refresh')}
               </Button>
             </Box>
           }
@@ -538,7 +610,7 @@ export default function AdminFeedProviders() {
               }}
             >
               <Typography sx={{ flex: '1 1 100%' }} color="inherit" variant="subtitle1">
-                {selectedCount} selected
+                {t('admin.feedProviders.selected', { count: selectedCount })}
               </Typography>
               <Box sx={{ display: 'flex', gap: 1 }}>
                 <ButtonGroup size="small" disabled={bulkActionLoading}>
@@ -547,13 +619,13 @@ export default function AdminFeedProviders() {
                     startIcon={bulkActionLoading ? <CircularProgress size={16} /> : <PowerIcon />}
                     color="success"
                   >
-                    Enable
+                    {t('admin.feedProviders.bulkActions.enable')}
                   </Button>
                   <Button
                     onClick={handleBulkDisable}
                     startIcon={bulkActionLoading ? <CircularProgress size={16} /> : <PowerIcon />}
                   >
-                    Disable
+                    {t('admin.feedProviders.bulkActions.disable')}
                   </Button>
                 </ButtonGroup>
                 <ButtonGroup size="small" disabled={bulkActionLoading}>
@@ -562,25 +634,25 @@ export default function AdminFeedProviders() {
                     startIcon={bulkActionLoading ? <CircularProgress size={16} /> : <StartIcon />}
                     color="success"
                   >
-                    Start
+                    {t('admin.feedProviders.bulkActions.start')}
                   </Button>
                   <Button
                     onClick={handleBulkStop}
                     startIcon={bulkActionLoading ? <CircularProgress size={16} /> : <StopIcon />}
                     color="warning"
                   >
-                    Stop
+                    {t('admin.feedProviders.bulkActions.stop')}
                   </Button>
                   <Button
                     onClick={handleBulkRestart}
                     startIcon={bulkActionLoading ? <CircularProgress size={16} /> : <RestartIcon />}
                     color="info"
                   >
-                    Restart
+                    {t('admin.feedProviders.bulkActions.restart')}
                   </Button>
                 </ButtonGroup>
                 <Button size="small" onClick={clearSelection}>
-                  Clear
+                  {t('admin.feedProviders.bulkActions.clear')}
                 </Button>
               </Box>
             </Toolbar>
@@ -598,7 +670,7 @@ export default function AdminFeedProviders() {
 
           {providers.length === 0 ? (
             <Typography variant="body1" sx={{ textAlign: 'center', p: 3 }}>
-              No feed providers found. Click "Add New Feed Provider" to create one.
+              {t('admin.feedProviders.noData')}
             </Typography>
           ) : (
             <TableContainer component={Paper}>
@@ -612,14 +684,14 @@ export default function AdminFeedProviders() {
                         onChange={handleSelectAll}
                       />
                     </TableCell>
-                    <TableCell>System ID</TableCell>
-                    <TableCell>Operator</TableCell>
-                    <TableCell>Codespace</TableCell>
-                    <TableCell>Version</TableCell>
-                    <TableCell>Config</TableCell>
-                    <TableCell>Status</TableCell>
-                    <TableCell>Actions</TableCell>
-                    <TableCell>Validation</TableCell>
+                    <TableCell>{t('admin.feedProviders.table.systemId')}</TableCell>
+                    <TableCell>{t('admin.feedProviders.table.operator')}</TableCell>
+                    <TableCell>{t('admin.feedProviders.table.codespace')}</TableCell>
+                    <TableCell>{t('admin.feedProviders.table.version')}</TableCell>
+                    <TableCell>{t('admin.feedProviders.table.config')}</TableCell>
+                    <TableCell>{t('admin.feedProviders.table.status')}</TableCell>
+                    <TableCell>{t('admin.feedProviders.table.actions')}</TableCell>
+                    <TableCell>{t('admin.feedProviders.table.validation')}</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -636,13 +708,16 @@ export default function AdminFeedProviders() {
                         <Box>
                           <Typography variant="body2">{provider.operatorName}</Typography>
                           <Typography variant="caption" color="text.secondary">
-                            ID: {provider.operatorId}
+                            {t('admin.feedProviders.table.operatorId')} {provider.operatorId}
                           </Typography>
                         </Box>
                       </TableCell>
                       <TableCell>{provider.codespace}</TableCell>
                       <TableCell>
-                        <Chip label={provider.version || 'N/A'} size="small" />
+                        <Chip
+                          label={provider.version || t('admin.feedProviders.table.notAvailable')}
+                          size="small"
+                        />
                       </TableCell>
                       <TableCell>{renderEnabledStatus(provider)}</TableCell>
                       <TableCell>{renderSubscriptionStatus(provider)}</TableCell>
@@ -703,18 +778,17 @@ export default function AdminFeedProviders() {
 
       {/* Confirm Delete Dialog */}
       <Dialog open={!!confirmDelete} onClose={() => setConfirmDelete(null)}>
-        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogTitle>{t('admin.feedProviders.delete.title')}</DialogTitle>
         <DialogContent>
           <Typography>
-            Are you sure you want to delete the feed provider with System ID{' '}
-            <strong>{confirmDelete}</strong>?
+            {t('admin.feedProviders.delete.message')} <strong>{confirmDelete}</strong>?
           </Typography>
           <Typography color="error" sx={{ mt: 1 }}>
-            This action cannot be undone!
+            {t('admin.feedProviders.delete.warning')}
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setConfirmDelete(null)}>Cancel</Button>
+          <Button onClick={() => setConfirmDelete(null)}>{t('cancel')}</Button>
           <Button
             color="error"
             variant="contained"
@@ -724,7 +798,7 @@ export default function AdminFeedProviders() {
             {confirmDelete && actionLoading[confirmDelete] ? (
               <CircularProgress size={20} />
             ) : (
-              'Delete'
+              t('admin.feedProviders.delete.button')
             )}
           </Button>
         </DialogActions>
@@ -735,9 +809,9 @@ export default function AdminFeedProviders() {
         <DialogTitle>
           {currentProvider
             ? isCopyMode
-              ? 'Copy Feed Provider'
-              : 'Edit Feed Provider'
-            : 'Add New Feed Provider'}
+              ? t('admin.feedProviders.modal.copy')
+              : t('admin.feedProviders.modal.edit')
+            : t('admin.feedProviders.modal.create')}
         </DialogTitle>
         <DialogContent>
           <FeedProviderForm
