@@ -110,4 +110,79 @@ class CacheUtilTest {
       )
     );
   }
+
+  @Test
+  void generateETagWithV2IntegerTimestamp() {
+    var etag = CacheUtil.generateETag(
+      new GBFS().withLastUpdated(now),
+      "test-system",
+      "gbfs"
+    );
+
+    Assertions.assertNotNull(etag);
+    Assertions.assertTrue(etag.startsWith("\""));
+    Assertions.assertTrue(etag.endsWith("\""));
+    Assertions.assertEquals(34, etag.length()); // 32 hex chars + 2 quotes
+  }
+
+  @Test
+  void generateETagWithV3DateTimestamp() {
+    // V3 uses Date for lastUpdated
+    var v3Data = new org.mobilitydata.gbfs.v3_0.gbfs.GBFSGbfs()
+      .withLastUpdated(new java.util.Date(now * 1000L));
+
+    var etag = CacheUtil.generateETag(v3Data, "test-system", "gbfs");
+
+    Assertions.assertNotNull(etag);
+    Assertions.assertTrue(etag.startsWith("\""));
+    Assertions.assertTrue(etag.endsWith("\""));
+    Assertions.assertEquals(34, etag.length());
+  }
+
+  @Test
+  void generateETagIsDeterministic() {
+    var data = new GBFS().withLastUpdated(now);
+    var etag1 = CacheUtil.generateETag(data, "system", "feed");
+    var etag2 = CacheUtil.generateETag(data, "system", "feed");
+
+    Assertions.assertEquals(etag1, etag2);
+  }
+
+  @Test
+  void generateETagChangesWithDifferentTimestamp() {
+    var data1 = new GBFS().withLastUpdated(now);
+    var data2 = new GBFS().withLastUpdated(now + 60);
+
+    var etag1 = CacheUtil.generateETag(data1, "system", "feed");
+    var etag2 = CacheUtil.generateETag(data2, "system", "feed");
+
+    Assertions.assertNotEquals(etag1, etag2);
+  }
+
+  @Test
+  void generateETagChangesWithDifferentSystemId() {
+    var data = new GBFS().withLastUpdated(now);
+
+    var etag1 = CacheUtil.generateETag(data, "system1", "feed");
+    var etag2 = CacheUtil.generateETag(data, "system2", "feed");
+
+    Assertions.assertNotEquals(etag1, etag2);
+  }
+
+  @Test
+  void generateETagChangesWithDifferentFeed() {
+    var data = new GBFS().withLastUpdated(now);
+
+    var etag1 = CacheUtil.generateETag(data, "system", "feed1");
+    var etag2 = CacheUtil.generateETag(data, "system", "feed2");
+
+    Assertions.assertNotEquals(etag1, etag2);
+  }
+
+  @Test
+  void generateETagWithNullLastUpdatedDoesNotThrow() {
+    Assertions.assertDoesNotThrow(() ->
+      CacheUtil.generateETag(new GBFS(), "system", "feed")
+    );
+  }
 }
