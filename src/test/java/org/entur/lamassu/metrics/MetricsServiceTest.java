@@ -127,7 +127,6 @@ class MetricsServiceTest {
       null,
       null,
       "3.0",
-      Collections.emptyList(),
       Collections.emptyList()
     );
 
@@ -151,7 +150,6 @@ class MetricsServiceTest {
       null,
       null,
       "3.0",
-      Collections.emptyList(),
       Collections.emptyList()
     );
 
