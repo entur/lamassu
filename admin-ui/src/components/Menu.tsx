@@ -89,7 +89,7 @@ export default function Menu({ open, onClose }: SideMenuProps) {
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <img src={`${import.meta.env.BASE_URL}/${theme.logoUrl}`} alt="logo" height={24} />
+          <img src={`${import.meta.env.BASE_URL}${theme.logoUrl}`} alt="logo" height={24} />
           <Typography variant="h6" noWrap sx={{ ml: 1 }}>
             {theme.applicationName}
           </Typography>
