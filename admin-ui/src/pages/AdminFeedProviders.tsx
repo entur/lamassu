@@ -82,7 +82,6 @@ export default function AdminFeedProviders() {
   const [showValidationReportForSystem, setShowValidationReportForSystem] = useState<string | null>(
     null
   );
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
   const [success, setSuccess] = useState<string>('');
   const [modalOpen, setModalOpen] = useState(false);
@@ -98,7 +97,6 @@ export default function AdminFeedProviders() {
   }, []);
 
   const loadData = async () => {
-    setLoading(true);
     setError('');
     try {
       const [providersData, statusesData, validationData] = await Promise.all([
@@ -111,8 +109,6 @@ export default function AdminFeedProviders() {
       setValidationReports(validationData);
     } catch (err) {
       setError('Failed to load data. Please try again.');
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -139,7 +135,7 @@ export default function AdminFeedProviders() {
   };
 
   const handleDelete = async (systemId: string) => {
-    setLoading(true);
+    setActionLoading(prev => ({ ...prev, [systemId]: 'delete' }));
     setError('');
     try {
       await adminApi.deleteProvider(systemId);
@@ -148,7 +144,8 @@ export default function AdminFeedProviders() {
       loadData();
     } catch (err: any) {
       setError(`Failed to delete feed provider: ${err.response?.data?.message || err.message}`);
-      setLoading(false);
+    } finally {
+      setActionLoading(prev => ({ ...prev, [systemId]: '' }));
     }
   };
 
@@ -561,11 +558,7 @@ export default function AdminFeedProviders() {
             </Alert>
           )}
 
-          {loading ? (
-            <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
-              <CircularProgress />
-            </Box>
-          ) : providers.length === 0 ? (
+          {providers.length === 0 ? (
             <Typography variant="body1" sx={{ textAlign: 'center', p: 3 }}>
               No feed providers found. Click "Add New Feed Provider" to create one.
             </Typography>
@@ -688,9 +681,13 @@ export default function AdminFeedProviders() {
             color="error"
             variant="contained"
             onClick={() => confirmDelete && handleDelete(confirmDelete)}
-            disabled={loading}
+            disabled={confirmDelete ? !!actionLoading[confirmDelete] : false}
           >
-            {loading ? <CircularProgress size={20} /> : 'Delete'}
+            {confirmDelete && actionLoading[confirmDelete] ? (
+              <CircularProgress size={20} />
+            ) : (
+              'Delete'
+            )}
           </Button>
         </DialogActions>
       </Dialog>
