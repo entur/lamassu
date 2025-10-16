@@ -19,7 +19,7 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: '../src/main/resources/static/admin',
+    outDir: '../src/main/resources/static/admin/ui',
     emptyOutDir: true,
   },
 });
