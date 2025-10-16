@@ -32,7 +32,7 @@ jobs:
       # nodejs is needed because the dynamic download of it via the prettier maven plugin often
       # times out
       # Example: https://github.com/opentripplanner/OpenTripPlanner/actions/runs/4490450225/jobs/7897533439
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v6
         with:
           node-version: 22.20.0
 
@@ -63,7 +63,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.inputs.ref || github.ref }}
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v6
         with:
           node-version: 22.20.0
       - name: Check admin ui
@@ -96,7 +96,7 @@ jobs:
           distribution: temurin
           cache: maven
 
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v6
         with:
           node-version: 22.20.0
 
