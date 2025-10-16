@@ -1,4 +1,8 @@
 {
-  "extends": ["github>entur/ror-renovate-config"],
+  "extends": [
+    "github>entur/ror-renovate-config",
+    "group:allNonMajor",
+    "schedule:weekly"
+  ],
   "labels": ["skip changelog"]
 }
