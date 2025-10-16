@@ -105,7 +105,7 @@ jobs:
           echo "GHA_DOCKER_PUSH_IMAGE_TAG=`date +%Y-%m-%dT%H-%M`" >> $GITHUB_ENV
 
       - name: Build admin ui
-        run: npm install --prefix admin-ui && npm run build --prefix admin-ui -- --base /admin
+        run: npm install --prefix admin-ui && npm run build --prefix admin-ui
 
       - name: Build container image with Jib, push to container repo
         run: |
