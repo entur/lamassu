@@ -4,5 +4,13 @@
     "group:allNonMajor",
     "schedule:weekly"
   ],
-  "labels": ["skip changelog"]
+  "labels": ["skip changelog"],
+  "packageRules": [
+    {
+      "matchPaths": ["admin-ui/package.json"],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "groupName": "admin-ui non-major dependencies",
+      "groupSlug": "admin-ui-non-major"
+    }
+  ]
 }
