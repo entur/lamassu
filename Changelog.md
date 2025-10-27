@@ -33,7 +33,6 @@ based on merged pull requests. Search GitHub issues and pull requests for smalle
 - New admin UI [#716](https://github.com/entur/lamassu/pull/716)
 - Various improvements to new admin ui [#801](https://github.com/entur/lamassu/pull/801)
 - Implemenent support for ETag and If-None-Match headers [#770](https://github.com/entur/lamassu/pull/770)
-- fix(deps): update all non-major dependencies [#808](https://github.com/entur/lamassu/pull/808)
   [](AUTOMATIC_CHANGELOG_PLACEHOLDER_DO_NOT_REMOVE)
 
 ## 1.1.0
