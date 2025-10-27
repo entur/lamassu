@@ -3,7 +3,11 @@
 The changelog lists most feature changes between each release. The list is automatically created
 based on merged pull requests. Search GitHub issues and pull requests for smaller issues.
 
-## 1.2.0 (under development)
+
+## 1.3.0 (under development)
+[](AUTOMATIC_CHANGELOG_PLACEHOLDER_DO_NOT_REMOVE)
+
+## 1.2.0
 - Improve: introduce configurable stationEntityCacheMinimumTtl and stationEntityCacheMaximumTtl [#542](https://github.com/entur/lamassu/pull/542)
 - Update subscription immediately after registration [#592](https://github.com/entur/lamassu/pull/592)
 - Replace graphql kickstart project with spring graphql [#595](https://github.com/entur/lamassu/pull/595)
@@ -33,7 +37,6 @@ based on merged pull requests. Search GitHub issues and pull requests for smalle
 - New admin UI [#716](https://github.com/entur/lamassu/pull/716)
 - Various improvements to new admin ui [#801](https://github.com/entur/lamassu/pull/801)
 - Implemenent support for ETag and If-None-Match headers [#770](https://github.com/entur/lamassu/pull/770)
-  [](AUTOMATIC_CHANGELOG_PLACEHOLDER_DO_NOT_REMOVE)
 
 ## 1.1.0
 
