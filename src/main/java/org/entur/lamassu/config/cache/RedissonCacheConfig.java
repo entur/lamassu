@@ -8,6 +8,7 @@ import org.entur.lamassu.cache.VehicleSpatialIndexId;
 import org.entur.lamassu.cache.impl.RedisUpdateContinuityCache;
 import org.entur.lamassu.config.project.LamassuProjectInfoConfiguration;
 import org.entur.lamassu.model.entities.GeofencingZones;
+import org.entur.lamassu.model.entities.GeofencingZonesData;
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.Region;
 import org.entur.lamassu.model.entities.Station;
@@ -43,6 +44,7 @@ public class RedissonCacheConfig {
   public static final String STATION_CACHE_KEY = "stationCache";
   public static final String REGION_CACHE_KEY = "regionCache";
   public static final String GEOFENCING_ZONES_CACHE_KEY = "geofencingZonesCache";
+  public static final String GEOFENCING_ZONES_DATA_CACHE_KEY = "geofencingZonesDataCache";
   public static final String VEHICLE_SPATIAL_INDEX_KEY = "vehicleSpatialIndex";
   public static final String STATION_SPATIAL_INDEX_KEY = "stationSpatialIndex";
   public static final String VALIDATION_REPORTS_CACHE_KEY = "validationReportsCache";
@@ -166,6 +168,15 @@ public class RedissonCacheConfig {
   ) {
     return redissonClient.getMapCache(
       GEOFENCING_ZONES_CACHE_KEY + "_" + serializationVersion
+    );
+  }
+
+  @Bean
+  public RMapCache<String, GeofencingZonesData> geofencingZonesDataCache(
+    RedissonClient redissonClient
+  ) {
+    return redissonClient.getMapCache(
+      GEOFENCING_ZONES_DATA_CACHE_KEY + "_" + serializationVersion
     );
   }
 
