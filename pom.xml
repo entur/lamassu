@@ -23,12 +23,12 @@
         <entur.ror.helpers.version>1.101</entur.ror.helpers.version>
         <redisson.version>3.52.0</redisson.version>
         <embedded-redis.version>0.9.1</embedded-redis.version>
-        <okhttp.version>5.2.1</okhttp.version>
+        <okhttp.version>5.3.0</okhttp.version>
         <kryo.version>5.6.2</kryo.version>
-        <jackson.version>2.20.0</jackson.version>
-        <gbfs-loader-java.version>4.0.55</gbfs-loader-java.version>
+        <jackson.version>2.20.1</jackson.version>
+        <gbfs-loader-java.version>4.0.56</gbfs-loader-java.version>
         <gbfs-validator-java.version>2.0.66</gbfs-validator-java.version>
-        <gbfs-mapper-java.version>2.0.51</gbfs-mapper-java.version>
+        <gbfs-mapper-java.version>2.0.52</gbfs-mapper-java.version>
         <prettier-java.version>2.1.0</prettier-java.version>
         <prettier-maven-plugin.version>0.22</prettier-maven-plugin.version>
         <plugin.prettier.goal>write</plugin.prettier.goal>
