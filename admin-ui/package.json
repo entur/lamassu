@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build --base /admin/ui/",
+    "build": "npm run build:admin && npm run build:status",
+    "build:admin": "vite build",
+    "build:status": "BUILD_TARGET=status vite build",
     "lint": "eslint .",
     "check": "prettier . --check",
     "format": "prettier --write .",

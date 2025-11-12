@@ -30,18 +30,13 @@ import org.springframework.web.servlet.resource.PathResourceResolver;
  * Available on all instances (not restricted to leader profile).
  */
 @Configuration
-@ConditionalOnProperty(
-  name = "org.entur.lamassu.enable-status-ui",
-  havingValue = "true"
-)
+@ConditionalOnProperty(name = "org.entur.lamassu.enable-status-ui", havingValue = "true")
 public class StatusWebMvcConfig implements WebMvcConfigurer {
 
   @Override
   public void addViewControllers(ViewControllerRegistry registry) {
     // Handle /status/ui and /status/ui/ by forwarding to index.html
-    registry
-      .addViewController("/status/ui")
-      .setViewName("forward:/status/ui/index.html");
+    registry.addViewController("/status/ui").setViewName("forward:/status/ui/index.html");
     registry
       .addViewController("/status/ui/")
       .setViewName("forward:/status/ui/index.html");

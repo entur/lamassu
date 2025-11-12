@@ -37,3 +37,6 @@ export interface CacheKey {
 export interface VehicleOrphan {
   vehicleId: string;
 }
+
+// Re-export validation types for convenience
+export type { ShortValidationReport } from './validation';
