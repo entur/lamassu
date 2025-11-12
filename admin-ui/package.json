@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "npm run build:admin && npm run build:status",
     "build:admin": "vite build",
-    "build:status": "BUILD_TARGET=status vite build",
+    "build:status": "BUILD_TARGET=status vite build && mv ../src/main/resources/static/status/ui/index-status.html ../src/main/resources/static/status/ui/index.html",
     "lint": "eslint .",
     "check": "prettier . --check",
     "format": "prettier --write .",
