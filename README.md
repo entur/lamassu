@@ -117,8 +117,43 @@ Version defaults to 2.3.
 Lamassu produces both v2.3 and v3.0.
 
 v3.0 feeds can be found in the manifest: `/gbfs/v3/manifest.json`.
-`manifest.json` replaces the proprietary system discovery endpoint, which will 
+`manifest.json` replaces the proprietary system discovery endpoint, which will
 is now deprecated.
+
+### Public Status UI
+
+Lamassu includes an optional public status UI for displaying feed provider information without requiring authentication.
+
+#### Features
+
+- View list of feed providers with system ID, operator, codespace, and version
+- Real-time subscription status (STARTED, STOPPED, etc.)
+- GBFS validation reports
+- Read-only interface (no administrative controls)
+- No sensitive data exposed (URLs and credentials filtered)
+
+#### Configuration
+
+Enable the public status UI and API:
+
+```properties
+org.entur.lamassu.enable-status-endpoints=true
+org.entur.lamassu.enable-status-ui=true
+```
+
+#### Access
+
+- **Public Status UI**: `http://localhost:8081/status/ui/`
+- **Public Status API**: `http://localhost:8081/status/feed-providers`
+
+No authentication required.
+
+#### Architecture
+
+- Available on both leader and follower instances
+- Serves cached data from Redis (no direct feed polling on followers)
+- Single unified React build serves both admin and status UIs
+- Security enforced at REST API level (Spring Security)
 
 ### Development
 

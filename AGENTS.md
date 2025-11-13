@@ -8,7 +8,8 @@ Lamassu is a mobility aggregation service based on the General Bikeshare Feed Sp
 - GBFS v2.3 and v3.0 REST endpoints
 - GraphQL API for querying vehicles and stations
 - GraphQL subscriptions for real-time updates (experimental)
-- Admin UI for managing feed providers
+- Admin UI for managing feed providers (authenticated)
+- **Public Status UI for viewing provider status (no authentication)**
 
 The application polls configured GBFS feeds, validates them, caches the data in Redis, and serves aggregated views. It supports both GBFS v2.x and v3.x feeds as input and output.
 
@@ -222,7 +223,7 @@ Controllers: `AdminController`, `ValidationController`.
 - `config/`: Spring configuration classes
   - `feedprovider/`: Feed provider configuration loading
   - Security, metrics, scheduling setup
-- `controller/`: REST controllers for GBFS feeds, admin API, health checks
+- `controller/`: REST controllers for GBFS feeds, admin API, **status API**, health checks
 - `delta/`: Delta calculation for detecting entity changes (CREATE/UPDATE/DELETE)
 - `graphql/`: GraphQL resolvers and subscription handling
 - `leader/`: Feed polling and update orchestration (leader instance only)
@@ -236,6 +237,7 @@ Controllers: `AdminController`, `ValidationController`.
   - `entities/`: Internal entity models (Vehicle, Station, System, etc.)
   - `provider/`: Feed provider configuration models
   - `id/`: ID handling and namespacing
+  - **`dto/`: Data transfer objects for public APIs**
 - `service/`: Business logic services
   - `GeoSearchService`: Spatial queries using indexes
   - `FeedProviderService`: Feed provider CRUD operations
@@ -258,6 +260,8 @@ Key properties in `application.properties`:
 - `org.entur.lamassu.redis.master.host/port`: Redis connection settings
 - `org.entur.lamassu.enable-admin-ui`: Enable admin UI (default: false)
 - `org.entur.lamassu.enable-admin-endpoints`: Enable admin REST endpoints (default: false)
+- **`org.entur.lamassu.enable-status-ui`: Enable public status UI (default: false)**
+- **`org.entur.lamassu.enable-status-endpoints`: Enable public status REST endpoints (default: false)**
 - `spring.profiles.active`: `leader` for feed polling instance
 
 ## Multi-Version GBFS Support

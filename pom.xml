@@ -290,27 +290,15 @@
                         </configuration>
                     </execution>
 
-                    <!-- Build admin UI -->
+                    <!-- Build unified frontend (both admin and status) -->
                     <execution>
-                        <id>npm-build-admin</id>
+                        <id>npm-build-unified</id>
                         <goals>
                             <goal>npm</goal>
                         </goals>
                         <phase>generate-resources</phase>
                         <configuration>
-                            <arguments>run build:admin</arguments>
-                        </configuration>
-                    </execution>
-
-                    <!-- Build status UI -->
-                    <execution>
-                        <id>npm-build-status</id>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-                        <phase>generate-resources</phase>
-                        <configuration>
-                            <arguments>run build:status</arguments>
+                            <arguments>run build</arguments>
                         </configuration>
                     </execution>
                 </executions>
