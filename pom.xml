@@ -265,7 +265,7 @@
                 <configuration>
                     <nodeVersion>v20.18.0</nodeVersion>
                     <npmVersion>10.9.0</npmVersion>
-                    <workingDirectory>${project.basedir}/admin-ui</workingDirectory>
+                    <workingDirectory>${project.basedir}/ui</workingDirectory>
                     <skip>${frontend.skip}</skip>
                 </configuration>
                 <executions>
