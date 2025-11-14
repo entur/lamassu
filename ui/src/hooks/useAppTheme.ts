@@ -16,31 +16,33 @@ export function useAppTheme(useCustomFeatures: boolean): {
       let configToSet: ThemeConfig | null = null;
 
       try {
+        // Use relative paths that work with <base> tag for reverse proxy support
+        // These files are in public/ and get copied to static root (../../ from /status/ui/ or /admin/ui/)
+        const publicPath = '../../';
+
         if (useCustomFeatures) {
-          const customRes = await fetch(`${import.meta.env.BASE_URL}custom-theme-config.json`);
+          const customRes = await fetch(`${publicPath}custom-theme-config.json`);
           if (customRes.ok) {
             configToSet = await customRes.json();
           } else {
             console.warn(
-              `Custom theme config '/custom-theme-config.json' not found or failed (status: ${customRes.status}). Falling back to default theme.`
+              `Custom theme config not found or failed (status: ${customRes.status}). Falling back to default theme.`
             );
-            const defaultRes = await fetch(`${import.meta.env.BASE_URL}default-theme-config.json`);
+            const defaultRes = await fetch(`${publicPath}default-theme-config.json`);
             if (defaultRes.ok) {
               configToSet = await defaultRes.json();
             } else {
               throw new Error(
-                `Default theme config '/default-theme-config.json' also not found (status: ${defaultRes.status}) after custom theme failed.`
+                `Default theme config also not found (status: ${defaultRes.status}) after custom theme failed.`
               );
             }
           }
         } else {
-          const defaultRes = await fetch(`${import.meta.env.BASE_URL}default-theme-config.json`);
+          const defaultRes = await fetch(`${publicPath}default-theme-config.json`);
           if (defaultRes.ok) {
             configToSet = await defaultRes.json();
           } else {
-            throw new Error(
-              `Failed to load default theme config '/default-theme-config.json' (status: ${defaultRes.status}).`
-            );
+            throw new Error(`Failed to load default theme config (status: ${defaultRes.status}).`);
           }
         }
         setCfg(configToSet);
