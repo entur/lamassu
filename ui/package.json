@@ -1,11 +1,11 @@
 {
-  "name": "lamassu-admin-ui",
+  "name": "lamassu-ui",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build --base /admin/ui/",
+    "build": "vite build",
     "lint": "eslint .",
     "check": "prettier . --check",
     "format": "prettier --write .",

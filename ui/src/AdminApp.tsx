@@ -8,27 +8,35 @@ import { CssBaseline, Toolbar, Box, ThemeProvider } from '@mui/material';
 import { useCustomization } from './contexts/CustomizationContext.tsx';
 import { useAppTheme } from './hooks/useAppTheme';
 
-export default function App() {
+function AdminAppContent() {
+  return (
+    <>
+      <Header />
+      <Toolbar />
+      <Box className="app-root">
+        <Box className="app-content">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/feed-providers" element={<AdminFeedProviders />} />
+            <Route path="/cache" element={<AdminCacheManagement />} />
+            <Route path="/spatial-index" element={<AdminSpatialIndex />} />
+          </Routes>
+        </Box>
+      </Box>
+    </>
+  );
+}
+
+export default function AdminApp() {
   const { useCustomFeatures } = useCustomization();
 
   const { theme } = useAppTheme(useCustomFeatures);
 
   return (
-    <BrowserRouter basename={import.meta.env.BASE_URL}>
+    <BrowserRouter basename="/admin/ui">
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Header />
-        <Toolbar />
-        <Box className="app-root">
-          <Box className="app-content">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/feed-providers" element={<AdminFeedProviders />} />
-              <Route path="/cache" element={<AdminCacheManagement />} />
-              <Route path="/spatial-index" element={<AdminSpatialIndex />} />
-            </Routes>
-          </Box>
-        </Box>
+        <AdminAppContent />
       </ThemeProvider>
     </BrowserRouter>
   );
