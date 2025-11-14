@@ -21,8 +21,13 @@ export default function StatusApp() {
 
   const { theme } = useAppTheme(useCustomFeatures);
 
+  // Detect basename from current URL path
+  // This supports both direct access (/status/ui) and proxied paths (/mobility/v2/status/ui)
+  const basename =
+    window.location.pathname.match(/^(.*)\/status\/ui/)?.[1] + '/status/ui' || '/status/ui';
+
   return (
-    <BrowserRouter basename="/status/ui">
+    <BrowserRouter basename={basename}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <StatusAppContent />

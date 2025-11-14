@@ -1,8 +1,15 @@
 import axios from 'axios';
 import { PublicFeedProviderStatus } from '../types/status';
 
+// Detect the base path from the current URL to support reverse proxies
+// e.g., /status/ui or /mobility/v2/status/ui
+const getBasePath = () => {
+  const match = window.location.pathname.match(/^(.*)\/status\/ui/);
+  return match ? match[1] + '/status' : '/status';
+};
+
 const api = axios.create({
-  baseURL: '/status',
+  baseURL: getBasePath(),
   headers: {
     'Content-Type': 'application/json',
   },

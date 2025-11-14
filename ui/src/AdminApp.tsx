@@ -32,8 +32,13 @@ export default function AdminApp() {
 
   const { theme } = useAppTheme(useCustomFeatures);
 
+  // Detect basename from current URL path
+  // This supports both direct access (/admin/ui) and proxied paths (/mobility/v2/admin/ui)
+  const basename =
+    window.location.pathname.match(/^(.*)\/admin\/ui/)?.[1] + '/admin/ui' || '/admin/ui';
+
   return (
-    <BrowserRouter basename="/admin/ui">
+    <BrowserRouter basename={basename}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <AdminAppContent />
