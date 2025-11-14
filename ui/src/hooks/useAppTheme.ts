@@ -42,9 +42,7 @@ export function useAppTheme(useCustomFeatures: boolean): {
           if (defaultRes.ok) {
             configToSet = await defaultRes.json();
           } else {
-            throw new Error(
-              `Failed to load default theme config (status: ${defaultRes.status}).`
-            );
+            throw new Error(`Failed to load default theme config (status: ${defaultRes.status}).`);
           }
         }
         setCfg(configToSet);
