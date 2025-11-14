@@ -134,6 +134,11 @@ class SubscriptionStatusCacheImplTest {
   void testRemoveStatusWithNullSystemId() {
     // Should not throw exception
     subscriptionStatusCache.removeStatus(null);
+
+    // Verify cache is still intact (no side effects)
+    Map<String, SubscriptionStatus> allStatuses =
+      subscriptionStatusCache.getAllStatuses();
+    assertTrue(allStatuses.isEmpty());
   }
 
   @Test
