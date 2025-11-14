@@ -17,7 +17,7 @@ import {
   Alert,
 } from '@mui/material';
 import { CheckCircle, Error as ErrorIcon, Info as InfoIcon } from '@mui/icons-material';
-import { PublicFeedProviderStatus } from '../types/status';
+import type { PublicFeedProviderStatus } from '../types/status';
 import { statusApi } from '../services/statusApi';
 import { validationApi } from '../services/validationApi';
 import type { ShortValidationReport } from '../types/validation';
@@ -37,11 +37,11 @@ export default function PublicFeedProviders() {
     loadData();
   }, []);
 
-  // Poll for subscription status updates every 1 second
+  // Poll for subscription status updates every 5 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       loadProviders();
-    }, 1000);
+    }, 5000);
     return () => clearInterval(interval);
   }, []);
 

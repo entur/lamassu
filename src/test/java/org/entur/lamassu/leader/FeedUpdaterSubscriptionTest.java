@@ -12,6 +12,7 @@ import static org.mockito.Mockito.verify;
 import java.util.concurrent.ForkJoinPool;
 import org.entur.gbfs.GbfsSubscriptionManager;
 import org.entur.gbfs.validation.model.ValidationResult;
+import org.entur.lamassu.cache.SubscriptionStatusCache;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.leader.entityupdater.EntityCachesUpdater;
 import org.entur.lamassu.leader.feedcachesupdater.V2FeedCachesUpdater;
@@ -69,8 +70,13 @@ class FeedUpdaterSubscriptionTest {
   @Mock
   private CacheCleanupService cacheCleanupService;
 
+  @Mock
+  private SubscriptionStatusCache subscriptionStatusCache;
+
   @Spy
-  private SubscriptionRegistry subscriptionRegistry = new SubscriptionRegistry();
+  private SubscriptionRegistry subscriptionRegistry = new SubscriptionRegistry(
+    subscriptionStatusCache
+  );
 
   private FeedUpdater feedUpdater;
 

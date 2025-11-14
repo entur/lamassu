@@ -49,8 +49,8 @@ public class PublicFeedProviderStatusMapper {
     dto.setEnabled(provider.getEnabled());
 
     // Get current subscription status from registry
-    // On leader instances: returns actual status (STARTED/STARTING/STOPPED/STOPPING)
-    // On follower instances: returns STOPPED (default, since followers don't poll)
+    // Status is now backed by Redis, so all instances (leader and followers)
+    // can access the current subscription status
     SubscriptionStatus status = subscriptionRegistry.getSubscriptionStatusBySystemId(
       provider.getSystemId()
     );
