@@ -7,6 +7,7 @@ import org.entur.lamassu.cache.UpdateContinuityCache;
 import org.entur.lamassu.cache.VehicleSpatialIndexId;
 import org.entur.lamassu.cache.impl.RedisUpdateContinuityCache;
 import org.entur.lamassu.config.project.LamassuProjectInfoConfiguration;
+import org.entur.lamassu.leader.SubscriptionStatus;
 import org.entur.lamassu.model.entities.GeofencingZones;
 import org.entur.lamassu.model.entities.PricingPlan;
 import org.entur.lamassu.model.entities.Region;
@@ -18,6 +19,7 @@ import org.redisson.Redisson;
 import org.redisson.api.RBucket;
 import org.redisson.api.RGeo;
 import org.redisson.api.RListMultimap;
+import org.redisson.api.RMap;
 import org.redisson.api.RMapCache;
 import org.redisson.api.RedissonClient;
 import org.redisson.codec.Kryo5Codec;
@@ -49,6 +51,7 @@ public class RedissonCacheConfig {
   public static final String CACHE_READY_KEY = "cacheReady";
   public static final String VEHICLE_STATUS_BASES_KEY = "vehicleStatusBases";
   public static final String STATION_STATUS_BASES_KEY = "stationStatusBases";
+  public static final String SUBSCRIPTION_STATUS_CACHE_KEY = "subscriptionStatusCache";
 
   private final String serializationVersion;
   private final Config redissonConfig;
@@ -208,6 +211,15 @@ public class RedissonCacheConfig {
   ) {
     return new RedisUpdateContinuityCache(
       redissonClient.getMapCache(STATION_STATUS_BASES_KEY + "_" + serializationVersion)
+    );
+  }
+
+  @Bean
+  public RMap<String, SubscriptionStatus> subscriptionStatusCache(
+    RedissonClient redissonClient
+  ) {
+    return redissonClient.getMap(
+      SUBSCRIPTION_STATUS_CACHE_KEY + "_" + serializationVersion
     );
   }
 }

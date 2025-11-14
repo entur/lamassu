@@ -23,7 +23,7 @@ import java.util.Map;
 import org.entur.lamassu.cache.SubscriptionStatusCache;
 import org.entur.lamassu.leader.SubscriptionStatus;
 import org.redisson.api.RMap;
-import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -33,11 +33,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class SubscriptionStatusCacheImpl implements SubscriptionStatusCache {
 
-  private static final String CACHE_KEY = "subscription-status";
   private final RMap<String, SubscriptionStatus> cache;
 
-  public SubscriptionStatusCacheImpl(RedissonClient redissonClient) {
-    this.cache = redissonClient.getMap(CACHE_KEY);
+  @Autowired
+  public SubscriptionStatusCacheImpl(RMap<String, SubscriptionStatus> cache) {
+    this.cache = cache;
   }
 
   @Override

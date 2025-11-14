@@ -38,7 +38,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 /**
  * Integration tests for SubscriptionStatusCacheImpl using embedded Redis.
  */
-@ActiveProfiles("test")
+@ActiveProfiles({ "test", "leader" })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = TestLamassuApplication.class)
