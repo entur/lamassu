@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { PublicFeedProviderStatus } from '../types/status';
+import type { PublicFeedProviderStatus } from '../types/status';
 
 // Detect the base path from the current URL to support reverse proxies
 // e.g., /status/ui or /mobility/v2/status/ui
@@ -12,6 +12,7 @@ const api = axios.create({
   baseURL: getBasePath(),
   headers: {
     'Content-Type': 'application/json',
+    'ET-Client-Name': 'lamassu',
   },
 });
 

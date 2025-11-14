@@ -4,8 +4,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.Map;
+import org.entur.lamassu.cache.SubscriptionStatusCache;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,12 +20,14 @@ import org.junit.jupiter.api.Test;
 class SubscriptionRegistryTest {
 
   private SubscriptionRegistry subscriptionRegistry;
+  private SubscriptionStatusCache mockCache;
   private static final String SYSTEM_ID = "test-system-id";
   private static final String SUBSCRIPTION_ID = "test-subscription-id";
 
   @BeforeEach
   void setUp() {
-    subscriptionRegistry = new SubscriptionRegistry();
+    mockCache = mock(SubscriptionStatusCache.class);
+    subscriptionRegistry = new SubscriptionRegistry(mockCache);
   }
 
   @Test
@@ -140,5 +147,77 @@ class SubscriptionRegistryTest {
     // Verify that registering a null subscription ID is a no-op
     subscriptionRegistry.registerSubscription(SYSTEM_ID, null);
     assertFalse(subscriptionRegistry.hasSubscription(SYSTEM_ID));
+  }
+
+  @Test
+  void testRegisterSubscriptionWritesToRedis() {
+    // Register a subscription
+    subscriptionRegistry.registerSubscription(SYSTEM_ID, SUBSCRIPTION_ID);
+
+    // Verify Redis cache was updated
+    verify(mockCache, times(1)).setStatus(SYSTEM_ID, SubscriptionStatus.STARTED);
+  }
+
+  @Test
+  void testUpdateSubscriptionStatusWritesToRedis() {
+    // Register and then update a subscription
+    subscriptionRegistry.registerSubscription(SYSTEM_ID, SUBSCRIPTION_ID);
+    subscriptionRegistry.updateSubscriptionStatus(SYSTEM_ID, SubscriptionStatus.STOPPING);
+
+    // Verify Redis cache was updated twice (once for register, once for update)
+    verify(mockCache, times(1)).setStatus(SYSTEM_ID, SubscriptionStatus.STARTED);
+    verify(mockCache, times(1)).setStatus(SYSTEM_ID, SubscriptionStatus.STOPPING);
+  }
+
+  @Test
+  void testRemoveSubscriptionRemovesFromRedis() {
+    // Register and then remove a subscription
+    subscriptionRegistry.registerSubscription(SYSTEM_ID, SUBSCRIPTION_ID);
+    subscriptionRegistry.removeSubscription(SYSTEM_ID);
+
+    // Verify Redis cache was updated
+    verify(mockCache, times(1)).removeStatus(SYSTEM_ID);
+  }
+
+  @Test
+  void testClearClearsRedis() {
+    // Register some subscriptions
+    subscriptionRegistry.registerSubscription(SYSTEM_ID, SUBSCRIPTION_ID);
+    subscriptionRegistry.registerSubscription("system-2", "subscription-2");
+
+    // Clear the registry
+    subscriptionRegistry.clear();
+
+    // Verify Redis cache was cleared
+    verify(mockCache, times(1)).clear();
+  }
+
+  @Test
+  void testFallbackToRedisWhenInMemoryEmpty() {
+    // Setup: Mock Redis to return a status
+    when(mockCache.getStatus("external-system")).thenReturn(SubscriptionStatus.STARTED);
+
+    // Get status for a system not in memory (simulates follower instance)
+    SubscriptionStatus status = subscriptionRegistry.getSubscriptionStatusBySystemId(
+      "external-system"
+    );
+
+    // Verify it fell back to Redis
+    verify(mockCache, times(1)).getStatus("external-system");
+    assertEquals(SubscriptionStatus.STARTED, status);
+  }
+
+  @Test
+  void testFallbackToRedisReturnsStoppedWhenNotFound() {
+    // Setup: Mock Redis to return null
+    when(mockCache.getStatus("unknown-system")).thenReturn(null);
+
+    // Get status for a system not in memory or Redis
+    SubscriptionStatus status = subscriptionRegistry.getSubscriptionStatusBySystemId(
+      "unknown-system"
+    );
+
+    // Verify it returns STOPPED as default
+    assertEquals(SubscriptionStatus.STOPPED, status);
   }
 }

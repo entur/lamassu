@@ -12,6 +12,7 @@ import static org.mockito.Mockito.verify;
 import java.util.concurrent.ForkJoinPool;
 import org.entur.gbfs.GbfsSubscriptionManager;
 import org.entur.gbfs.validation.model.ValidationResult;
+import org.entur.lamassu.cache.SubscriptionStatusCache;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.leader.entityupdater.EntityCachesUpdater;
 import org.entur.lamassu.leader.feedcachesupdater.V2FeedCachesUpdater;
@@ -24,7 +25,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Spy;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.redisson.api.RBucket;
 import org.redisson.api.RListMultimap;
@@ -69,8 +70,10 @@ class FeedUpdaterSubscriptionTest {
   @Mock
   private CacheCleanupService cacheCleanupService;
 
-  @Spy
-  private SubscriptionRegistry subscriptionRegistry = new SubscriptionRegistry();
+  @Mock
+  private SubscriptionStatusCache subscriptionStatusCache;
+
+  private SubscriptionRegistry subscriptionRegistry;
 
   private FeedUpdater feedUpdater;
 
@@ -80,6 +83,8 @@ class FeedUpdaterSubscriptionTest {
 
   @BeforeEach
   void setUp() {
+    // Initialize SubscriptionRegistry as a spy with the mocked cache
+    subscriptionRegistry = Mockito.spy(new SubscriptionRegistry(subscriptionStatusCache));
     // Initialize the FeedUpdater manually with all required dependencies
     feedUpdater =
       new FeedUpdater(

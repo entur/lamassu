@@ -21,12 +21,15 @@ package org.entur.lamassu.leader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.entur.lamassu.cache.SubscriptionStatusCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
  * Registry for tracking subscription IDs and statuses by feed provider system ID.
+ * Subscription IDs are stored in-memory only (leader-specific).
+ * Subscription statuses are stored both in-memory (for performance) and in Redis (for cross-instance visibility).
  */
 @Component
 public class SubscriptionRegistry {
@@ -38,6 +41,11 @@ public class SubscriptionRegistry {
   private final Map<String, String> subscriptionIdsBySystemId = new ConcurrentHashMap<>();
   private final Map<String, SubscriptionStatus> subscriptionStatusBySystemId =
     new ConcurrentHashMap<>();
+  private final SubscriptionStatusCache subscriptionStatusCache;
+
+  public SubscriptionRegistry(SubscriptionStatusCache subscriptionStatusCache) {
+    this.subscriptionStatusCache = subscriptionStatusCache;
+  }
 
   /**
    * Registers a subscription ID for a system ID.
@@ -49,6 +57,7 @@ public class SubscriptionRegistry {
     if (subscriptionId != null) {
       subscriptionIdsBySystemId.put(systemId, subscriptionId);
       subscriptionStatusBySystemId.put(systemId, SubscriptionStatus.STARTED);
+      subscriptionStatusCache.setStatus(systemId, SubscriptionStatus.STARTED);
       logger.debug(
         "Registered subscription ID {} for system ID {}",
         subscriptionId,
@@ -65,6 +74,7 @@ public class SubscriptionRegistry {
   public void removeSubscription(String systemId) {
     subscriptionIdsBySystemId.remove(systemId);
     subscriptionStatusBySystemId.remove(systemId);
+    subscriptionStatusCache.removeStatus(systemId);
     logger.debug("Removed subscription for system ID {}", systemId);
   }
 
@@ -80,15 +90,22 @@ public class SubscriptionRegistry {
 
   /**
    * Gets the subscription status for a system ID.
+   * First checks in-memory map (for leader instance performance),
+   * then falls back to Redis (for follower instances).
    *
    * @param systemId The system ID of the feed provider
-   * @return The subscription status, or null if not found
+   * @return The subscription status, or STOPPED if not found
    */
   public SubscriptionStatus getSubscriptionStatusBySystemId(String systemId) {
-    return subscriptionStatusBySystemId.getOrDefault(
-      systemId,
-      SubscriptionStatus.STOPPED
-    );
+    // Check in-memory first (leader instance)
+    SubscriptionStatus status = subscriptionStatusBySystemId.get(systemId);
+    if (status != null) {
+      return status;
+    }
+
+    // Fall back to Redis (follower instances)
+    status = subscriptionStatusCache.getStatus(systemId);
+    return status != null ? status : SubscriptionStatus.STOPPED;
   }
 
   /**
@@ -99,6 +116,7 @@ public class SubscriptionRegistry {
    */
   public void updateSubscriptionStatus(String systemId, SubscriptionStatus status) {
     subscriptionStatusBySystemId.put(systemId, status);
+    subscriptionStatusCache.setStatus(systemId, status);
     logger.debug("Updated subscription status for system ID {} to {}", systemId, status);
   }
 
@@ -127,6 +145,7 @@ public class SubscriptionRegistry {
   public void clear() {
     subscriptionIdsBySystemId.clear();
     subscriptionStatusBySystemId.clear();
+    subscriptionStatusCache.clear();
     logger.debug("Cleared all subscription registrations");
   }
 }
