@@ -25,7 +25,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Spy;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.redisson.api.RBucket;
 import org.redisson.api.RListMultimap;
@@ -73,10 +73,7 @@ class FeedUpdaterSubscriptionTest {
   @Mock
   private SubscriptionStatusCache subscriptionStatusCache;
 
-  @Spy
-  private SubscriptionRegistry subscriptionRegistry = new SubscriptionRegistry(
-    subscriptionStatusCache
-  );
+  private SubscriptionRegistry subscriptionRegistry;
 
   private FeedUpdater feedUpdater;
 
@@ -86,6 +83,8 @@ class FeedUpdaterSubscriptionTest {
 
   @BeforeEach
   void setUp() {
+    // Initialize SubscriptionRegistry as a spy with the mocked cache
+    subscriptionRegistry = Mockito.spy(new SubscriptionRegistry(subscriptionStatusCache));
     // Initialize the FeedUpdater manually with all required dependencies
     feedUpdater =
       new FeedUpdater(
