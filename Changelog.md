@@ -7,6 +7,7 @@ based on merged pull requests. Search GitHub issues and pull requests for smalle
 ## 1.3.0 (under development)
 - Feature/status provider UI [#817](https://github.com/entur/lamassu/pull/817)
 - ui: fix base path issues [#818](https://github.com/entur/lamassu/pull/818)
+- ui: fix more path issues [#819](https://github.com/entur/lamassu/pull/819)
 [](AUTOMATIC_CHANGELOG_PLACEHOLDER_DO_NOT_REMOVE)
 
 ## 1.2.0
