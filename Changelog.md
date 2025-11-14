@@ -8,6 +8,7 @@ based on merged pull requests. Search GitHub issues and pull requests for smalle
 - Feature/status provider UI [#817](https://github.com/entur/lamassu/pull/817)
 - ui: fix base path issues [#818](https://github.com/entur/lamassu/pull/818)
 - ui: fix more path issues [#819](https://github.com/entur/lamassu/pull/819)
+- persist subscription status in cache [#820](https://github.com/entur/lamassu/pull/820)
 [](AUTOMATIC_CHANGELOG_PLACEHOLDER_DO_NOT_REMOVE)
 
 ## 1.2.0
