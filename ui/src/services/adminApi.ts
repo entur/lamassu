@@ -1,8 +1,15 @@
 import axios from 'axios';
 import type { FeedProvider, SubscriptionStatus } from '../types/admin';
 
+// Detect the base path from the current URL to support reverse proxies
+// e.g., /admin/ui or /mobility/v2/admin/ui
+const getBasePath = () => {
+  const match = window.location.pathname.match(/^(.*)\/admin\/ui/);
+  return match ? match[1] + '/admin' : '/admin';
+};
+
 const api = axios.create({
-  baseURL: '/admin',
+  baseURL: getBasePath(),
 });
 
 export const adminApi = {
