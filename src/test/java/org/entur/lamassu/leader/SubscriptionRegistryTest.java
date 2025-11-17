@@ -4,11 +4,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.HashMap;
 import java.util.Map;
 import org.entur.lamassu.cache.SubscriptionStatusCache;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,12 +23,53 @@ class SubscriptionRegistryTest {
 
   private SubscriptionRegistry subscriptionRegistry;
   private SubscriptionStatusCache mockCache;
+  private Map<String, SubscriptionStatus> mockStorage;
   private static final String SYSTEM_ID = "test-system-id";
   private static final String SUBSCRIPTION_ID = "test-subscription-id";
 
   @BeforeEach
   void setUp() {
     mockCache = mock(SubscriptionStatusCache.class);
+    mockStorage = new HashMap<>();
+
+    // Mock the cache to behave like a real map
+    doAnswer(invocation -> {
+        String systemId = invocation.getArgument(0);
+        SubscriptionStatus status = invocation.getArgument(1);
+        mockStorage.put(systemId, status);
+        return null;
+      })
+      .when(mockCache)
+      .setStatus(org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.any());
+
+    doAnswer(invocation -> {
+        String systemId = invocation.getArgument(0);
+        return mockStorage.get(systemId);
+      })
+      .when(mockCache)
+      .getStatus(org.mockito.ArgumentMatchers.any());
+
+    doAnswer(invocation -> {
+        String systemId = invocation.getArgument(0);
+        mockStorage.remove(systemId);
+        return null;
+      })
+      .when(mockCache)
+      .removeStatus(org.mockito.ArgumentMatchers.any());
+
+    doAnswer(invocation -> {
+        return new HashMap<>(mockStorage);
+      })
+      .when(mockCache)
+      .getAllStatuses();
+
+    doAnswer(invocation -> {
+        mockStorage.clear();
+        return null;
+      })
+      .when(mockCache)
+      .clear();
+
     subscriptionRegistry = new SubscriptionRegistry(mockCache);
   }
 

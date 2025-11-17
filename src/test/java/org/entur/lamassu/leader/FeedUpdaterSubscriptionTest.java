@@ -230,4 +230,19 @@ class FeedUpdaterSubscriptionTest {
     // Assert
     assertSame(registry, subscriptionRegistry);
   }
+
+  @Test
+  void testStartSubscriptionSetsStartingStatusImmediately() {
+    // Arrange
+    testProvider.setEnabled(false);
+
+    // Act
+    boolean result = feedUpdater.startSubscription(testProvider);
+
+    // Assert
+    assertTrue(result);
+    // Verify that STARTING status is set before attempting to create subscription
+    verify(subscriptionRegistry)
+      .updateSubscriptionStatus(SYSTEM_ID, SubscriptionStatus.STARTING);
+  }
 }

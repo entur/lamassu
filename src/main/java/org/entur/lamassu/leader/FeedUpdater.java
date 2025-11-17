@@ -136,6 +136,12 @@ public class FeedUpdater {
   }
 
   private void createSubscription(FeedProvider feedProvider) {
+    // Set status to STARTING immediately so followers can see the subscription is being created
+    subscriptionRegistry.updateSubscriptionStatus(
+      feedProvider.getSystemId(),
+      SubscriptionStatus.STARTING
+    );
+
     var options = new GbfsSubscriptionOptions(
       URI.create(feedProvider.getUrl()),
       feedProvider.getLanguage(),
