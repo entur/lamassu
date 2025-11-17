@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev-admin": "vite --open /admin.html",
+    "dev-status": "vite --open /status.html",
     "build": "vite build",
     "lint": "eslint .",
     "check": "prettier . --check",
