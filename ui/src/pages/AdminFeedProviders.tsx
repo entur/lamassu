@@ -802,12 +802,14 @@ export default function AdminFeedProviders() {
         </DialogContent>
       </Dialog>
 
-      <ValidationReportModal
-        open={!!showValidationReportForSystem}
-        onClose={() => setShowValidationReportForSystem(null)}
-        systemId={showValidationReportForSystem}
-        report={showValidationReportForSystem ? validationReports[showValidationReportForSystem] : null}
-      />
+      {showValidationReportForSystem && (
+        <ValidationReportModal
+          open={true}
+          onClose={() => setShowValidationReportForSystem(null)}
+          systemId={showValidationReportForSystem}
+          report={validationReports[showValidationReportForSystem]}
+        />
+      )}
     </Box>
   );
 }

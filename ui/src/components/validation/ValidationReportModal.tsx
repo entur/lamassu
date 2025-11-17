@@ -6,9 +6,14 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
+  Chip,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from '@mui/material';
-import { CheckCircle, Error as ErrorIcon } from '@mui/icons-material';
+import { CheckCircle, Error as ErrorIcon, ExpandMore as ExpandMoreIcon } from '@mui/icons-material';
 import type { ShortValidationReport } from '../../types/validation';
+import { groupValidationErrors } from '../../utils/validationErrorGrouping';
 
 interface ValidationReportModalProps {
   open: boolean;
@@ -61,23 +66,87 @@ export default function ValidationReportModal({
                 {fileResult.exists ? 'Yes' : 'No'} | Errors: {fileResult.errorsCount}
               </Typography>
 
-              {fileResult.errorsCount > 0 && fileResult.errors.length > 0 && (
-                <Box sx={{ mt: 2 }}>
-                  {fileResult.errors.map((error, idx) => (
-                    <Alert severity="error" key={idx} sx={{ mb: 1 }}>
-                      <Typography variant="body2">
-                        <strong>{error.message}</strong>
-                      </Typography>
-                      <Typography variant="caption" display="block">
-                        Path: {error.violationPath}
-                      </Typography>
-                      <Typography variant="caption" display="block">
-                        Schema: {error.schemaPath}
-                      </Typography>
-                    </Alert>
-                  ))}
-                </Box>
-              )}
+              {fileResult.errorsCount > 0 &&
+                fileResult.errors.length > 0 &&
+                (() => {
+                  const groupedErrors = groupValidationErrors(fileResult.errors);
+                  const hasMultipleOccurrences = groupedErrors.some(g => g.count > 1);
+
+                  return (
+                    <Box sx={{ mt: 2 }}>
+                      {hasMultipleOccurrences && (
+                        <Alert severity="info" sx={{ mb: 2 }}>
+                          Showing {groupedErrors.length} unique error
+                          {groupedErrors.length !== 1 ? 's' : ''} ({fileResult.errorsCount} total
+                          occurrence{fileResult.errorsCount !== 1 ? 's' : ''})
+                        </Alert>
+                      )}
+                      {groupedErrors.map((groupedError, idx) => (
+                        <Accordion key={idx} defaultExpanded={groupedErrors.length <= 3}>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            <Box
+                              sx={{ display: 'flex', alignItems: 'center', gap: 1, width: '100%' }}
+                            >
+                              <ErrorIcon color="error" fontSize="small" />
+                              <Typography variant="body2" sx={{ flex: 1 }}>
+                                <strong>{groupedError.message}</strong>
+                              </Typography>
+                              {groupedError.count > 1 && (
+                                <Chip
+                                  label={`${groupedError.count} occurrences`}
+                                  color="error"
+                                  size="small"
+                                />
+                              )}
+                            </Box>
+                          </AccordionSummary>
+                          <AccordionDetails>
+                            <Box>
+                              <Typography variant="caption" display="block" sx={{ mb: 1 }}>
+                                <strong>Pattern:</strong> {groupedError.normalizedPath}
+                              </Typography>
+                              <Typography variant="caption" display="block" sx={{ mb: 1 }}>
+                                <strong>Schema:</strong> {groupedError.schemaPath}
+                              </Typography>
+                              {groupedError.count > 1 && (
+                                <Box sx={{ mt: 2 }}>
+                                  <Typography variant="caption" display="block" sx={{ mb: 0.5 }}>
+                                    <strong>Example paths:</strong>
+                                  </Typography>
+                                  {groupedError.examplePaths.map((path, pathIdx) => (
+                                    <Typography
+                                      key={pathIdx}
+                                      variant="caption"
+                                      display="block"
+                                      sx={{ ml: 2, fontFamily: 'monospace' }}
+                                    >
+                                      • {path}
+                                    </Typography>
+                                  ))}
+                                  {groupedError.count > groupedError.examplePaths.length && (
+                                    <Typography
+                                      variant="caption"
+                                      display="block"
+                                      sx={{ ml: 2, fontStyle: 'italic', mt: 0.5 }}
+                                    >
+                                      ... and{' '}
+                                      {groupedError.count - groupedError.examplePaths.length} more
+                                    </Typography>
+                                  )}
+                                </Box>
+                              )}
+                              {groupedError.count === 1 && (
+                                <Typography variant="caption" display="block" sx={{ mt: 1 }}>
+                                  <strong>Path:</strong> {groupedError.examplePaths[0]}
+                                </Typography>
+                              )}
+                            </Box>
+                          </AccordionDetails>
+                        </Accordion>
+                      ))}
+                    </Box>
+                  );
+                })()}
             </Paper>
           ))}
         </Box>

@@ -168,12 +168,14 @@ export default function PublicFeedProviders() {
         </Table>
       </TableContainer>
 
-      <ValidationReportModal
-        open={validationDialogOpen}
-        onClose={() => setValidationDialogOpen(false)}
-        systemId={selectedSystemId}
-        report={selectedSystemId ? validationReports[selectedSystemId] : null}
-      />
+      {validationDialogOpen && selectedSystemId && (
+        <ValidationReportModal
+          open={true}
+          onClose={() => setValidationDialogOpen(false)}
+          systemId={selectedSystemId}
+          report={validationReports[selectedSystemId]}
+        />
+      )}
     </Box>
   );
 }
