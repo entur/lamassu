@@ -43,34 +43,7 @@ import { adminApi } from '../services/adminApi';
 import type { FeedProvider, SubscriptionStatus } from '../types/admin';
 import { validationApi } from '../services/validationApi.ts';
 import type { ShortValidationReport } from '../types/validation.ts';
-import ValidationReport, {
-  type ValidationResult,
-} from '../components/validation/ValidationReport.tsx';
-
-const mapValidationReport = (source: ShortValidationReport): ValidationResult => {
-  return {
-    summary: {
-      validatorVersion: source.summary.version,
-      files: Object.entries(source.files).map(([file, result]) => {
-        return {
-          name: file,
-          url: `${file}.json`,
-          version: result.version,
-          language: 'no',
-          errors: result.errors.map(err => {
-            return {
-              keyword: 'N/A',
-              instancePath: err.violationPath,
-              schemaPath: err.schemaPath,
-              message: err.message,
-            };
-          }),
-          schema: {},
-        };
-      }),
-    },
-  };
-};
+import ValidationReportModal from '../components/validation/ValidationReportModal';
 
 export default function AdminFeedProviders() {
   const { t } = useTranslation();
@@ -829,18 +802,12 @@ export default function AdminFeedProviders() {
         </DialogContent>
       </Dialog>
 
-      <Dialog
-        maxWidth="md"
-        fullWidth
+      <ValidationReportModal
         open={!!showValidationReportForSystem}
         onClose={() => setShowValidationReportForSystem(null)}
-      >
-        {!!showValidationReportForSystem && (
-          <ValidationReport
-            validationResult={mapValidationReport(validationReports[showValidationReportForSystem])}
-          />
-        )}
-      </Dialog>
+        systemId={showValidationReportForSystem}
+        report={showValidationReportForSystem ? validationReports[showValidationReportForSystem] : null}
+      />
     </Box>
   );
 }

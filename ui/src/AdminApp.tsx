@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Header from './components/header/Header.tsx';
 import Home from './pages/Home';
 import AdminFeedProviders from './pages/AdminFeedProviders';
@@ -20,6 +20,8 @@ function AdminAppContent() {
             <Route path="/feed-providers" element={<AdminFeedProviders />} />
             <Route path="/cache" element={<AdminCacheManagement />} />
             <Route path="/spatial-index" element={<AdminSpatialIndex />} />
+            {/* Catch-all route for dev mode (.html files) and unknown paths */}
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Box>
       </Box>
@@ -33,9 +35,11 @@ export default function AdminApp() {
   const { theme } = useAppTheme(useCustomFeatures);
 
   // Detect basename from current URL path
-  // This supports both direct access (/admin/ui) and proxied paths (/mobility/v2/admin/ui)
-  const basename =
-    window.location.pathname.match(/^(.*)\/admin\/ui/)?.[1] + '/admin/ui' || '/admin/ui';
+  // In dev mode, use '/' as basename
+  // In production, supports both direct access (/admin/ui) and proxied paths (/mobility/v2/admin/ui)
+  const basename = import.meta.env.DEV
+    ? '/'
+    : window.location.pathname.match(/^(.*)\/admin\/ui/)?.[1] + '/admin/ui' || '/admin/ui';
 
   return (
     <BrowserRouter basename={basename}>
