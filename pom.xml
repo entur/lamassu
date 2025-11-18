@@ -16,7 +16,7 @@
     <description>Micro mobility aggregation</description>
 
     <properties>
-        <lamassu.serialization.version.id>28</lamassu.serialization.version.id>
+        <lamassu.serialization.version.id>29</lamassu.serialization.version.id>
 
         <java.version>21</java.version>
 
