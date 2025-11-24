@@ -23,7 +23,7 @@
         <entur.ror.helpers.version>1.101</entur.ror.helpers.version>
         <redisson.version>3.52.0</redisson.version>
         <embedded-redis.version>0.9.1</embedded-redis.version>
-        <okhttp.version>5.3.1</okhttp.version>
+        <okhttp.version>5.3.2</okhttp.version>
         <kryo.version>5.6.2</kryo.version>
         <jackson.version>2.20.1</jackson.version>
         <gbfs-loader-java.version>4.0.58</gbfs-loader-java.version>
@@ -333,7 +333,7 @@
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>jib-maven-plugin</artifactId>
-                <version>3.5.0</version>
+                <version>3.5.1</version>
                 <dependencies>
                     <!-- Include jib-spring-boot-extension-maven to prevent spring-boot-devtools from being packaged.-->
                     <dependency>
