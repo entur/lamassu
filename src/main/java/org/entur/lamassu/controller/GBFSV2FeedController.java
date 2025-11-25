@@ -144,7 +144,7 @@ public class GBFSV2FeedController {
     var feedName = GBFSFeedName.fromValue(feed);
     var feedProvider = feedProviderService.getFeedProviderBySystemId(systemId);
 
-    if (feedProvider == null) {
+    if (feedProvider == null || !feedProvider.getEnabled()) {
       throw new NoSuchElementException();
     }
 
