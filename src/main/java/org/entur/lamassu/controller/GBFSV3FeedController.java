@@ -163,27 +163,26 @@ public class GBFSV3FeedController {
   }
 
   /*
-    Throws an UpstreamFeedNotYetAvailableException, if the feed provider is *enabled* AND
-    either the discoveryFile (gbf file) is not yet cached, the requested feed is published
-    in the discovery file, or the discovery file is malformed.
+    Throws an UpstreamFeedNotYetAvailableException, if either the discoveryFile (gbf file) is not yet cached,
+    the requested feed is published in the discovery file, or the discovery file is malformed.
    */
   protected void throwsIfFeedCouldOrShouldExist(
     GBFSFeed.Name feedName,
     FeedProvider feedProvider
   ) {
     try {
-      GBFSGbfs discoveryFile = v3FeedCache.find(GBFSFeed.Name.GBFS, feedProvider);
+      GBFSGbfs discoveryFile = (GBFSGbfs) v3FeedCache.find(
+        GBFSFeed.Name.GBFS,
+        feedProvider
+      );
       if (
-        feedProvider.getEnabled() &&
-        (
-          discoveryFile == null ||
-          discoveryFile
-            .getData()
-            .getFeeds()
-            .stream()
-            .map(GBFSFeed::getName)
-            .anyMatch(name -> name.equals(feedName))
-        )
+        discoveryFile == null ||
+        discoveryFile
+          .getData()
+          .getFeeds()
+          .stream()
+          .map(GBFSFeed::getName)
+          .anyMatch(name -> name.equals(feedName))
       ) {
         throw new UpstreamFeedNotYetAvailableException();
       }

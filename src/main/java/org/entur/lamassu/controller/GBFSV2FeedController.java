@@ -19,7 +19,6 @@
 package org.entur.lamassu.controller;
 
 import java.time.Instant;
-import java.util.Collection;
 import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 import org.entur.lamassu.cache.GBFSV2FeedCache;
@@ -159,29 +158,24 @@ public class GBFSV2FeedController {
   }
 
   /*
-    Throws an UpstreamFeedNotYetAvailableException, if the feed provider is *enabled* AND
-    either the discoveryFile (gbf file) is not yet cached, the requested feed is published
-    in the discovery file, or the discovery file is malformed.
+    Throws an UpstreamFeedNotYetAvailableException, if either the discoveryFile (gbf file) is not yet cached,
+    the requested feed is published in the discovery file, or the discovery file is malformed.
    */
   protected void throwsIfFeedCouldOrShouldExist(
     GBFSFeedName feedName,
     FeedProvider feedProvider
   ) {
     try {
-      GBFS discoveryFile = feedCache.find(GBFSFeedName.GBFS, feedProvider);
+      GBFS discoveryFile = (GBFS) feedCache.find(GBFSFeedName.GBFS, feedProvider);
       if (
-        feedProvider.getEnabled() &&
-        (
-          discoveryFile == null ||
-          discoveryFile
-            .getFeedsData()
-            .values()
-            .stream()
-            .map(GBFSFeeds::getFeeds)
-            .flatMap(Collection::stream)
-            .map(GBFSFeed::getName)
-            .anyMatch(name -> name.equals(feedName))
-        )
+        discoveryFile == null ||
+        ((GBFS) discoveryFile).getFeedsData()
+          .values()
+          .stream()
+          .map(GBFSFeeds::getFeeds)
+          .flatMap(list -> list.stream())
+          .map(GBFSFeed::getName)
+          .anyMatch(name -> name.equals(feedName))
       ) {
         throw new UpstreamFeedNotYetAvailableException();
       }
