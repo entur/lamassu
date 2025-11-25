@@ -132,16 +132,17 @@ public class FeedUpdater {
       .getProviders()
       .parallelStream()
       .filter(feedProvider -> Boolean.TRUE.equals(feedProvider.getEnabled()))
-      .forEach(this::createSubscription);
+      .forEach(feedProvider -> {
+        // Set status to STARTING before creating subscription
+        subscriptionRegistry.updateSubscriptionStatus(
+          feedProvider.getSystemId(),
+          SubscriptionStatus.STARTING
+        );
+        createSubscription(feedProvider);
+      });
   }
 
   private void createSubscription(FeedProvider feedProvider) {
-    // Set status to STARTING immediately so followers can see the subscription is being created
-    subscriptionRegistry.updateSubscriptionStatus(
-      feedProvider.getSystemId(),
-      SubscriptionStatus.STARTING
-    );
-
     var options = new GbfsSubscriptionOptions(
       URI.create(feedProvider.getUrl()),
       feedProvider.getLanguage(),
