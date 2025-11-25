@@ -11,6 +11,7 @@ based on merged pull requests. Search GitHub issues and pull requests for smalle
 - persist subscription status in cache [#820](https://github.com/entur/lamassu/pull/820)
 - Improve subscription status handling [#822](https://github.com/entur/lamassu/pull/822)
 - Feature/status provider UI [#823](https://github.com/entur/lamassu/pull/823)
+- fix: regression in subscription lifecycle, duplicate  event [#828](https://github.com/entur/lamassu/pull/828)
 [](AUTOMATIC_CHANGELOG_PLACEHOLDER_DO_NOT_REMOVE)
 
 ## 1.2.0
