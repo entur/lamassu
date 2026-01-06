@@ -13,6 +13,7 @@ based on merged pull requests. Search GitHub issues and pull requests for smalle
 - Feature/status provider UI [#823](https://github.com/entur/lamassu/pull/823)
 - fix: regression in subscription lifecycle, duplicate  event [#828](https://github.com/entur/lamassu/pull/828)
 - fix: do not throw UpstreamFeedNotYetAvailableException if feed provider is not enabled [#827](https://github.com/entur/lamassu/pull/827)
+- feat(metrics): add whitelisted client name grouping for HTTP histogram metrics [#838](https://github.com/entur/lamassu/pull/838)
 [](AUTOMATIC_CHANGELOG_PLACEHOLDER_DO_NOT_REMOVE)
 
 ## 1.2.0
