@@ -22,9 +22,12 @@ import io.micrometer.core.instrument.Clock;
 import io.micrometer.prometheusmetrics.PrometheusConfig;
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry;
 import io.prometheus.metrics.model.registry.PrometheusRegistry;
+import org.entur.lamassu.metrics.ClientGroupingServerRequestObservationConvention;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.server.observation.ServerRequestObservationConvention;
 
 @Configuration
 public class MetricsConfiguration {
@@ -37,5 +40,17 @@ public class MetricsConfiguration {
     Clock clock
   ) {
     return new PrometheusMeterRegistry(prometheusConfig, prometheusRegistry, clock);
+  }
+
+  @Bean
+  @ConditionalOnProperty(
+    prefix = "org.entur.lamassu.metrics.client-grouping",
+    name = "enabled",
+    havingValue = "true"
+  )
+  public ServerRequestObservationConvention clientGroupingObservationConvention(
+    ClientGroupingMetricsProperties properties
+  ) {
+    return new ClientGroupingServerRequestObservationConvention(properties);
   }
 }
