@@ -21,7 +21,7 @@
         <java.version>21</java.version>
 
         <entur.ror.helpers.version>1.101</entur.ror.helpers.version>
-        <redisson.version>3.52.0</redisson.version>
+        <redisson.version>4.2.0</redisson.version>
         <embedded-redis.version>0.9.1</embedded-redis.version>
         <okhttp.version>5.3.2</okhttp.version>
         <kryo.version>5.6.2</kryo.version>
