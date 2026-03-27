@@ -93,6 +93,7 @@ class VehicleSubscriptionHandlerTest {
       null,
       null,
       false,
+      false,
       false
     );
 
@@ -150,6 +151,7 @@ class VehicleSubscriptionHandlerTest {
       null,
       null,
       null,
+      false,
       false,
       false
     );
@@ -212,6 +214,7 @@ class VehicleSubscriptionHandlerTest {
       null,
       null,
       null,
+      false,
       false,
       false
     );
@@ -282,6 +285,7 @@ class VehicleSubscriptionHandlerTest {
       null,
       null,
       null,
+      false,
       false,
       false
     );
@@ -393,6 +397,7 @@ class VehicleSubscriptionHandlerTest {
       null,
       null,
       false,
+      false,
       false
     );
 
@@ -454,6 +459,7 @@ class VehicleSubscriptionHandlerTest {
       null,
       null,
       null,
+      false,
       false,
       false
     );

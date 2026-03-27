@@ -19,6 +19,7 @@
 package org.entur.lamassu.graphql.subscription.filter;
 
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import org.entur.lamassu.graphql.subscription.model.VehicleUpdate;
 import org.entur.lamassu.model.entities.FormFactor;
@@ -34,23 +35,28 @@ public class VehicleUpdateFilter
   implements EntityUpdateFilter<VehicleUpdate> {
 
   private final VehicleFilterParameters filterParameters;
+  private final Predicate<String> nonVirtualStationPredicate;
 
   public VehicleUpdateFilter(
     VehicleFilterParameters filterParameters,
     RangeQueryParameters rangeQueryParameters,
-    UnaryOperator<String> codespaceResolver
+    UnaryOperator<String> codespaceResolver,
+    Predicate<String> nonVirtualStationPredicate
   ) {
     super(filterParameters, rangeQueryParameters, codespaceResolver);
     this.filterParameters = filterParameters;
+    this.nonVirtualStationPredicate = nonVirtualStationPredicate;
   }
 
   public VehicleUpdateFilter(
     VehicleFilterParameters filterParameters,
     BoundingBoxQueryParameters boundingBoxParameters,
-    UnaryOperator<String> codespaceResolver
+    UnaryOperator<String> codespaceResolver,
+    Predicate<String> nonVirtualStationPredicate
   ) {
     super(filterParameters, boundingBoxParameters, codespaceResolver);
     this.filterParameters = filterParameters;
+    this.nonVirtualStationPredicate = nonVirtualStationPredicate;
   }
 
   @Override
@@ -127,10 +133,24 @@ public class VehicleUpdateFilter
     }
 
     // Filter by disabled status
-    return (
-      filterParameters.getIncludeDisabled() ||
-      vehicle.getDisabled() == null ||
-      !Boolean.TRUE.equals(vehicle.getDisabled())
-    );
+    if (
+      !filterParameters.getIncludeDisabled() &&
+      vehicle.getDisabled() != null &&
+      Boolean.TRUE.equals(vehicle.getDisabled())
+    ) {
+      return false;
+    }
+
+    // Filter by non-virtual station assignment
+    if (
+      !filterParameters.getIncludeVehiclesAtNonVirtualStations() &&
+      vehicle.getStationId() != null &&
+      nonVirtualStationPredicate != null &&
+      nonVirtualStationPredicate.test(vehicle.getStationId())
+    ) {
+      return false;
+    }
+
+    return true;
   }
 }

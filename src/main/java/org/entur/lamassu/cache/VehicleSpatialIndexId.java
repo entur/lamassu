@@ -11,6 +11,7 @@ public class VehicleSpatialIndexId
   private PropulsionType propulsionType;
   private boolean isReserved;
   private boolean isDisabled;
+  private boolean isAtNonVirtualStation;
 
   public FormFactor getFormFactor() {
     return formFactor;
@@ -44,6 +45,14 @@ public class VehicleSpatialIndexId
     isDisabled = disabled;
   }
 
+  public boolean getAtNonVirtualStation() {
+    return isAtNonVirtualStation;
+  }
+
+  public void setAtNonVirtualStation(boolean atNonVirtualStation) {
+    isAtNonVirtualStation = atNonVirtualStation;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -54,6 +63,7 @@ public class VehicleSpatialIndexId
 
     if (isReserved != that.isReserved) return false;
     if (isDisabled != that.isDisabled) return false;
+    if (isAtNonVirtualStation != that.isAtNonVirtualStation) return false;
     if (formFactor != that.formFactor) return false;
     return propulsionType == that.propulsionType;
   }
@@ -65,6 +75,7 @@ public class VehicleSpatialIndexId
     result = 31 * result + (propulsionType != null ? propulsionType.hashCode() : 0);
     result = 31 * result + (isReserved ? 1 : 0);
     result = 31 * result + (isDisabled ? 1 : 0);
+    result = 31 * result + (isAtNonVirtualStation ? 1 : 0);
     return result;
   }
 }

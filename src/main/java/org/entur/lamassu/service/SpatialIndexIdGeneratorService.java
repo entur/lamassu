@@ -17,10 +17,15 @@ import org.springframework.stereotype.Service;
 public class SpatialIndexIdGeneratorService {
 
   private final EntityCache<VehicleType> vehicleTypeCache;
+  private final EntityCache<Station> stationCache;
 
   @Autowired
-  public SpatialIndexIdGeneratorService(EntityCache<VehicleType> vehicleTypeCache) {
+  public SpatialIndexIdGeneratorService(
+    EntityCache<VehicleType> vehicleTypeCache,
+    EntityCache<Station> stationCache
+  ) {
     this.vehicleTypeCache = vehicleTypeCache;
+    this.stationCache = stationCache;
   }
 
   public VehicleSpatialIndexId createVehicleIndexId(
@@ -43,7 +48,19 @@ public class SpatialIndexIdGeneratorService {
     id.setPropulsionType(vehicleType.getPropulsionType());
     id.setReserved(vehicle.getReserved());
     id.setDisabled(vehicle.getDisabled());
+    id.setAtNonVirtualStation(isAtNonVirtualStation(vehicle));
     return id;
+  }
+
+  private boolean isAtNonVirtualStation(Vehicle vehicle) {
+    if (vehicle.getStationId() == null) {
+      return false;
+    }
+    var station = stationCache.get(vehicle.getStationId());
+    if (station == null) {
+      return false;
+    }
+    return !Boolean.TRUE.equals(station.getVirtualStation());
   }
 
   public StationSpatialIndexId createStationIndexId(

@@ -28,6 +28,7 @@ public class TestSpatialIndexBuilder {
     id.setPropulsionType(vehicle.getVehicleType().getPropulsionType());
     id.setReserved(vehicle.getReserved());
     id.setDisabled(vehicle.getDisabled());
+    id.setAtNonVirtualStation(false);
     return id;
   }
 

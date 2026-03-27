@@ -72,7 +72,8 @@ class VehiclesUpdaterTest {
     vehicleMapper = new VehicleMapper(rentalUrisMapper);
 
     // Initialize real services
-    spatialIndexIdGeneratorService = new SpatialIndexIdGeneratorService(vehicleTypeCache);
+    spatialIndexIdGeneratorService =
+      new SpatialIndexIdGeneratorService(vehicleTypeCache, stationCache);
 
     vehiclesUpdater =
       new VehiclesUpdater(

@@ -56,6 +56,13 @@ public class SpatialIndexIdFilter {
       return false;
     }
 
+    if (
+      !filters.getIncludeVehiclesAtNonVirtualStations() &&
+      parsedId.getAtNonVirtualStation()
+    ) {
+      return false;
+    }
+
     return true;
   }
 

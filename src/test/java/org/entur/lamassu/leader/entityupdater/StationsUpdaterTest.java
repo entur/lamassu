@@ -68,7 +68,8 @@ class StationsUpdaterTest {
     RentalUrisMapper rentalUrisMapper = new RentalUrisMapper();
     stationMapper = new StationMapper(translationMapper, rentalUrisMapper);
 
-    spatialIndexIdGeneratorService = new SpatialIndexIdGeneratorService(vehicleTypeCache);
+    spatialIndexIdGeneratorService =
+      new SpatialIndexIdGeneratorService(vehicleTypeCache, stationCache);
     stationsUpdater =
       new StationsUpdater(
         stationCache,
