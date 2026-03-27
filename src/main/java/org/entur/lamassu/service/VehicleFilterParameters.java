@@ -10,6 +10,7 @@ public class VehicleFilterParameters extends FilterParameters {
   private List<PropulsionType> propulsionTypes;
   private boolean includeReserved;
   private boolean includeDisabled;
+  private boolean includeVehiclesAtNonVirtualStations;
 
   public VehicleFilterParameters(
     List<String> codespaces,
@@ -19,13 +20,15 @@ public class VehicleFilterParameters extends FilterParameters {
     List<FormFactor> formFactors,
     List<PropulsionType> propulsionTypes,
     boolean includeReserved,
-    boolean includeDisabled
+    boolean includeDisabled,
+    boolean includeVehiclesAtNonVirtualStations
   ) {
     super(codespaces, systems, operators, count);
     this.formFactors = formFactors;
     this.propulsionTypes = propulsionTypes;
     this.includeReserved = includeReserved;
     this.includeDisabled = includeDisabled;
+    this.includeVehiclesAtNonVirtualStations = includeVehiclesAtNonVirtualStations;
   }
 
   public List<FormFactor> getFormFactors() {
@@ -58,5 +61,15 @@ public class VehicleFilterParameters extends FilterParameters {
 
   public void setIncludeDisabled(boolean includeDisabled) {
     this.includeDisabled = includeDisabled;
+  }
+
+  public boolean getIncludeVehiclesAtNonVirtualStations() {
+    return includeVehiclesAtNonVirtualStations;
+  }
+
+  public void setIncludeVehiclesAtNonVirtualStations(
+    boolean includeVehiclesAtNonVirtualStations
+  ) {
+    this.includeVehiclesAtNonVirtualStations = includeVehiclesAtNonVirtualStations;
   }
 }

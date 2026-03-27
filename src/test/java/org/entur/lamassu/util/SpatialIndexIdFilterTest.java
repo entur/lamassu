@@ -121,6 +121,29 @@ public class SpatialIndexIdFilterTest {
   }
 
   @Test
+  public void testIncludeVehiclesAtNonVirtualStationsFilter() {
+    var testId = aVehicleId();
+    testId.setAtNonVirtualStation(true);
+    var params = aVehicleFilterParams();
+
+    params.setIncludeVehiclesAtNonVirtualStations(true);
+    Assert.assertTrue(SpatialIndexIdFilter.filterVehicle(testId, params));
+
+    params.setIncludeVehiclesAtNonVirtualStations(false);
+    Assert.assertFalse(SpatialIndexIdFilter.filterVehicle(testId, params));
+  }
+
+  @Test
+  public void testVehicleNotAtNonVirtualStationPassesFilter() {
+    var testId = aVehicleId();
+    testId.setAtNonVirtualStation(false);
+    var params = aVehicleFilterParams();
+
+    params.setIncludeVehiclesAtNonVirtualStations(false);
+    Assert.assertTrue(SpatialIndexIdFilter.filterVehicle(testId, params));
+  }
+
+  @Test
   public void testVehicleTypesAvailableFilter() {
     var testId = aStationId();
     var params = new StationFilterParameters(
@@ -208,7 +231,17 @@ public class SpatialIndexIdFilterTest {
   }
 
   private VehicleFilterParameters aVehicleFilterParams() {
-    return new VehicleFilterParameters(null, null, null, null, null, null, false, false);
+    return new VehicleFilterParameters(
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      false,
+      false,
+      false
+    );
   }
 
   private StationFilterParameters aStationFilterParams() {

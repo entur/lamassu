@@ -1,17 +1,20 @@
 package org.entur.lamassu.graphql.subscription;
 
 import java.util.List;
+import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.graphql.subscription.filter.VehicleUpdateFilter;
 import org.entur.lamassu.graphql.subscription.handler.VehicleSubscriptionHandler;
 import org.entur.lamassu.graphql.subscription.model.VehicleUpdate;
 import org.entur.lamassu.graphql.validation.QueryParameterValidator;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PropulsionType;
+import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.service.BoundingBoxQueryParameters;
 import org.entur.lamassu.service.FeedProviderService;
 import org.entur.lamassu.service.RangeQueryParameters;
 import org.entur.lamassu.service.VehicleFilterParameters;
 import org.reactivestreams.Publisher;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.SubscriptionMapping;
 import org.springframework.stereotype.Controller;
@@ -26,15 +29,24 @@ public class VehicleSubscriptionController {
   private final VehicleSubscriptionHandler vehicleSubscriptionHandler;
   private final QueryParameterValidator validationService;
   private final FeedProviderService feedProviderService;
+  private final EntityCache<Station> stationCache;
+  private final boolean defaultIncludeVehiclesAtNonVirtualStations;
 
   public VehicleSubscriptionController(
     VehicleSubscriptionHandler vehicleSubscriptionHandler,
     QueryParameterValidator validationService,
-    FeedProviderService feedProviderService
+    FeedProviderService feedProviderService,
+    EntityCache<Station> stationCache,
+    @Value(
+      "${org.entur.lamassu.graphql.default-include-vehicles-at-non-virtual-stations:false}"
+    ) boolean defaultIncludeVehiclesAtNonVirtualStations
   ) {
     this.vehicleSubscriptionHandler = vehicleSubscriptionHandler;
     this.validationService = validationService;
     this.feedProviderService = feedProviderService;
+    this.stationCache = stationCache;
+    this.defaultIncludeVehiclesAtNonVirtualStations =
+      defaultIncludeVehiclesAtNonVirtualStations;
   }
 
   /**
@@ -72,7 +84,8 @@ public class VehicleSubscriptionController {
     @Argument List<FormFactor> formFactors,
     @Argument List<PropulsionType> propulsionTypes,
     @Argument Boolean includeReserved,
-    @Argument Boolean includeDisabled
+    @Argument Boolean includeDisabled,
+    @Argument Boolean includeVehiclesAtNonVirtualStations
   ) {
     // Validate parameters
     validationService.validateCodespaces(codespaces);
@@ -96,7 +109,10 @@ public class VehicleSubscriptionController {
       formFactors,
       propulsionTypes,
       includeReserved != null && includeReserved,
-      includeDisabled != null && includeDisabled
+      includeDisabled != null && includeDisabled,
+      includeVehiclesAtNonVirtualStations != null
+        ? includeVehiclesAtNonVirtualStations
+        : defaultIncludeVehiclesAtNonVirtualStations
     );
 
     // Create subscription handler
@@ -114,7 +130,8 @@ public class VehicleSubscriptionController {
           filterParams,
           queryParams,
           systemId ->
-            feedProviderService.getFeedProviderBySystemId(systemId).getCodespace()
+            feedProviderService.getFeedProviderBySystemId(systemId).getCodespace(),
+          this::isNonVirtualStation
         );
     } else {
       var queryParams = new BoundingBoxQueryParameters(
@@ -128,11 +145,20 @@ public class VehicleSubscriptionController {
           filterParams,
           queryParams,
           systemId ->
-            feedProviderService.getFeedProviderBySystemId(systemId).getCodespace()
+            feedProviderService.getFeedProviderBySystemId(systemId).getCodespace(),
+          this::isNonVirtualStation
         );
     }
 
     // Return publisher and ensure listener is removed when subscription ends
     return vehicleSubscriptionHandler.getPublisher(filter);
+  }
+
+  private boolean isNonVirtualStation(String stationId) {
+    var station = stationCache.get(stationId);
+    if (station == null) {
+      return false;
+    }
+    return !Boolean.TRUE.equals(station.getVirtualStation());
   }
 }

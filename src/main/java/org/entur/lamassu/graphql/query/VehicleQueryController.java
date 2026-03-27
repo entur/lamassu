@@ -12,6 +12,7 @@ import org.entur.lamassu.service.BoundingBoxQueryParameters;
 import org.entur.lamassu.service.GeoSearchService;
 import org.entur.lamassu.service.RangeQueryParameters;
 import org.entur.lamassu.service.VehicleFilterParameters;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
@@ -22,15 +23,21 @@ public class VehicleQueryController {
   private final GeoSearchService geoSearchService;
   private final EntityReader<Vehicle> vehicleReader;
   private final QueryParameterValidator validationService;
+  private final boolean defaultIncludeVehiclesAtNonVirtualStations;
 
   public VehicleQueryController(
     GeoSearchService geoSearchService,
     EntityReader<Vehicle> vehicleReader,
-    QueryParameterValidator validationService
+    QueryParameterValidator validationService,
+    @Value(
+      "${org.entur.lamassu.graphql.default-include-vehicles-at-non-virtual-stations:false}"
+    ) boolean defaultIncludeVehiclesAtNonVirtualStations
   ) {
     this.geoSearchService = geoSearchService;
     this.vehicleReader = vehicleReader;
     this.validationService = validationService;
+    this.defaultIncludeVehiclesAtNonVirtualStations =
+      defaultIncludeVehiclesAtNonVirtualStations;
   }
 
   @QueryMapping
@@ -55,7 +62,8 @@ public class VehicleQueryController {
     @Argument List<FormFactor> formFactors,
     @Argument List<PropulsionType> propulsionTypes,
     @Argument Boolean includeReserved,
-    @Argument Boolean includeDisabled
+    @Argument Boolean includeDisabled,
+    @Argument Boolean includeVehiclesAtNonVirtualStations
   ) {
     if (ids != null && !ids.isEmpty()) {
       return vehicleReader.getAll(new HashSet<>(ids));
@@ -73,7 +81,10 @@ public class VehicleQueryController {
       formFactors,
       propulsionTypes,
       includeReserved,
-      includeDisabled
+      includeDisabled,
+      includeVehiclesAtNonVirtualStations != null
+        ? includeVehiclesAtNonVirtualStations
+        : defaultIncludeVehiclesAtNonVirtualStations
     );
 
     Collection<Vehicle> vehicles;

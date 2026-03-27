@@ -58,6 +58,7 @@ class VehicleUpdateFilterTest {
       null,
       null,
       false,
+      false,
       false
     );
 
@@ -71,7 +72,8 @@ class VehicleUpdateFilterTest {
     VehicleUpdateFilter filter = new VehicleUpdateFilter(
       filterParams,
       bbox,
-      CODESPACE_RESOLVER
+      CODESPACE_RESOLVER,
+      null
     );
 
     // Create test updates inside and outside the bounding box
@@ -100,6 +102,7 @@ class VehicleUpdateFilterTest {
       null,
       null,
       false,
+      false,
       false
     );
 
@@ -109,7 +112,8 @@ class VehicleUpdateFilterTest {
     VehicleUpdateFilter filter = new VehicleUpdateFilter(
       filterParams,
       rangeParams,
-      CODESPACE_RESOLVER
+      CODESPACE_RESOLVER,
+      null
     );
 
     // Create test updates inside and outside the range
@@ -135,6 +139,7 @@ class VehicleUpdateFilterTest {
       null,
       null,
       false,
+      false,
       false
     );
 
@@ -156,7 +161,8 @@ class VehicleUpdateFilterTest {
     VehicleUpdateFilter filter = new VehicleUpdateFilter(
       filterParams,
       bbox,
-      codespaceResolver
+      codespaceResolver,
+      null
     );
 
     // Create test updates with matching and non-matching codespaces
@@ -192,6 +198,7 @@ class VehicleUpdateFilterTest {
       List.of(FormFactor.SCOOTER),
       null,
       false,
+      false,
       false
     );
 
@@ -205,7 +212,8 @@ class VehicleUpdateFilterTest {
     VehicleUpdateFilter filter = new VehicleUpdateFilter(
       filterParams,
       bbox,
-      CODESPACE_RESOLVER
+      CODESPACE_RESOLVER,
+      null
     );
 
     // Create test updates with matching and non-matching form factors
@@ -239,6 +247,7 @@ class VehicleUpdateFilterTest {
       null,
       List.of(PropulsionType.ELECTRIC),
       false,
+      false,
       false
     );
 
@@ -252,7 +261,8 @@ class VehicleUpdateFilterTest {
     VehicleUpdateFilter filter = new VehicleUpdateFilter(
       filterParams,
       bbox,
-      CODESPACE_RESOLVER
+      CODESPACE_RESOLVER,
+      null
     );
 
     // Create test updates with matching and non-matching propulsion types
@@ -289,7 +299,8 @@ class VehicleUpdateFilterTest {
       null,
       null,
       false,
-      true
+      true,
+      false
     );
 
     BoundingBoxQueryParameters bbox = new BoundingBoxQueryParameters(
@@ -302,7 +313,8 @@ class VehicleUpdateFilterTest {
     VehicleUpdateFilter filter = new VehicleUpdateFilter(
       filterParams,
       bbox,
-      CODESPACE_RESOLVER
+      CODESPACE_RESOLVER,
+      null
     );
 
     // Create test updates with reserved and non-reserved vehicles
@@ -333,13 +345,15 @@ class VehicleUpdateFilterTest {
       null,
       null,
       true,
-      true
+      true,
+      false
     );
 
     VehicleUpdateFilter includeReservedFilter = new VehicleUpdateFilter(
       includeReservedParams,
       bbox,
-      CODESPACE_RESOLVER
+      CODESPACE_RESOLVER,
+      null
     );
 
     assertTrue(
@@ -359,6 +373,7 @@ class VehicleUpdateFilterTest {
       null,
       null,
       true,
+      false,
       false
     );
 
@@ -372,7 +387,8 @@ class VehicleUpdateFilterTest {
     VehicleUpdateFilter filter = new VehicleUpdateFilter(
       filterParams,
       bbox,
-      CODESPACE_RESOLVER
+      CODESPACE_RESOLVER,
+      null
     );
 
     // Create test updates with disabled and enabled vehicles
@@ -403,13 +419,15 @@ class VehicleUpdateFilterTest {
       null,
       null,
       true,
-      true
+      true,
+      false
     );
 
     VehicleUpdateFilter includeDisabledFilter = new VehicleUpdateFilter(
       includeDisabledParams,
       bbox,
-      CODESPACE_RESOLVER
+      CODESPACE_RESOLVER,
+      null
     );
 
     assertTrue(
@@ -429,7 +447,8 @@ class VehicleUpdateFilterTest {
       null,
       null,
       true,
-      true
+      true,
+      false
     );
 
     BoundingBoxQueryParameters bbox = new BoundingBoxQueryParameters(
@@ -442,7 +461,8 @@ class VehicleUpdateFilterTest {
     VehicleUpdateFilter filter = new VehicleUpdateFilter(
       filterParams,
       bbox,
-      CODESPACE_RESOLVER
+      CODESPACE_RESOLVER,
+      null
     );
 
     // Create test updates with matching and non-matching system IDs
@@ -475,7 +495,8 @@ class VehicleUpdateFilterTest {
       null,
       null,
       true,
-      true
+      true,
+      false
     );
 
     BoundingBoxQueryParameters bbox = new BoundingBoxQueryParameters(
@@ -488,7 +509,8 @@ class VehicleUpdateFilterTest {
     VehicleUpdateFilter filter = new VehicleUpdateFilter(
       filterParams,
       bbox,
-      CODESPACE_RESOLVER
+      CODESPACE_RESOLVER,
+      null
     );
 
     // Create test updates with matching and non-matching operator IDs
@@ -526,7 +548,8 @@ class VehicleUpdateFilterTest {
       List.of(FormFactor.BICYCLE),
       null,
       true,
-      true
+      true,
+      false
     );
 
     BoundingBoxQueryParameters bbox = new BoundingBoxQueryParameters(
@@ -539,7 +562,8 @@ class VehicleUpdateFilterTest {
     VehicleUpdateFilter filter = new VehicleUpdateFilter(
       filterParams,
       bbox,
-      CODESPACE_RESOLVER
+      CODESPACE_RESOLVER,
+      null
     );
 
     // Create a vehicle update with null vehicle type

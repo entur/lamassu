@@ -9,6 +9,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.graphql.subscription.filter.VehicleUpdateFilter;
 import org.entur.lamassu.graphql.subscription.handler.VehicleSubscriptionHandler;
 import org.entur.lamassu.graphql.subscription.model.UpdateType;
@@ -16,6 +17,7 @@ import org.entur.lamassu.graphql.subscription.model.VehicleUpdate;
 import org.entur.lamassu.graphql.validation.QueryParameterValidator;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PropulsionType;
+import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.entities.VehicleType;
 import org.entur.lamassu.model.provider.FeedProvider;
@@ -25,7 +27,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.reactivestreams.Publisher;
@@ -48,7 +49,9 @@ class VehicleSubscriptionControllerTest {
   @Mock
   private FeedProviderService feedProviderService;
 
-  @InjectMocks
+  @Mock
+  private EntityCache<Station> stationCache;
+
   private VehicleSubscriptionController controller;
 
   private static final String TEST_SYSTEM_ID = "test-system";
@@ -56,6 +59,14 @@ class VehicleSubscriptionControllerTest {
 
   @BeforeEach
   void setUp() {
+    controller =
+      new VehicleSubscriptionController(
+        subscriptionHandler,
+        validationService,
+        feedProviderService,
+        stationCache,
+        false
+      );
     // Setup common mocks with lenient to avoid UnnecessaryStubbingException
     FeedProvider feedProvider = new FeedProvider();
     feedProvider.setSystemId(TEST_SYSTEM_ID);
@@ -98,6 +109,7 @@ class VehicleSubscriptionControllerTest {
       11.0,
       List.of(TEST_CODESPACE),
       List.of(TEST_SYSTEM_ID),
+      null,
       null,
       null,
       null,
@@ -155,6 +167,7 @@ class VehicleSubscriptionControllerTest {
       59.5,
       10.5,
       1000,
+      null,
       null,
       null,
       null,
@@ -224,6 +237,7 @@ class VehicleSubscriptionControllerTest {
       List.of(FormFactor.BICYCLE),
       List.of(PropulsionType.ELECTRIC),
       null,
+      null,
       null
     );
 
@@ -287,7 +301,8 @@ class VehicleSubscriptionControllerTest {
       null,
       null,
       true, // includeReserved
-      false // includeDisabled
+      false, // includeDisabled
+      null // includeVehiclesAtNonVirtualStations
     );
 
     // Verify the result
@@ -342,6 +357,7 @@ class VehicleSubscriptionControllerTest {
       null,
       null,
       List.of("test-operator"),
+      null,
       null,
       null,
       null,
