@@ -113,6 +113,7 @@ jobs:
         with:
           workflow: ci.yml
           repo: ${{ github.repository }}
+          ref: master
           token: ${{ secrets.GITFLOW_PAT }}
           # Using GITFLOW_PAT which should have sufficient permissions to trigger workflows
           # This PAT is already used in the CI workflow for triggering downstream CI
