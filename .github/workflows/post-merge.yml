@@ -15,7 +15,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6.0.2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITFLOW_PAT }}
       - name: Configure git user
         run: |
           git config --global user.name 'Lamassu Changelog Bot'
@@ -31,12 +31,13 @@ jobs:
           git add $FILE
           git commit -m "Add changelog entry for #${NUMBER} [ci skip]"
           git pull --rebase origin master
-          git push ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}.git HEAD:master
+          git push https://x-access-token:${GITFLOW_PAT}@github.com/${GITHUB_REPOSITORY}.git HEAD:master
         env:
           # Use environment variables to prevent injection attack
           TITLE: ${{ github.event.pull_request.title }}
           NUMBER: ${{ github.event.pull_request.number }}
           URL: ${{ github.event.pull_request.html_url }}
+          GITFLOW_PAT: ${{ secrets.GITFLOW_PAT }}
 
   serialization-version:
     # if you have a dependent job that is skipped (i.e. you want to bump the version but not have a changelog entry) you must add
@@ -58,7 +59,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6.0.2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITFLOW_PAT }}
       - name: Bump serialization version
         run: |
           version=`xmllint --xpath "//*[local-name()='lamassu.serialization.version.id']/text()" pom.xml`
@@ -68,10 +69,11 @@ jobs:
           git commit -m "Bump serialization version id for #${NUMBER}"
           # just for safety as the Github repo is eventually consistent, therefore this push competes with the changelog entry one
           git pull --rebase origin master
-          git push ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}.git HEAD:master
+          git push https://x-access-token:${GITFLOW_PAT}@github.com/${GITHUB_REPOSITORY}.git HEAD:master
         env:
           # Use environment variables to prevent injection attack
           NUMBER: ${{ github.event.pull_request.number }}
+          GITFLOW_PAT: ${{ secrets.GITFLOW_PAT }}
 
   # Job to check which dependencies are needed
   check-dependencies:
