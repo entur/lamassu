@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.entur.ror</groupId>
         <artifactId>superpom</artifactId>
-        <version>5.3.0</version>
+        <version>5.6.0</version>
     </parent>
     <groupId>org.entur</groupId>
     <artifactId>lamassu</artifactId>
@@ -25,8 +25,8 @@
         <embedded-redis.version>0.9.1</embedded-redis.version>
         <okhttp.version>5.3.2</okhttp.version>
         <kryo.version>5.6.2</kryo.version>
-        <jackson.version>2.21.2</jackson.version>
-        <gbfs-loader-java.version>4.0.66</gbfs-loader-java.version>
+        <jackson.version>2.21.3</jackson.version>
+        <gbfs-loader-java.version>4.0.67</gbfs-loader-java.version>
         <gbfs-validator-java.version>2.0.69</gbfs-validator-java.version>
         <gbfs-mapper-java.version>2.0.61</gbfs-mapper-java.version>
         <prettier-java.version>2.1.0</prettier-java.version>
