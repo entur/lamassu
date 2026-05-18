@@ -97,11 +97,13 @@ public class GeofencingZonesFeedMapper extends AbstractFeedMapper<GBFSGeofencing
     mapped.setStart(properties.getStart());
     mapped.setEnd(properties.getEnd());
     mapped.setRules(
-      properties
-        .getRules()
-        .stream()
-        .map(rule -> mapRule(rule, feedProvider))
-        .collect(Collectors.toList())
+      properties.getRules() != null
+        ? properties
+          .getRules()
+          .stream()
+          .map(rule -> mapRule(rule, feedProvider))
+          .collect(Collectors.toList())
+        : null
     );
     return mapped;
   }

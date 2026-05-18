@@ -91,7 +91,7 @@ public class GeofencingZonesMapper {
     return features.stream().map(feature -> mapFeature(feature, language)).toList();
   }
 
-  private org.entur.lamassu.model.entities.GeofencingZones.Feature mapFeature(
+  protected org.entur.lamassu.model.entities.GeofencingZones.Feature mapFeature(
     GBFSFeature feature,
     String language
   ) {
@@ -122,7 +122,9 @@ public class GeofencingZonesMapper {
     mapped.setEnd(
       properties.getEnd() != null ? properties.getEnd().getTime() / 1000 : null
     );
-    mapped.setRules(mapRules(properties.getRules()));
+    mapped.setRules(
+      properties.getRules() != null ? mapRules(properties.getRules()) : null
+    );
     return mapped;
   }
 
