@@ -117,7 +117,7 @@ class StationsUpdaterTest {
     stationStatus.setIsInstalled(true);
     stationStatus.setIsRenting(true);
     stationStatus.setIsReturning(true);
-    stationStatus.setLastReported(new Date());
+    stationStatus.setLastReported(new Date(1000L));
 
     var stationInformationFeed = new GBFSStationInformation();
     var data = new GBFSData();
@@ -210,7 +210,7 @@ class StationsUpdaterTest {
     stationStatus.setIsInstalled(true);
     stationStatus.setIsRenting(true);
     stationStatus.setIsReturning(true);
-    stationStatus.setLastReported(new Date());
+    stationStatus.setLastReported(new Date(1000L));
 
     var stationInformationFeed = new GBFSStationInformation();
     var data = new GBFSData();
@@ -393,7 +393,7 @@ class StationsUpdaterTest {
     stationStatus.setIsInstalled(true);
     stationStatus.setIsRenting(true);
     stationStatus.setIsReturning(true);
-    stationStatus.setLastReported(new Date());
+    stationStatus.setLastReported(new Date(1000L));
     stationStatus.setVehicleTypesAvailable(
       new ArrayList<>(
         List.of(
@@ -538,7 +538,7 @@ class StationsUpdaterTest {
     stationStatus.setIsInstalled(true);
     stationStatus.setIsRenting(true);
     stationStatus.setIsReturning(true);
-    stationStatus.setLastReported(new Date());
+    stationStatus.setLastReported(new Date(1000L));
 
     var stationInformationFeed = new GBFSStationInformation();
     var data = new GBFSData();
