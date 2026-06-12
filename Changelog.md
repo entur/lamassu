@@ -16,6 +16,7 @@ based on merged pull requests. Search GitHub issues and pull requests for smalle
 - feat(metrics): add whitelisted client name grouping for HTTP histogram metrics [#838](https://github.com/entur/lamassu/pull/838)
 - Bump the npm_and_yarn group across 1 directory with 6 updates [#859](https://github.com/entur/lamassu/pull/859)
 - Fix: handle mapping geofencing zones without rules gracefully [#867](https://github.com/entur/lamassu/pull/867)
+- Update shell-quote to 1.8.4 (CVE-2026-9277) [#871](https://github.com/entur/lamassu/pull/871)
 [](AUTOMATIC_CHANGELOG_PLACEHOLDER_DO_NOT_REMOVE)
 
 ## 1.2.0
