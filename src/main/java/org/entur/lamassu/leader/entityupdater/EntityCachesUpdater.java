@@ -27,11 +27,15 @@ import org.entur.lamassu.model.provider.FeedProvider;
 import org.mobilitydata.gbfs.v2_3.gbfs.GBFSFeedName;
 import org.mobilitydata.gbfs.v3_0.station_status.GBFSStation;
 import org.mobilitydata.gbfs.v3_0.vehicle_status.GBFSVehicle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class EntityCachesUpdater {
+
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   private final SystemUpdater systemUpdater;
   private final VehicleTypesUpdater vehicleTypesUpdater;
@@ -101,15 +105,26 @@ public class EntityCachesUpdater {
           useBase ? oldDelivery.stationStatus() : null,
           delivery.stationStatus()
         );
-      stationsUpdater.update(
+      var fullyApplied = stationsUpdater.update(
         feedProvider,
         stationStatusDelta,
         delivery.stationInformation()
       );
-      updateContinuityTracker.updateStationUpdateContinuity(
-        feedProvider.getSystemId(),
-        delivery
-      );
+      if (fullyApplied) {
+        updateContinuityTracker.updateStationUpdateContinuity(
+          feedProvider.getSystemId(),
+          delivery
+        );
+      } else {
+        // One or more stations could not be added to the entity cache. Since the
+        // delta for those stations will not occur again, clear continuity so the
+        // next update performs a full rebuild instead of permanently losing them.
+        logger.warn(
+          "Station update was not fully applied for system={}, clearing update continuity to force full rebuild on next update",
+          feedProvider.getSystemId()
+        );
+        updateContinuityTracker.clearStationUpdateContinuity(feedProvider.getSystemId());
+      }
     }
 
     if (canUpdateVehicles(delivery, feedProvider)) {

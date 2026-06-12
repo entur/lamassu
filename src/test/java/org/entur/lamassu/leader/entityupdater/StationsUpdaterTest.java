@@ -1,5 +1,7 @@
 package org.entur.lamassu.leader.entityupdater;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyMap;
@@ -260,13 +262,80 @@ class StationsUpdaterTest {
     );
 
     // When
-    stationsUpdater.update(feedProvider, delta, null);
+    var fullyApplied = stationsUpdater.update(feedProvider, delta, null);
 
-    // Then
+    // Then - the station remains in the cache (stale), so the update is still
+    // considered fully applied
+    assertTrue(fullyApplied);
     verify(spatialIndex, never()).addAll(anyMap());
     verify(spatialIndex, never()).removeAll(anySet());
     verify(stationCache, never()).updateAll(anyMap(), anyInt(), any(TimeUnit.class));
     verify(stationCache, never()).removeAll(anySet());
+  }
+
+  @Test
+  void shouldReportNotFullyAppliedWhenCreateSkippedDueToMissingStationInformation() {
+    // Given
+    var feedProvider = new FeedProvider();
+    feedProvider.setSystemId("test-system");
+
+    var stationId = "station-1";
+
+    var stationStatus = new org.mobilitydata.gbfs.v3_0.station_status.GBFSStation();
+    stationStatus.setStationId(stationId);
+    stationStatus.setNumVehiclesAvailable(5);
+
+    // Mock behavior
+    when(stationCache.get(stationId)).thenReturn(null);
+
+    var delta = new GBFSFileDelta<>(
+      1000L,
+      2000L,
+      "station_status",
+      List.of(new GBFSEntityDelta<>(stationId, DeltaType.CREATE, stationStatus))
+    );
+
+    // When - station information feed does not contain the new station
+    var fullyApplied = stationsUpdater.update(
+      feedProvider,
+      delta,
+      new GBFSStationInformation().withData(new GBFSData().withStations(List.of()))
+    );
+
+    // Then - the station could not be added, continuity must be broken
+    assertFalse(fullyApplied);
+    verify(stationCache, never()).updateAll(anyMap());
+  }
+
+  @Test
+  void shouldReportNotFullyAppliedWhenUpdatedStationIsMissingFromCache() {
+    // Given
+    var feedProvider = new FeedProvider();
+    feedProvider.setSystemId("test-system");
+
+    var stationId = "station-1";
+
+    var stationStatus = new org.mobilitydata.gbfs.v3_0.station_status.GBFSStation();
+    stationStatus.setStationId(stationId);
+    stationStatus.setNumVehiclesAvailable(5);
+
+    // Mock behavior - station is not in the entity cache
+    when(stationCache.get(stationId)).thenReturn(null);
+
+    var delta = new GBFSFileDelta<>(
+      1000L,
+      2000L,
+      "station_status",
+      List.of(new GBFSEntityDelta<>(stationId, DeltaType.UPDATE, stationStatus))
+    );
+
+    // When
+    var fullyApplied = stationsUpdater.update(feedProvider, delta, null);
+
+    // Then - the station is missing from the cache and could not be recovered,
+    // continuity must be broken
+    assertFalse(fullyApplied);
+    verify(stationCache, never()).updateAll(anyMap());
   }
 
   @Test
