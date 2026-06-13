@@ -58,6 +58,11 @@ public class StationsUpdater {
     final Set<StationSpatialIndexId> spatialIndexIdsToRemove = new HashSet<>();
     final Map<StationSpatialIndexId, Station> spatialIndexUpdateMap = new HashMap<>();
 
+    // Set to false when a delta could not be applied, leaving a station missing
+    // from the entity cache. Signals that delta continuity must be broken so the
+    // next update performs a full rebuild instead of permanently losing the station.
+    boolean fullyApplied = true;
+
     public UpdateContext(
       FeedProvider feedProvider,
       Map<String, org.mobilitydata.gbfs.v3_0.station_information.GBFSStation> stationInfo
@@ -90,7 +95,15 @@ public class StationsUpdater {
     this.spatialIndexService = spatialIndexService;
   }
 
-  public void update(
+  /**
+   * Applies a station status delta to the entity caches.
+   *
+   * @return true if the delta was fully applied, false if one or more stations
+   * could not be added to the entity cache (e.g. due to missing station
+   * information), in which case delta continuity should be broken to force a
+   * full rebuild on the next update
+   */
+  public boolean update(
     FeedProvider feedProvider,
     GBFSFileDelta<GBFSStation> delta,
     GBFSStationInformation stationInformationFeed
@@ -115,6 +128,8 @@ public class StationsUpdater {
     }
 
     updateCaches(context);
+
+    return context.fullyApplied;
   }
 
   private static @NotNull Map<String, org.mobilitydata.gbfs.v3_0.station_information.@NotNull GBFSStation> extractStationInfo(
@@ -191,10 +206,11 @@ public class StationsUpdater {
     var stationInformation = context.stationInfo.get(stationId);
     if (stationInformation == null) {
       logger.warn(
-        "Skipping station due to missing station information feed for provider={} stationId={}",
+        "Skipping station create due to missing station information feed for provider={} stationId={}",
         context.feedProvider,
         stationId
       );
+      context.fullyApplied = false;
       return;
     }
 
@@ -221,40 +237,44 @@ public class StationsUpdater {
     Station currentStation
   ) {
     var stationId = entityDelta.entityId();
+
+    if (currentStation == null) {
+      logger.warn(
+        "Station marked for update but not found in cache for provider={} stationId={}",
+        context.feedProvider,
+        stationId
+      );
+      context.fullyApplied = false;
+      return;
+    }
+
     var stationInformation = context.stationInfo.get(stationId);
     if (stationInformation == null) {
       logger.warn(
-        "Skipping station due to missing station information feed for provider={} stationId={}",
+        "Skipping station update due to missing station information feed for provider={} stationId={}",
         context.feedProvider,
         stationId
       );
       return;
     }
 
-    if (currentStation != null) {
-      context.spatialIndexIdsToRemove.add(
-        spatialIndexService.createStationIndexId(currentStation, context.feedProvider)
-      );
+    context.spatialIndexIdsToRemove.add(
+      spatialIndexService.createStationIndexId(currentStation, context.feedProvider)
+    );
 
-      Station mappedStation = stationMapper.mapStation(
-        stationInformation,
-        entityDelta.entity(),
-        context.feedProvider.getSystemId(),
-        context.feedProvider.getLanguage()
-      );
+    Station mappedStation = stationMapper.mapStation(
+      stationInformation,
+      entityDelta.entity(),
+      context.feedProvider.getSystemId(),
+      context.feedProvider.getLanguage()
+    );
 
-      context.addedAndUpdatedStations.put(mappedStation.getId(), mappedStation);
+    context.addedAndUpdatedStations.put(mappedStation.getId(), mappedStation);
 
-      context.spatialIndexUpdateMap.put(
-        spatialIndexService.createStationIndexId(mappedStation, context.feedProvider),
-        mappedStation
-      );
-    } else {
-      logger.debug(
-        "Station {} marked for update but not found in cache",
-        entityDelta.entityId()
-      );
-    }
+    context.spatialIndexUpdateMap.put(
+      spatialIndexService.createStationIndexId(mappedStation, context.feedProvider),
+      mappedStation
+    );
   }
 
   private void updateCaches(UpdateContext context) {
