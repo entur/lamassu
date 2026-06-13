@@ -109,7 +109,7 @@ jobs:
     needs: [check-dependencies, wait-for-changelog, wait-for-serialization]
     steps:
       - name: Trigger CI workflow
-        uses: benc-uk/workflow-dispatch@v1
+        uses: benc-uk/workflow-dispatch@v1.3.2
         with:
           workflow: ci.yml
           repo: ${{ github.repository }}
