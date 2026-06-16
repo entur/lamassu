@@ -1,7 +1,6 @@
 package org.entur.lamassu.config.cache;
 
 import java.util.Set;
-import org.entur.gbfs.validation.model.ValidationResult;
 import org.entur.lamassu.cache.StationSpatialIndexId;
 import org.entur.lamassu.cache.UpdateContinuityCache;
 import org.entur.lamassu.cache.VehicleSpatialIndexId;
@@ -15,6 +14,7 @@ import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.model.entities.System;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.entities.VehicleType;
+import org.mobilitydata.gbfs.validation.model.ValidationResult;
 import org.redisson.Redisson;
 import org.redisson.api.RBucket;
 import org.redisson.api.RGeo;
