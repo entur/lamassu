@@ -19,7 +19,7 @@
 package org.entur.lamassu.model.validation;
 
 import java.util.List;
-import org.entur.gbfs.validation.model.FileValidationError;
+import org.mobilitydata.gbfs.validation.model.FileValidationError;
 
 public class ShortFileValidationResult {
 
