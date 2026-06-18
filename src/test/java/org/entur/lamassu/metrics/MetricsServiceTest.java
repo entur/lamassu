@@ -24,12 +24,12 @@ import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Map;
-import org.entur.gbfs.validation.model.FileValidationResult;
-import org.entur.gbfs.validation.model.ValidationResult;
-import org.entur.gbfs.validation.model.ValidationSummary;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
+import org.mobilitydata.gbfs.validation.model.FileValidationResult;
+import org.mobilitydata.gbfs.validation.model.ValidationResult;
+import org.mobilitydata.gbfs.validation.model.ValidationSummary;
 
 class MetricsServiceTest {
 
