@@ -25,19 +25,19 @@ jobs:
     env:
       TZ: Europe/Oslo
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6.0.3
         with:
           ref: ${{ github.event.inputs.ref || github.ref }}
 
       # nodejs is needed because the dynamic download of it via the prettier maven plugin often
       # times out
       # Example: https://github.com/opentripplanner/OpenTripPlanner/actions/runs/4490450225/jobs/7897533439
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v6.4.0
         with:
           node-version: 24.14.1
 
       - name: Set up JDK 21
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v5.3.0
         with:
           java-version: 21
           distribution: temurin
@@ -50,7 +50,7 @@ jobs:
           mvn --batch-mode jib:dockerBuild -Dmaven.test.skip -P prettierSkip
 
       - name: codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v5.5.5
         with:
           files: ./target/site/jacoco/jacoco.xml
 
@@ -60,10 +60,10 @@ jobs:
       run:
         working-directory: ui
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6.0.3
         with:
           ref: ${{ github.event.inputs.ref || github.ref }}
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v6.4.0
         with:
           node-version: 24.14.1
       - name: Check UI
@@ -85,18 +85,18 @@ jobs:
       CONTAINER_REGISTRY_USER: ${{ secrets.DOCKERHUB_LOGIN }}
       CONTAINER_REGISTRY_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6.0.3
         with:
           ref: ${{ github.event.inputs.ref || github.ref }}
 
       - name: Set up JDK 21
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v5.3.0
         with:
           java-version: 21
           distribution: temurin
           cache: maven
 
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v6.4.0
         with:
           node-version: 24.14.1
 
