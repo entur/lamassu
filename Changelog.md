@@ -19,6 +19,7 @@ based on merged pull requests. Search GitHub issues and pull requests for smalle
 - Update shell-quote to 1.8.4 (CVE-2026-9277) [#871](https://github.com/entur/lamassu/pull/871)
 - fix: station missing from entity caches when station_information lags station_status [#870](https://github.com/entur/lamassu/pull/870)
 - fix(deps): update gbfs libs and switch validator to org.mobilitydata 3.1.0 [#875](https://github.com/entur/lamassu/pull/875)
+- Upgrade to Spring Boot 4 (superpom 6) and Redisson 4 [#877](https://github.com/entur/lamassu/pull/877)
 [](AUTOMATIC_CHANGELOG_PLACEHOLDER_DO_NOT_REMOVE)
 
 ## 1.2.0
