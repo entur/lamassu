@@ -246,9 +246,11 @@ export default function AdminCacheManagement() {
                             <ListItem key={key}>
                               <ListItemText
                                 primary={key}
-                                primaryTypographyProps={{
-                                  variant: 'body2',
-                                  sx: { fontFamily: 'monospace' },
+                                slotProps={{
+                                  primary: {
+                                    variant: 'body2',
+                                    sx: { fontFamily: 'monospace' },
+                                  },
                                 }}
                               />
                             </ListItem>

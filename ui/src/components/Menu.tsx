@@ -140,7 +140,7 @@ export default function Menu({ open, onClose }: SideMenuProps) {
 
       <Box sx={{ flexGrow: 1 }} />
       <Divider />
-      <Box p={2} textAlign="center">
+      <Box sx={{ p: 2, textAlign: 'center' }}>
         <Typography variant="caption" color={theme.palette.secondary.main}>
           {theme.companyName}
         </Typography>
