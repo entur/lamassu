@@ -27,11 +27,11 @@ import java.util.concurrent.ExecutionException;
 import org.entur.lamassu.cache.SpatialIndex;
 import org.entur.lamassu.cache.SpatialIndexId;
 import org.entur.lamassu.model.entities.LocationEntity;
-import org.redisson.api.GeoEntry;
-import org.redisson.api.GeoOrder;
-import org.redisson.api.GeoUnit;
 import org.redisson.api.RGeo;
+import org.redisson.api.geo.GeoEntry;
+import org.redisson.api.geo.GeoOrder;
 import org.redisson.api.geo.GeoSearchArgs;
+import org.redisson.api.geo.GeoUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
