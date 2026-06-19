@@ -1,6 +1,5 @@
 package org.entur.lamassu.config.feedprovider;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
 import org.entur.lamassu.model.provider.FeedProvider;
@@ -20,15 +19,12 @@ public class FeedProviderConfigRedis implements FeedProviderConfig {
 
   private final RBucket<List<FeedProvider>> feedProvidersBucket;
 
-  public FeedProviderConfigRedis(
-    RedissonClient redissonClient,
-    ObjectMapper objectMapper
-  ) {
+  public FeedProviderConfigRedis(RedissonClient redissonClient) {
+    // Redisson's JsonJacksonCodec creates its own (Jackson 2) ObjectMapper. We no longer
+    // inject Spring's ObjectMapper here: Spring Boot 4 auto-configures a Jackson 3
+    // (tools.jackson) mapper, which is not type-compatible with this codec.
     this.feedProvidersBucket =
-      redissonClient.getBucket(
-        FEED_PROVIDERS_REDIS_KEY,
-        new JsonJacksonCodec(objectMapper)
-      );
+      redissonClient.getBucket(FEED_PROVIDERS_REDIS_KEY, new JsonJacksonCodec());
   }
 
   @Override

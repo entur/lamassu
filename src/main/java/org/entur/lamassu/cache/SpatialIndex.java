@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.entur.lamassu.model.entities.LocationEntity;
-import org.redisson.api.GeoOrder;
-import org.redisson.api.GeoUnit;
+import org.redisson.api.geo.GeoOrder;
+import org.redisson.api.geo.GeoUnit;
 
 public interface SpatialIndex<S extends SpatialIndexId, T extends LocationEntity> {
   void addAll(Map<S, T> spatialIndexUpdateMap);

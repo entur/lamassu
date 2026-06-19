@@ -2,14 +2,25 @@ package org.entur.lamassu.integration;
 
 import static org.springframework.graphql.test.tester.GraphQlTester.Response;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.graphql.server.WebGraphQlHandler;
 import org.springframework.graphql.test.tester.WebGraphQlTester;
 
 class GraphQLIntegrationTest extends AbstractIntegrationTestBase {
 
+  // Spring Boot 4 no longer auto-provides a GraphQlTester bean; build one in-process from the
+  // auto-configured WebGraphQlHandler (behaviour-equivalent for these query-correctness tests).
   @Autowired
+  private WebGraphQlHandler webGraphQlHandler;
+
   private WebGraphQlTester graphQlTester;
+
+  @BeforeEach
+  void setUpGraphQlTester() {
+    graphQlTester = WebGraphQlTester.create(webGraphQlHandler);
+  }
 
   @Test
   void testVehiclesQuery() {

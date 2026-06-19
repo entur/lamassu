@@ -20,8 +20,8 @@ import org.entur.lamassu.service.VehicleFilterParameters;
 import org.entur.lamassu.util.GeoUtils;
 import org.entur.lamassu.util.SpatialIndexIdFilter;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.redisson.api.GeoOrder;
-import org.redisson.api.GeoUnit;
+import org.redisson.api.geo.GeoOrder;
+import org.redisson.api.geo.GeoUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

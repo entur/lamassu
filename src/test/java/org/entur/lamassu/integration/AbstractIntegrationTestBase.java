@@ -19,11 +19,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -36,6 +33,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
   properties = "scheduling.enabled=false",
   webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
+// Spring Boot 4 no longer auto-registers TestRestTemplate via @SpringBootTest; opt in explicitly.
+@AutoConfigureTestRestTemplate
 public abstract class AbstractIntegrationTestBase {
 
   @Autowired
@@ -48,18 +47,6 @@ public abstract class AbstractIntegrationTestBase {
   private FeedUpdater feedUpdater;
 
   private static MockWebServer mockWebServer;
-
-  @Configuration
-  static class TestConfig {
-
-    @LocalServerPort
-    private int port;
-
-    @Bean
-    public TestRestTemplate testRestTemplate() {
-      return new TestRestTemplate("admin", "admin");
-    }
-  }
 
   @BeforeAll
   public static void setUp() throws IOException {
