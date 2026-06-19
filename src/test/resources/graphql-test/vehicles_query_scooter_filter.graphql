@@ -1,0 +1,13 @@
+{
+    vehicles(
+        lat: 12.345678,
+        lon: 56.789012,
+        range: 500,
+        formFactors: [SCOOTER]
+    ) {
+        id
+        vehicleType {
+            formFactor
+        }
+    }
+}

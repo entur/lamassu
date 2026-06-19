@@ -70,7 +70,7 @@ public class VehicleQueryController {
       systems,
       operators,
       count,
-      formFactors,
+      FormFactor.expandFormFactorFilter(formFactors),
       propulsionTypes,
       includeReserved,
       includeDisabled
