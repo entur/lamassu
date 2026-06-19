@@ -34,7 +34,7 @@ export default function SettingsDialog({ open, onClose }: SettingsDialogProps) {
       <DialogTitle>{t('settings')}</DialogTitle>
       <DialogContent dividers>
         <Stack spacing={3}>
-          <Box display="flex" alignItems="center" justifyContent="space-between">
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <Typography>{t('settings.enableCustomTheme')}</Typography>
             <Switch
               checked={useCustomFeatures}
@@ -43,7 +43,7 @@ export default function SettingsDialog({ open, onClose }: SettingsDialogProps) {
             />
           </Box>
 
-          <Box display="flex" alignItems="center" justifyContent="space-between">
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <Typography>{t('settings.language')}</Typography>
             <FormControl>
               <Select

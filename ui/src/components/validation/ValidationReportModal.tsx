@@ -102,23 +102,22 @@ export default function ValidationReportModal({
                           </AccordionSummary>
                           <AccordionDetails>
                             <Box>
-                              <Typography variant="caption" display="block" sx={{ mb: 1 }}>
+                              <Typography variant="caption" sx={{ display: 'block', mb: 1 }}>
                                 <strong>Pattern:</strong> {groupedError.normalizedPath}
                               </Typography>
-                              <Typography variant="caption" display="block" sx={{ mb: 1 }}>
+                              <Typography variant="caption" sx={{ display: 'block', mb: 1 }}>
                                 <strong>Schema:</strong> {groupedError.schemaPath}
                               </Typography>
                               {groupedError.count > 1 && (
                                 <Box sx={{ mt: 2 }}>
-                                  <Typography variant="caption" display="block" sx={{ mb: 0.5 }}>
+                                  <Typography variant="caption" sx={{ display: 'block', mb: 0.5 }}>
                                     <strong>Example paths:</strong>
                                   </Typography>
                                   {groupedError.examplePaths.map((path, pathIdx) => (
                                     <Typography
                                       key={pathIdx}
                                       variant="caption"
-                                      display="block"
-                                      sx={{ ml: 2, fontFamily: 'monospace' }}
+                                      sx={{ display: 'block', ml: 2, fontFamily: 'monospace' }}
                                     >
                                       • {path}
                                     </Typography>
@@ -126,8 +125,7 @@ export default function ValidationReportModal({
                                   {groupedError.count > groupedError.examplePaths.length && (
                                     <Typography
                                       variant="caption"
-                                      display="block"
-                                      sx={{ ml: 2, fontStyle: 'italic', mt: 0.5 }}
+                                      sx={{ display: 'block', ml: 2, fontStyle: 'italic', mt: 0.5 }}
                                     >
                                       ... and{' '}
                                       {groupedError.count - groupedError.examplePaths.length} more
@@ -136,7 +134,7 @@ export default function ValidationReportModal({
                                 </Box>
                               )}
                               {groupedError.count === 1 && (
-                                <Typography variant="caption" display="block" sx={{ mt: 1 }}>
+                                <Typography variant="caption" sx={{ display: 'block', mt: 1 }}>
                                   <strong>Path:</strong> {groupedError.examplePaths[0]}
                                 </Typography>
                               )}

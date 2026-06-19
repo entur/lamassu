@@ -132,7 +132,7 @@ export default function PublicFeedProviders() {
                 <TableCell>
                   {provider.operatorName}
                   {provider.operatorId && (
-                    <Typography variant="caption" display="block" color="text.secondary">
+                    <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
                       {provider.operatorId}
                     </Typography>
                   )}
