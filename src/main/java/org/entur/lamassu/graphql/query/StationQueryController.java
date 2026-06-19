@@ -68,7 +68,7 @@ public class StationQueryController {
       systems,
       operators,
       count,
-      availableFormFactors,
+      FormFactor.expandFormFactorFilter(availableFormFactors),
       availablePropulsionTypes
     );
 

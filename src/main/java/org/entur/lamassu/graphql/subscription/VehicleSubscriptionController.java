@@ -93,7 +93,7 @@ public class VehicleSubscriptionController {
       systems,
       operators,
       null, // count is not applicable for subscriptions
-      formFactors,
+      FormFactor.expandFormFactorFilter(formFactors),
       propulsionTypes,
       includeReserved != null && includeReserved,
       includeDisabled != null && includeDisabled

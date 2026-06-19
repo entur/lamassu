@@ -66,6 +66,25 @@ class GraphQLIntegrationTest extends AbstractIntegrationTestBase {
   }
 
   @Test
+  void testScooterFilterIncludesScooterStanding() {
+    // The deprecated SCOOTER form factor must still match vehicles mapped to the GBFS v3
+    // SCOOTER_STANDING form factor (see FormFactor#expandFormFactorFilter).
+    Response response = graphQlTester
+      .documentName("vehicles_query_scooter_filter")
+      .execute();
+
+    response.path("vehicles").entityList(Object.class).hasSize(1);
+    response
+      .path("vehicles[0].id")
+      .entity(String.class)
+      .isEqualTo("OZO:Vehicle:987fd100-b822-4347-86a4-b3eef8ca8b53");
+    response
+      .path("vehicles[0].vehicleType.formFactor")
+      .entity(String.class)
+      .isEqualTo("SCOOTER_STANDING");
+  }
+
+  @Test
   void testStationsQuery() {
     Response response = graphQlTester.documentName("stations_query").execute();
 

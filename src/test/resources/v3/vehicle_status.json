@@ -21,12 +21,12 @@
       {
         "vehicle_id":"987fd100-b822-4347-86a4-b3eef8ca8b53",
         "last_reported":"2021-01-05T18:03:24+01:00",
+        "lat":12.345678,
+        "lon":56.789012,
         "is_reserved":false,
         "is_disabled":false,
         "vehicle_type_id":"def456",
-        "current_range_meters":6543.0,
-        "station_id":"86",
-        "pricing_plan_id":"plan3"
+        "current_range_meters":6543.0
       },
       {
         "vehicle_id":"45bd3fb7-a2d5-4def-9de1-c645844ba962",
