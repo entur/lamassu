@@ -65,10 +65,14 @@ public class GbfsJacksonConverterConfig implements WebMvcConfigurer {
   }
 
   /**
-   * Builds a Jackson 2 ObjectMapper that reproduces the pre-Spring-Boot-4 GBFS feed serialization:
-   * dates are rendered as RFC3339 strings (not numeric timestamps) with an explicit numeric UTC
-   * offset ({@code +00:00}), matching {@link JacksonConfig} which applies the equivalent setting to
-   * the Jackson 3 mapper used by the rest of the application.
+   * Builds a Jackson 2 ObjectMapper that reproduces the pre-Spring-Boot-4 GBFS feed serialization.
+   *
+   * <p>The date-format configuration only affects GBFS v3 feeds, whose timestamps (e.g.
+   * {@code last_updated}) are {@link java.util.Date} fields. These are rendered as RFC3339 strings
+   * (not numeric timestamps) with an explicit numeric UTC offset ({@code +00:00}), matching
+   * {@link JacksonConfig} which applies the equivalent setting to the Jackson 3 mapper used by the
+   * rest of the application. GBFS v2 timestamps are plain integer epoch-second fields and are
+   * unaffected by these settings.
    */
   private static ObjectMapper gbfsObjectMapper() {
     return Jackson2ObjectMapperBuilder
