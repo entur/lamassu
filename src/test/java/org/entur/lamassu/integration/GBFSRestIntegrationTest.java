@@ -155,6 +155,16 @@ public class GBFSRestIntegrationTest extends AbstractIntegrationTestBase {
       .andExpect(status().isOk())
       .andExpect(
         jsonPath("$.data.geofencing_zones.features[0].properties.name").value("Nes")
+      )
+      // Geometry must serialize as GeoJSON coordinate arrays ([lon, lat]), not as
+      // org.geojson.LngLatAlt beans (longitude/latitude/altitude/additionalElements).
+      .andExpect(
+        jsonPath("$.data.geofencing_zones.features[0].geometry.type")
+          .value("MultiPolygon")
+      )
+      .andExpect(
+        jsonPath("$.data.geofencing_zones.features[0].geometry.coordinates[0][0][0][0]")
+          .isNumber()
       );
   }
 
