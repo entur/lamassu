@@ -35,7 +35,7 @@
     "react": "19.2.7",
     "react-dom": "19.2.7",
     "react-i18next": "17.0.8",
-    "react-router-dom": "7.17.0"
+    "react-router-dom": "7.18.0"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
@@ -52,7 +52,7 @@
     "ncp": "2.0.0",
     "prettier": "3.8.4",
     "typescript": "6.0.3",
-    "typescript-eslint": "8.61.0",
+    "typescript-eslint": "8.61.1",
     "vite": "8.0.16"
   }
 }
