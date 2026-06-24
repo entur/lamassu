@@ -23,6 +23,7 @@ based on merged pull requests. Search GitHub issues and pull requests for smalle
 - Upgrade ui/ frontend deps: MUI 9, Vite 8, TypeScript 6, ESLint 10 [#878](https://github.com/entur/lamassu/pull/878)
 - Include scooter_standing when filtering vehicles by the deprecated SCOOTER form factor [#879](https://github.com/entur/lamassu/pull/879)
 - Fix GBFS GeoJSON serialization broken by Spring Boot 4 / Jackson 3 [#882](https://github.com/entur/lamassu/pull/882)
+- Make subscription status durable and report data freshness separately [#883](https://github.com/entur/lamassu/pull/883)
 [](AUTOMATIC_CHANGELOG_PLACEHOLDER_DO_NOT_REMOVE)
 
 ## 1.2.0
