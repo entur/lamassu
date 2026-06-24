@@ -231,12 +231,9 @@ public class FeedUpdater {
         feedProvider.getSystemId()
       );
       metricsService.registerSubscriptionSetup(feedProvider, false);
-      // Keep the durable status as STARTING while a retry is pending, so the feed
-      // is never reported as absent/STOPPED during setup.
-      subscriptionRegistry.updateSubscriptionStatus(
-        feedProvider.getSystemId(),
-        SubscriptionStatus.STARTING
-      );
+      // The durable status is left untouched (STARTING, set by the caller) while a
+      // retry is pending, so the feed is never reported as absent/STOPPED during
+      // setup. Nothing here clears it.
       CompletableFuture
         .delayedExecutor(SUBSCRIPTION_SETUP_RETRY_DELAY_SECONDS, TimeUnit.SECONDS)
         .execute(() ->

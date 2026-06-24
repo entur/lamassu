@@ -217,15 +217,16 @@ class FeedUpdaterSubscriptionTest {
   }
 
   @Test
-  void createSubscription_keepsStartingStatus_whenSetupFails() {
+  void createSubscription_doesNotClearStatus_whenSetupFails() {
     testProvider.setEnabled(true);
-    // subscriptionManager.subscribeV2 returns null by default -> setup fails
+    // subscriptionManager.subscribeV2 returns null by default -> setup fails.
+    // The durable status (STARTING, set by the caller) must be left intact: the
+    // failure path must not remove it or mark the feed STOPPED.
     feedUpdater.createSubscription(testProvider);
 
-    verify(subscriptionRegistry)
-      .updateSubscriptionStatus(SYSTEM_ID, SubscriptionStatus.STARTING);
-    // never left absent
     verify(subscriptionRegistry, never()).removeSubscription(SYSTEM_ID);
+    verify(subscriptionRegistry, never())
+      .updateSubscriptionStatus(SYSTEM_ID, SubscriptionStatus.STOPPED);
   }
 
   @Test
