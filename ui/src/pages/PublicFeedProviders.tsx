@@ -89,6 +89,23 @@ export default function PublicFeedProviders() {
     }
   };
 
+  const formatLastUpdated = (lastUpdated: number | null) => {
+    if (!lastUpdated) {
+      return '—';
+    }
+    const seconds = Math.max(0, Math.floor(Date.now() / 1000 - lastUpdated));
+    if (seconds < 60) {
+      return `${seconds}s ago`;
+    }
+    if (seconds < 3600) {
+      return `${Math.floor(seconds / 60)}m ago`;
+    }
+    if (seconds < 86400) {
+      return `${Math.floor(seconds / 3600)}h ago`;
+    }
+    return `${Math.floor(seconds / 86400)}d ago`;
+  };
+
   const getValidationIcon = (systemId: string) => {
     const report = validationReports[systemId];
     if (!report) {
@@ -122,6 +139,8 @@ export default function PublicFeedProviders() {
               <TableCell>Version</TableCell>
               <TableCell>Enabled</TableCell>
               <TableCell>Subscription Status</TableCell>
+              <TableCell>Data Fresh</TableCell>
+              <TableCell>Last Updated</TableCell>
               <TableCell>Validation</TableCell>
             </TableRow>
           </TableHead>
@@ -153,6 +172,14 @@ export default function PublicFeedProviders() {
                     size="small"
                   />
                 </TableCell>
+                <TableCell>
+                  <Chip
+                    label={provider.dataFresh ? 'Fresh' : 'Stale'}
+                    color={provider.dataFresh ? 'success' : 'default'}
+                    size="small"
+                  />
+                </TableCell>
+                <TableCell>{formatLastUpdated(provider.lastUpdated)}</TableCell>
                 <TableCell>
                   <IconButton
                     size="small"
