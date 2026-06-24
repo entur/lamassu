@@ -106,7 +106,9 @@ public class FeedUpdater {
 
   public void start() {
     cacheCleanupService.clearCache();
-    subscriptionRegistry.clear(); // Clear any existing subscription registrations
+    // Clear only per-pod in-memory ids; the durable desired-state survives so a
+    // stopped subscription is not auto-resubscribed on a new leader.
+    subscriptionRegistry.clearInMemory();
     updaterThreadPool =
       new ForkJoinPool(
         NUM_CORES * 2,
@@ -123,15 +125,27 @@ public class FeedUpdater {
   }
 
   public void stop() {
-    subscriptionRegistry.clear();
+    subscriptionRegistry.clearInMemory();
     updaterThreadPool.shutdown();
   }
 
-  private void createSubscriptions() {
+  /**
+   * Whether a provider should have a subscription started. Enabled providers are
+   * subscribed unless their subscription has been explicitly stopped (a durable
+   * desired-state that survives leader restarts).
+   */
+  boolean shouldSubscribe(FeedProvider feedProvider) {
+    return (
+      Boolean.TRUE.equals(feedProvider.getEnabled()) &&
+      !subscriptionRegistry.isStopped(feedProvider.getSystemId())
+    );
+  }
+
+  void createSubscriptions() {
     feedProviderConfig
       .getProviders()
       .parallelStream()
-      .filter(feedProvider -> Boolean.TRUE.equals(feedProvider.getEnabled()))
+      .filter(this::shouldSubscribe)
       .forEach(feedProvider -> {
         // Set status to STARTING before creating subscription
         subscriptionRegistry.updateSubscriptionStatus(
@@ -142,7 +156,26 @@ public class FeedUpdater {
       });
   }
 
-  private void createSubscription(FeedProvider feedProvider) {
+  /**
+   * Retries a failed subscription setup, unless the feed has since been stopped
+   * (durable desired-state) or already has a live subscription. This prevents
+   * reviving stopped feeds and creating duplicate pollers via stale retries.
+   */
+  void maybeRetrySubscription(FeedProvider feedProvider) {
+    if (
+      !shouldSubscribe(feedProvider) ||
+      subscriptionRegistry.hasSubscription(feedProvider.getSystemId())
+    ) {
+      logger.info(
+        "Skipping subscription retry for systemId={} (stopped or already subscribed)",
+        feedProvider.getSystemId()
+      );
+      return;
+    }
+    createSubscription(feedProvider);
+  }
+
+  void createSubscription(FeedProvider feedProvider) {
     var options = new GbfsSubscriptionOptions(
       URI.create(feedProvider.getUrl()),
       feedProvider.getLanguage(),
@@ -198,9 +231,17 @@ public class FeedUpdater {
         feedProvider.getSystemId()
       );
       metricsService.registerSubscriptionSetup(feedProvider, false);
+      // Keep the durable status as STARTING while a retry is pending, so the feed
+      // is never reported as absent/STOPPED during setup.
+      subscriptionRegistry.updateSubscriptionStatus(
+        feedProvider.getSystemId(),
+        SubscriptionStatus.STARTING
+      );
       CompletableFuture
         .delayedExecutor(SUBSCRIPTION_SETUP_RETRY_DELAY_SECONDS, TimeUnit.SECONDS)
-        .execute(() -> updaterThreadPool.execute(() -> createSubscription(feedProvider)));
+        .execute(() ->
+          updaterThreadPool.execute(() -> maybeRetrySubscription(feedProvider))
+        );
     } else {
       logger.info("Setup subscription complete systemId={}", feedProvider.getSystemId());
       metricsService.registerSubscriptionSetup(feedProvider, true);
@@ -421,7 +462,10 @@ public class FeedUpdater {
     if (subscriptionId != null) {
       try {
         subscriptionManager.unsubscribe(subscriptionId);
-        subscriptionRegistry.removeSubscription(feedProvider.getSystemId());
+        // Remove only the in-memory id; keep the durable status (STARTING, set
+        // above) so the feed is never reported absent while the new subscription
+        // is established.
+        subscriptionRegistry.removeSubscriptionId(feedProvider.getSystemId());
       } catch (Exception e) {
         logger.warn(
           "Error unsubscribing during restart for systemId={}",

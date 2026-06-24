@@ -9,6 +9,7 @@ import java.util.List;
 import org.entur.lamassu.cache.GBFSV3FeedCache;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.entur.lamassu.service.FeedFreshnessService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mobilitydata.gbfs.v3_0.gbfs.GBFSFeed;
@@ -28,7 +29,11 @@ public class MetricsUpdaterTest {
     aFeedProvider.setSystemId("TestSystem");
     when(mockedFeedProviderConfig.getProviders()).thenReturn(List.of(aFeedProvider));
     metricUpdater =
-      new MetricUpdater(mockedMetricsService, mockedFeedProviderConfig, mockedFeedCache);
+      new MetricUpdater(
+        mockedMetricsService,
+        mockedFeedProviderConfig,
+        new FeedFreshnessService(mockedFeedCache, 120)
+      );
   }
 
   @Test

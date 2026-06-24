@@ -18,9 +18,11 @@
 
 package org.entur.lamassu.model.dto;
 
+import java.time.Instant;
 import org.entur.lamassu.leader.SubscriptionRegistry;
 import org.entur.lamassu.leader.SubscriptionStatus;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.entur.lamassu.service.FeedFreshnessService;
 import org.springframework.stereotype.Component;
 
 /**
@@ -30,9 +32,14 @@ import org.springframework.stereotype.Component;
 public class PublicFeedProviderStatusMapper {
 
   private final SubscriptionRegistry subscriptionRegistry;
+  private final FeedFreshnessService freshnessService;
 
-  public PublicFeedProviderStatusMapper(SubscriptionRegistry subscriptionRegistry) {
+  public PublicFeedProviderStatusMapper(
+    SubscriptionRegistry subscriptionRegistry,
+    FeedFreshnessService freshnessService
+  ) {
     this.subscriptionRegistry = subscriptionRegistry;
+    this.freshnessService = freshnessService;
   }
 
   /**
@@ -55,6 +62,13 @@ public class PublicFeedProviderStatusMapper {
       provider.getSystemId()
     );
     dto.setSubscriptionStatus(status);
+
+    // Data freshness is derived from the cached feeds and reported separately
+    // from the (durable) subscription desired-state.
+    dto.setDataFresh(freshnessService.isLive(provider));
+    dto.setLastUpdated(
+      freshnessService.lastUpdated(provider).map(Instant::getEpochSecond).orElse(null)
+    );
 
     return dto;
   }

@@ -74,6 +74,19 @@ public class SubscriptionRegistry {
   }
 
   /**
+   * Removes only the in-memory subscription id, preserving the durable status.
+   * Used when swapping a subscription (e.g. restart) so the reported status is
+   * never momentarily absent (which would read as STOPPED) while the new
+   * subscription is being established.
+   *
+   * @param systemId The system ID of the feed provider
+   */
+  public void removeSubscriptionId(String systemId) {
+    subscriptionIdsBySystemId.remove(systemId);
+    logger.debug("Removed in-memory subscription id for system ID {}", systemId);
+  }
+
+  /**
    * Gets the subscription ID for a system ID.
    *
    * @param systemId The system ID of the feed provider
@@ -93,6 +106,19 @@ public class SubscriptionRegistry {
   public SubscriptionStatus getSubscriptionStatusBySystemId(String systemId) {
     SubscriptionStatus status = subscriptionStatusCache.getStatus(systemId);
     return status != null ? status : SubscriptionStatus.STOPPED;
+  }
+
+  /**
+   * Whether a subscription has been explicitly stopped. Unlike
+   * {@link #getSubscriptionStatusBySystemId}, an absent (never-recorded) status is
+   * NOT treated as stopped. Used to decide whether a (re)starting leader should
+   * resubscribe a provider.
+   *
+   * @param systemId The system ID of the feed provider
+   * @return true only if the durable status is explicitly STOPPED
+   */
+  public boolean isStopped(String systemId) {
+    return subscriptionStatusCache.getStatus(systemId) == SubscriptionStatus.STOPPED;
   }
 
   /**
@@ -126,11 +152,21 @@ public class SubscriptionRegistry {
   }
 
   /**
-   * Clears all registered subscriptions.
+   * Clears all registered subscriptions, including the durable status cache.
    */
   public void clear() {
     subscriptionIdsBySystemId.clear();
     subscriptionStatusCache.clear();
     logger.debug("Cleared all subscription registrations");
+  }
+
+  /**
+   * Clears only the per-pod in-memory subscription ids, preserving the durable
+   * subscription desired-state in Redis. Called on leader (re)start so that a
+   * stopped subscription survives a restart instead of being auto-resubscribed.
+   */
+  public void clearInMemory() {
+    subscriptionIdsBySystemId.clear();
+    logger.debug("Cleared in-memory subscription ids (durable status preserved)");
   }
 }
