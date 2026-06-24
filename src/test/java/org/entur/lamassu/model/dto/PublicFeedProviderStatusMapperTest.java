@@ -21,11 +21,14 @@ package org.entur.lamassu.model.dto;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.time.Instant;
+import java.util.Optional;
 import org.entur.lamassu.leader.SubscriptionRegistry;
 import org.entur.lamassu.leader.SubscriptionStatus;
 import org.entur.lamassu.model.provider.Authentication;
 import org.entur.lamassu.model.provider.AuthenticationScheme;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.entur.lamassu.service.FeedFreshnessService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -36,12 +39,51 @@ class PublicFeedProviderStatusMapperTest {
   @Mock
   private SubscriptionRegistry subscriptionRegistry;
 
+  @Mock
+  private FeedFreshnessService freshnessService;
+
   private PublicFeedProviderStatusMapper mapper;
 
   @BeforeEach
   void setUp() {
     MockitoAnnotations.openMocks(this);
-    mapper = new PublicFeedProviderStatusMapper(subscriptionRegistry);
+    mapper = new PublicFeedProviderStatusMapper(subscriptionRegistry, freshnessService);
+  }
+
+  @Test
+  void testToPublicStatus_setsDataFreshAndLastUpdated_whenLive() {
+    FeedProvider provider = new FeedProvider();
+    provider.setSystemId("boltoslo");
+    provider.setEnabled(true);
+
+    long ts = Instant.now().getEpochSecond() - 30;
+    when(subscriptionRegistry.getSubscriptionStatusBySystemId("boltoslo"))
+      .thenReturn(SubscriptionStatus.STARTED);
+    when(freshnessService.isLive(provider)).thenReturn(true);
+    when(freshnessService.lastUpdated(provider))
+      .thenReturn(Optional.of(Instant.ofEpochSecond(ts)));
+
+    PublicFeedProviderStatus result = mapper.toPublicStatus(provider);
+
+    assertTrue(result.getDataFresh());
+    assertEquals(ts, result.getLastUpdated());
+  }
+
+  @Test
+  void testToPublicStatus_dataFreshFalseAndLastUpdatedNull_whenNotLive() {
+    FeedProvider provider = new FeedProvider();
+    provider.setSystemId("deadfeed");
+    provider.setEnabled(true);
+
+    when(subscriptionRegistry.getSubscriptionStatusBySystemId("deadfeed"))
+      .thenReturn(SubscriptionStatus.STARTED);
+    when(freshnessService.isLive(provider)).thenReturn(false);
+    when(freshnessService.lastUpdated(provider)).thenReturn(Optional.empty());
+
+    PublicFeedProviderStatus result = mapper.toPublicStatus(provider);
+
+    assertFalse(result.getDataFresh());
+    assertNull(result.getLastUpdated());
   }
 
   @Test

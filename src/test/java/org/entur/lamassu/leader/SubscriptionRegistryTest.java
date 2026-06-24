@@ -177,6 +177,56 @@ class SubscriptionRegistryTest {
   }
 
   @Test
+  void clearInMemory_preservesDurableStatus() {
+    // Register a subscription (in-memory id + durable STARTED status)
+    subscriptionRegistry.registerSubscription(SYSTEM_ID, SUBSCRIPTION_ID);
+
+    // Simulate a leader restart clearing only per-pod in-memory state
+    subscriptionRegistry.clearInMemory();
+
+    // In-memory subscription id is gone...
+    assertFalse(subscriptionRegistry.hasSubscription(SYSTEM_ID));
+    assertNull(subscriptionRegistry.getSubscriptionIdBySystemId(SYSTEM_ID));
+    // ...but the durable desired-state survives
+    assertEquals(
+      SubscriptionStatus.STARTED,
+      subscriptionRegistry.getSubscriptionStatusBySystemId(SYSTEM_ID)
+    );
+  }
+
+  @Test
+  void removeSubscriptionId_removesIdButKeepsDurableStatus() {
+    subscriptionRegistry.registerSubscription(SYSTEM_ID, SUBSCRIPTION_ID);
+
+    subscriptionRegistry.removeSubscriptionId(SYSTEM_ID);
+
+    assertFalse(subscriptionRegistry.hasSubscription(SYSTEM_ID));
+    assertNull(subscriptionRegistry.getSubscriptionIdBySystemId(SYSTEM_ID));
+    // Durable status is NOT cleared (unlike removeSubscription)
+    assertEquals(
+      SubscriptionStatus.STARTED,
+      subscriptionRegistry.getSubscriptionStatusBySystemId(SYSTEM_ID)
+    );
+  }
+
+  @Test
+  void isStopped_returnsFalse_whenStatusAbsent() {
+    assertFalse(subscriptionRegistry.isStopped("absent-system"));
+  }
+
+  @Test
+  void isStopped_returnsTrue_whenStoredStopped() {
+    subscriptionRegistry.updateSubscriptionStatus(SYSTEM_ID, SubscriptionStatus.STOPPED);
+    assertTrue(subscriptionRegistry.isStopped(SYSTEM_ID));
+  }
+
+  @Test
+  void isStopped_returnsFalse_whenStarted() {
+    subscriptionRegistry.registerSubscription(SYSTEM_ID, SUBSCRIPTION_ID);
+    assertFalse(subscriptionRegistry.isStopped(SYSTEM_ID));
+  }
+
+  @Test
   void testDefaultStatusForNonExistentSystem() {
     // Verify that a non-existent system ID returns STOPPED status
     assertEquals(

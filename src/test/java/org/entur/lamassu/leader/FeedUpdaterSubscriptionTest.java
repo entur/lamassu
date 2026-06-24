@@ -1,14 +1,18 @@
 package org.entur.lamassu.leader;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 import org.entur.gbfs.GbfsSubscriptionManager;
 import org.entur.lamassu.cache.SubscriptionStatusCache;
@@ -206,7 +210,53 @@ class FeedUpdaterSubscriptionTest {
     verify(subscriptionRegistry)
       .updateSubscriptionStatus(SYSTEM_ID, SubscriptionStatus.STARTING);
     verify(subscriptionManager).unsubscribe(SUBSCRIPTION_ID);
-    verify(subscriptionRegistry).removeSubscription(SYSTEM_ID);
+    // Restart removes only the in-memory id, preserving the durable status so the
+    // feed is never momentarily reported as absent/STOPPED.
+    verify(subscriptionRegistry).removeSubscriptionId(SYSTEM_ID);
+    verify(subscriptionRegistry, never()).removeSubscription(SYSTEM_ID);
+  }
+
+  @Test
+  void createSubscription_doesNotClearStatus_whenSetupFails() {
+    testProvider.setEnabled(true);
+    // subscriptionManager.subscribeV2 returns null by default -> setup fails.
+    // The durable status (STARTING, set by the caller) must be left intact: the
+    // failure path must not remove it or mark the feed STOPPED.
+    feedUpdater.createSubscription(testProvider);
+
+    verify(subscriptionRegistry, never()).removeSubscription(SYSTEM_ID);
+    verify(subscriptionRegistry, never())
+      .updateSubscriptionStatus(SYSTEM_ID, SubscriptionStatus.STOPPED);
+  }
+
+  @Test
+  void maybeRetrySubscription_skipsWhenStopped() {
+    testProvider.setEnabled(true);
+    when(subscriptionStatusCache.getStatus(SYSTEM_ID))
+      .thenReturn(SubscriptionStatus.STOPPED);
+
+    feedUpdater.maybeRetrySubscription(testProvider);
+
+    verify(subscriptionManager, never()).subscribeV2(any(), any(), any());
+  }
+
+  @Test
+  void maybeRetrySubscription_skipsWhenAlreadySubscribed() {
+    testProvider.setEnabled(true);
+    subscriptionRegistry.registerSubscription(SYSTEM_ID, SUBSCRIPTION_ID);
+
+    feedUpdater.maybeRetrySubscription(testProvider);
+
+    verify(subscriptionManager, never()).subscribeV2(any(), any(), any());
+  }
+
+  @Test
+  void maybeRetrySubscription_subscribesWhenEligible() {
+    testProvider.setEnabled(true);
+
+    feedUpdater.maybeRetrySubscription(testProvider);
+
+    verify(subscriptionManager).subscribeV2(any(), any(), any());
   }
 
   @Test
@@ -220,6 +270,60 @@ class FeedUpdaterSubscriptionTest {
     verify(subscriptionRegistry)
       .updateSubscriptionStatus(SYSTEM_ID, SubscriptionStatus.STARTING);
     verify(subscriptionManager, never()).unsubscribe(anyString());
+  }
+
+  @Test
+  void shouldSubscribe_trueForEnabledNotStopped() {
+    testProvider.setEnabled(true);
+    assertTrue(feedUpdater.shouldSubscribe(testProvider));
+  }
+
+  @Test
+  void shouldSubscribe_falseForEnabledButStopped() {
+    testProvider.setEnabled(true);
+    when(subscriptionStatusCache.getStatus(SYSTEM_ID))
+      .thenReturn(SubscriptionStatus.STOPPED);
+    assertFalse(feedUpdater.shouldSubscribe(testProvider));
+  }
+
+  @Test
+  void shouldSubscribe_falseForDisabled() {
+    testProvider.setEnabled(false);
+    assertFalse(feedUpdater.shouldSubscribe(testProvider));
+  }
+
+  @Test
+  void stop_clearsInMemoryButPreservesDurableStatus() {
+    feedUpdater.stop();
+
+    verify(subscriptionRegistry).clearInMemory();
+    verify(subscriptionRegistry, never()).clear();
+  }
+
+  @Test
+  void createSubscriptions_skipsStoppedProviders() {
+    FeedProvider started = new FeedProvider();
+    started.setSystemId("started-system");
+    started.setUrl("http://started.url/gbfs");
+    started.setLanguage("en");
+    started.setEnabled(true);
+
+    FeedProvider stopped = new FeedProvider();
+    stopped.setSystemId("stopped-system");
+    stopped.setUrl("http://stopped.url/gbfs");
+    stopped.setLanguage("en");
+    stopped.setEnabled(true);
+
+    when(feedProviderConfig.getProviders()).thenReturn(List.of(started, stopped));
+    when(subscriptionStatusCache.getStatus("stopped-system"))
+      .thenReturn(SubscriptionStatus.STOPPED);
+
+    feedUpdater.createSubscriptions();
+
+    verify(subscriptionRegistry, atLeastOnce())
+      .updateSubscriptionStatus("started-system", SubscriptionStatus.STARTING);
+    verify(subscriptionRegistry, never())
+      .updateSubscriptionStatus("stopped-system", SubscriptionStatus.STARTING);
   }
 
   @Test

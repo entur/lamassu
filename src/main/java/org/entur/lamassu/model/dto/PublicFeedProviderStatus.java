@@ -33,6 +33,8 @@ public class PublicFeedProviderStatus {
   private String version;
   private Boolean enabled;
   private SubscriptionStatus subscriptionStatus;
+  private boolean dataFresh;
+  private Long lastUpdated;
 
   // Default constructor
   public PublicFeedProviderStatus() {}
@@ -92,6 +94,30 @@ public class PublicFeedProviderStatus {
 
   public void setSubscriptionStatus(SubscriptionStatus subscriptionStatus) {
     this.subscriptionStatus = subscriptionStatus;
+  }
+
+  /**
+   * Whether the system is currently receiving fresh data (realtime feed present
+   * and not overdue). Independent of the subscription desired-state.
+   */
+  public boolean getDataFresh() {
+    return dataFresh;
+  }
+
+  public void setDataFresh(boolean dataFresh) {
+    this.dataFresh = dataFresh;
+  }
+
+  /**
+   * Epoch seconds of the most recent realtime feed update, or null if no
+   * realtime data is cached.
+   */
+  public Long getLastUpdated() {
+    return lastUpdated;
+  }
+
+  public void setLastUpdated(Long lastUpdated) {
+    this.lastUpdated = lastUpdated;
   }
 
   @Override
