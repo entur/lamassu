@@ -315,7 +315,13 @@ class FeedUpdaterSubscriptionTest {
     stopped.setEnabled(true);
 
     when(feedProviderConfig.getProviders()).thenReturn(List.of(started, stopped));
-    when(subscriptionStatusCache.getStatus("stopped-system"))
+    // createSubscriptions() filters via shouldSubscribe(), which calls getStatus()
+    // for every provider. Only "stopped-system" is stubbed here; the unstubbed
+    // "started-system" call returns null (not STOPPED) and must not trip strict
+    // stubbing, so the stub is lenient. The parallelStream() in createSubscriptions
+    // otherwise makes the strict-stubbing mismatch surface nondeterministically.
+    lenient()
+      .when(subscriptionStatusCache.getStatus("stopped-system"))
       .thenReturn(SubscriptionStatus.STOPPED);
 
     feedUpdater.createSubscriptions();
