@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.entur.ror</groupId>
         <artifactId>superpom</artifactId>
-        <version>6.4.0</version>
+        <version>6.5.0</version>
     </parent>
     <groupId>org.entur</groupId>
     <artifactId>lamassu</artifactId>
@@ -20,13 +20,13 @@
 
         <java.version>21</java.version>
 
-        <redisson.version>4.6.0</redisson.version>
+        <redisson.version>4.6.1</redisson.version>
         <embedded-redis.version>0.9.1</embedded-redis.version>
         <okhttp.version>5.4.0</okhttp.version>
         <kryo.version>5.6.2</kryo.version>
-        <gbfs-loader-java.version>4.0.71</gbfs-loader-java.version>
+        <gbfs-loader-java.version>4.0.73</gbfs-loader-java.version>
         <gbfs-validator-java.version>3.1.0</gbfs-validator-java.version>
-        <gbfs-mapper-java.version>2.0.63</gbfs-mapper-java.version>
+        <gbfs-mapper-java.version>2.0.65</gbfs-mapper-java.version>
         <prettier-java.version>2.1.0</prettier-java.version>
         <prettier-maven-plugin.version>0.22</prettier-maven-plugin.version>
         <plugin.prettier.goal>write</plugin.prettier.goal>
@@ -210,7 +210,7 @@
             <groupId>io.netty</groupId>
             <artifactId>netty-resolver-dns-native-macos</artifactId>
             <classifier>osx-aarch_64</classifier>
-            <version>4.2.15.Final</version>
+            <version>4.2.16.Final</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -344,7 +344,7 @@
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>jib-maven-plugin</artifactId>
-                <version>3.5.1</version>
+                <version>3.5.2</version>
                 <dependencies>
                     <!-- Include jib-spring-boot-extension-maven to prevent spring-boot-devtools from being packaged.-->
                     <dependency>
