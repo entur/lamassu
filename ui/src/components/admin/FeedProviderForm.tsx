@@ -71,8 +71,7 @@ export function FeedProviderForm({
     (field: keyof FeedProvider) =>
     (
       event:
-        | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-        | { target: { value: unknown } }
+        React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | { target: { value: unknown } }
     ) => {
       const value = event.target.value;
       setFormData(prev => ({
