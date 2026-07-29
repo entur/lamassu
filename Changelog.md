@@ -27,6 +27,7 @@ based on merged pull requests. Search GitHub issues and pull requests for smalle
 - Fix flaky createSubscriptions strict-stubbing mismatch [#885](https://github.com/entur/lamassu/pull/885)
 - build(deps): bump the npm_and_yarn group across 1 directory with 2 updates [#884](https://github.com/entur/lamassu/pull/884)
 - fix: propagate station_information changes when station_status is stable [#892](https://github.com/entur/lamassu/pull/892)
+- chore(ui): fix prettier formatting in FeedProviderForm [#893](https://github.com/entur/lamassu/pull/893)
 [](AUTOMATIC_CHANGELOG_PLACEHOLDER_DO_NOT_REMOVE)
 
 ## 1.2.0
