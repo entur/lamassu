@@ -96,10 +96,27 @@ public class EntityCachesUpdater {
 
     // Update stations before vehicles, as vehicles may refer to stations
     if (canUpdateStations(delivery, feedProvider)) {
-      var useBase = updateContinuityTracker.hasStationUpdateContinuity(
-        feedProvider.getSystemId(),
-        oldDelivery
+      // Station entities merge station_status (dynamic) with station_information
+      // (semi-static). Entity updates are driven by station_status deltas only, so a
+      // change to station_information for a station whose status is momentarily stable
+      // would otherwise never be applied. When station_information content changes,
+      // force a full rebuild so every station is re-mapped from the current information.
+      var stationInformationChanged = stationInformationContentChanged(
+        oldDelivery,
+        delivery
       );
+      if (stationInformationChanged) {
+        logger.info(
+          "Station information changed for system={}, forcing full station rebuild",
+          feedProvider.getSystemId()
+        );
+      }
+      var useBase =
+        !stationInformationChanged &&
+        updateContinuityTracker.hasStationUpdateContinuity(
+          feedProvider.getSystemId(),
+          oldDelivery
+        );
       GBFSFileDelta<GBFSStation> stationStatusDelta =
         stationStatusDeltaCalculator.calculateDelta(
           useBase ? oldDelivery.stationStatus() : null,
@@ -147,6 +164,38 @@ public class EntityCachesUpdater {
     if (canUpdateGeofencingZones(delivery, feedProvider)) {
       geofencingZonesUpdater.update(feedProvider, delivery.geofencingZones());
     }
+  }
+
+  /**
+   * Returns true if the station_information content differs between the previous and
+   * current delivery. Only the station entries are compared (keyed by station id, so
+   * ordering is irrelevant); the feed envelope (e.g. last_updated) is deliberately
+   * ignored so that a provider bumping only the timestamp does not force a rebuild.
+   */
+  private boolean stationInformationContentChanged(
+    GbfsV3Delivery oldDelivery,
+    GbfsV3Delivery delivery
+  ) {
+    return !stationInformationById(oldDelivery.stationInformation())
+      .equals(stationInformationById(delivery.stationInformation()));
+  }
+
+  private java.util.Map<String, org.mobilitydata.gbfs.v3_0.station_information.GBFSStation> stationInformationById(
+    org.mobilitydata.gbfs.v3_0.station_information.GBFSStationInformation stationInformation
+  ) {
+    return java.util.Optional
+      .ofNullable(stationInformation)
+      .map(org.mobilitydata.gbfs.v3_0.station_information.GBFSStationInformation::getData)
+      .map(org.mobilitydata.gbfs.v3_0.station_information.GBFSData::getStations)
+      .orElse(java.util.List.of())
+      .stream()
+      .collect(
+        java.util.stream.Collectors.toMap(
+          org.mobilitydata.gbfs.v3_0.station_information.GBFSStation::getStationId,
+          s -> s,
+          (a, b) -> a
+        )
+      );
   }
 
   private boolean canUpdateSystem(GbfsV3Delivery delivery, FeedProvider feedProvider) {

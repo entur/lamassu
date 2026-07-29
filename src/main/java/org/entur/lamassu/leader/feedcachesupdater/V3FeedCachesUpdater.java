@@ -71,7 +71,7 @@ public class V3FeedCachesUpdater {
     );
     updateFeedCache(feedProvider, Name.VEHICLE_TYPES, delivery.vehicleTypes());
     updateFeedCache(feedProvider, Name.GEOFENCING_ZONES, delivery.geofencingZones());
-    updateFeedCache(
+    var oldStationInformation = getAndUpdateFeedCache(
       feedProvider,
       Name.STATION_INFORMATION,
       delivery.stationInformation()
@@ -91,7 +91,7 @@ public class V3FeedCachesUpdater {
       null,
       null,
       null,
-      null,
+      oldStationInformation,
       oldStationStatus,
       oldVehicleStatus,
       null,
