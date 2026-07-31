@@ -155,7 +155,8 @@ type Query {
 
     stationsById(ids: [String]!): [Station] @deprecated(reason: "stationsById is deprecated. Use stations query instead.")
 
-    geofencingZones(systemIds: [ID]): [GeofencingZones]
+    geofencingZones(systemIds: [ID]): [GeofencingZones] @deprecated(reason: "Use geofencingZonesData query instead.")
+    geofencingZonesData(systemIds: [ID]): [GeofencingZonesData]
 }
 
 type Vehicle {
@@ -438,6 +439,28 @@ type VehicleDocksAvailability {
 type GeofencingZones {
     systemId: ID
     geojson: FeatureCollection
+}
+
+type GeofencingZonesData {
+    systemId: ID
+    "Geofencing zones with optimized structure"
+    zones: [GeofencingZone]
+    "Global rules that apply to all zones in this system"
+    globalRules: [GeofencingZoneRule]
+}
+
+"Optimized geofencing zone structure for GraphQL"
+type GeofencingZone {
+    "Unique name of the zone"
+    name: String
+    "Start time (Unix timestamp) when the zone is active"
+    start: Int
+    "End time (Unix timestamp) when the zone is active"
+    end: Int
+    "Rules that apply within this zone"
+    rules: [GeofencingZoneRule]
+    "MultiPolygon encoded as polyline strings for efficient transmission"
+    polylineEncodedMultiPolygon: [[String]]!
 }
 
 type FeatureCollection {
