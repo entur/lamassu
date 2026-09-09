@@ -177,9 +177,9 @@ public class DuplicateIdService {
   }
 
   private Set<String> idsFor(FeedProvider provider, TrackedEntity trackedEntity) {
+    Object feed;
     try {
-      Object feed = feedCache.find(trackedEntity.feedName(), provider);
-      return feed == null ? Set.of() : trackedEntity.extractIds().apply(feed);
+      feed = feedCache.find(trackedEntity.feedName(), provider);
     } catch (RuntimeException e) {
       logger.warn(
         "Could not read {} for system={} while detecting duplicate ids",
@@ -189,6 +189,7 @@ public class DuplicateIdService {
       );
       return Set.of();
     }
+    return feed == null ? Set.of() : trackedEntity.extractIds().apply(feed);
   }
 
   private static Set<String> vehicleTypeIds(Object feed) {

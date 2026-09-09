@@ -187,6 +187,52 @@ class DuplicateIdServiceTest {
   }
 
   @Test
+  void nullEnabledProviderIsTreatedAsEnabled() {
+    // Pins the deliberate asymmetry in participatesInSharedEntityCaches: a null
+    // "enabled" matches the field's own default (true), so it must still be
+    // reported as a duplicate. This guards against a future "make the null
+    // handling consistent" pass silently flipping this to excluded.
+    FeedProvider oslo = provider("yos_oslo", "YOS");
+    FeedProvider bergen = provider("yos_bergen", "YOS");
+    oslo.setEnabled(null);
+    bergen.setEnabled(null);
+    when(feedProviderConfig.getProviders()).thenReturn(List.of(oslo, bergen));
+    when(feedCache.find(GBFSFeed.Name.VEHICLE_TYPES, oslo))
+      .thenReturn(vehicleTypes("YOS:VehicleType:scooter"));
+    when(feedCache.find(GBFSFeed.Name.VEHICLE_TYPES, bergen))
+      .thenReturn(vehicleTypes("YOS:VehicleType:scooter"));
+
+    DuplicateIdService.DuplicateIdReport report = reportFor(
+      service.detect(),
+      "YOS",
+      DuplicateIdService.ENTITY_VEHICLE_TYPE
+    );
+
+    assertEquals(1, report.duplicates().size());
+    assertEquals(
+      Set.of("yos_bergen", "yos_oslo"),
+      report.duplicates().get(0).systemIds()
+    );
+  }
+
+  @Test
+  void nullAggregateProviderIsExcluded() {
+    // Pins the deliberate asymmetry in participatesInSharedEntityCaches: unlike
+    // "enabled", a null "aggregate" is treated as excluded, mirroring
+    // FeedUpdater's own null handling. This guards against a future
+    // "make the null handling consistent" pass silently flipping this to included.
+    FeedProvider oslo = provider("yos_oslo", "YOS");
+    FeedProvider bergen = provider("yos_bergen", "YOS");
+    oslo.setAggregate(null);
+    bergen.setAggregate(null);
+    when(feedProviderConfig.getProviders()).thenReturn(List.of(oslo, bergen));
+
+    // Both providers are excluded, so codespace YOS has no surviving group at
+    // all and no report is emitted for it; reportFor would throw here.
+    assertEquals(List.of(), service.detect());
+  }
+
+  @Test
   void skipsProvidersWithoutCodespace() {
     FeedProvider broken = provider("yos_oslo", "YOS");
     broken.setCodespace(null);
@@ -201,8 +247,6 @@ class DuplicateIdServiceTest {
     broken.setSystemId(null);
     FeedProvider oslo = provider("yos_oslo", "YOS");
     when(feedProviderConfig.getProviders()).thenReturn(List.of(broken, oslo));
-    when(feedCache.find(GBFSFeed.Name.VEHICLE_TYPES, broken))
-      .thenReturn(vehicleTypes("YOS:VehicleType:scooter"));
     when(feedCache.find(GBFSFeed.Name.VEHICLE_TYPES, oslo))
       .thenReturn(vehicleTypes("YOS:VehicleType:scooter"));
 
