@@ -61,5 +61,6 @@ public class LeaderSingletonService {
   @Scheduled(fixedRateString = "${org.entur.lamassu.update-feed-metrics-interval:60000}")
   public void updateFeedMetrics() {
     metricUpdater.updateOutdatedFeedMetrics();
+    metricUpdater.updateDuplicateIdMetrics();
   }
 }
