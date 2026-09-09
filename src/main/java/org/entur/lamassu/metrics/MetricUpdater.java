@@ -3,27 +3,36 @@ package org.entur.lamassu.metrics;
 import java.util.Arrays;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.entur.lamassu.service.DuplicateIdService;
+import org.entur.lamassu.service.DuplicateIdService.DuplicateIdReport;
 import org.entur.lamassu.service.FeedFreshnessService;
 import org.mobilitydata.gbfs.v3_0.gbfs.GBFSFeed;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MetricUpdater {
 
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
   private final MetricsService metricsService;
   private final FeedProviderConfig feedProviderConfig;
   private final FeedFreshnessService feedFreshnessService;
+  private final DuplicateIdService duplicateIdService;
 
   @Autowired
   public MetricUpdater(
     MetricsService metricsService,
     FeedProviderConfig feedProviderConfig,
-    FeedFreshnessService feedFreshnessService
+    FeedFreshnessService feedFreshnessService,
+    DuplicateIdService duplicateIdService
   ) {
     this.metricsService = metricsService;
     this.feedProviderConfig = feedProviderConfig;
     this.feedFreshnessService = feedFreshnessService;
+    this.duplicateIdService = duplicateIdService;
   }
 
   public void updateOutdatedFeedMetrics() {
@@ -31,6 +40,25 @@ public class MetricUpdater {
       .getProviders()
       .parallelStream()
       .forEach(this::updateOutdatedFeedMetrics);
+  }
+
+  /**
+   * Publishes, per codespace and entity type, how many entity ids are claimed by more
+   * than one system. Gauges are set on every tick, including to zero, so that a
+   * resolved problem is visible.
+   */
+  public void updateDuplicateIdMetrics() {
+    try {
+      for (DuplicateIdReport report : duplicateIdService.detect()) {
+        metricsService.registerDuplicateIdCount(
+          report.codespace(),
+          report.entityType(),
+          report.duplicates().size()
+        );
+      }
+    } catch (RuntimeException e) {
+      logger.warn("Failed updating duplicate id metrics", e);
+    }
   }
 
   private void updateOutdatedFeedMetrics(FeedProvider feedProvider) {

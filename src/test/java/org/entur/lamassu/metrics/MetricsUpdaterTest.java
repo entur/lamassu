@@ -6,9 +6,12 @@ import static org.mockito.Mockito.when;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import org.entur.lamassu.cache.GBFSV3FeedCache;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.model.provider.FeedProvider;
+import org.entur.lamassu.service.DuplicateIdService;
 import org.entur.lamassu.service.FeedFreshnessService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,6 +24,7 @@ public class MetricsUpdaterTest {
   MetricsService mockedMetricsService = mock(MetricsService.class);
   FeedProviderConfig mockedFeedProviderConfig = mock(FeedProviderConfig.class);
   GBFSV3FeedCache mockedFeedCache = mock(GBFSV3FeedCache.class);
+  DuplicateIdService mockedDuplicateIdService = mock(DuplicateIdService.class);
   MetricUpdater metricUpdater;
   FeedProvider aFeedProvider = new FeedProvider();
 
@@ -32,7 +36,8 @@ public class MetricsUpdaterTest {
       new MetricUpdater(
         mockedMetricsService,
         mockedFeedProviderConfig,
-        new FeedFreshnessService(mockedFeedCache, 120)
+        new FeedFreshnessService(mockedFeedCache, 120),
+        mockedDuplicateIdService
       );
   }
 
@@ -71,5 +76,34 @@ public class MetricsUpdaterTest {
     metricUpdater.updateOutdatedFeedMetrics();
 
     verify(mockedMetricsService).registerOverdueFilesCount(aFeedProvider, 0);
+  }
+
+  @Test
+  public void testDuplicateIdCountIsRegisteredPerCodespaceAndEntity() {
+    when(mockedDuplicateIdService.detect())
+      .thenReturn(
+        List.of(
+          new DuplicateIdService.DuplicateIdReport(
+            "YOS",
+            DuplicateIdService.ENTITY_VEHICLE_TYPE,
+            List.of(
+              new DuplicateIdService.DuplicateId(
+                "YOS:VehicleType:scooter",
+                new TreeSet<>(Set.of("yos_oslo", "yos_bergen"))
+              )
+            )
+          ),
+          new DuplicateIdService.DuplicateIdReport(
+            "YOS",
+            DuplicateIdService.ENTITY_PRICING_PLAN,
+            List.of()
+          )
+        )
+      );
+
+    metricUpdater.updateDuplicateIdMetrics();
+
+    verify(mockedMetricsService).registerDuplicateIdCount("YOS", "vehicleType", 1);
+    verify(mockedMetricsService).registerDuplicateIdCount("YOS", "pricingPlan", 0);
   }
 }
