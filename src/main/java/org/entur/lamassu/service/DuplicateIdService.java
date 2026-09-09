@@ -31,6 +31,8 @@ import org.entur.lamassu.cache.GBFSV3FeedCache;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.mobilitydata.gbfs.v3_0.gbfs.GBFSFeed;
+import org.mobilitydata.gbfs.v3_0.system_pricing_plans.GBFSPlan;
+import org.mobilitydata.gbfs.v3_0.system_pricing_plans.GBFSSystemPricingPlans;
 import org.mobilitydata.gbfs.v3_0.vehicle_types.GBFSVehicleType;
 import org.mobilitydata.gbfs.v3_0.vehicle_types.GBFSVehicleTypes;
 import org.springframework.stereotype.Service;
@@ -86,6 +88,11 @@ public class DuplicateIdService {
       ENTITY_VEHICLE_TYPE,
       GBFSFeed.Name.VEHICLE_TYPES,
       DuplicateIdService::vehicleTypeIds
+    ),
+    new TrackedEntity(
+      ENTITY_PRICING_PLAN,
+      GBFSFeed.Name.SYSTEM_PRICING_PLANS,
+      DuplicateIdService::pricingPlanIds
     )
   );
 
@@ -164,6 +171,16 @@ public class DuplicateIdService {
       vehicleTypes.getData().getVehicleTypes(),
       GBFSVehicleType::getVehicleTypeId
     );
+  }
+
+  private static Set<String> pricingPlanIds(Object feed) {
+    if (
+      !(feed instanceof GBFSSystemPricingPlans pricingPlans) ||
+      pricingPlans.getData() == null
+    ) {
+      return Set.of();
+    }
+    return nonBlankIds(pricingPlans.getData().getPlans(), GBFSPlan::getPlanId);
   }
 
   private static <T> Set<String> nonBlankIds(List<T> items, Function<T, String> getId) {

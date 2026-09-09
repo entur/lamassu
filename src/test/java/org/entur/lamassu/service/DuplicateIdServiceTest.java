@@ -14,6 +14,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mobilitydata.gbfs.v3_0.gbfs.GBFSFeed;
+import org.mobilitydata.gbfs.v3_0.system_pricing_plans.GBFSPlan;
+import org.mobilitydata.gbfs.v3_0.system_pricing_plans.GBFSSystemPricingPlans;
 import org.mobilitydata.gbfs.v3_0.vehicle_types.GBFSVehicleType;
 import org.mobilitydata.gbfs.v3_0.vehicle_types.GBFSVehicleTypes;
 import org.mockito.Mock;
@@ -98,6 +100,62 @@ class DuplicateIdServiceTest {
         .duplicates()
         .isEmpty()
     );
+  }
+
+  @Test
+  void detectsPricingPlanIdClaimedByTwoSystemsInSameCodespace() {
+    FeedProvider oslo = provider("yos_oslo", "YOS");
+    FeedProvider bergen = provider("yos_bergen", "YOS");
+    when(feedProviderConfig.getProviders()).thenReturn(List.of(oslo, bergen));
+    when(feedCache.find(GBFSFeed.Name.SYSTEM_PRICING_PLANS, oslo))
+      .thenReturn(pricingPlans("YOS:PricingPlan:basic"));
+    when(feedCache.find(GBFSFeed.Name.SYSTEM_PRICING_PLANS, bergen))
+      .thenReturn(pricingPlans("YOS:PricingPlan:basic", "YOS:PricingPlan:premium"));
+
+    DuplicateIdService.DuplicateIdReport report = reportFor(
+      service.detect(),
+      "YOS",
+      DuplicateIdService.ENTITY_PRICING_PLAN
+    );
+
+    assertEquals(1, report.duplicates().size());
+    assertEquals("YOS:PricingPlan:basic", report.duplicates().get(0).id());
+    assertEquals(
+      Set.of("yos_bergen", "yos_oslo"),
+      report.duplicates().get(0).systemIds()
+    );
+  }
+
+  @Test
+  void emitsReportForCleanCodespaceSoGaugeCanBeZeroed() {
+    FeedProvider oslo = provider("yos_oslo", "YOS");
+    when(feedProviderConfig.getProviders()).thenReturn(List.of(oslo));
+    when(feedCache.find(GBFSFeed.Name.VEHICLE_TYPES, oslo))
+      .thenReturn(vehicleTypes("YOS:VehicleType:scooter"));
+    when(feedCache.find(GBFSFeed.Name.SYSTEM_PRICING_PLANS, oslo))
+      .thenReturn(pricingPlans("YOS:PricingPlan:basic"));
+
+    List<DuplicateIdService.DuplicateIdReport> reports = service.detect();
+
+    assertEquals(2, reports.size());
+    assertTrue(
+      reportFor(reports, "YOS", DuplicateIdService.ENTITY_VEHICLE_TYPE)
+        .duplicates()
+        .isEmpty()
+    );
+    assertTrue(
+      reportFor(reports, "YOS", DuplicateIdService.ENTITY_PRICING_PLAN)
+        .duplicates()
+        .isEmpty()
+    );
+  }
+
+  static GBFSSystemPricingPlans pricingPlans(String... ids) {
+    return new GBFSSystemPricingPlans()
+      .withData(
+        new org.mobilitydata.gbfs.v3_0.system_pricing_plans.GBFSData()
+          .withPlans(Arrays.stream(ids).map(id -> new GBFSPlan().withPlanId(id)).toList())
+      );
   }
 
   static FeedProvider provider(String systemId, String codespace) {
