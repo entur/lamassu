@@ -44,6 +44,8 @@ public class MetricsService {
     "app.lamassu.gbfs.subscription.failedsetup";
   public static final String FILES_OVERDUE = "app.lamassu.gbfs.filesoverdue";
   public static final String LABEL_ENTITY = "entity";
+  public static final String DUPLICATE_IDS = "app.lamassu.gbfs.duplicate.ids";
+  public static final String LABEL_CODESPACE = "codespace";
 
   public static final String ENTITY_VEHICLE = "vehicle";
   public static final String ENTITY_STATION = "station";
@@ -62,6 +64,8 @@ public class MetricsService {
   private final Map<String, AtomicInteger> validationMissingRequiredFilesCounters =
     new ConcurrentHashMap<>();
   private final Map<String, AtomicInteger> overdueFilesCounters =
+    new ConcurrentHashMap<>();
+  private final Map<String, AtomicInteger> duplicateIdCounters =
     new ConcurrentHashMap<>();
 
   public MetricsService(MeterRegistry meterRegistry) {
@@ -111,6 +115,21 @@ public class MetricsService {
     getOverdueFilesCounter(feedProvider).set(overdueFilesCount);
   }
 
+  /**
+   * Records how many entity ids are currently claimed by more than one system within
+   * a codespace. Must be called on every metrics tick, including with zero, so that a
+   * resolved problem drives the gauge back down.
+   */
+  public void registerDuplicateIdCount(String codespace, String entity, int count) {
+    getGauge(
+      duplicateIdCounters,
+      codespace + "/" + entity,
+      DUPLICATE_IDS,
+      List.of(Tag.of(LABEL_CODESPACE, codespace), Tag.of(LABEL_ENTITY, entity))
+    )
+      .set(count);
+  }
+
   private AtomicInteger getSubscriptionFailedSetupCounter(FeedProvider feedProvider) {
     return getCounter(
       feedProvider,
@@ -144,19 +163,32 @@ public class MetricsService {
     Map<String, AtomicInteger> counterMap,
     String metricName
   ) {
-    AtomicInteger counter;
-    if (counterMap.containsKey(feedProvider.getSystemId())) {
-      counter = counterMap.get(feedProvider.getSystemId());
-    } else {
-      counter = new AtomicInteger();
-      counterMap.put(feedProvider.getSystemId(), counter);
-      Gauge
-        .builder(metricName, counter, AtomicInteger::doubleValue)
-        .strongReference(true)
-        .tags(List.of(Tag.of(LABEL_SYSTEM, feedProvider.getSystemId())))
-        .register(meterRegistry);
-    }
-    return counter;
+    return getGauge(
+      counterMap,
+      feedProvider.getSystemId(),
+      metricName,
+      List.of(Tag.of(LABEL_SYSTEM, feedProvider.getSystemId()))
+    );
+  }
+
+  private AtomicInteger getGauge(
+    Map<String, AtomicInteger> gauges,
+    String key,
+    String metricName,
+    List<Tag> tags
+  ) {
+    return gauges.computeIfAbsent(
+      key,
+      ignored -> {
+        AtomicInteger gauge = new AtomicInteger();
+        Gauge
+          .builder(metricName, gauge, AtomicInteger::doubleValue)
+          .strongReference(true)
+          .tags(tags)
+          .register(meterRegistry);
+        return gauge;
+      }
+    );
   }
 
   private int calculateMissingRequiredFiles(ValidationResult validationResult) {

@@ -20,8 +20,10 @@ package org.entur.lamassu.metrics;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import org.entur.lamassu.model.provider.FeedProvider;
@@ -110,6 +112,41 @@ class MetricsServiceTest {
       meterRegistry.get(MetricsService.VALIDATION_MISSING_REQUIRED_FILES).gauge().value(),
       0.01
     );
+  }
+
+  @Test
+  void testRegisterDuplicateIdCount() {
+    SimpleMeterRegistry meterRegistry = new SimpleMeterRegistry();
+    MetricsService metricsService = new MetricsService(meterRegistry);
+
+    metricsService.registerDuplicateIdCount("YOS", "vehicleType", 2);
+    assertEquals(
+      2.0,
+      meterRegistry
+        .get(MetricsService.DUPLICATE_IDS)
+        .tag(MetricsService.LABEL_CODESPACE, "YOS")
+        .tag(MetricsService.LABEL_ENTITY, "vehicleType")
+        .gauge()
+        .value(),
+      0.01
+    );
+
+    metricsService.registerDuplicateIdCount("YOS", "pricingPlan", 1);
+    metricsService.registerDuplicateIdCount("YOS", "vehicleType", 0);
+
+    assertEquals(
+      0.0,
+      meterRegistry
+        .get(MetricsService.DUPLICATE_IDS)
+        .tag(MetricsService.LABEL_CODESPACE, "YOS")
+        .tag(MetricsService.LABEL_ENTITY, "vehicleType")
+        .gauge()
+        .value(),
+      0.01
+    );
+
+    Collection<Gauge> gauges = meterRegistry.get(MetricsService.DUPLICATE_IDS).gauges();
+    assertEquals(2, gauges.size());
   }
 
   private static @NotNull ValidationResult getValidationResult(int errorCount) {
