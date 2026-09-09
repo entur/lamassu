@@ -160,8 +160,7 @@ public class MetricsUpdaterTest {
   public void testDuplicateIdsAreLoggedOnEntryAndExitOnly() {
     FeedProvider oslo = duplicateProvider("yos_oslo");
     FeedProvider bergen = duplicateProvider("yos_bergen");
-    when(mockedFeedProviderConfig.getProviderBySystemId("yos_oslo")).thenReturn(oslo);
-    when(mockedFeedProviderConfig.getProviderBySystemId("yos_bergen")).thenReturn(bergen);
+    when(mockedFeedProviderConfig.getProviders()).thenReturn(List.of(oslo, bergen));
 
     DuplicateIdService.DuplicateIdReport dirty = new DuplicateIdService.DuplicateIdReport(
       "YOS",
@@ -211,9 +210,84 @@ public class MetricsUpdaterTest {
     assertTrue(warning.contains("YOS:VehicleType:scooter"));
     assertTrue(warning.contains("yos_oslo(YOS:Operator:yos_oslo)"));
     assertTrue(warning.contains("yos_bergen(YOS:Operator:yos_bergen)"));
+    assertTrue(
+      warning.lines().count() == 1,
+      "WARN message must be a single line so log aggregators show the detail in the summary row"
+    );
 
     assertEquals(Level.INFO, events.get(1).getLevel());
     assertTrue(events.get(1).getFormattedMessage().contains("resolved"));
+  }
+
+  @Test
+  public void testDuplicateIdsAreReLoggedWhenClaimingSystemsChange() {
+    FeedProvider oslo = duplicateProvider("yos_oslo");
+    FeedProvider bergen = duplicateProvider("yos_bergen");
+    FeedProvider trondheim = duplicateProvider("yos_trondheim");
+    when(mockedFeedProviderConfig.getProviders())
+      .thenReturn(List.of(oslo, bergen, trondheim));
+
+    DuplicateIdService.DuplicateIdReport claimedByOsloAndBergen =
+      new DuplicateIdService.DuplicateIdReport(
+        "YOS",
+        DuplicateIdService.ENTITY_VEHICLE_TYPE,
+        List.of(
+          new DuplicateIdService.DuplicateId(
+            "YOS:VehicleType:scooter",
+            new TreeSet<>(Set.of("yos_oslo", "yos_bergen"))
+          )
+        )
+      );
+    // Same id, same count, but yos_bergen stopped publishing it and yos_trondheim
+    // started. The old WARN would now name the wrong operator, so this must
+    // re-trigger a fresh WARN even though `current.equals(previous)` would be
+    // true if only ids (and not systemIds) were tracked.
+    DuplicateIdService.DuplicateIdReport claimedByOsloAndTrondheim =
+      new DuplicateIdService.DuplicateIdReport(
+        "YOS",
+        DuplicateIdService.ENTITY_VEHICLE_TYPE,
+        List.of(
+          new DuplicateIdService.DuplicateId(
+            "YOS:VehicleType:scooter",
+            new TreeSet<>(Set.of("yos_oslo", "yos_trondheim"))
+          )
+        )
+      );
+
+    Logger logger = (Logger) LoggerFactory.getLogger(MetricUpdater.class);
+    ListAppender<ILoggingEvent> appender = new ListAppender<>();
+    appender.start();
+    Level originalLevel = logger.getLevel();
+    logger.setLevel(Level.INFO);
+    logger.addAppender(appender);
+
+    try {
+      when(mockedDuplicateIdService.detect()).thenReturn(List.of(claimedByOsloAndBergen));
+      metricUpdater.updateDuplicateIdMetrics();
+
+      when(mockedDuplicateIdService.detect())
+        .thenReturn(List.of(claimedByOsloAndTrondheim));
+      metricUpdater.updateDuplicateIdMetrics();
+    } finally {
+      logger.detachAppender(appender);
+      logger.setLevel(originalLevel);
+    }
+
+    List<ILoggingEvent> events = appender.list;
+    assertEquals(2, events.size());
+
+    assertEquals(Level.WARN, events.get(0).getLevel());
+    assertTrue(
+      events.get(0).getFormattedMessage().contains("yos_bergen(YOS:Operator:yos_bergen)")
+    );
+
+    assertEquals(Level.WARN, events.get(1).getLevel());
+    String secondWarning = events.get(1).getFormattedMessage();
+    assertTrue(secondWarning.contains("yos_oslo(YOS:Operator:yos_oslo)"));
+    assertTrue(
+      secondWarning.contains("yos_trondheim(YOS:Operator:yos_trondheim)"),
+      "second WARN must name the newly claiming system, not the stale one"
+    );
   }
 
   private static FeedProvider duplicateProvider(String systemId) {

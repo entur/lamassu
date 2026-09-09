@@ -29,7 +29,25 @@ public class MetricUpdater {
   private final FeedFreshnessService feedFreshnessService;
   private final DuplicateIdService duplicateIdService;
 
-  private final Map<String, Set<String>> lastReportedDuplicateIds =
+  /**
+   * The last logged set of {@link DuplicateId} records per (codespace, entityType)
+   * pair, keyed by {@code codespace + "/" + entityType}. Comparing full records
+   * (not just ids) is what lets a change in which systems claim an already-known
+   * duplicate id re-trigger a WARN with the newly correct operator ids.
+   *
+   * <p>This is instance-local state: it is not persisted or shared across replicas,
+   * so a leader failover or restart forgets it, and the first tick afterwards
+   * re-emits a WARN for every collision that is still unresolved. That is accepted
+   * because failovers are rare relative to the 60-second detection tick, and the
+   * cost of a spurious repeat log is far lower than the cost of staying silent.
+   *
+   * <p>It is a {@link ConcurrentHashMap} even though only the single scheduled
+   * caller mutates or reads it today, purely as a defensive habit for a mutable
+   * field on a singleton {@code @Component} bean: nothing here relies on
+   * concurrent access, but nothing here would need to change if a second caller
+   * were ever added.
+   */
+  private final Map<String, Set<DuplicateId>> lastReportedDuplicateIds =
     new ConcurrentHashMap<>();
 
   @Autowired
@@ -92,12 +110,8 @@ public class MetricUpdater {
 
   private void logDuplicateIdTransition(DuplicateIdReport report) {
     String key = report.codespace() + "/" + report.entityType();
-    Set<String> current = report
-      .duplicates()
-      .stream()
-      .map(DuplicateId::id)
-      .collect(Collectors.toCollection(LinkedHashSet::new));
-    Set<String> previous = lastReportedDuplicateIds.getOrDefault(key, Set.of());
+    Set<DuplicateId> current = new LinkedHashSet<>(report.duplicates());
+    Set<DuplicateId> previous = lastReportedDuplicateIds.getOrDefault(key, Set.of());
 
     if (current.equals(previous)) {
       return;
@@ -115,7 +129,7 @@ public class MetricUpdater {
 
     lastReportedDuplicateIds.put(key, current);
     logger.warn(
-      "Duplicate ids across systems in codespace={} entity={} count={}{}",
+      "Duplicate ids across systems in codespace={} entity={} count={} {}",
       report.codespace(),
       report.entityType(),
       current.size(),
@@ -124,25 +138,37 @@ public class MetricUpdater {
   }
 
   private String describeDuplicates(DuplicateIdReport report) {
+    Map<String, String> operatorIdsBySystemId = feedProviderConfig
+      .getProviders()
+      .stream()
+      .filter(provider -> provider.getSystemId() != null)
+      .collect(
+        Collectors.toMap(
+          FeedProvider::getSystemId,
+          FeedProvider::getOperatorId,
+          (first, second) -> first
+        )
+      );
+
     return report
       .duplicates()
       .stream()
       .map(duplicate ->
-        String.format(
-          "%n      %s claimed by %s",
-          duplicate.id(),
-          describeSystems(duplicate.systemIds())
-        )
+        duplicate.id() +
+        "=" +
+        describeSystems(duplicate.systemIds(), operatorIdsBySystemId)
       )
-      .collect(Collectors.joining());
+      .collect(Collectors.joining("; "));
   }
 
-  private String describeSystems(Set<String> systemIds) {
+  private String describeSystems(
+    Set<String> systemIds,
+    Map<String, String> operatorIdsBySystemId
+  ) {
     return systemIds
       .stream()
       .map(systemId -> {
-        FeedProvider provider = feedProviderConfig.getProviderBySystemId(systemId);
-        String operatorId = provider == null ? "unknown" : provider.getOperatorId();
+        String operatorId = operatorIdsBySystemId.getOrDefault(systemId, "unknown");
         return systemId + "(" + operatorId + ")";
       })
       .collect(Collectors.joining(", ", "[", "]"));
