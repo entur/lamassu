@@ -145,6 +145,10 @@ class MetricsServiceTest {
       0.01
     );
 
+    // Proves two distinct (codespace, entity) pairs produce two distinct gauges rather
+    // than colliding. It does not by itself prove update-in-place, since Micrometer
+    // dedupes by id regardless of implementation; the 0.0 assertion above is what
+    // proves that.
     Collection<Gauge> gauges = meterRegistry.get(MetricsService.DUPLICATE_IDS).gauges();
     assertEquals(2, gauges.size());
   }

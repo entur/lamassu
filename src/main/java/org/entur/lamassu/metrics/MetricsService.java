@@ -65,8 +65,7 @@ public class MetricsService {
     new ConcurrentHashMap<>();
   private final Map<String, AtomicInteger> overdueFilesCounters =
     new ConcurrentHashMap<>();
-  private final Map<String, AtomicInteger> duplicateIdCounters =
-    new ConcurrentHashMap<>();
+  private final Map<String, AtomicInteger> duplicateIdGauges = new ConcurrentHashMap<>();
 
   public MetricsService(MeterRegistry meterRegistry) {
     this.meterRegistry = meterRegistry;
@@ -122,7 +121,7 @@ public class MetricsService {
    */
   public void registerDuplicateIdCount(String codespace, String entity, int count) {
     getGauge(
-      duplicateIdCounters,
+      duplicateIdGauges,
       codespace + "/" + entity,
       DUPLICATE_IDS,
       List.of(Tag.of(LABEL_CODESPACE, codespace), Tag.of(LABEL_ENTITY, entity))
