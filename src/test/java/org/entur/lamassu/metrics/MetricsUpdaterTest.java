@@ -1,6 +1,10 @@
 package org.entur.lamassu.metrics;
 
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -104,6 +108,44 @@ public class MetricsUpdaterTest {
     metricUpdater.updateDuplicateIdMetrics();
 
     verify(mockedMetricsService).registerDuplicateIdCount("YOS", "vehicleType", 1);
+    verify(mockedMetricsService).registerDuplicateIdCount("YOS", "pricingPlan", 0);
+  }
+
+  @Test
+  public void testDetectionFailureDoesNotPropagateOrRegisterAnything() {
+    when(mockedDuplicateIdService.detect())
+      .thenThrow(new RuntimeException("detection failed"));
+
+    metricUpdater.updateDuplicateIdMetrics();
+
+    verify(mockedMetricsService, never())
+      .registerDuplicateIdCount(anyString(), anyString(), anyInt());
+  }
+
+  @Test
+  public void testFailedRegistrationForOneReportDoesNotPreventOthers() {
+    when(mockedDuplicateIdService.detect())
+      .thenReturn(
+        List.of(
+          new DuplicateIdService.DuplicateIdReport(
+            "YOS",
+            DuplicateIdService.ENTITY_VEHICLE_TYPE,
+            List.of()
+          ),
+          new DuplicateIdService.DuplicateIdReport(
+            "YOS",
+            DuplicateIdService.ENTITY_PRICING_PLAN,
+            List.of()
+          )
+        )
+      );
+    doThrow(new RuntimeException("registration failed"))
+      .when(mockedMetricsService)
+      .registerDuplicateIdCount("YOS", DuplicateIdService.ENTITY_VEHICLE_TYPE, 0);
+
+    metricUpdater.updateDuplicateIdMetrics();
+
+    verify(mockedMetricsService).registerDuplicateIdCount("YOS", "vehicleType", 0);
     verify(mockedMetricsService).registerDuplicateIdCount("YOS", "pricingPlan", 0);
   }
 }

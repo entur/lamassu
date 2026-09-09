@@ -1,6 +1,7 @@
 package org.entur.lamassu.metrics;
 
 import java.util.Arrays;
+import java.util.List;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.service.DuplicateIdService;
@@ -48,16 +49,29 @@ public class MetricUpdater {
    * resolved problem is visible.
    */
   public void updateDuplicateIdMetrics() {
+    List<DuplicateIdReport> reports;
     try {
-      for (DuplicateIdReport report : duplicateIdService.detect()) {
+      reports = duplicateIdService.detect();
+    } catch (RuntimeException e) {
+      logger.warn("Failed detecting duplicate ids", e);
+      return;
+    }
+
+    for (DuplicateIdReport report : reports) {
+      try {
         metricsService.registerDuplicateIdCount(
           report.codespace(),
           report.entityType(),
           report.duplicates().size()
         );
+      } catch (RuntimeException e) {
+        logger.warn(
+          "Failed registering duplicate id metric for codespace={} entity={}",
+          report.codespace(),
+          report.entityType(),
+          e
+        );
       }
-    } catch (RuntimeException e) {
-      logger.warn("Failed updating duplicate id metrics", e);
     }
   }
 
