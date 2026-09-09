@@ -290,6 +290,52 @@ public class MetricsUpdaterTest {
     );
   }
 
+  @Test
+  public void testDuplicateIdsAreLoggedWhenAProviderHasNoOperatorId() {
+    FeedProvider oslo = duplicateProvider("yos_oslo");
+    FeedProvider bergen = duplicateProvider("yos_bergen");
+    // No operatorId set anywhere in config load path requires one - a provider can
+    // legitimately have a null operatorId. That must not blow up describeDuplicates.
+    bergen.setOperatorId(null);
+    when(mockedFeedProviderConfig.getProviders()).thenReturn(List.of(oslo, bergen));
+
+    DuplicateIdService.DuplicateIdReport dirty = new DuplicateIdService.DuplicateIdReport(
+      "YOS",
+      DuplicateIdService.ENTITY_VEHICLE_TYPE,
+      List.of(
+        new DuplicateIdService.DuplicateId(
+          "YOS:VehicleType:scooter",
+          new TreeSet<>(Set.of("yos_oslo", "yos_bergen"))
+        )
+      )
+    );
+
+    Logger logger = (Logger) LoggerFactory.getLogger(MetricUpdater.class);
+    ListAppender<ILoggingEvent> appender = new ListAppender<>();
+    appender.start();
+    Level originalLevel = logger.getLevel();
+    logger.setLevel(Level.INFO);
+    logger.addAppender(appender);
+
+    try {
+      when(mockedDuplicateIdService.detect()).thenReturn(List.of(dirty));
+      metricUpdater.updateDuplicateIdMetrics();
+    } finally {
+      logger.detachAppender(appender);
+      logger.setLevel(originalLevel);
+    }
+
+    List<ILoggingEvent> events = appender.list;
+    assertEquals(1, events.size());
+    assertEquals(Level.WARN, events.get(0).getLevel());
+    String warning = events.get(0).getFormattedMessage();
+    assertTrue(warning.contains("yos_oslo(YOS:Operator:yos_oslo)"));
+    assertTrue(
+      warning.contains("yos_bergen(unknown)"),
+      "a provider without an operator id must render as unknown, not throw"
+    );
+  }
+
   private static FeedProvider duplicateProvider(String systemId) {
     FeedProvider provider = new FeedProvider();
     provider.setSystemId(systemId);

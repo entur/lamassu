@@ -141,7 +141,9 @@ public class MetricUpdater {
     Map<String, String> operatorIdsBySystemId = feedProviderConfig
       .getProviders()
       .stream()
-      .filter(provider -> provider.getSystemId() != null)
+      .filter(provider ->
+        provider.getSystemId() != null && provider.getOperatorId() != null
+      )
       .collect(
         Collectors.toMap(
           FeedProvider::getSystemId,
