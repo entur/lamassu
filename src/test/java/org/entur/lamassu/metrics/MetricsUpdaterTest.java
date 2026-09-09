@@ -1,5 +1,7 @@
 package org.entur.lamassu.metrics;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
@@ -8,6 +10,10 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -22,6 +28,7 @@ import org.junit.jupiter.api.Test;
 import org.mobilitydata.gbfs.v3_0.gbfs.GBFSFeed;
 import org.mobilitydata.gbfs.v3_0.gbfs.GBFSGbfs;
 import org.mobilitydata.gbfs.v3_0.station_information.GBFSStationInformation;
+import org.slf4j.LoggerFactory;
 
 public class MetricsUpdaterTest {
 
@@ -147,5 +154,73 @@ public class MetricsUpdaterTest {
 
     verify(mockedMetricsService).registerDuplicateIdCount("YOS", "vehicleType", 0);
     verify(mockedMetricsService).registerDuplicateIdCount("YOS", "pricingPlan", 0);
+  }
+
+  @Test
+  public void testDuplicateIdsAreLoggedOnEntryAndExitOnly() {
+    FeedProvider oslo = duplicateProvider("yos_oslo");
+    FeedProvider bergen = duplicateProvider("yos_bergen");
+    when(mockedFeedProviderConfig.getProviderBySystemId("yos_oslo")).thenReturn(oslo);
+    when(mockedFeedProviderConfig.getProviderBySystemId("yos_bergen")).thenReturn(bergen);
+
+    DuplicateIdService.DuplicateIdReport dirty = new DuplicateIdService.DuplicateIdReport(
+      "YOS",
+      DuplicateIdService.ENTITY_VEHICLE_TYPE,
+      List.of(
+        new DuplicateIdService.DuplicateId(
+          "YOS:VehicleType:scooter",
+          new TreeSet<>(Set.of("yos_oslo", "yos_bergen"))
+        )
+      )
+    );
+    DuplicateIdService.DuplicateIdReport clean = new DuplicateIdService.DuplicateIdReport(
+      "YOS",
+      DuplicateIdService.ENTITY_VEHICLE_TYPE,
+      List.of()
+    );
+
+    Logger logger = (Logger) LoggerFactory.getLogger(MetricUpdater.class);
+    ListAppender<ILoggingEvent> appender = new ListAppender<>();
+    appender.start();
+    Level originalLevel = logger.getLevel();
+    // logback.xml sets `org` to WARN, which would swallow the INFO resolution event.
+    // Force INFO here so this test asserts the logging code, not the log configuration.
+    logger.setLevel(Level.INFO);
+    logger.addAppender(appender);
+
+    try {
+      when(mockedDuplicateIdService.detect()).thenReturn(List.of(dirty));
+      metricUpdater.updateDuplicateIdMetrics();
+      metricUpdater.updateDuplicateIdMetrics();
+
+      when(mockedDuplicateIdService.detect()).thenReturn(List.of(clean));
+      metricUpdater.updateDuplicateIdMetrics();
+      metricUpdater.updateDuplicateIdMetrics();
+    } finally {
+      logger.detachAppender(appender);
+      logger.setLevel(originalLevel);
+    }
+
+    List<ILoggingEvent> events = appender.list;
+    assertEquals(2, events.size());
+
+    assertEquals(Level.WARN, events.get(0).getLevel());
+    String warning = events.get(0).getFormattedMessage();
+    assertTrue(warning.contains("codespace=YOS"));
+    assertTrue(warning.contains("entity=vehicleType"));
+    assertTrue(warning.contains("YOS:VehicleType:scooter"));
+    assertTrue(warning.contains("yos_oslo(YOS:Operator:yos_oslo)"));
+    assertTrue(warning.contains("yos_bergen(YOS:Operator:yos_bergen)"));
+
+    assertEquals(Level.INFO, events.get(1).getLevel());
+    assertTrue(events.get(1).getFormattedMessage().contains("resolved"));
+  }
+
+  private static FeedProvider duplicateProvider(String systemId) {
+    FeedProvider provider = new FeedProvider();
+    provider.setSystemId(systemId);
+    provider.setCodespace("YOS");
+    provider.setOperatorId("YOS:Operator:" + systemId);
+    return provider;
   }
 }
