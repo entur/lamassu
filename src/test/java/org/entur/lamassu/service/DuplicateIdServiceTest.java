@@ -150,6 +150,144 @@ class DuplicateIdServiceTest {
     );
   }
 
+  @Test
+  void excludesNonAggregatedProviders() {
+    FeedProvider oslo = provider("yos_oslo", "YOS");
+    FeedProvider bergen = provider("yos_bergen", "YOS");
+    bergen.setAggregate(false);
+    when(feedProviderConfig.getProviders()).thenReturn(List.of(oslo, bergen));
+    when(feedCache.find(GBFSFeed.Name.VEHICLE_TYPES, oslo))
+      .thenReturn(vehicleTypes("YOS:VehicleType:scooter"));
+    when(feedCache.find(GBFSFeed.Name.VEHICLE_TYPES, bergen))
+      .thenReturn(vehicleTypes("YOS:VehicleType:scooter"));
+
+    assertTrue(
+      reportFor(service.detect(), "YOS", DuplicateIdService.ENTITY_VEHICLE_TYPE)
+        .duplicates()
+        .isEmpty()
+    );
+  }
+
+  @Test
+  void excludesDisabledProviders() {
+    FeedProvider oslo = provider("yos_oslo", "YOS");
+    FeedProvider bergen = provider("yos_bergen", "YOS");
+    bergen.setEnabled(false);
+    when(feedProviderConfig.getProviders()).thenReturn(List.of(oslo, bergen));
+    when(feedCache.find(GBFSFeed.Name.VEHICLE_TYPES, oslo))
+      .thenReturn(vehicleTypes("YOS:VehicleType:scooter"));
+    when(feedCache.find(GBFSFeed.Name.VEHICLE_TYPES, bergen))
+      .thenReturn(vehicleTypes("YOS:VehicleType:scooter"));
+
+    assertTrue(
+      reportFor(service.detect(), "YOS", DuplicateIdService.ENTITY_VEHICLE_TYPE)
+        .duplicates()
+        .isEmpty()
+    );
+  }
+
+  @Test
+  void skipsProvidersWithoutCodespace() {
+    FeedProvider broken = provider("yos_oslo", "YOS");
+    broken.setCodespace(null);
+    when(feedProviderConfig.getProviders()).thenReturn(List.of(broken));
+
+    assertEquals(List.of(), service.detect());
+  }
+
+  @Test
+  void skipsProvidersWithoutSystemId() {
+    FeedProvider broken = provider("yos_oslo", "YOS");
+    broken.setSystemId(null);
+    FeedProvider oslo = provider("yos_oslo", "YOS");
+    when(feedProviderConfig.getProviders()).thenReturn(List.of(broken, oslo));
+    when(feedCache.find(GBFSFeed.Name.VEHICLE_TYPES, broken))
+      .thenReturn(vehicleTypes("YOS:VehicleType:scooter"));
+    when(feedCache.find(GBFSFeed.Name.VEHICLE_TYPES, oslo))
+      .thenReturn(vehicleTypes("YOS:VehicleType:scooter"));
+
+    assertTrue(
+      reportFor(service.detect(), "YOS", DuplicateIdService.ENTITY_VEHICLE_TYPE)
+        .duplicates()
+        .isEmpty()
+    );
+  }
+
+  @Test
+  void toleratesAbsentFeed() {
+    FeedProvider oslo = provider("yos_oslo", "YOS");
+    when(feedProviderConfig.getProviders()).thenReturn(List.of(oslo));
+
+    assertTrue(
+      reportFor(service.detect(), "YOS", DuplicateIdService.ENTITY_VEHICLE_TYPE)
+        .duplicates()
+        .isEmpty()
+    );
+  }
+
+  @Test
+  void toleratesFeedWithNullDataAndNullList() {
+    FeedProvider oslo = provider("yos_oslo", "YOS");
+    FeedProvider bergen = provider("yos_bergen", "YOS");
+    when(feedProviderConfig.getProviders()).thenReturn(List.of(oslo, bergen));
+    when(feedCache.find(GBFSFeed.Name.VEHICLE_TYPES, oslo))
+      .thenReturn(new GBFSVehicleTypes());
+    when(feedCache.find(GBFSFeed.Name.VEHICLE_TYPES, bergen))
+      .thenReturn(
+        new GBFSVehicleTypes()
+          .withData(new org.mobilitydata.gbfs.v3_0.vehicle_types.GBFSData())
+      );
+
+    assertTrue(
+      reportFor(service.detect(), "YOS", DuplicateIdService.ENTITY_VEHICLE_TYPE)
+        .duplicates()
+        .isEmpty()
+    );
+  }
+
+  @Test
+  void ignoresNullAndBlankIds() {
+    FeedProvider oslo = provider("yos_oslo", "YOS");
+    FeedProvider bergen = provider("yos_bergen", "YOS");
+    when(feedProviderConfig.getProviders()).thenReturn(List.of(oslo, bergen));
+    when(feedCache.find(GBFSFeed.Name.VEHICLE_TYPES, oslo))
+      .thenReturn(vehicleTypes(null, "  "));
+    when(feedCache.find(GBFSFeed.Name.VEHICLE_TYPES, bergen))
+      .thenReturn(vehicleTypes(null, "  "));
+
+    assertTrue(
+      reportFor(service.detect(), "YOS", DuplicateIdService.ENTITY_VEHICLE_TYPE)
+        .duplicates()
+        .isEmpty()
+    );
+  }
+
+  @Test
+  void oneFailingFeedReadDoesNotAbortDetection() {
+    FeedProvider oslo = provider("yos_oslo", "YOS");
+    FeedProvider bergen = provider("yos_bergen", "YOS");
+    FeedProvider trondheim = provider("yos_trondheim", "YOS");
+    when(feedProviderConfig.getProviders()).thenReturn(List.of(oslo, bergen, trondheim));
+    when(feedCache.find(GBFSFeed.Name.VEHICLE_TYPES, oslo))
+      .thenReturn(vehicleTypes("YOS:VehicleType:scooter"));
+    when(feedCache.find(GBFSFeed.Name.VEHICLE_TYPES, bergen))
+      .thenThrow(new RuntimeException("cache unavailable"));
+    when(feedCache.find(GBFSFeed.Name.VEHICLE_TYPES, trondheim))
+      .thenReturn(vehicleTypes("YOS:VehicleType:scooter"));
+
+    DuplicateIdService.DuplicateIdReport report = reportFor(
+      service.detect(),
+      "YOS",
+      DuplicateIdService.ENTITY_VEHICLE_TYPE
+    );
+
+    assertEquals(1, report.duplicates().size());
+    assertEquals(
+      Set.of("yos_oslo", "yos_trondheim"),
+      report.duplicates().get(0).systemIds()
+    );
+  }
+
   static GBFSSystemPricingPlans pricingPlans(String... ids) {
     return new GBFSSystemPricingPlans()
       .withData(

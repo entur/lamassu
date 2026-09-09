@@ -35,6 +35,8 @@ import org.mobilitydata.gbfs.v3_0.system_pricing_plans.GBFSPlan;
 import org.mobilitydata.gbfs.v3_0.system_pricing_plans.GBFSSystemPricingPlans;
 import org.mobilitydata.gbfs.v3_0.vehicle_types.GBFSVehicleType;
 import org.mobilitydata.gbfs.v3_0.vehicle_types.GBFSVehicleTypes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 /**
@@ -96,6 +98,8 @@ public class DuplicateIdService {
     )
   );
 
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
   private final FeedProviderConfig feedProviderConfig;
   private final GBFSV3FeedCache feedCache;
 
@@ -115,6 +119,7 @@ public class DuplicateIdService {
     Map<String, List<FeedProvider>> providersByCodespace = feedProviderConfig
       .getProviders()
       .stream()
+      .filter(DuplicateIdService::participatesInSharedEntityCaches)
       .collect(
         Collectors.groupingBy(
           FeedProvider::getCodespace,
@@ -130,6 +135,21 @@ public class DuplicateIdService {
       }
     }
     return reports;
+  }
+
+  /**
+   * Only enabled, aggregated providers write into the shared entity caches, so only
+   * they can collide with each other. Providers without a codespace or system id are
+   * skipped: both are used as sorted map and set keys, where a null would abort the
+   * whole detection run rather than just that provider.
+   */
+  private static boolean participatesInSharedEntityCaches(FeedProvider provider) {
+    return (
+      provider.getCodespace() != null &&
+      provider.getSystemId() != null &&
+      !Boolean.FALSE.equals(provider.getEnabled()) &&
+      Boolean.TRUE.equals(provider.getAggregate())
+    );
   }
 
   private DuplicateIdReport buildReport(
@@ -157,8 +177,18 @@ public class DuplicateIdService {
   }
 
   private Set<String> idsFor(FeedProvider provider, TrackedEntity trackedEntity) {
-    Object feed = feedCache.find(trackedEntity.feedName(), provider);
-    return feed == null ? Set.of() : trackedEntity.extractIds().apply(feed);
+    try {
+      Object feed = feedCache.find(trackedEntity.feedName(), provider);
+      return feed == null ? Set.of() : trackedEntity.extractIds().apply(feed);
+    } catch (RuntimeException e) {
+      logger.warn(
+        "Could not read {} for system={} while detecting duplicate ids",
+        trackedEntity.feedName(),
+        provider.getSystemId(),
+        e
+      );
+      return Set.of();
+    }
   }
 
   private static Set<String> vehicleTypeIds(Object feed) {
