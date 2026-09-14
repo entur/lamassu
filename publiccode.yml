@@ -1,0 +1,67 @@
+# publiccode.yml metadata, see https://yml.publiccode.tools/
+publiccodeYmlVersion: "0.7.0"
+
+name: Lamassu
+url: https://github.com/entur/lamassu
+
+platforms:
+  - web
+  - linux
+
+categories:
+  - data-collection
+  - geographic-information-systems
+
+developmentStatus: stable
+softwareType: standalone/backend
+
+organisation:
+  name: Entur AS
+  uri: https://entur.no
+
+usedBy:
+  - Norway (nationwide), Entur AS
+  - Germany (North Rhine-Westphalia), MOBIDROM
+  - Germany (Baden-Württemberg), MobiData BW
+
+intendedAudience:
+  scope:
+    - transportation
+  countries:
+    - "NO"
+
+description:
+  en:
+    localisedName: Lamassu
+    shortDescription: Aggregates GBFS feeds for shared mobility into one national feed and API.
+    longDescription: >
+      Lamassu is a mobility aggregation service built on the General Bikeshare Feed Specification (GBFS). It polls
+      the GBFS feeds of city bike, scooter and car sharing operators through their auto-discovery endpoints,
+      normalises the data and republishes it both as a single aggregated GBFS feed and through a GraphQL API for
+      nearby vehicles and stations.
+      Every operator is assigned a codespace that prefixes its identifiers, so entities from different systems can
+      be merged without conflicts. Lamassu handles feeds that require authentication with bearer tokens, OAuth2
+      client credentials or custom HTTP headers, and it keeps the aggregated state in Redis.
+    documentation: https://github.com/entur/lamassu/blob/master/README.md
+    features:
+      - Polls and aggregates GBFS feeds from many operators
+      - Serves an aggregated GBFS feed
+      - GraphQL API for vehicles and stations by location
+      - Codespace prefixing to avoid identifier conflicts
+      - Support for authenticated feeds, including OAuth2 and bearer tokens
+      - Geofencing zone support
+
+legal:
+  license: EUPL-1.2
+  mainCopyrightOwner: Entur AS
+
+maintenance:
+  type: internal
+  contacts:
+    - name: Entur ROR (Open Data and Journey Planning)
+      email: kollektivdata@entur.org
+
+localisation:
+  localisationReady: false
+  availableLanguages:
+    - en
