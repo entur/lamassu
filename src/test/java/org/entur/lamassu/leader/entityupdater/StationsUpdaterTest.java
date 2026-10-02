@@ -137,9 +137,10 @@ class StationsUpdaterTest {
     // When
     stationsUpdater.update(feedProvider, delta, stationInformationFeed);
 
-    // Then
+    // Then - only the name changed, so the spatial index key is unchanged and the entry is
+    // rewritten in place rather than deleted and re-added
     verify(spatialIndex).addAll(any());
-    verify(spatialIndex).removeAll(any());
+    verify(spatialIndex, never()).removeAll(anySet());
     verify(stationCache).updateAll(any());
     verify(stationCache, never()).removeAll(anySet());
   }
@@ -336,6 +337,97 @@ class StationsUpdaterTest {
     // continuity must be broken
     assertFalse(fullyApplied);
     verify(stationCache, never()).updateAll(anyMap());
+  }
+
+  /**
+   * An ordinary status change leaves the spatial index key identical, because the key holds
+   * the available form factors and propulsion types but not the vehicle counts. Issuing a
+   * ZREM for a member that is about to be rewritten unchanged costs a blocking round trip and
+   * briefly removes the station from the index for concurrent readers.
+   */
+  @Test
+  void shouldNotRemoveFromSpatialIndexWhenIndexKeyIsUnchanged() {
+    // Given
+    var feedProvider = new FeedProvider();
+    feedProvider.setSystemId("test-system");
+    feedProvider.setCodespace("test");
+    feedProvider.setOperatorId("test-operator");
+    feedProvider.setLanguage("en");
+
+    var stationId = "station-1";
+    var bikeTypeId = "bike";
+
+    var bikeType = new VehicleType();
+    bikeType.setId(bikeTypeId);
+    bikeType.setFormFactor(FormFactor.BICYCLE);
+    bikeType.setPropulsionType(PropulsionType.HUMAN);
+
+    var currentStation = new Station();
+    currentStation.setId(stationId);
+    currentStation.setLat(59.9);
+    currentStation.setLon(10.7);
+    var oldAvailability = new VehicleTypeAvailability();
+    oldAvailability.setVehicleTypeId(bikeTypeId);
+    oldAvailability.setCount(5);
+    currentStation.setVehicleTypesAvailable(new ArrayList<>(List.of(oldAvailability)));
+
+    var stationInfo = new GBFSStation();
+    stationInfo.setStationId(stationId);
+    stationInfo.setLat(59.9);
+    stationInfo.setLon(10.7);
+    stationInfo.setName(
+      new ArrayList<>(List.of(new GBFSName().withLanguage("en").withText("Test Station")))
+    );
+    stationInfo.setVehicleTypesCapacity(
+      new ArrayList<>(
+        List.of(
+          new org.mobilitydata.gbfs.v3_0.station_information.GBFSVehicleTypesCapacity()
+            .withVehicleTypeIds(new ArrayList<>(List.of(bikeTypeId)))
+            .withCount(10)
+        )
+      )
+    );
+
+    // Only the count changes: 5 bikes become 4. The index key is unaffected.
+    var stationStatus = new org.mobilitydata.gbfs.v3_0.station_status.GBFSStation();
+    stationStatus.setStationId(stationId);
+    stationStatus.setNumDocksAvailable(10);
+    stationStatus.setIsInstalled(true);
+    stationStatus.setIsRenting(true);
+    stationStatus.setIsReturning(true);
+    stationStatus.setLastReported(new Date(1000L));
+    stationStatus.setVehicleTypesAvailable(
+      new ArrayList<>(
+        List.of(
+          new org.mobilitydata.gbfs.v3_0.station_status.GBFSVehicleTypesAvailable()
+            .withVehicleTypeId(bikeTypeId)
+            .withCount(4)
+        )
+      )
+    );
+
+    var stationInformationFeed = new GBFSStationInformation();
+    var data = new GBFSData();
+    data.setStations(List.of(stationInfo));
+    stationInformationFeed.setData(data);
+
+    when(stationCache.get(stationId)).thenReturn(currentStation);
+    when(vehicleTypeCache.getAll(Set.of(bikeTypeId))).thenReturn(List.of(bikeType));
+
+    var delta = new GBFSFileDelta<>(
+      1000L,
+      2000L,
+      "station_status",
+      List.of(new GBFSEntityDelta<>(stationId, DeltaType.UPDATE, stationStatus))
+    );
+
+    // When
+    stationsUpdater.update(feedProvider, delta, stationInformationFeed);
+
+    // Then
+    verify(spatialIndex, never()).removeAll(anySet());
+    verify(spatialIndex).addAll(any());
+    verify(stationCache).updateAll(any());
   }
 
   @Test

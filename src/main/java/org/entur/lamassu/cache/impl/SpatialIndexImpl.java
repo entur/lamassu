@@ -19,6 +19,7 @@
 package org.entur.lamassu.cache.impl;
 
 import io.lettuce.core.RedisException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -48,17 +49,35 @@ public abstract class SpatialIndexImpl<S extends SpatialIndexId, T extends Locat
 
   @Override
   public void addAll(Map<S, T> spatialIndexUpdateMap) {
+    var positionable = new ArrayList<Map.Entry<S, T>>();
+    var missingCoordinates = new ArrayList<String>();
+
+    for (var entry : spatialIndexUpdateMap.entrySet()) {
+      var entity = entry.getValue();
+      if (entity.getLat() == null || entity.getLon() == null) {
+        missingCoordinates.add(entity.getId());
+      } else {
+        positionable.add(entry);
+      }
+    }
+
+    if (!missingCoordinates.isEmpty()) {
+      // The caller has usually just removed the previous entry for these ids, so dropping
+      // them silently loses them from the index until the entity next changes.
+      logger.warn(
+        "Not adding {} entries to spatialIndex because they have no coordinates: {}",
+        missingCoordinates.size(),
+        missingCoordinates
+      );
+    }
+
+    if (positionable.isEmpty()) {
+      return;
+    }
+
     try {
       Long added = spatialIndex
-        .addAsync(
-          spatialIndexUpdateMap
-            .entrySet()
-            .stream()
-            .filter(e -> e.getValue() != null)
-            .filter(e -> e.getValue().getLat() != null && e.getValue().getLon() != null)
-            .map(this::map)
-            .toArray(GeoEntry[]::new)
-        )
+        .addAsync(positionable.stream().map(this::map).toArray(GeoEntry[]::new))
         .get();
       logger.debug("Added {} stations", added);
     } catch (RedisException | ExecutionException e) {
@@ -75,9 +94,27 @@ public abstract class SpatialIndexImpl<S extends SpatialIndexId, T extends Locat
     return new GeoEntry(entity.getLon(), entity.getLat(), key);
   }
 
+  /**
+   * Removes entries from the spatial index, waiting for the delete to complete.
+   *
+   * <p>Awaiting is required for correctness: Redisson draws connections from a pool and
+   * gives no ordering guarantee between separately issued async commands. A fire-and-forget
+   * ZREM can land after the GEOADD issued by a subsequent {@link #addAll}, deleting the
+   * entry that was just written. For an ordinary status change the removed and added
+   * members are equal, so the entity then disappears from the index while remaining in the
+   * entity cache.
+   */
   @Override
   public void removeAll(Set<S> ids) {
-    spatialIndex.removeAllAsync(ids);
+    try {
+      spatialIndex.removeAllAsync(ids).get();
+      logger.debug("Removed {} entries from spatialIndex", ids.size());
+    } catch (RedisException | ExecutionException e) {
+      logger.warn("Caught exception while removing entries from spatialIndex", e);
+    } catch (InterruptedException e) {
+      logger.warn("Interrupted while removing entries from spatialIndex", e);
+      Thread.currentThread().interrupt();
+    }
   }
 
   @Override

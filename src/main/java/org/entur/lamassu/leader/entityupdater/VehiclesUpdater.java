@@ -220,12 +220,19 @@ public class VehiclesUpdater {
   }
 
   private void updateCaches(UpdateContext context) {
-    if (!context.spatialIndexIdsToRemove.isEmpty()) {
+    // Only delete index entries that are not about to be rewritten. A vehicle that merely
+    // moves keeps the same key, since the key holds the form factor, propulsion type and
+    // reserved/disabled flags but not the coordinates. Deleting such a key costs a blocking
+    // round trip and leaves the vehicle briefly invisible to concurrent readers.
+    var staleSpatialIndexIds = new HashSet<>(context.spatialIndexIdsToRemove);
+    staleSpatialIndexIds.removeAll(context.spatialIndexUpdateMap.keySet());
+
+    if (!staleSpatialIndexIds.isEmpty()) {
       logger.debug(
         "Removing {} stale entries in spatial index",
-        context.spatialIndexIdsToRemove.size()
+        staleSpatialIndexIds.size()
       );
-      spatialIndex.removeAll(context.spatialIndexIdsToRemove);
+      spatialIndex.removeAll(staleSpatialIndexIds);
     }
 
     if (!context.vehicleIdsToRemove.isEmpty()) {

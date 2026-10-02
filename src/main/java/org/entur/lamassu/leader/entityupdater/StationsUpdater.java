@@ -278,12 +278,19 @@ public class StationsUpdater {
   }
 
   private void updateCaches(UpdateContext context) {
-    if (!context.spatialIndexIdsToRemove.isEmpty()) {
+    // Only delete index entries that are not about to be rewritten. For an ordinary status
+    // change the removed and added keys are equal, since the key holds the available form
+    // factors and propulsion types but not the vehicle counts. Deleting such a key costs a
+    // blocking round trip and leaves the station briefly invisible to concurrent readers.
+    var staleSpatialIndexIds = new HashSet<>(context.spatialIndexIdsToRemove);
+    staleSpatialIndexIds.removeAll(context.spatialIndexUpdateMap.keySet());
+
+    if (!staleSpatialIndexIds.isEmpty()) {
       logger.debug(
         "Removing {} stale entries in spatial index",
-        context.spatialIndexIdsToRemove.size()
+        staleSpatialIndexIds.size()
       );
-      spatialIndex.removeAll(context.spatialIndexIdsToRemove);
+      spatialIndex.removeAll(staleSpatialIndexIds);
     }
 
     if (!context.stationIdsToRemove.isEmpty()) {
