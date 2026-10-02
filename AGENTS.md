@@ -162,7 +162,7 @@ To avoid ID conflicts when aggregating multiple feeds, Lamassu prefixes all IDs 
 
 The GraphQL API (`/graphql`, schema at `src/main/resources/graphql/schema.graphqls`) provides:
 
-- **Queries**: `vehicles`, `stations`, `geofencingZones` with geo-filtering and attribute filtering
+- **Queries**: `vehicles`, `stations`, `geofencingZones` with geo-filtering and attribute filtering, plus `systems` for system metadata
 - **Subscriptions**: Real-time updates for vehicles and stations (experimental, marked deprecated)
 - **Spatial Queries**: Range-based (lat/lon/range) or bounding box queries
 - **Filtering**: By codespace, system, operator, form factor, propulsion type, etc.

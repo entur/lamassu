@@ -156,6 +156,11 @@ type Query {
     stationsById(ids: [String]!): [Station] @deprecated(reason: "stationsById is deprecated. Use stations query instead.")
 
     geofencingZones(systemIds: [ID]): [GeofencingZones]
+
+    systems(
+        "Fetch systems with specific ids. If omitted, all systems are returned."
+        ids: [String!]
+    ): [System]
 }
 
 type Vehicle {

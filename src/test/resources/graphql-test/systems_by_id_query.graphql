@@ -1,0 +1,6 @@
+{
+    systems(ids: ["testozon"]) {
+        id
+        openingHours
+    }
+}

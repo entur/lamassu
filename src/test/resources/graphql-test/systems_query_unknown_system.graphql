@@ -1,0 +1,5 @@
+{
+    systems(ids: ["nosuchsystem"]) {
+        id
+    }
+}

@@ -1,5 +1,6 @@
 package org.entur.lamassu.integration;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.graphql.test.tester.GraphQlTester.Response;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -139,6 +140,43 @@ class GraphQLIntegrationTest extends AbstractIntegrationTestBase {
       .path("stations[0].vehicleDocksAvailable[0].count")
       .entity(String.class)
       .isEqualTo("2");
+  }
+
+  @Test
+  void testSystemsByIdQuery() {
+    Response response = graphQlTester.documentName("systems_by_id_query").execute();
+
+    response.path("systems").entityList(Object.class).hasSize(1);
+
+    response.path("systems[0].id").entity(String.class).isEqualTo("testozon");
+
+    response
+      .path("systems[0].openingHours")
+      .entity(String.class)
+      .isEqualTo("Apr 1-Nov 3 00:00-24:00");
+  }
+
+  @Test
+  void testSystemsQueryWithoutIdsReturnsAllSystems() {
+    Response response = graphQlTester.documentName("systems_query").execute();
+
+    response
+      .path("systems[*].id")
+      .entityList(String.class)
+      .hasSize(2)
+      .contains("testatlantis", "testozon");
+  }
+
+  @Test
+  void testSystemsQueryUnknownSystemIsRejected() {
+    graphQlTester
+      .documentName("systems_query_unknown_system")
+      .execute()
+      .errors()
+      .satisfy(errors -> {
+        assertEquals(1, errors.size());
+        assertEquals("Unknown system(s)", errors.get(0).getMessage());
+      });
   }
 
   @Test
