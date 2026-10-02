@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -170,11 +171,33 @@ public class StationsUpdater {
         .collect(Collectors.toSet());
       var spatialIdsToRemove = stationsToRemove
         .stream()
-        .map(s -> spatialIndexService.createStationIndexId(s, feedProvider))
+        .map(s -> createStationIndexIdOrNull(s, feedProvider))
+        .filter(Objects::nonNull)
         .collect(Collectors.toSet());
 
       stationCache.removeAll(idsToRemove);
       spatialIndex.removeAll(spatialIdsToRemove);
+    }
+  }
+
+  /**
+   * Generates a station's spatial index id, returning null instead of throwing when the id
+   * cannot be generated. Used where one unusable station must not abort the whole batch.
+   */
+  private StationSpatialIndexId createStationIndexIdOrNull(
+    Station station,
+    FeedProvider feedProvider
+  ) {
+    try {
+      return spatialIndexService.createStationIndexId(station, feedProvider);
+    } catch (IllegalStateException e) {
+      logger.warn(
+        "Could not generate spatial index id for station being cleared, leaving an orphan in the index for provider={} stationId={}",
+        feedProvider,
+        station.getId(),
+        e
+      );
+      return null;
     }
   }
 
@@ -185,11 +208,21 @@ public class StationsUpdater {
   ) {
     context.stationIdsToRemove.add(entityDelta.entityId());
     if (currentStation != null) {
-      var spatialIndexId = spatialIndexService.createStationIndexId(
-        currentStation,
-        context.feedProvider
-      );
-      context.spatialIndexIdsToRemove.add(spatialIndexId);
+      try {
+        context.spatialIndexIdsToRemove.add(
+          spatialIndexService.createStationIndexId(currentStation, context.feedProvider)
+        );
+      } catch (IllegalStateException e) {
+        // Still remove the station from the entity cache. Leaving an orphan behind in the
+        // index is preferable to removing a key generated from degraded data, which would
+        // delete the wrong entry and leave the real one in place.
+        logger.warn(
+          "Could not generate spatial index id for station marked for deletion, leaving an orphan in the index for provider={} stationId={}",
+          context.feedProvider,
+          entityDelta.entityId(),
+          e
+        );
+      }
     } else {
       logger.debug(
         "Station {} marked for deletion but not found in cache",
@@ -221,10 +254,19 @@ public class StationsUpdater {
       context.feedProvider.getLanguage()
     );
 
-    var spatialIndexId = spatialIndexService.createStationIndexId(
-      mappedStation,
-      context.feedProvider
-    );
+    StationSpatialIndexId spatialIndexId;
+    try {
+      spatialIndexId =
+        spatialIndexService.createStationIndexId(mappedStation, context.feedProvider);
+    } catch (IllegalStateException e) {
+      logger.warn(
+        "Skipping station create because its spatial index id could not be generated for provider={} stationId={}",
+        context.feedProvider,
+        stationId,
+        e
+      );
+      return;
+    }
 
     context.spatialIndexUpdateMap.put(spatialIndexId, mappedStation);
 
@@ -258,10 +300,6 @@ public class StationsUpdater {
       return;
     }
 
-    context.spatialIndexIdsToRemove.add(
-      spatialIndexService.createStationIndexId(currentStation, context.feedProvider)
-    );
-
     Station mappedStation = stationMapper.mapStation(
       stationInformation,
       entityDelta.entity(),
@@ -269,12 +307,30 @@ public class StationsUpdater {
       context.feedProvider.getLanguage()
     );
 
+    // Generate both keys before committing anything to the context, so that a failure
+    // cannot leave the remove key applied without its matching add key.
+    StationSpatialIndexId currentSpatialIndexId;
+    StationSpatialIndexId updatedSpatialIndexId;
+    try {
+      currentSpatialIndexId =
+        spatialIndexService.createStationIndexId(currentStation, context.feedProvider);
+      updatedSpatialIndexId =
+        spatialIndexService.createStationIndexId(mappedStation, context.feedProvider);
+    } catch (IllegalStateException e) {
+      logger.warn(
+        "Skipping station update because its spatial index id could not be generated for provider={} stationId={}",
+        context.feedProvider,
+        stationId,
+        e
+      );
+      return;
+    }
+
+    context.spatialIndexIdsToRemove.add(currentSpatialIndexId);
+
     context.addedAndUpdatedStations.put(mappedStation.getId(), mappedStation);
 
-    context.spatialIndexUpdateMap.put(
-      spatialIndexService.createStationIndexId(mappedStation, context.feedProvider),
-      mappedStation
-    );
+    context.spatialIndexUpdateMap.put(updatedSpatialIndexId, mappedStation);
   }
 
   private void updateCaches(UpdateContext context) {

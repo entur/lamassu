@@ -529,6 +529,207 @@ class StationsUpdaterTest {
     verify(stationCache, never()).removeAll(anySet());
   }
 
+  /**
+   * When the vehicle type lookup fails, the index key cannot be generated reliably. Writing
+   * the station to the entity cache while leaving the index untouched - or indexing it under
+   * a degraded key - makes the two disagree. Skipping the station entirely keeps its previous
+   * consistent state in both caches until the vehicle types resolve.
+   */
+  @Test
+  void shouldSkipStationUpdateWhenVehicleTypesCannotBeResolved() {
+    // Given
+    var feedProvider = new FeedProvider();
+    feedProvider.setSystemId("test-system");
+    feedProvider.setCodespace("test");
+    feedProvider.setOperatorId("test-operator");
+    feedProvider.setLanguage("en");
+
+    var stationId = "station-1";
+    var bikeTypeId = "bike";
+
+    var currentStation = new Station();
+    currentStation.setId(stationId);
+    currentStation.setLat(59.9);
+    currentStation.setLon(10.7);
+    var availability = new VehicleTypeAvailability();
+    availability.setVehicleTypeId(bikeTypeId);
+    availability.setCount(5);
+    currentStation.setVehicleTypesAvailable(new ArrayList<>(List.of(availability)));
+
+    var stationInfo = new GBFSStation();
+    stationInfo.setStationId(stationId);
+    stationInfo.setLat(59.9);
+    stationInfo.setLon(10.7);
+    stationInfo.setName(
+      new ArrayList<>(List.of(new GBFSName().withLanguage("en").withText("Test Station")))
+    );
+
+    var stationStatus = new org.mobilitydata.gbfs.v3_0.station_status.GBFSStation();
+    stationStatus.setStationId(stationId);
+    stationStatus.setNumDocksAvailable(10);
+    stationStatus.setIsInstalled(true);
+    stationStatus.setIsRenting(true);
+    stationStatus.setIsReturning(true);
+    stationStatus.setLastReported(new Date(1000L));
+
+    var stationInformationFeed = new GBFSStationInformation();
+    var data = new GBFSData();
+    data.setStations(List.of(stationInfo));
+    stationInformationFeed.setData(data);
+
+    when(stationCache.get(stationId)).thenReturn(currentStation);
+    // The vehicle type lookup comes back empty - a timeout is indistinguishable from an
+    // unknown vehicle type here
+    when(vehicleTypeCache.getAll(Set.of(bikeTypeId))).thenReturn(List.of());
+
+    var delta = new GBFSFileDelta<>(
+      1000L,
+      2000L,
+      "station_status",
+      List.of(new GBFSEntityDelta<>(stationId, DeltaType.UPDATE, stationStatus))
+    );
+
+    // When
+    var fullyApplied = stationsUpdater.update(
+      feedProvider,
+      delta,
+      stationInformationFeed
+    );
+
+    // Then - neither cache is touched, and continuity is not broken, since a full rebuild
+    // cannot resolve a missing vehicle type
+    assertTrue(fullyApplied);
+    verify(spatialIndex, never()).addAll(anyMap());
+    verify(spatialIndex, never()).removeAll(anySet());
+    verify(stationCache, never()).updateAll(anyMap());
+    verify(stationCache, never()).removeAll(anySet());
+  }
+
+  /**
+   * A create whose index key cannot be generated is skipped rather than written to the
+   * entity cache without a matching index entry. Continuity is deliberately not broken: a
+   * full rebuild cannot resolve a missing vehicle type, so breaking it would put the whole
+   * system into a permanent rebuild loop over one unusable station.
+   */
+  @Test
+  void shouldSkipStationCreateWhenVehicleTypesCannotBeResolved() {
+    // Given
+    var feedProvider = new FeedProvider();
+    feedProvider.setSystemId("test-system");
+    feedProvider.setCodespace("test");
+    feedProvider.setOperatorId("test-operator");
+    feedProvider.setLanguage("en");
+
+    var stationId = "station-1";
+    var bikeTypeId = "bike";
+
+    var stationInfo = new GBFSStation();
+    stationInfo.setStationId(stationId);
+    stationInfo.setLat(59.9);
+    stationInfo.setLon(10.7);
+    stationInfo.setName(
+      new ArrayList<>(List.of(new GBFSName().withLanguage("en").withText("New Station")))
+    );
+    stationInfo.setVehicleTypesCapacity(
+      new ArrayList<>(
+        List.of(
+          new org.mobilitydata.gbfs.v3_0.station_information.GBFSVehicleTypesCapacity()
+            .withVehicleTypeIds(new ArrayList<>(List.of(bikeTypeId)))
+            .withCount(10)
+        )
+      )
+    );
+
+    var stationStatus = new org.mobilitydata.gbfs.v3_0.station_status.GBFSStation();
+    stationStatus.setStationId(stationId);
+    stationStatus.setNumDocksAvailable(10);
+    stationStatus.setIsInstalled(true);
+    stationStatus.setIsRenting(true);
+    stationStatus.setIsReturning(true);
+    stationStatus.setLastReported(new Date(1000L));
+    stationStatus.setVehicleTypesAvailable(
+      new ArrayList<>(
+        List.of(
+          new org.mobilitydata.gbfs.v3_0.station_status.GBFSVehicleTypesAvailable()
+            .withVehicleTypeId(bikeTypeId)
+            .withCount(4)
+        )
+      )
+    );
+
+    var stationInformationFeed = new GBFSStationInformation();
+    var data = new GBFSData();
+    data.setStations(List.of(stationInfo));
+    stationInformationFeed.setData(data);
+
+    when(stationCache.get(stationId)).thenReturn(null);
+    when(vehicleTypeCache.getAll(Set.of(bikeTypeId))).thenReturn(List.of());
+
+    var delta = new GBFSFileDelta<>(
+      1000L,
+      2000L,
+      "station_status",
+      List.of(new GBFSEntityDelta<>(stationId, DeltaType.CREATE, stationStatus))
+    );
+
+    // When
+    var fullyApplied = stationsUpdater.update(
+      feedProvider,
+      delta,
+      stationInformationFeed
+    );
+
+    // Then
+    assertTrue(fullyApplied);
+    verify(spatialIndex, never()).addAll(anyMap());
+    verify(stationCache, never()).updateAll(anyMap());
+  }
+
+  /**
+   * A delete must still clear the entity cache even when the index key cannot be generated.
+   * Removing a key built from degraded data would delete the wrong entry and leave the real
+   * one behind; leaving an orphan is the lesser evil, and the existing orphan cleanup is the
+   * right place to resolve it.
+   */
+  @Test
+  void shouldStillRemoveStationFromCacheWhenVehicleTypesCannotBeResolved() {
+    // Given
+    var feedProvider = new FeedProvider();
+    feedProvider.setSystemId("test-system");
+    feedProvider.setCodespace("test");
+    feedProvider.setOperatorId("test-operator");
+    feedProvider.setLanguage("en");
+
+    var stationId = "station-1";
+    var bikeTypeId = "bike";
+
+    var currentStation = new Station();
+    currentStation.setId(stationId);
+    currentStation.setLat(59.9);
+    currentStation.setLon(10.7);
+    var availability = new VehicleTypeAvailability();
+    availability.setVehicleTypeId(bikeTypeId);
+    availability.setCount(5);
+    currentStation.setVehicleTypesAvailable(new ArrayList<>(List.of(availability)));
+
+    when(stationCache.get(stationId)).thenReturn(currentStation);
+    when(vehicleTypeCache.getAll(Set.of(bikeTypeId))).thenReturn(List.of());
+
+    var delta = new GBFSFileDelta<org.mobilitydata.gbfs.v3_0.station_status.GBFSStation>(
+      1000L,
+      2000L,
+      "station_status",
+      List.of(new GBFSEntityDelta<>(stationId, DeltaType.DELETE, null))
+    );
+
+    // When
+    stationsUpdater.update(feedProvider, delta, null);
+
+    // Then
+    verify(stationCache).removeAll(Set.of(stationId));
+    verify(spatialIndex, never()).removeAll(anySet());
+  }
+
   @Test
   void shouldRemoveExistingStationsWhenBaseIsNull() {
     // Given
@@ -587,6 +788,54 @@ class StationsUpdaterTest {
         })
       );
     verify(stationCache, never()).removeAll(Set.of("station-3")); // Should not remove stations from other systems
+  }
+
+  /**
+   * One station whose index key cannot be generated must not abort the removal of the rest
+   * of the system.
+   */
+  @Test
+  void shouldClearRemainingStationsWhenOneIndexIdCannotBeGenerated() {
+    // Given
+    var feedProvider = new FeedProvider();
+    feedProvider.setSystemId("system-1");
+    feedProvider.setCodespace("codespace-1");
+
+    var resolvable = new Station();
+    resolvable.setId("station-1");
+    resolvable.setSystemId("system-1");
+
+    var unresolvable = new Station();
+    unresolvable.setId("station-2");
+    unresolvable.setSystemId("system-1");
+    var availability = new VehicleTypeAvailability();
+    availability.setVehicleTypeId("bike");
+    availability.setCount(5);
+    unresolvable.setVehicleTypesAvailable(new ArrayList<>(List.of(availability)));
+
+    when(stationCache.getAll()).thenReturn(List.of(resolvable, unresolvable));
+    when(vehicleTypeCache.getAll(Set.of("bike"))).thenReturn(List.of());
+
+    var delta = new GBFSFileDelta<org.mobilitydata.gbfs.v3_0.station_status.GBFSStation>(
+      null,
+      1000L,
+      "station_status",
+      List.of()
+    );
+
+    // When
+    stationsUpdater.update(feedProvider, delta, null);
+
+    // Then - both stations leave the entity cache, but only the station whose key could be
+    // generated is removed from the index
+    verify(stationCache).removeAll(Set.of("station-1", "station-2"));
+    verify(spatialIndex)
+      .removeAll(
+        argThat(spatialIds ->
+          spatialIds.size() == 1 &&
+          spatialIds.iterator().next().getId().equals("station-1")
+        )
+      );
   }
 
   @Test
