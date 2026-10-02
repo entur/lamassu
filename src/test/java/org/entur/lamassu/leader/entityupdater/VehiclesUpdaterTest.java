@@ -133,11 +133,71 @@ class VehiclesUpdaterTest {
     // When
     vehiclesUpdater.update(feedProvider, delta);
 
-    // Then
-    verify(spatialIndex).removeAll(any());
+    // Then - only the position changed, so the spatial index key is unchanged and the entry
+    // is rewritten in place rather than deleted and re-added
+    verify(spatialIndex, never()).removeAll(anySet());
     verify(spatialIndex).addAll(any());
     verify(vehicleCache).updateAll(any());
     verify(vehicleCache, never()).removeAll(anySet());
+  }
+
+  /**
+   * A vehicle that only moves leaves the spatial index key identical, because the key holds
+   * the form factor, propulsion type and reserved/disabled flags but not the coordinates.
+   * Issuing a ZREM for a member that is about to be rewritten unchanged costs a blocking
+   * round trip and briefly removes the vehicle from the index for concurrent readers.
+   */
+  @Test
+  void shouldNotRemoveFromSpatialIndexWhenIndexKeyIsUnchanged() {
+    // Given
+    var feedProvider = new FeedProvider();
+    feedProvider.setSystemId("test-system");
+    feedProvider.setCodespace("test");
+    feedProvider.setOperatorId("test-operator");
+    feedProvider.setLanguage("en");
+
+    var vehicleId = "vehicle-1";
+    var bikeTypeId = "bike";
+
+    var bikeType = new VehicleType();
+    bikeType.setId(bikeTypeId);
+    bikeType.setFormFactor(FormFactor.BICYCLE);
+    bikeType.setPropulsionType(PropulsionType.HUMAN);
+
+    var currentVehicle = new Vehicle();
+    currentVehicle.setId(vehicleId);
+    currentVehicle.setLat(59.9);
+    currentVehicle.setLon(10.7);
+    currentVehicle.setVehicleTypeId(bikeTypeId);
+    currentVehicle.setReserved(false);
+    currentVehicle.setDisabled(false);
+
+    // Only the position changes. The index key is unaffected.
+    var gbfsVehicle = new GBFSVehicle();
+    gbfsVehicle.setVehicleId(vehicleId);
+    gbfsVehicle.setLat(59.91);
+    gbfsVehicle.setLon(10.71);
+    gbfsVehicle.setVehicleTypeId(bikeTypeId);
+    gbfsVehicle.setIsReserved(false);
+    gbfsVehicle.setIsDisabled(false);
+
+    when(vehicleCache.get(vehicleId)).thenReturn(currentVehicle);
+    when(vehicleTypeCache.get(bikeTypeId)).thenReturn(bikeType);
+
+    var delta = new GBFSFileDelta<GBFSVehicle>(
+      30000L,
+      60000L,
+      "vehicle_status",
+      List.of(new GBFSEntityDelta<>(vehicleId, DeltaType.UPDATE, gbfsVehicle))
+    );
+
+    // When
+    vehiclesUpdater.update(feedProvider, delta);
+
+    // Then
+    verify(spatialIndex, never()).removeAll(anySet());
+    verify(spatialIndex).addAll(any());
+    verify(vehicleCache).updateAll(any());
   }
 
   @Test
@@ -193,8 +253,9 @@ class VehiclesUpdaterTest {
     // When
     vehiclesUpdater.update(feedProvider, delta);
 
-    // Then
-    verify(spatialIndex).removeAll(any());
+    // Then - the vehicle takes the station's position, but its spatial index key is
+    // unchanged, so the entry is rewritten in place rather than deleted and re-added
+    verify(spatialIndex, never()).removeAll(anySet());
     verify(spatialIndex).addAll(any());
     ArgumentCaptor<Map<String, Vehicle>> captor = ArgumentCaptor.forClass(Map.class);
     verify(vehicleCache).updateAll(captor.capture());
