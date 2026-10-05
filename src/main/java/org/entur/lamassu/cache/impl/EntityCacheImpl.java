@@ -1,6 +1,7 @@
 package org.entur.lamassu.cache.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -82,6 +83,11 @@ abstract class EntityCacheImpl<T extends Entity>
   public void removeAll(Set<String> keys) {
     String[] arr = keys.toArray(String[]::new);
     cache.fastRemoveAsync(arr);
+  }
+
+  @Override
+  public Set<String> getKeys() {
+    return new HashSet<>(cache.keySet());
   }
 
   @Override

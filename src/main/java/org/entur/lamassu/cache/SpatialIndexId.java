@@ -18,4 +18,10 @@
 
 package org.entur.lamassu.cache;
 
-public interface SpatialIndexId {}
+public interface SpatialIndexId {
+  /**
+   * The id of the entity this index entry points at, which is also its key in the
+   * corresponding entity cache.
+   */
+  String getId();
+}

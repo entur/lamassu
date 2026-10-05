@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import org.entur.lamassu.metrics.MetricUpdater;
 import org.entur.lamassu.service.GeoSearchService;
+import org.entur.lamassu.service.SpatialIndexReconciler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,15 +23,18 @@ public class LeaderSingletonService {
   private final FeedUpdater feedUpdater;
   private final GeoSearchService geoSearchService;
   private final MetricUpdater metricUpdater;
+  private final SpatialIndexReconciler spatialIndexReconciler;
 
   public LeaderSingletonService(
     @Autowired FeedUpdater feedUpdater,
     @Autowired GeoSearchService geoSearchService,
-    @Autowired MetricUpdater metricUpdater
+    @Autowired MetricUpdater metricUpdater,
+    @Autowired SpatialIndexReconciler spatialIndexReconciler
   ) {
     this.feedUpdater = feedUpdater;
     this.geoSearchService = geoSearchService;
     this.metricUpdater = metricUpdater;
+    this.spatialIndexReconciler = spatialIndexReconciler;
   }
 
   @PostConstruct
@@ -56,6 +60,17 @@ public class LeaderSingletonService {
     if (!removedOrphans.isEmpty()) {
       logger.info("Removed {} orphans in vehicle spatial index", removedOrphans.size());
     }
+  }
+
+  /**
+   * Puts back entities that are in the entity cache but missing from the spatial index.
+   * The counterpart to {@link #removeOrphans()}, which covers the opposite direction.
+   */
+  @Scheduled(
+    fixedRateString = "${org.entur.lamassu.spatial-index-reconcile-interval:60000}"
+  )
+  public void reconcileSpatialIndex() {
+    spatialIndexReconciler.reconcile();
   }
 
   @Scheduled(fixedRateString = "${org.entur.lamassu.update-feed-metrics-interval:60000}")
