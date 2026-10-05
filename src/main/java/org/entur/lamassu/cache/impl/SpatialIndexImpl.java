@@ -28,7 +28,9 @@ import java.util.concurrent.ExecutionException;
 import org.entur.lamassu.cache.SpatialIndex;
 import org.entur.lamassu.cache.SpatialIndexId;
 import org.entur.lamassu.model.entities.LocationEntity;
+import org.redisson.api.BatchOptions;
 import org.redisson.api.RGeo;
+import org.redisson.api.RedissonClient;
 import org.redisson.api.geo.GeoEntry;
 import org.redisson.api.geo.GeoOrder;
 import org.redisson.api.geo.GeoSearchArgs;
@@ -40,45 +42,25 @@ public abstract class SpatialIndexImpl<S extends SpatialIndexId, T extends Locat
   implements SpatialIndex<S, T> {
 
   private final RGeo<S> spatialIndex;
+  private final RedissonClient redissonClient;
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-  protected SpatialIndexImpl(RGeo<S> spatialIndex) {
+  protected SpatialIndexImpl(RGeo<S> spatialIndex, RedissonClient redissonClient) {
     this.spatialIndex = spatialIndex;
+    this.redissonClient = redissonClient;
   }
 
   @Override
   public void addAll(Map<S, T> spatialIndexUpdateMap) {
-    var positionable = new ArrayList<Map.Entry<S, T>>();
-    var missingCoordinates = new ArrayList<String>();
+    var positionable = positionable(spatialIndexUpdateMap);
 
-    for (var entry : spatialIndexUpdateMap.entrySet()) {
-      var entity = entry.getValue();
-      if (entity.getLat() == null || entity.getLon() == null) {
-        missingCoordinates.add(entity.getId());
-      } else {
-        positionable.add(entry);
-      }
-    }
-
-    if (!missingCoordinates.isEmpty()) {
-      // The caller has usually just removed the previous entry for these ids, so dropping
-      // them silently loses them from the index until the entity next changes.
-      logger.warn(
-        "Not adding {} entries to spatialIndex because they have no coordinates: {}",
-        missingCoordinates.size(),
-        missingCoordinates
-      );
-    }
-
-    if (positionable.isEmpty()) {
+    if (positionable.length == 0) {
       return;
     }
 
     try {
-      Long added = spatialIndex
-        .addAsync(positionable.stream().map(this::map).toArray(GeoEntry[]::new))
-        .get();
+      Long added = spatialIndex.addAsync(positionable).get();
       logger.debug("Added {} stations", added);
     } catch (RedisException | ExecutionException e) {
       logger.warn("Caught exception while adding entries to spatialIndex", e);
@@ -86,12 +68,6 @@ public abstract class SpatialIndexImpl<S extends SpatialIndexId, T extends Locat
       logger.warn("Interrupted while adding entries to spatialIndex", e);
       Thread.currentThread().interrupt();
     }
-  }
-
-  private GeoEntry map(Map.Entry<S, T> entry) {
-    var key = entry.getKey();
-    var entity = entry.getValue();
-    return new GeoEntry(entity.getLon(), entity.getLat(), key);
   }
 
   /**
@@ -115,6 +91,84 @@ public abstract class SpatialIndexImpl<S extends SpatialIndexId, T extends Locat
       logger.warn("Interrupted while removing entries from spatialIndex", e);
       Thread.currentThread().interrupt();
     }
+  }
+
+  /**
+   * Issues the delete and the add as one MULTI/EXEC, so that an entity moving from one index
+   * key to another is never momentarily absent from the index.
+   *
+   * <p>Both commands target the same Redis key, the geo sorted set, so there is no cross-key
+   * or hash slot concern. The batch is only opened when there is something on both sides;
+   * otherwise there is no ordering to protect and the plain single command is cheaper.
+   *
+   * <p>Atomicity here buys isolation, not rollback. Redis does not undo the ZREM if the
+   * GEOADD fails, so this prevents the interleaving shape of a lost entry and not the
+   * partial failure shape. The latter is the reconciler's job.
+   */
+  @Override
+  public void replaceAll(Set<S> idsToRemove, Map<S, T> spatialIndexUpdateMap) {
+    var positionable = positionable(spatialIndexUpdateMap);
+
+    if (idsToRemove.isEmpty()) {
+      addAll(spatialIndexUpdateMap);
+      return;
+    }
+
+    if (positionable.length == 0) {
+      removeAll(idsToRemove);
+      return;
+    }
+
+    try {
+      var batch = redissonClient.createBatch(
+        BatchOptions
+          .defaults()
+          .executionMode(BatchOptions.ExecutionMode.REDIS_WRITE_ATOMIC)
+      );
+      var batchedIndex = batch.<S>getGeo(spatialIndex.getName(), spatialIndex.getCodec());
+      batchedIndex.removeAllAsync(idsToRemove);
+      batchedIndex.addAsync(positionable);
+      batch.execute();
+      logger.debug(
+        "Replaced {} entries with {} entries in spatialIndex",
+        idsToRemove.size(),
+        positionable.length
+      );
+      // Fully qualified: io.lettuce.core.RedisException holds the simple name in this file.
+    } catch (org.redisson.client.RedisException e) {
+      logger.warn("Caught exception while replacing entries in spatialIndex", e);
+    }
+  }
+
+  /**
+   * Maps the entries that can be positioned to GeoEntry, warning about any that are dropped.
+   *
+   * <p>The caller has usually just removed, or is about to remove, the previous entry for
+   * these ids, so dropping them silently loses them from the index until the entity next
+   * changes.
+   */
+  private GeoEntry[] positionable(Map<S, T> spatialIndexUpdateMap) {
+    var positionable = new ArrayList<GeoEntry>();
+    var missingCoordinates = new ArrayList<String>();
+
+    for (var entry : spatialIndexUpdateMap.entrySet()) {
+      var entity = entry.getValue();
+      if (entity.getLat() == null || entity.getLon() == null) {
+        missingCoordinates.add(entity.getId());
+      } else {
+        positionable.add(new GeoEntry(entity.getLon(), entity.getLat(), entry.getKey()));
+      }
+    }
+
+    if (!missingCoordinates.isEmpty()) {
+      logger.warn(
+        "Not adding {} entries to spatialIndex because they have no coordinates: {}",
+        missingCoordinates.size(),
+        missingCoordinates
+      );
+    }
+
+    return positionable.toArray(GeoEntry[]::new);
   }
 
   @Override
