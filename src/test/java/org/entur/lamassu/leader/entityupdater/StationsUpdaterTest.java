@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -14,6 +15,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import org.entur.lamassu.cache.EntityCache;
@@ -139,8 +141,7 @@ class StationsUpdaterTest {
 
     // Then - only the name changed, so the spatial index key is unchanged and the entry is
     // rewritten in place rather than deleted and re-added
-    verify(spatialIndex).addAll(any());
-    verify(spatialIndex, never()).removeAll(anySet());
+    verify(spatialIndex).replaceAll(eq(Set.of()), anyMap());
     verify(stationCache).updateAll(any());
     verify(stationCache, never()).removeAll(anySet());
   }
@@ -180,9 +181,8 @@ class StationsUpdaterTest {
     stationsUpdater.update(feedProvider, delta, null);
 
     // Then
-    verify(spatialIndex).removeAll(Set.of(spatialIndexId));
+    verify(spatialIndex).replaceAll(Set.of(spatialIndexId), Map.of());
     verify(stationCache).removeAll(Set.of(stationId));
-    verify(spatialIndex, never()).addAll(anyMap());
     verify(stationCache, never()).updateAll(anyMap(), anyInt(), any(TimeUnit.class));
   }
 
@@ -232,8 +232,7 @@ class StationsUpdaterTest {
     stationsUpdater.update(feedProvider, delta, stationInformationFeed);
 
     // Then
-    verify(spatialIndex, never()).removeAll(anySet());
-    verify(spatialIndex).addAll(any());
+    verify(spatialIndex).replaceAll(eq(Set.of()), anyMap());
     verify(stationCache).updateAll(any());
     verify(stationCache, never()).removeAll(anySet());
   }
@@ -268,8 +267,7 @@ class StationsUpdaterTest {
     // Then - the station remains in the cache (stale), so the update is still
     // considered fully applied
     assertTrue(fullyApplied);
-    verify(spatialIndex, never()).addAll(anyMap());
-    verify(spatialIndex, never()).removeAll(anySet());
+    verify(spatialIndex, never()).replaceAll(anySet(), anyMap());
     verify(stationCache, never()).updateAll(anyMap(), anyInt(), any(TimeUnit.class));
     verify(stationCache, never()).removeAll(anySet());
   }
@@ -425,8 +423,7 @@ class StationsUpdaterTest {
     stationsUpdater.update(feedProvider, delta, stationInformationFeed);
 
     // Then
-    verify(spatialIndex, never()).removeAll(anySet());
-    verify(spatialIndex).addAll(any());
+    verify(spatialIndex).replaceAll(eq(Set.of()), anyMap());
     verify(stationCache).updateAll(any());
   }
 
@@ -523,8 +520,7 @@ class StationsUpdaterTest {
     stationsUpdater.update(feedProvider, delta, stationInformationFeed);
 
     // Then
-    verify(spatialIndex).removeAll(Set.of(oldSpatialIndexId));
-    verify(spatialIndex).addAll(any());
+    verify(spatialIndex).replaceAll(eq(Set.of(oldSpatialIndexId)), anyMap());
     verify(stationCache).updateAll(any());
     verify(stationCache, never()).removeAll(anySet());
   }
@@ -599,8 +595,7 @@ class StationsUpdaterTest {
     // Then - neither cache is touched, and continuity is not broken, since a full rebuild
     // cannot resolve a missing vehicle type
     assertTrue(fullyApplied);
-    verify(spatialIndex, never()).addAll(anyMap());
-    verify(spatialIndex, never()).removeAll(anySet());
+    verify(spatialIndex, never()).replaceAll(anySet(), anyMap());
     verify(stationCache, never()).updateAll(anyMap());
     verify(stationCache, never()).removeAll(anySet());
   }
@@ -681,7 +676,7 @@ class StationsUpdaterTest {
 
     // Then
     assertTrue(fullyApplied);
-    verify(spatialIndex, never()).addAll(anyMap());
+    verify(spatialIndex, never()).replaceAll(anySet(), anyMap());
     verify(stationCache, never()).updateAll(anyMap());
   }
 
@@ -727,7 +722,7 @@ class StationsUpdaterTest {
 
     // Then
     verify(stationCache).removeAll(Set.of(stationId));
-    verify(spatialIndex, never()).removeAll(anySet());
+    verify(spatialIndex, never()).replaceAll(anySet(), anyMap());
   }
 
   @Test
@@ -901,8 +896,7 @@ class StationsUpdaterTest {
     stationsUpdater.update(feedProvider, delta, stationInformationFeed);
 
     // Then
-    verify(spatialIndex).addAll(any());
-    verify(spatialIndex).removeAll(any());
+    verify(spatialIndex).replaceAll(argThat(ids -> !ids.isEmpty()), anyMap());
     verify(stationCache).updateAll(any());
     verify(stationCache, never()).removeAll(anySet());
   }

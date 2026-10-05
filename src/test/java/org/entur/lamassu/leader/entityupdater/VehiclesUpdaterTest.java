@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -135,8 +136,7 @@ class VehiclesUpdaterTest {
 
     // Then - only the position changed, so the spatial index key is unchanged and the entry
     // is rewritten in place rather than deleted and re-added
-    verify(spatialIndex, never()).removeAll(anySet());
-    verify(spatialIndex).addAll(any());
+    verify(spatialIndex).replaceAll(eq(Set.of()), anyMap());
     verify(vehicleCache).updateAll(any());
     verify(vehicleCache, never()).removeAll(anySet());
   }
@@ -195,8 +195,7 @@ class VehiclesUpdaterTest {
     vehiclesUpdater.update(feedProvider, delta);
 
     // Then
-    verify(spatialIndex, never()).removeAll(anySet());
-    verify(spatialIndex).addAll(any());
+    verify(spatialIndex).replaceAll(eq(Set.of()), anyMap());
     verify(vehicleCache).updateAll(any());
   }
 
@@ -255,8 +254,7 @@ class VehiclesUpdaterTest {
 
     // Then - the vehicle takes the station's position, but its spatial index key is
     // unchanged, so the entry is rewritten in place rather than deleted and re-added
-    verify(spatialIndex, never()).removeAll(anySet());
-    verify(spatialIndex).addAll(any());
+    verify(spatialIndex).replaceAll(eq(Set.of()), anyMap());
     ArgumentCaptor<Map<String, Vehicle>> captor = ArgumentCaptor.forClass(Map.class);
     verify(vehicleCache).updateAll(captor.capture());
     final Vehicle mappedVehicle = captor.getValue().get(vehicleId);
@@ -311,7 +309,7 @@ class VehiclesUpdaterTest {
     vehiclesUpdater.update(feedProvider, delta);
 
     // Then
-    verify(spatialIndex).removeAll(Set.of(spatialIndexId));
+    verify(spatialIndex).replaceAll(Set.of(spatialIndexId), Map.of());
     verify(vehicleCache).removeAll(Set.of(vehicleId));
     verify(vehicleCache, never()).updateAll(anyMap(), anyInt(), any(TimeUnit.class));
   }
@@ -356,10 +354,9 @@ class VehiclesUpdaterTest {
     vehiclesUpdater.update(feedProvider, delta);
 
     // Then
-    verify(spatialIndex).addAll(any());
+    verify(spatialIndex).replaceAll(eq(Set.of()), anyMap());
     verify(vehicleCache).updateAll(any());
     verify(vehicleCache, never()).removeAll(anySet());
-    verify(spatialIndex, never()).removeAll(anySet());
   }
 
   @Test
@@ -396,7 +393,7 @@ class VehiclesUpdaterTest {
     vehiclesUpdater.update(feedProvider, delta);
 
     // Then
-    verify(spatialIndex, never()).addAll(anyMap());
+    verify(spatialIndex, never()).replaceAll(anySet(), anyMap());
     verify(vehicleCache, never()).updateAll(anyMap(), anyInt(), any(TimeUnit.class));
   }
 

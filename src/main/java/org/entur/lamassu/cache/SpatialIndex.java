@@ -29,6 +29,20 @@ import org.redisson.api.geo.GeoUnit;
 public interface SpatialIndex<S extends SpatialIndexId, T extends LocationEntity> {
   void addAll(Map<S, T> spatialIndexUpdateMap);
   void removeAll(Set<S> ids);
+
+  /**
+   * Removes the given entries and adds the given ones as a single atomic operation.
+   *
+   * <p>Use this instead of {@link #removeAll} followed by {@link #addAll} wherever an entity
+   * is moving from one index key to another. Issued as two separate commands, the entity is
+   * genuinely absent from the index between the two, and a concurrent range or bounding box
+   * query landing in that window misses it.
+   *
+   * <p>Atomicity here is isolation, not rollback: Redis does not undo the removal if the add
+   * fails. Durable consistency between the entity caches and the index comes from
+   * reconciliation, not from write path atomicity.
+   */
+  void replaceAll(Set<S> idsToRemove, Map<S, T> spatialIndexUpdateMap);
   List<S> radius(
     Double longitude,
     Double latitude,

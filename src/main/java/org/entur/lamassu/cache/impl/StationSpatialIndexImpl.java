@@ -22,6 +22,7 @@ import org.entur.lamassu.cache.StationSpatialIndex;
 import org.entur.lamassu.cache.StationSpatialIndexId;
 import org.entur.lamassu.model.entities.Station;
 import org.redisson.api.RGeo;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -31,7 +32,10 @@ public class StationSpatialIndexImpl
   implements StationSpatialIndex {
 
   @Autowired
-  public StationSpatialIndexImpl(RGeo<StationSpatialIndexId> stationSpatialIndex) {
-    super(stationSpatialIndex);
+  public StationSpatialIndexImpl(
+    RGeo<StationSpatialIndexId> stationSpatialIndex,
+    RedissonClient redissonClient
+  ) {
+    super(stationSpatialIndex, redissonClient);
   }
 }

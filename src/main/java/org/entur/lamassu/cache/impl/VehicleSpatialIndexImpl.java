@@ -4,6 +4,7 @@ import org.entur.lamassu.cache.VehicleSpatialIndex;
 import org.entur.lamassu.cache.VehicleSpatialIndexId;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.redisson.api.RGeo;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +14,10 @@ public class VehicleSpatialIndexImpl
   implements VehicleSpatialIndex {
 
   @Autowired
-  public VehicleSpatialIndexImpl(RGeo<VehicleSpatialIndexId> vehicleSpatialIndex) {
-    super(vehicleSpatialIndex);
+  public VehicleSpatialIndexImpl(
+    RGeo<VehicleSpatialIndexId> vehicleSpatialIndex,
+    RedissonClient redissonClient
+  ) {
+    super(vehicleSpatialIndex, redissonClient);
   }
 }

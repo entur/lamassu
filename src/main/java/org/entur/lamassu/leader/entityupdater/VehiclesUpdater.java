@@ -222,18 +222,10 @@ public class VehiclesUpdater {
   private void updateCaches(UpdateContext context) {
     // Only delete index entries that are not about to be rewritten. A vehicle that merely
     // moves keeps the same key, since the key holds the form factor, propulsion type and
-    // reserved/disabled flags but not the coordinates. Deleting such a key costs a blocking
-    // round trip and leaves the vehicle briefly invisible to concurrent readers.
+    // reserved/disabled flags but not the coordinates, so the delete is a wasted command.
+    // What is left is the genuine key change, which replaceAll makes atomic.
     var staleSpatialIndexIds = new HashSet<>(context.spatialIndexIdsToRemove);
     staleSpatialIndexIds.removeAll(context.spatialIndexUpdateMap.keySet());
-
-    if (!staleSpatialIndexIds.isEmpty()) {
-      logger.debug(
-        "Removing {} stale entries in spatial index",
-        staleSpatialIndexIds.size()
-      );
-      spatialIndex.removeAll(staleSpatialIndexIds);
-    }
 
     if (!context.vehicleIdsToRemove.isEmpty()) {
       logger.debug(
@@ -251,12 +243,16 @@ public class VehiclesUpdater {
       vehicleCache.updateAll(context.addedAndUpdatedVehicles);
     }
 
-    if (!context.spatialIndexUpdateMap.isEmpty()) {
+    // Applied after the entity cache writes, so that an index entry is never visible before
+    // the entity it points at. Deleting the stale key as part of the same operation means a
+    // vehicle changing its index key is never momentarily absent from the index.
+    if (!staleSpatialIndexIds.isEmpty() || !context.spatialIndexUpdateMap.isEmpty()) {
       logger.debug(
-        "Updating {} entries in spatial index",
+        "Replacing {} stale entries with {} entries in spatial index",
+        staleSpatialIndexIds.size(),
         context.spatialIndexUpdateMap.size()
       );
-      spatialIndex.addAll(context.spatialIndexUpdateMap);
+      spatialIndex.replaceAll(staleSpatialIndexIds, context.spatialIndexUpdateMap);
     }
 
     metricsService.registerEntityCount(
