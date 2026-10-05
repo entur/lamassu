@@ -33,6 +33,7 @@ based on merged pull requests. Search GitHub issues and pull requests for smalle
 - Add publiccode.yml [#900](https://github.com/entur/lamassu/pull/900)
 - Add top-level systems query to GraphQL API [#902](https://github.com/entur/lamassu/pull/902)
 - Fix stations silently lost from the spatial index [#904](https://github.com/entur/lamassu/pull/904)
+- build(deps-dev): bump @humanfs/node from 0.16.6 to 0.16.8 in /ui in the npm_and_yarn group across 1 directory [#898](https://github.com/entur/lamassu/pull/898)
 [](AUTOMATIC_CHANGELOG_PLACEHOLDER_DO_NOT_REMOVE)
 
 ## 1.2.0
