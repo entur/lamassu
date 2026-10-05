@@ -35,6 +35,7 @@ based on merged pull requests. Search GitHub issues and pull requests for smalle
 - Fix stations silently lost from the spatial index [#904](https://github.com/entur/lamassu/pull/904)
 - build(deps-dev): bump @humanfs/node from 0.16.6 to 0.16.8 in /ui in the npm_and_yarn group across 1 directory [#898](https://github.com/entur/lamassu/pull/898)
 - Await entity cache removals instead of discarding the future [#912](https://github.com/entur/lamassu/pull/912)
+- Reconcile entities missing from the spatial index [#911](https://github.com/entur/lamassu/pull/911)
 [](AUTOMATIC_CHANGELOG_PLACEHOLDER_DO_NOT_REMOVE)
 
 ## 1.2.0
