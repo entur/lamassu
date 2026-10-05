@@ -78,10 +78,30 @@ abstract class EntityCacheImpl<T extends Entity>
     cache.putAll(entities, ttl, timeUnit);
   }
 
+  /**
+   * Removes entities from the cache, waiting for the removal to complete.
+   *
+   * <p>Awaiting matters mostly for visibility: a discarded future means a failed removal is
+   * silent, so the entity stays in the cache and keeps being served in the GBFS feeds and by
+   * id lookups after it should have been deleted, with no log line, metric or exception to
+   * reveal it.
+   *
+   * <p>It also removes an ordering hazard, though a milder one than the spatial index had:
+   * a pending removal could overtake a later write for the same key and delete an entity
+   * that was just re-created. The conflicting write here is the next feed tick rather than
+   * the adjacent command, so the window was wide but not microscopic.
+   */
   @Override
   public void removeAll(Set<String> keys) {
     String[] arr = keys.toArray(String[]::new);
-    cache.fastRemoveAsync(arr);
+    try {
+      cache.fastRemoveAsync(arr).get(5, TimeUnit.SECONDS);
+    } catch (ExecutionException | TimeoutException e) {
+      logger.warn("Unable to remove entities from cache within 5 seconds", e);
+    } catch (InterruptedException e) {
+      logger.warn("Interrupted while removing entities from cache", e);
+      Thread.currentThread().interrupt();
+    }
   }
 
   @Override
