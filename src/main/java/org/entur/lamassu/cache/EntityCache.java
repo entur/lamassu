@@ -36,6 +36,16 @@ public interface EntityCache<T extends Entity> extends EntityReader<T> {
   void removeAll(Set<String> keys);
 
   /**
+   * Returns the keys of all entities in the cache, without reading the entities themselves.
+   *
+   * <p>Exists so that callers which only need to know what is in the cache do not pay for
+   * deserializing every value, the way {@link EntityReader#getAll()} does.
+   *
+   * @return Set of entity keys currently in the cache
+   */
+  Set<String> getKeys();
+
+  /**
    * Registers a listener for entity events (create, update, delete).
    *
    * @param listener The listener to register

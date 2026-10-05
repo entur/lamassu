@@ -1,6 +1,7 @@
 package org.entur.lamassu.stubs;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -52,6 +53,11 @@ public class EntityCacheStub<E extends Entity> implements EntityCache<E> {
   @Override
   public void removeAll(Set<String> keys) {
     keys.forEach(map::remove);
+  }
+
+  @Override
+  public Set<String> getKeys() {
+    return new HashSet<>(map.keySet());
   }
 
   @Override

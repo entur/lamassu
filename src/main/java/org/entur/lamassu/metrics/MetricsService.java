@@ -46,6 +46,8 @@ public class MetricsService {
   public static final String LABEL_ENTITY = "entity";
   public static final String DUPLICATE_IDS = "app.lamassu.gbfs.duplicate.ids";
   public static final String LABEL_CODESPACE = "codespace";
+  public static final String SPATIAL_INDEX_RECONCILED =
+    "app.lamassu.spatialindex.reconciled";
 
   public static final String ENTITY_VEHICLE = "vehicle";
   public static final String ENTITY_STATION = "station";
@@ -66,6 +68,8 @@ public class MetricsService {
   private final Map<String, AtomicInteger> overdueFilesCounters =
     new ConcurrentHashMap<>();
   private final Map<String, AtomicInteger> duplicateIdGauges = new ConcurrentHashMap<>();
+  private final Map<String, AtomicInteger> spatialIndexReconciledGauges =
+    new ConcurrentHashMap<>();
 
   public MetricsService(MeterRegistry meterRegistry) {
     this.meterRegistry = meterRegistry;
@@ -125,6 +129,22 @@ public class MetricsService {
       codespace + "/" + entity,
       DUPLICATE_IDS,
       List.of(Tag.of(LABEL_CODESPACE, codespace), Tag.of(LABEL_ENTITY, entity))
+    )
+      .set(count);
+  }
+
+  /**
+   * Records how many entities the last reconciliation run had to put back into the spatial
+   * index. Must be called on every run, including with zero, so that the gauge falls back
+   * to zero once the backlog is drained. A non-zero steady state means something on the
+   * write path is still losing entries.
+   */
+  public void registerSpatialIndexReconciledCount(String entity, int count) {
+    getGauge(
+      spatialIndexReconciledGauges,
+      entity,
+      SPATIAL_INDEX_RECONCILED,
+      List.of(Tag.of(LABEL_ENTITY, entity))
     )
       .set(count);
   }

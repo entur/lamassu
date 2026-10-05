@@ -1,6 +1,7 @@
 package org.entur.lamassu.cache.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -102,6 +103,11 @@ abstract class EntityCacheImpl<T extends Entity>
       logger.warn("Interrupted while removing entities from cache", e);
       Thread.currentThread().interrupt();
     }
+  }
+
+  @Override
+  public Set<String> getKeys() {
+    return new HashSet<>(cache.keySet());
   }
 
   @Override
