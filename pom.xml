@@ -23,7 +23,7 @@
         <redisson.version>4.8.0</redisson.version>
         <embedded-redis.version>0.9.1</embedded-redis.version>
         <okhttp.version>5.5.0</okhttp.version>
-        <kryo.version>5.7.0</kryo.version>
+        <kryo.version>5.7.1</kryo.version>
         <gbfs-loader-java.version>4.0.80</gbfs-loader-java.version>
         <gbfs-validator-java.version>3.1.0</gbfs-validator-java.version>
         <gbfs-mapper-java.version>2.0.71</gbfs-mapper-java.version>
@@ -210,7 +210,7 @@
             <groupId>io.netty</groupId>
             <artifactId>netty-resolver-dns-native-macos</artifactId>
             <classifier>osx-aarch_64</classifier>
-            <version>4.2.18.Final</version>
+            <version>4.2.19.Final</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>

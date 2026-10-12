@@ -34,7 +34,7 @@
     "npm-run-all2": "9.0.3",
     "react": "19.3.0",
     "react-dom": "19.3.0",
-    "react-i18next": "17.0.15",
+    "react-i18next": "17.0.16",
     "react-router-dom": "7.18.4"
   },
   "devDependencies": {
@@ -53,6 +53,6 @@
     "prettier": "3.9.9",
     "typescript": "6.0.3",
     "typescript-eslint": "8.71.1",
-    "vite": "8.3.2"
+    "vite": "8.3.3"
   }
 }
