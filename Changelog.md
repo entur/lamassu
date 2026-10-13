@@ -37,6 +37,7 @@ based on merged pull requests. Search GitHub issues and pull requests for smalle
 - Await entity cache removals instead of discarding the future [#912](https://github.com/entur/lamassu/pull/912)
 - Reconcile entities missing from the spatial index [#911](https://github.com/entur/lamassu/pull/911)
 - Replace spatial index entries atomically when the key changes [#913](https://github.com/entur/lamassu/pull/913)
+- build(deps): bump the npm_and_yarn group across 1 directory with 4 updates [#910](https://github.com/entur/lamassu/pull/910)
 [](AUTOMATIC_CHANGELOG_PLACEHOLDER_DO_NOT_REMOVE)
 
 ## 1.2.0
