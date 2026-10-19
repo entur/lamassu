@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.entur.ror</groupId>
         <artifactId>superpom</artifactId>
-        <version>7.0.0</version>
+        <version>7.1.0</version>
     </parent>
     <groupId>org.entur</groupId>
     <artifactId>lamassu</artifactId>
@@ -26,7 +26,7 @@
         <kryo.version>5.7.1</kryo.version>
         <gbfs-loader-java.version>4.0.80</gbfs-loader-java.version>
         <gbfs-validator-java.version>3.1.0</gbfs-validator-java.version>
-        <gbfs-mapper-java.version>2.0.71</gbfs-mapper-java.version>
+        <gbfs-mapper-java.version>2.0.73</gbfs-mapper-java.version>
         <prettier-java.version>2.1.0</prettier-java.version>
         <prettier-maven-plugin.version>0.22</prettier-maven-plugin.version>
         <plugin.prettier.goal>write</plugin.prettier.goal>
