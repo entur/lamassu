@@ -29,7 +29,7 @@ public class GBFSV3RestIntegrationTest extends AbstractIntegrationTestBase {
     mockMvc
       .perform(get("/gbfs/v3/testozon/gbfs").contentType("application/json"))
       .andExpect(status().isOk())
-      .andExpect(jsonPath("$.last_updated").value("2020-11-30T09:15:10.000+00:00"));
+      .andExpect(jsonPath("$.last_updated").value("2020-11-30T09:15:10Z"));
   }
 
   @Test
