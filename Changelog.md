@@ -40,6 +40,7 @@ based on merged pull requests. Search GitHub issues and pull requests for smalle
 - build(deps): bump the npm_and_yarn group across 1 directory with 4 updates [#910](https://github.com/entur/lamassu/pull/910)
 - build(deps): bump shell-quote from 1.10.0 to 1.12.0 in /ui in the npm_and_yarn group across 1 directory [#916](https://github.com/entur/lamassu/pull/916)
 - fix: use patched Liberica JRE base image to distrust compromised eMudhra roots [#920](https://github.com/entur/lamassu/pull/920)
+- fix: replace removed Janino <if condition> in logback.xml [#921](https://github.com/entur/lamassu/pull/921)
 [](AUTOMATIC_CHANGELOG_PLACEHOLDER_DO_NOT_REMOVE)
 
 ## 1.2.0
