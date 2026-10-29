@@ -355,7 +355,7 @@
                 </dependencies>
                 <configuration>
                     <from>
-                        <image>eclipse-temurin:21.0.5_11-jre</image>
+                        <image>bellsoft/liberica-openjre-debian:21.0.13.0.3-5</image>
                         <platforms>
                             <platform>
                                 <architecture>amd64</architecture>
