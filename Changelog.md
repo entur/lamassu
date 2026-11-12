@@ -43,6 +43,7 @@ based on merged pull requests. Search GitHub issues and pull requests for smalle
 - fix: replace removed Janino <if condition> in logback.xml [#921](https://github.com/entur/lamassu/pull/921)
 - Bump CI JDK to Temurin 21.0.13+9 for eMudhra CA compromise [#922](https://github.com/entur/lamassu/pull/922)
 - Serialize GBFS model with Jackson 3 and remove the Jackson 2 converter [#919](https://github.com/entur/lamassu/pull/919)
+- Fix startup crash: add Jackson 2 databind for Redisson's JsonJacksonCodec [#924](https://github.com/entur/lamassu/pull/924)
 [](AUTOMATIC_CHANGELOG_PLACEHOLDER_DO_NOT_REMOVE)
 
 ## 1.2.0
