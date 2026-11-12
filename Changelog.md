@@ -42,6 +42,7 @@ based on merged pull requests. Search GitHub issues and pull requests for smalle
 - fix: use patched Liberica JRE base image to distrust compromised eMudhra roots [#920](https://github.com/entur/lamassu/pull/920)
 - fix: replace removed Janino <if condition> in logback.xml [#921](https://github.com/entur/lamassu/pull/921)
 - Bump CI JDK to Temurin 21.0.13+9 for eMudhra CA compromise [#922](https://github.com/entur/lamassu/pull/922)
+- Serialize GBFS model with Jackson 3 and remove the Jackson 2 converter [#919](https://github.com/entur/lamassu/pull/919)
 [](AUTOMATIC_CHANGELOG_PLACEHOLDER_DO_NOT_REMOVE)
 
 ## 1.2.0
