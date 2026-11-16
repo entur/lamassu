@@ -46,6 +46,8 @@ import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.service.FeedProviderService;
 import org.mobilitydata.gbfs.v2_3.gbfs.GBFSFeedName;
 import org.mobilitydata.gbfs.v3_0.gbfs.GBFSFeed;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 /**
@@ -55,6 +57,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class CacheCleanupService {
 
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
   private final EntityCache<System> systemCache;
   private final FeedProviderService feedProviderService;
   private final VehiclesUpdater vehiclesUpdater;
@@ -62,6 +66,7 @@ public class CacheCleanupService {
   private final GbfsUpdateContinuityTracker gbfsUpdateContinuityTracker;
   private final GBFSV2FeedCache gbfsV2FeedCache;
   private final GBFSV3FeedCache gbfsV3FeedCache;
+  private final OrphanedEntityCleaner orphanedEntityCleaner;
 
   public CacheCleanupService(
     EntityCache<System> systemCache,
@@ -70,7 +75,8 @@ public class CacheCleanupService {
     StationsUpdater stationsUpdater,
     GbfsUpdateContinuityTracker gbfsUpdateContinuityTracker,
     GBFSV2FeedCache gbfsV2FeedCache,
-    GBFSV3FeedCache gbfsV3FeedCache
+    GBFSV3FeedCache gbfsV3FeedCache,
+    OrphanedEntityCleaner orphanedEntityCleaner
   ) {
     this.systemCache = systemCache;
     this.feedProviderService = feedProviderService;
@@ -79,6 +85,7 @@ public class CacheCleanupService {
     this.gbfsUpdateContinuityTracker = gbfsUpdateContinuityTracker;
     this.gbfsV2FeedCache = gbfsV2FeedCache;
     this.gbfsV3FeedCache = gbfsV3FeedCache;
+    this.orphanedEntityCleaner = orphanedEntityCleaner;
   }
 
   /**
@@ -86,6 +93,16 @@ public class CacheCleanupService {
    * This should be called on startup to ensure clean state.
    */
   public void clearCache() {
+    // The system cache only knows systems whose entry has not expired, so entities left
+    // behind by a disabled or removed provider are found from the entities themselves.
+    // Runs first, and must not stop the leader from starting: a failure here only leaves
+    // the leftovers for the next start.
+    try {
+      orphanedEntityCleaner.removeOrphans();
+    } catch (RuntimeException e) {
+      logger.warn("Failed to remove orphaned entities, continuing startup", e);
+    }
+
     systemCache
       .getAll()
       .stream()
