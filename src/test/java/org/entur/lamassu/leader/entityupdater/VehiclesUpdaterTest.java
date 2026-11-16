@@ -458,4 +458,42 @@ class VehiclesUpdaterTest {
       );
     verify(vehicleCache, never()).removeAll(Set.of("vehicle-3")); // Should not remove vehicles from other systems
   }
+
+  @Test
+  void clearExistingEntitiesRemovesVehiclesWhoseVehicleTypeIsGone() {
+    var feedProvider = new FeedProvider();
+    feedProvider.setSystemId("system-1");
+    feedProvider.setCodespace("codespace-1");
+
+    var withType = new Vehicle();
+    withType.setId("vehicle-1");
+    withType.setSystemId("system-1");
+    withType.setVehicleTypeId("bike");
+    withType.setReserved(false);
+    withType.setDisabled(false);
+    var withoutType = new Vehicle();
+    withoutType.setId("vehicle-2");
+    withoutType.setSystemId("system-1");
+    withoutType.setVehicleTypeId("expired");
+
+    var bikeType = new VehicleType();
+    bikeType.setId("bike");
+    bikeType.setFormFactor(FormFactor.BICYCLE);
+    bikeType.setPropulsionType(PropulsionType.HUMAN);
+    when(vehicleCache.getAll()).thenReturn(List.of(withType, withoutType));
+    when(vehicleTypeCache.get("bike")).thenReturn(bikeType);
+    when(vehicleTypeCache.get("expired")).thenReturn(null);
+
+    vehiclesUpdater.clearExistingEntities(feedProvider);
+
+    // The expired vehicle type must not keep the vehicles from being removed. The index
+    // entry that can't be built is left for the scheduled orphan removal.
+    verify(vehicleCache).removeAll(Set.of("vehicle-1", "vehicle-2"));
+    verify(spatialIndex)
+      .removeAll(
+        argThat(ids ->
+          ids.size() == 1 && ids.iterator().next().getId().equals("vehicle-1")
+        )
+      );
+  }
 }

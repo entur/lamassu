@@ -18,9 +18,12 @@
 
 package org.entur.lamassu.leader.entityupdater;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.entur.lamassu.cache.EntityCache;
@@ -125,13 +128,45 @@ public class VehiclesUpdater {
         .stream()
         .map(Vehicle::getId)
         .collect(Collectors.toSet());
+      var unindexable = new ArrayList<String>();
       var spatialIdsToRemove = vehiclesToRemove
         .stream()
-        .map(v -> spatialIndexService.createVehicleIndexId(v, feedProvider))
+        .map(v -> createVehicleIndexIdOrNull(v, feedProvider, unindexable))
+        .filter(Objects::nonNull)
         .collect(Collectors.toSet());
 
       vehicleCache.removeAll(idsToRemove);
       spatialIndex.removeAll(spatialIdsToRemove);
+
+      if (!unindexable.isEmpty()) {
+        logger.warn(
+          "Could not generate spatial index ids for {} of {} vehicles being cleared, leaving orphans in the index for provider={} (e.g. vehicleId={})",
+          unindexable.size(),
+          vehiclesToRemove.size(),
+          feedProvider,
+          unindexable.get(0)
+        );
+      }
+    }
+  }
+
+  /**
+   * Generates a vehicle's spatial index id, returning null instead of throwing when the id
+   * cannot be generated, e.g. because its vehicle type has expired. Used where one unusable
+   * vehicle must not keep the others from being removed. The index entry left behind is
+   * removed by the scheduled orphan removal once the vehicle is gone. The id of each such
+   * vehicle is added to the given list, for the caller to report once.
+   */
+  private VehicleSpatialIndexId createVehicleIndexIdOrNull(
+    Vehicle vehicle,
+    FeedProvider feedProvider,
+    List<String> unindexable
+  ) {
+    try {
+      return spatialIndexService.createVehicleIndexId(vehicle, feedProvider);
+    } catch (IllegalStateException e) {
+      unindexable.add(vehicle.getId());
+      return null;
     }
   }
 

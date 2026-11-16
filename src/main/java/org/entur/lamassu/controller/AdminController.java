@@ -159,6 +159,14 @@ public class AdminController {
       return ResponseEntity.notFound().build(); // Provider with this systemId not found
     }
 
+    // A disabled provider must not keep a subscription or any cached data. The change is
+    // saved either way, so repeating the request retries the cleanup.
+    if (Boolean.FALSE.equals(feedProvider.getEnabled())) {
+      if (!feedUpdater.stopSubscription(feedProvider)) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+      }
+    }
+
     return ResponseEntity.ok(feedProvider);
   }
 
@@ -193,14 +201,19 @@ public class AdminController {
     // Update the enabled status
     provider.setEnabled(enabled);
 
-    // If disabling, also stop any active subscription
+    // If disabling, also stop any active subscription and remove its cached data
+    boolean stopped = true;
     if (Boolean.FALSE.equals(enabled)) {
-      feedUpdater.stopSubscription(provider);
+      stopped = feedUpdater.stopSubscription(provider);
     }
 
-    // Update the provider in Redis
+    // Update the provider in Redis. This is done even if stopping failed, so that
+    // repeating the request retries the cleanup.
     feedProviderConfig.updateProvider(provider);
 
+    if (!stopped) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
     return ResponseEntity.ok().build();
   }
 
@@ -424,13 +437,15 @@ public class AdminController {
 
       provider.setEnabled(request.enabled());
 
-      // If disabling, also stop any active subscription
+      // If disabling, also stop any active subscription and remove its cached data
+      boolean stopped = true;
       if (Boolean.FALSE.equals(request.enabled())) {
-        feedUpdater.stopSubscription(provider);
+        stopped = feedUpdater.stopSubscription(provider);
       }
 
+      // Saved even if stopping failed, so that repeating the request retries the cleanup
       feedProviderConfig.updateProvider(provider);
-      results.put(systemId, "SUCCESS");
+      results.put(systemId, stopped ? "SUCCESS" : "FAILED");
     }
 
     return ResponseEntity.ok(results);

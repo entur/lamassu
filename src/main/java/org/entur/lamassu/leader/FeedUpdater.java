@@ -332,63 +332,51 @@ public class FeedUpdater {
   }
 
   /**
-   * Stops a subscription for a feed provider.
-   * If the feed provider doesn't have an active subscription, this is a no-op.
+   * Stops a subscription for a feed provider and removes the data cached for its system.
+   * The data is removed even when this instance has no subscription for the provider, since
+   * subscription ids are kept in memory per instance and say nothing about what is cached.
    *
    * @param feedProvider The feed provider to stop the subscription for
-   * @return true if the subscription was stopped or wasn't running, false if there was an error
+   * @return true if the subscription was stopped (or wasn't running) and the cached data
+   *         was removed, false if there was an error
    */
   public boolean stopSubscription(FeedProvider feedProvider) {
-    // Check if a subscription exists
-    String subscriptionId = subscriptionRegistry.getSubscriptionIdBySystemId(
-      feedProvider.getSystemId()
-    );
-    if (subscriptionId == null) {
-      // No subscription to stop
+    var systemId = feedProvider.getSystemId();
+    String subscriptionId = subscriptionRegistry.getSubscriptionIdBySystemId(systemId);
+
+    if (subscriptionId != null) {
       subscriptionRegistry.updateSubscriptionStatus(
-        feedProvider.getSystemId(),
-        SubscriptionStatus.STOPPED
+        systemId,
+        SubscriptionStatus.STOPPING
       );
-      return true;
+      try {
+        subscriptionManager.unsubscribe(subscriptionId);
+        subscriptionRegistry.removeSubscription(systemId);
+      } catch (Exception e) {
+        logger.error("Error stopping subscription for systemId={}", systemId, e);
+        // The subscription is still running
+        subscriptionRegistry.updateSubscriptionStatus(
+          systemId,
+          SubscriptionStatus.STARTED
+        );
+        return false;
+      }
     }
 
-    // Update status to STOPPING
-    subscriptionRegistry.updateSubscriptionStatus(
-      feedProvider.getSystemId(),
-      SubscriptionStatus.STOPPING
-    );
-
+    // The subscription is stopped from here on, whatever happens to the cleanup
+    boolean cleanedUp = true;
     try {
-      // Unsubscribe from the feed
-      subscriptionManager.unsubscribe(subscriptionId);
-
-      // Remove from registry
-      subscriptionRegistry.removeSubscription(feedProvider.getSystemId());
-
-      // Clean up any cached data
-      cacheCleanupService.clearCacheForSystem(feedProvider.getSystemId());
-
-      // Update status
-      subscriptionRegistry.updateSubscriptionStatus(
-        feedProvider.getSystemId(),
-        SubscriptionStatus.STOPPED
-      );
-
-      logger.info("Stopped subscription for systemId={}", feedProvider.getSystemId());
-      return true;
+      cacheCleanupService.clearCacheForSystem(systemId);
     } catch (Exception e) {
-      logger.error(
-        "Error stopping subscription for systemId={}",
-        feedProvider.getSystemId(),
-        e
-      );
-      // Set status back to STARTED if there was an error
-      subscriptionRegistry.updateSubscriptionStatus(
-        feedProvider.getSystemId(),
-        SubscriptionStatus.STARTED
-      );
-      return false;
+      logger.error("Error removing cached data for stopped systemId={}", systemId, e);
+      cleanedUp = false;
     }
+
+    subscriptionRegistry.updateSubscriptionStatus(systemId, SubscriptionStatus.STOPPED);
+    if (cleanedUp) {
+      logger.info("Stopped subscription for systemId={}", systemId);
+    }
+    return cleanedUp;
   }
 
   /**
