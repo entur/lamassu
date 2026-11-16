@@ -6,6 +6,7 @@ import java.util.Map;
 import org.entur.lamassu.cache.CacheManagementService;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
 import org.entur.lamassu.leader.FeedUpdater;
+import org.entur.lamassu.leader.OrphanedEntityCleaner;
 import org.entur.lamassu.leader.SubscriptionStatus;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.provider.FeedProvider;
@@ -38,19 +39,22 @@ public class AdminController {
   private final FeedUpdater feedUpdater;
   private final RMapCache<String, Vehicle> vehicleCache;
   private final CacheManagementService cacheManagementService;
+  private final OrphanedEntityCleaner orphanedEntityCleaner;
 
   public AdminController(
     GeoSearchService geoSearchService,
     RMapCache<String, Vehicle> vehicleCache,
     FeedProviderConfig feedProviderConfig,
     FeedUpdater feedUpdater,
-    CacheManagementService cacheManagementService
+    CacheManagementService cacheManagementService,
+    OrphanedEntityCleaner orphanedEntityCleaner
   ) {
     this.geoSearchService = geoSearchService;
     this.vehicleCache = vehicleCache;
     this.feedProviderConfig = feedProviderConfig;
     this.feedUpdater = feedUpdater;
     this.cacheManagementService = cacheManagementService;
+    this.orphanedEntityCleaner = orphanedEntityCleaner;
   }
 
   @GetMapping("/cache_keys")
@@ -73,6 +77,24 @@ public class AdminController {
   @DeleteMapping("/vehicle_orphans")
   public Collection<String> clearOrphans() {
     return geoSearchService.removeVehicleSpatialIndexOrphans();
+  }
+
+  /**
+   * Lists vehicles and stations whose system has no enabled feed provider, per system.
+   * Removes nothing.
+   */
+  @GetMapping("/orphaned_entities")
+  public OrphanedEntityCleaner.OrphanedEntities getOrphanedEntities() {
+    return orphanedEntityCleaner.findOrphans();
+  }
+
+  /**
+   * Removes vehicles and stations whose system has no enabled feed provider, along with
+   * their spatial index entries. Returns what was removed, per system.
+   */
+  @DeleteMapping("/orphaned_entities")
+  public OrphanedEntityCleaner.OrphanedEntities removeOrphanedEntities() {
+    return orphanedEntityCleaner.removeOrphans();
   }
 
   @PostMapping("/clear_db")
