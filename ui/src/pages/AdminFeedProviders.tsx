@@ -245,6 +245,8 @@ export default function AdminFeedProviders() {
           message: err.response?.data?.message || err.message,
         })
       );
+      // The new state may have been saved even though stopping the feed failed
+      loadData();
     } finally {
       setActionLoading(prev => ({ ...prev, [systemId]: '' }));
     }

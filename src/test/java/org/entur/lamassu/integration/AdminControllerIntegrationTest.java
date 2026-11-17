@@ -3,14 +3,19 @@ package org.entur.lamassu.integration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
+import org.entur.lamassu.controller.AdminController;
 import org.entur.lamassu.leader.SubscriptionRegistry;
 import org.entur.lamassu.leader.SubscriptionStatus;
+import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +40,9 @@ class AdminControllerIntegrationTest extends AbstractIntegrationTestBase {
 
   @Autowired
   private SubscriptionRegistry subscriptionRegistry;
+
+  @Autowired
+  private EntityCache<Vehicle> vehicleCache;
 
   private static final String TEST_SYSTEM_ID = "test-system-id";
   private static final String TEST_FEED_URL = "http://localhost:8888/testatlantis/gbfs";
@@ -703,6 +711,48 @@ class AdminControllerIntegrationTest extends AbstractIntegrationTestBase {
     results = bulkEnableResponse.getBody();
     assertEquals("SUCCESS", results.get(existingSystemId));
     assertEquals("NOT_FOUND", results.get(nonExistentSystemId));
+  }
+
+  /**
+   * Disabling a provider that this instance has no subscription for must still remove its
+   * data, also when a vehicle's vehicle type has expired.
+   */
+  @Test
+  void testBulkDisableRemovesCachedVehiclesWithoutSubscription() {
+    String systemId = "test-bulk-disable-cleanup";
+    feedProviderConfig.deleteProvider(systemId);
+    subscriptionRegistry.clear();
+    createTestProvider(systemId, true);
+
+    var vehicle = new Vehicle();
+    vehicle.setId("bulk-disable-vehicle");
+    vehicle.setSystemId(systemId);
+    vehicle.setVehicleTypeId("expired-vehicle-type");
+    vehicle.setReserved(false);
+    vehicle.setDisabled(false);
+    vehicle.setLat(59.91);
+    vehicle.setLon(10.75);
+    vehicleCache.updateAll(Map.of(vehicle.getId(), vehicle));
+
+    try {
+      ResponseEntity<Map> response = restTemplate.exchange(
+        "/admin/feed-providers/bulk/set-enabled",
+        HttpMethod.POST,
+        new HttpEntity<>(
+          new AdminController.BulkSetEnabledRequest(List.of(systemId), false),
+          createAuthHeaders()
+        ),
+        Map.class
+      );
+
+      assertEquals(HttpStatus.OK, response.getStatusCode());
+      assertEquals("SUCCESS", response.getBody().get(systemId));
+      assertNull(vehicleCache.get(vehicle.getId()));
+      assertFalse(feedProviderConfig.getProviderBySystemId(systemId).getEnabled());
+    } finally {
+      vehicleCache.removeAll(Set.of(vehicle.getId()));
+      feedProviderConfig.deleteProvider(systemId);
+    }
   }
 
   /**

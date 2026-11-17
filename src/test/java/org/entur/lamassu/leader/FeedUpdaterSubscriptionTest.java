@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -193,6 +194,32 @@ class FeedUpdaterSubscriptionTest {
     verify(subscriptionRegistry)
       .updateSubscriptionStatus(SYSTEM_ID, SubscriptionStatus.STOPPED);
     verify(subscriptionManager, never()).unsubscribe(anyString());
+  }
+
+  @Test
+  void stopSubscriptionClearsCachesEvenWhenThisInstanceHasNoSubscription() {
+    // The subscription ids are in memory per instance, so a stop that reaches an instance
+    // that never subscribed (or restarted since) must still remove the system's data.
+    boolean result = feedUpdater.stopSubscription(testProvider);
+
+    assertTrue(result);
+    verify(cacheCleanupService).clearCacheForSystem(SYSTEM_ID);
+  }
+
+  @Test
+  void stopSubscriptionReportsFailureWhenClearingCachesFails() {
+    subscriptionRegistry.registerSubscription(SYSTEM_ID, SUBSCRIPTION_ID);
+    doThrow(new IllegalStateException("redis timeout"))
+      .when(cacheCleanupService)
+      .clearCacheForSystem(SYSTEM_ID);
+
+    boolean result = feedUpdater.stopSubscription(testProvider);
+
+    assertFalse(result);
+    // The subscription itself is gone, so the feed must not be reported as running
+    verify(subscriptionManager).unsubscribe(SUBSCRIPTION_ID);
+    verify(subscriptionRegistry, never())
+      .updateSubscriptionStatus(SYSTEM_ID, SubscriptionStatus.STARTED);
   }
 
   @Test
