@@ -7,7 +7,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
+import org.entur.lamassu.model.entities.System;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.service.DuplicateIdService;
 import org.entur.lamassu.service.DuplicateIdService.DuplicateId;
@@ -28,6 +30,13 @@ public class MetricUpdater {
   private final FeedProviderConfig feedProviderConfig;
   private final FeedFreshnessService feedFreshnessService;
   private final DuplicateIdService duplicateIdService;
+  private final EntityCache<System> systemCache;
+
+  /**
+   * The systems that were last reported as missing their system entry. Instance-local, so a
+   * leader failover or restart reports the ones still missing again, as with duplicate ids.
+   */
+  private final Set<String> systemsReportedMissing = ConcurrentHashMap.newKeySet();
 
   /**
    * The last logged set of {@link DuplicateId} records per (codespace, entityType)
@@ -55,12 +64,14 @@ public class MetricUpdater {
     MetricsService metricsService,
     FeedProviderConfig feedProviderConfig,
     FeedFreshnessService feedFreshnessService,
-    DuplicateIdService duplicateIdService
+    DuplicateIdService duplicateIdService,
+    EntityCache<System> systemCache
   ) {
     this.metricsService = metricsService;
     this.feedProviderConfig = feedProviderConfig;
     this.feedFreshnessService = feedFreshnessService;
     this.duplicateIdService = duplicateIdService;
+    this.systemCache = systemCache;
   }
 
   public void updateOutdatedFeedMetrics() {
@@ -68,6 +79,59 @@ public class MetricUpdater {
       .getProviders()
       .parallelStream()
       .forEach(this::updateOutdatedFeedMetrics);
+  }
+
+  /**
+   * Publishes, per provider, whether it is delivering data without having a system entry,
+   * which is what leaves its vehicles and stations out of query results. That happens when
+   * the provider stops serving a usable system_information file: the entry expires a day
+   * after the last good one, while the feed itself keeps updating.
+   *
+   * <p>Logs a warning when a provider enters that state and a note when it leaves it, not
+   * on every tick. Only providers that are enabled and aggregated are considered, and only
+   * while their realtime feeds are fresh, so that a provider that is starting up or down
+   * is not reported.
+   */
+  public void updateMissingSystemMetrics() {
+    for (FeedProvider feedProvider : feedProviderConfig.getProviders()) {
+      try {
+        boolean missing = isMissingSystem(feedProvider);
+        metricsService.registerSystemMissing(feedProvider, missing);
+        logSystemMissingTransition(feedProvider, missing);
+      } catch (RuntimeException e) {
+        logger.warn(
+          "Failed checking for a missing system entry for systemId={}",
+          feedProvider.getSystemId(),
+          e
+        );
+      }
+    }
+  }
+
+  private boolean isMissingSystem(FeedProvider feedProvider) {
+    return (
+      Boolean.TRUE.equals(feedProvider.getEnabled()) &&
+      Boolean.TRUE.equals(feedProvider.getAggregate()) &&
+      feedFreshnessService.isLive(feedProvider) &&
+      !systemCache.hasKey(feedProvider.getSystemId())
+    );
+  }
+
+  private void logSystemMissingTransition(FeedProvider feedProvider, boolean missing) {
+    String systemId = feedProvider.getSystemId();
+    if (missing && systemsReportedMissing.add(systemId)) {
+      logger.warn(
+        "No system entry for systemId={} operatorId={} although its feeds are being updated, so its vehicles and stations are left out of query results. Its system_information in the feed cache was last updated {}. Check that the provider serves a valid system_information file.",
+        systemId,
+        feedProvider.getOperatorId(),
+        feedFreshnessService
+          .lastUpdated(feedProvider, GBFSFeed.Name.SYSTEM_INFORMATION)
+          .map(Object::toString)
+          .orElse("never")
+      );
+    } else if (!missing && systemsReportedMissing.remove(systemId)) {
+      logger.info("System entry is back for systemId={}", systemId);
+    }
   }
 
   /**

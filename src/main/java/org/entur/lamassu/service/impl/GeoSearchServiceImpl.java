@@ -15,6 +15,7 @@ import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.service.BoundingBoxQueryParameters;
 import org.entur.lamassu.service.GeoSearchService;
 import org.entur.lamassu.service.RangeQueryParameters;
+import org.entur.lamassu.service.ResolvableSystems;
 import org.entur.lamassu.service.StationFilterParameters;
 import org.entur.lamassu.service.VehicleFilterParameters;
 import org.entur.lamassu.util.GeoUtils;
@@ -32,18 +33,21 @@ public class GeoSearchServiceImpl implements GeoSearchService {
   private final StationSpatialIndex stationSpatialIndex;
   private final EntityCache<Vehicle> vehicleCache;
   private final EntityCache<Station> stationCache;
+  private final ResolvableSystems resolvableSystems;
 
   @Autowired
   public GeoSearchServiceImpl(
     VehicleSpatialIndex vehicleSpatialIndex,
     StationSpatialIndex stationSpatialIndex,
     EntityCache<Vehicle> vehicleCache,
-    EntityCache<Station> stationCache
+    EntityCache<Station> stationCache,
+    ResolvableSystems resolvableSystems
   ) {
     this.vehicleSpatialIndex = vehicleSpatialIndex;
     this.stationSpatialIndex = stationSpatialIndex;
     this.vehicleCache = vehicleCache;
     this.stationCache = stationCache;
+    this.resolvableSystems = resolvableSystems;
   }
 
   @Override
@@ -63,10 +67,16 @@ public class GeoSearchServiceImpl implements GeoSearchService {
       GeoOrder.ASC
     );
 
-    var stream = indexIds
+    var matching = indexIds
       .stream()
       .filter(Objects::nonNull)
-      .filter(id -> SpatialIndexIdFilter.filterVehicle(id, vehicleFilterParameters));
+      .filter(id -> SpatialIndexIdFilter.filterVehicle(id, vehicleFilterParameters))
+      .toList();
+
+    // Before the count is applied, so that vehicles left out don't take up places in it
+    var stream = resolvableSystems
+      .retainResolvable(matching, VehicleSpatialIndexId::getSystemId)
+      .stream();
 
     Integer count = vehicleFilterParameters.getCount();
 
@@ -119,10 +129,16 @@ public class GeoSearchServiceImpl implements GeoSearchService {
       GeoOrder.ASC
     );
 
-    var stream = indexIds
+    var matching = indexIds
       .stream()
       .filter(Objects::nonNull)
-      .filter(id -> SpatialIndexIdFilter.filterStation(id, filterParameters));
+      .filter(id -> SpatialIndexIdFilter.filterStation(id, filterParameters))
+      .toList();
+
+    // Before the count is applied, so that stations left out don't take up places in it
+    var stream = resolvableSystems
+      .retainResolvable(matching, StationSpatialIndexId::getSystemId)
+      .stream();
 
     Integer count = filterParameters.getCount();
 

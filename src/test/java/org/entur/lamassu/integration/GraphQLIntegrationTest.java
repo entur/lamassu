@@ -3,6 +3,18 @@ package org.entur.lamassu.integration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.graphql.test.tester.GraphQlTester.Response;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.entur.lamassu.cache.EntityCache;
+import org.entur.lamassu.cache.StationSpatialIndex;
+import org.entur.lamassu.cache.StationSpatialIndexId;
+import org.entur.lamassu.cache.VehicleSpatialIndex;
+import org.entur.lamassu.cache.VehicleSpatialIndexId;
+import org.entur.lamassu.model.entities.FormFactor;
+import org.entur.lamassu.model.entities.PropulsionType;
+import org.entur.lamassu.model.entities.Station;
+import org.entur.lamassu.model.entities.Vehicle;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +27,18 @@ class GraphQLIntegrationTest extends AbstractIntegrationTestBase {
   // auto-configured WebGraphQlHandler (behaviour-equivalent for these query-correctness tests).
   @Autowired
   private WebGraphQlHandler webGraphQlHandler;
+
+  @Autowired
+  private EntityCache<Vehicle> vehicleCache;
+
+  @Autowired
+  private VehicleSpatialIndex vehicleSpatialIndex;
+
+  @Autowired
+  private EntityCache<Station> stationCache;
+
+  @Autowired
+  private StationSpatialIndex stationSpatialIndex;
 
   private WebGraphQlTester graphQlTester;
 
@@ -236,5 +260,118 @@ class GraphQLIntegrationTest extends AbstractIntegrationTestBase {
     Response response = graphQlTester.documentName("stations_bbox_query").execute();
 
     response.path("stations").entityList(Object.class).hasSize(1);
+  }
+
+  /**
+   * A vehicle or station whose system can't be resolved, e.g. because its provider stopped
+   * serving system_information, must be left out instead of failing the whole result.
+   */
+  @Test
+  void testEntitiesWithoutResolvableSystemAreLeftOut() {
+    var knownSystemId = vehicleCache.get("TST:Vehicle:1234").getSystemId();
+    // Far from the other test data. The vehicle and station without a system are closest to
+    // the search point, so that they would take up the places in the count if they counted.
+    var broken = vehicle("no-system-vehicle", "no-such-system", 10.0, 10.0);
+    var working = vehicle("known-system-vehicle", knownSystemId, 10.0, 10.001);
+    var brokenStation = station("no-system-station", "no-such-system", 10.0, 10.0);
+    var workingStation = station("known-system-station", knownSystemId, 10.0, 10.001);
+    for (var vehicle : List.of(broken, working)) {
+      vehicleCache.updateAll(Map.of(vehicle.getId(), vehicle));
+      vehicleSpatialIndex.addAll(Map.of(vehicleIndexId(vehicle), vehicle));
+    }
+    for (var station : List.of(brokenStation, workingStation)) {
+      stationCache.updateAll(Map.of(station.getId(), station));
+      stationSpatialIndex.addAll(Map.of(stationIndexId(station), station));
+    }
+
+    try {
+      var vehicles = graphQlTester
+        .document(
+          "{ vehicles(lat: 10.0, lon: 10.0, range: 1000, count: 1) { id system { id } } }"
+        )
+        .execute();
+      vehicles.errors().verify();
+      vehicles
+        .path("vehicles[*].id")
+        .entityList(String.class)
+        .containsExactly(working.getId());
+
+      var stations = graphQlTester
+        .document(
+          "{ stations(lat: 10.0, lon: 10.0, range: 1000, count: 1) { id system { id } } }"
+        )
+        .execute();
+      stations.errors().verify();
+      stations
+        .path("stations[*].id")
+        .entityList(String.class)
+        .containsExactly(workingStation.getId());
+
+      var byIds = graphQlTester
+        .document(
+          "{ vehicles(ids: [\"no-system-vehicle\", \"known-system-vehicle\"]) { id system { id } } }"
+        )
+        .execute();
+      byIds.errors().verify();
+      byIds
+        .path("vehicles[*].id")
+        .entityList(String.class)
+        .containsExactly(working.getId());
+
+      var single = graphQlTester
+        .document("{ vehicle(id: \"no-system-vehicle\") { id system { id } } }")
+        .execute();
+      single.errors().verify();
+      single.path("vehicle").valueIsNull();
+    } finally {
+      vehicleCache.removeAll(Set.of(broken.getId(), working.getId()));
+      vehicleSpatialIndex.removeAll(
+        Set.of(vehicleIndexId(broken), vehicleIndexId(working))
+      );
+      stationCache.removeAll(Set.of(brokenStation.getId(), workingStation.getId()));
+      stationSpatialIndex.removeAll(
+        Set.of(stationIndexId(brokenStation), stationIndexId(workingStation))
+      );
+    }
+  }
+
+  private static Vehicle vehicle(String id, String systemId, double lat, double lon) {
+    var vehicle = new Vehicle();
+    vehicle.setId(id);
+    vehicle.setSystemId(systemId);
+    vehicle.setLat(lat);
+    vehicle.setLon(lon);
+    vehicle.setReserved(false);
+    vehicle.setDisabled(false);
+    return vehicle;
+  }
+
+  private static Station station(String id, String systemId, double lat, double lon) {
+    var station = new Station();
+    station.setId(id);
+    station.setSystemId(systemId);
+    station.setLat(lat);
+    station.setLon(lon);
+    return station;
+  }
+
+  private static VehicleSpatialIndexId vehicleIndexId(Vehicle vehicle) {
+    var indexId = new VehicleSpatialIndexId();
+    indexId.setId(vehicle.getId());
+    indexId.setSystemId(vehicle.getSystemId());
+    indexId.setFormFactor(FormFactor.SCOOTER);
+    indexId.setPropulsionType(PropulsionType.ELECTRIC);
+    indexId.setReserved(false);
+    indexId.setDisabled(false);
+    return indexId;
+  }
+
+  private static StationSpatialIndexId stationIndexId(Station station) {
+    var indexId = new StationSpatialIndexId();
+    indexId.setId(station.getId());
+    indexId.setSystemId(station.getSystemId());
+    indexId.setAvailableFormFactors(List.of(FormFactor.SCOOTER));
+    indexId.setAvailablePropulsionTypes(List.of(PropulsionType.ELECTRIC));
+    return indexId;
   }
 }

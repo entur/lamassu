@@ -34,6 +34,7 @@ import org.entur.lamassu.cache.VehicleSpatialIndex;
 import org.entur.lamassu.model.entities.FormFactor;
 import org.entur.lamassu.model.entities.PropulsionType;
 import org.entur.lamassu.model.entities.Station;
+import org.entur.lamassu.model.entities.System;
 import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.model.entities.VehicleType;
 import org.entur.lamassu.model.provider.FeedProvider;
@@ -55,7 +56,8 @@ public class GeoSearchServiceTest {
     vehicleSpatialIndex,
     stationSpatialIndex,
     vehicleCache,
-    stationCache
+    stationCache,
+    new ResolvableSystems(new EntityCacheStub<System>())
   );
 
   @Before

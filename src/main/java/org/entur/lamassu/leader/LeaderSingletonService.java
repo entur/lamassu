@@ -77,5 +77,6 @@ public class LeaderSingletonService {
   public void updateFeedMetrics() {
     metricUpdater.updateOutdatedFeedMetrics();
     metricUpdater.updateDuplicateIdMetrics();
+    metricUpdater.updateMissingSystemMetrics();
   }
 }

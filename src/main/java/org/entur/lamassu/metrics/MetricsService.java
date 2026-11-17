@@ -43,6 +43,7 @@ public class MetricsService {
   protected static final String SUBSCRIPTION_FAILEDSETUP =
     "app.lamassu.gbfs.subscription.failedsetup";
   public static final String FILES_OVERDUE = "app.lamassu.gbfs.filesoverdue";
+  public static final String SYSTEM_MISSING = "app.lamassu.gbfs.system.missing";
   public static final String LABEL_ENTITY = "entity";
   public static final String DUPLICATE_IDS = "app.lamassu.gbfs.duplicate.ids";
   public static final String LABEL_CODESPACE = "codespace";
@@ -66,6 +67,8 @@ public class MetricsService {
   private final Map<String, AtomicInteger> validationMissingRequiredFilesCounters =
     new ConcurrentHashMap<>();
   private final Map<String, AtomicInteger> overdueFilesCounters =
+    new ConcurrentHashMap<>();
+  private final Map<String, AtomicInteger> systemMissingGauges =
     new ConcurrentHashMap<>();
   private final Map<String, AtomicInteger> duplicateIdGauges = new ConcurrentHashMap<>();
   private final Map<String, AtomicInteger> spatialIndexReconciledGauges =
@@ -116,6 +119,15 @@ public class MetricsService {
     int overdueFilesCount
   ) {
     getOverdueFilesCounter(feedProvider).set(overdueFilesCount);
+  }
+
+  /**
+   * Records whether a provider that is delivering data has no system entry, so that its
+   * vehicles and stations can't be served. Must be called on every metrics tick, including
+   * with false, so that a resolved problem drives the gauge back to zero.
+   */
+  public void registerSystemMissing(FeedProvider feedProvider, boolean missing) {
+    getCounter(feedProvider, systemMissingGauges, SYSTEM_MISSING).set(missing ? 1 : 0);
   }
 
   /**

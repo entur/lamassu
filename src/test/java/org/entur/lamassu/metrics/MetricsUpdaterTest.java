@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -18,8 +19,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import org.entur.lamassu.cache.EntityCache;
 import org.entur.lamassu.cache.GBFSV3FeedCache;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
+import org.entur.lamassu.model.entities.System;
 import org.entur.lamassu.model.provider.FeedProvider;
 import org.entur.lamassu.service.DuplicateIdService;
 import org.entur.lamassu.service.FeedFreshnessService;
@@ -28,6 +31,8 @@ import org.junit.jupiter.api.Test;
 import org.mobilitydata.gbfs.v3_0.gbfs.GBFSFeed;
 import org.mobilitydata.gbfs.v3_0.gbfs.GBFSGbfs;
 import org.mobilitydata.gbfs.v3_0.station_information.GBFSStationInformation;
+import org.mobilitydata.gbfs.v3_0.station_status.GBFSStationStatus;
+import org.mobilitydata.gbfs.v3_0.system_information.GBFSSystemInformation;
 import org.slf4j.LoggerFactory;
 
 public class MetricsUpdaterTest {
@@ -36,8 +41,10 @@ public class MetricsUpdaterTest {
   FeedProviderConfig mockedFeedProviderConfig = mock(FeedProviderConfig.class);
   GBFSV3FeedCache mockedFeedCache = mock(GBFSV3FeedCache.class);
   DuplicateIdService mockedDuplicateIdService = mock(DuplicateIdService.class);
+  EntityCache<System> mockedSystemCache = mock(EntityCache.class);
   MetricUpdater metricUpdater;
   FeedProvider aFeedProvider = new FeedProvider();
+  Level originalLogLevel;
 
   @BeforeEach
   public void beforeEach() {
@@ -48,7 +55,8 @@ public class MetricsUpdaterTest {
         mockedMetricsService,
         mockedFeedProviderConfig,
         new FeedFreshnessService(mockedFeedCache, 120),
-        mockedDuplicateIdService
+        mockedDuplicateIdService,
+        mockedSystemCache
       );
   }
 
@@ -342,5 +350,96 @@ public class MetricsUpdaterTest {
     provider.setCodespace("YOS");
     provider.setOperatorId("YOS:Operator:" + systemId);
     return provider;
+  }
+
+  @Test
+  public void testMissingSystemIsReportedOnEntryAndExitOnly() {
+    aggregatedProvider(true, true);
+    liveRealtimeFeed();
+    when(mockedFeedCache.find(GBFSFeed.Name.SYSTEM_INFORMATION, aFeedProvider))
+      .thenReturn(new GBFSSystemInformation().withLastUpdated(new Date(0)).withTtl(5));
+
+    ListAppender<ILoggingEvent> appender = attachAppender();
+    try {
+      when(mockedSystemCache.hasKey("TestSystem")).thenReturn(false);
+      metricUpdater.updateMissingSystemMetrics();
+      metricUpdater.updateMissingSystemMetrics();
+
+      when(mockedSystemCache.hasKey("TestSystem")).thenReturn(true);
+      metricUpdater.updateMissingSystemMetrics();
+      metricUpdater.updateMissingSystemMetrics();
+    } finally {
+      detachAppender(appender);
+    }
+
+    verify(mockedMetricsService, times(2)).registerSystemMissing(aFeedProvider, true);
+    verify(mockedMetricsService, times(2)).registerSystemMissing(aFeedProvider, false);
+    List<ILoggingEvent> events = appender.list;
+    assertEquals(2, events.size());
+    assertEquals(Level.WARN, events.get(0).getLevel());
+    String warning = events.get(0).getFormattedMessage();
+    assertTrue(warning.contains("systemId=TestSystem"));
+    assertTrue(warning.contains("1970-01-01T00:00:00Z"));
+    assertEquals(Level.INFO, events.get(1).getLevel());
+    assertTrue(events.get(1).getFormattedMessage().contains("back"));
+  }
+
+  @Test
+  public void testMissingSystemIsNotReportedWhileTheProviderDeliversNothing() {
+    aggregatedProvider(true, true);
+    when(mockedSystemCache.hasKey("TestSystem")).thenReturn(false);
+
+    metricUpdater.updateMissingSystemMetrics();
+
+    verify(mockedMetricsService).registerSystemMissing(aFeedProvider, false);
+  }
+
+  @Test
+  public void testMissingSystemIsNotReportedForDisabledProviders() {
+    aggregatedProvider(false, true);
+    liveRealtimeFeed();
+    when(mockedSystemCache.hasKey("TestSystem")).thenReturn(false);
+
+    metricUpdater.updateMissingSystemMetrics();
+
+    verify(mockedMetricsService).registerSystemMissing(aFeedProvider, false);
+  }
+
+  @Test
+  public void testMissingSystemIsNotReportedForProvidersWithoutEntities() {
+    aggregatedProvider(true, false);
+    liveRealtimeFeed();
+    when(mockedSystemCache.hasKey("TestSystem")).thenReturn(false);
+
+    metricUpdater.updateMissingSystemMetrics();
+
+    verify(mockedMetricsService).registerSystemMissing(aFeedProvider, false);
+  }
+
+  private void aggregatedProvider(boolean enabled, boolean aggregate) {
+    aFeedProvider.setEnabled(enabled);
+    aFeedProvider.setAggregate(aggregate);
+  }
+
+  private void liveRealtimeFeed() {
+    when(mockedFeedCache.find(GBFSFeed.Name.STATION_STATUS, aFeedProvider))
+      .thenReturn(new GBFSStationStatus().withLastUpdated(new Date()).withTtl(60));
+  }
+
+  private ListAppender<ILoggingEvent> attachAppender() {
+    Logger logger = (Logger) LoggerFactory.getLogger(MetricUpdater.class);
+    ListAppender<ILoggingEvent> appender = new ListAppender<>();
+    appender.start();
+    originalLogLevel = logger.getLevel();
+    // logback.xml sets `org` to WARN, which would swallow the INFO event
+    logger.setLevel(Level.INFO);
+    logger.addAppender(appender);
+    return appender;
+  }
+
+  private void detachAppender(ListAppender<ILoggingEvent> appender) {
+    Logger logger = (Logger) LoggerFactory.getLogger(MetricUpdater.class);
+    logger.detachAppender(appender);
+    logger.setLevel(originalLogLevel);
   }
 }

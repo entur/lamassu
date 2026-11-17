@@ -11,6 +11,7 @@ import org.entur.lamassu.model.entities.Vehicle;
 import org.entur.lamassu.service.BoundingBoxQueryParameters;
 import org.entur.lamassu.service.GeoSearchService;
 import org.entur.lamassu.service.RangeQueryParameters;
+import org.entur.lamassu.service.ResolvableSystems;
 import org.entur.lamassu.service.VehicleFilterParameters;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -22,20 +23,27 @@ public class VehicleQueryController {
   private final GeoSearchService geoSearchService;
   private final EntityReader<Vehicle> vehicleReader;
   private final QueryParameterValidator validationService;
+  private final ResolvableSystems resolvableSystems;
 
   public VehicleQueryController(
     GeoSearchService geoSearchService,
     EntityReader<Vehicle> vehicleReader,
-    QueryParameterValidator validationService
+    QueryParameterValidator validationService,
+    ResolvableSystems resolvableSystems
   ) {
     this.geoSearchService = geoSearchService;
     this.vehicleReader = vehicleReader;
     this.validationService = validationService;
+    this.resolvableSystems = resolvableSystems;
   }
 
   @QueryMapping
   public Vehicle vehicle(@Argument String id) {
-    return vehicleReader.get(id);
+    var vehicle = vehicleReader.get(id);
+    // Its system is non-null in the schema, so a vehicle without one can't be returned
+    return vehicle != null && resolvableSystems.isResolvable(vehicle.getSystemId())
+      ? vehicle
+      : null;
   }
 
   @QueryMapping
@@ -58,7 +66,10 @@ public class VehicleQueryController {
     @Argument Boolean includeDisabled
   ) {
     if (ids != null && !ids.isEmpty()) {
-      return vehicleReader.getAll(new HashSet<>(ids));
+      return resolvableSystems.retainResolvable(
+        vehicleReader.getAll(new HashSet<>(ids)),
+        Vehicle::getSystemId
+      );
     }
 
     validationService.validateCount(count);

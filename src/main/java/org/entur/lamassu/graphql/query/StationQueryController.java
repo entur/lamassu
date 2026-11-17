@@ -11,6 +11,7 @@ import org.entur.lamassu.model.entities.Station;
 import org.entur.lamassu.service.BoundingBoxQueryParameters;
 import org.entur.lamassu.service.GeoSearchService;
 import org.entur.lamassu.service.RangeQueryParameters;
+import org.entur.lamassu.service.ResolvableSystems;
 import org.entur.lamassu.service.StationFilterParameters;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -22,20 +23,27 @@ public class StationQueryController {
   private final GeoSearchService geoSearchService;
   private final EntityReader<Station> stationReader;
   private final QueryParameterValidator validationService;
+  private final ResolvableSystems resolvableSystems;
 
   public StationQueryController(
     GeoSearchService geoSearchService,
     EntityReader<Station> stationReader,
-    QueryParameterValidator validationService
+    QueryParameterValidator validationService,
+    ResolvableSystems resolvableSystems
   ) {
     this.geoSearchService = geoSearchService;
     this.stationReader = stationReader;
     this.validationService = validationService;
+    this.resolvableSystems = resolvableSystems;
   }
 
   @QueryMapping
   public Station station(@Argument String id) {
-    return stationReader.get(id);
+    var station = stationReader.get(id);
+    // Its system is non-null in the schema, so a station without one can't be returned
+    return station != null && resolvableSystems.isResolvable(station.getSystemId())
+      ? station
+      : null;
   }
 
   @QueryMapping
@@ -56,7 +64,10 @@ public class StationQueryController {
     @Argument List<PropulsionType> availablePropulsionTypes
   ) {
     if (ids != null && !ids.isEmpty()) {
-      return stationReader.getAll(Set.copyOf(ids));
+      return resolvableSystems.retainResolvable(
+        stationReader.getAll(Set.copyOf(ids)),
+        Station::getSystemId
+      );
     }
 
     validationService.validateCount(count);
@@ -106,6 +117,9 @@ public class StationQueryController {
 
   @QueryMapping
   public Collection<Station> stationsById(@Argument List<String> ids) {
-    return stationReader.getAll(Set.copyOf(ids));
+    return resolvableSystems.retainResolvable(
+      stationReader.getAll(Set.copyOf(ids)),
+      Station::getSystemId
+    );
   }
 }

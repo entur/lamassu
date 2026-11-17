@@ -86,6 +86,17 @@ public class FeedFreshnessService {
   }
 
   /**
+   * The last_updated timestamp of a specific feed file in the cache, or empty if it isn't
+   * present.
+   */
+  public Optional<Instant> lastUpdated(
+    FeedProvider feedProvider,
+    GBFSFeed.Name feedName
+  ) {
+    return Optional.ofNullable(feedLastUpdated(feedProvider, feedName));
+  }
+
+  /**
    * Whether a specific feed file is overdue (present but past its ttl plus the
    * tolerated overdue window). Absent feeds are not considered overdue.
    */

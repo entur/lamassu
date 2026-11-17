@@ -58,6 +58,32 @@ class MetricsServiceTest {
   }
 
   @Test
+  void testRegisterSystemMissing() {
+    SimpleMeterRegistry meterRegistry = new SimpleMeterRegistry();
+    MetricsService metricsService = new MetricsService(meterRegistry);
+    FeedProvider fp = new FeedProvider();
+    fp.setSystemId("TestSystem");
+
+    metricsService.registerSystemMissing(fp, true);
+    assertEquals(
+      1.0,
+      meterRegistry
+        .get(MetricsService.SYSTEM_MISSING)
+        .tag(MetricsService.LABEL_SYSTEM, "TestSystem")
+        .gauge()
+        .value(),
+      0.01
+    );
+
+    metricsService.registerSystemMissing(fp, false);
+    assertEquals(
+      0.0,
+      meterRegistry.get(MetricsService.SYSTEM_MISSING).gauge().value(),
+      0.01
+    );
+  }
+
+  @Test
   void testRegisterValidationResult() {
     SimpleMeterRegistry meterRegistry = new SimpleMeterRegistry();
     MetricsService metricsService = new MetricsService(meterRegistry);
