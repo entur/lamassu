@@ -139,12 +139,13 @@ public class VehiclesUpdater {
       spatialIndex.removeAll(spatialIdsToRemove);
 
       if (!unindexable.isEmpty()) {
+        var exampleVehicleId = unindexable.get(0);
         logger.warn(
           "Could not generate spatial index ids for {} of {} vehicles being cleared, leaving orphans in the index for provider={} (e.g. vehicleId={})",
           unindexable.size(),
           vehiclesToRemove.size(),
           feedProvider,
-          unindexable.get(0)
+          exampleVehicleId
         );
       }
     }

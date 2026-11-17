@@ -714,9 +714,6 @@ class AdminControllerIntegrationTest extends AbstractIntegrationTestBase {
   }
 
   /**
-   * Helper method to create a test feed provider.
-   */
-  /**
    * Disabling a provider that this instance has no subscription for must still remove its
    * data, also when a vehicle's vehicle type has expired.
    */
@@ -758,6 +755,9 @@ class AdminControllerIntegrationTest extends AbstractIntegrationTestBase {
     }
   }
 
+  /**
+   * Helper method to create a test feed provider.
+   */
   private void createTestProvider(String systemId, boolean enabled) {
     FeedProvider testProvider = new FeedProvider();
     testProvider.setSystemId(systemId);

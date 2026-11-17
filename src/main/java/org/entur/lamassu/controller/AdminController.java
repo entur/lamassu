@@ -161,10 +161,11 @@ public class AdminController {
 
     // A disabled provider must not keep a subscription or any cached data. The change is
     // saved either way, so repeating the request retries the cleanup.
-    if (Boolean.FALSE.equals(feedProvider.getEnabled())) {
-      if (!feedUpdater.stopSubscription(feedProvider)) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-      }
+    if (
+      Boolean.FALSE.equals(feedProvider.getEnabled()) &&
+      !feedUpdater.stopSubscription(feedProvider)
+    ) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
     return ResponseEntity.ok(feedProvider);
