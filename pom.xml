@@ -379,7 +379,10 @@
                 </dependencies>
                 <configuration>
                     <from>
-                        <image>bellsoft/liberica-openjre-debian:21.0.13.0.3-5</image>
+                        <!-- Temurin JRE, no shell or package manager. Not pinned to a digest:
+                             Dependabot can't update one in pom.xml, so each build takes the
+                             latest patched image instead. -->
+                        <image>gcr.io/distroless/java25-debian13:nonroot</image>
                         <platforms>
                             <platform>
                                 <architecture>amd64</architecture>

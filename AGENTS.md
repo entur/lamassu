@@ -14,11 +14,12 @@ Lamassu is a mobility aggregation service based on the General Bikeshare Feed Sp
 The application polls configured GBFS feeds, validates them, caches the data in Redis, and serves aggregated views. It supports both GBFS v2.x and v3.x feeds as input and output.
 
 **Technology Stack**:
-- Backend: Spring Boot 3.x, Java 21, Redisson (Redis client with Kryo serialization)
+- Backend: Spring Boot 3.x, Java 21 (bytecode; built and run on JDK 25), Redisson (Redis client with Kryo serialization)
 - Frontend: React 19, TypeScript, Material-UI (MUI), Vite, MapLibre
 - Build: Maven 3.x with Prettier Java for code formatting
 - Testing: JUnit, WireMock, embedded Redis
-- Containerization: Docker (via Jib Maven plugin, multi-arch: amd64/arm64)
+- Containerization: Docker (via Jib Maven plugin, multi-arch: amd64/arm64) on `gcr.io/distroless/java25-debian13:nonroot`: Temurin JRE, no shell or package manager. JVM flags go in `JDK_JAVA_OPTIONS`. To look inside, build on the `debug-nonroot` tag of the same base, or `kubectl debug` with an ephemeral container
+- Dependencies (Maven, npm in `ui/`, GitHub Actions) are updated by Dependabot (`.github/dependabot.yml`), one PR per dependency
 
 ## Common Development Commands
 
