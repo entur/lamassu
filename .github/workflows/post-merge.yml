@@ -13,7 +13,7 @@ jobs:
       contents: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           token: ${{ secrets.GITFLOW_PAT }}
       - name: Configure git user
@@ -57,7 +57,7 @@ jobs:
           git config --global user.name 'Lamassu Serialization Version Bot'
           git config --global user.email 'lamassu-serialization-version-bot@entur.org'
       - name: Checkout
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           token: ${{ secrets.GITFLOW_PAT }}
       - name: Bump serialization version
@@ -109,7 +109,7 @@ jobs:
     needs: [check-dependencies, wait-for-changelog, wait-for-serialization]
     steps:
       - name: Trigger CI workflow
-        uses: benc-uk/workflow-dispatch@v1.3.3
+        uses: benc-uk/workflow-dispatch@d004979be141727c7a17c28f603e2facc40d0855 # v1.3.3
         with:
           workflow: ci.yml
           repo: ${{ github.repository }}

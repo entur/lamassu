@@ -1,0 +1,127 @@
+# One PR per dependency so Freyja can assess and merge it (no groups).
+# 4 day cooldown, except for the Entur packages listed under exclude.
+# Same file in every repo: comment out the ecosystems the repo does not use.
+# Lamassu: "skip changelog" keeps the post-merge workflow from adding a Changelog.md entry.
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directories: ["/", "/.github/actions/*"]
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Oslo"
+    open-pull-requests-limit: 100
+    cooldown:
+      default-days: 4
+      exclude: ["entur/*"]
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    labels: ["skip changelog"]
+
+  #   - package-ecosystem: "gradle"
+  #     directories: ["/"]
+  #     schedule:
+  #       interval: "weekly"
+  #       day: "monday"
+  #       time: "06:00"
+  #       timezone: "Europe/Oslo"
+  #     open-pull-requests-limit: 100
+  #     cooldown:
+  #       default-days: 4
+  #       exclude: ["org.entur*", "org.rutebanken*"]
+  #     commit-message:
+  #       prefix: "chore"
+  #       include: "scope"
+
+  - package-ecosystem: "maven"
+    directories: ["/"]
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Oslo"
+    open-pull-requests-limit: 100
+    cooldown:
+      default-days: 4
+      exclude: ["org.entur*", "org.rutebanken*"]
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    labels: ["skip changelog"]
+
+  - package-ecosystem: "npm"
+    directories: ["/ui"]
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Oslo"
+    open-pull-requests-limit: 100
+    cooldown:
+      default-days: 4
+      exclude: ["@entur/*"]
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    labels: ["skip changelog"]
+
+  #   - package-ecosystem: "bun"
+  #     directories: ["/"]
+  #     schedule:
+  #       interval: "weekly"
+  #       day: "monday"
+  #       time: "06:00"
+  #       timezone: "Europe/Oslo"
+  #     open-pull-requests-limit: 100
+  #     cooldown:
+  #       default-days: 4
+  #       exclude: ["@entur/*"]
+  #     commit-message:
+  #       prefix: "chore"
+  #       include: "scope"
+
+  - package-ecosystem: "docker"
+    directories: ["/", "/[!.]*"]
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Oslo"
+    open-pull-requests-limit: 100
+    cooldown:
+      default-days: 4
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    labels: ["skip changelog"]
+
+  #   - package-ecosystem: "helm"
+  #     directories: ["/helm/*"]
+  #     schedule:
+  #       interval: "weekly"
+  #       day: "monday"
+  #       time: "06:00"
+  #       timezone: "Europe/Oslo"
+  #     open-pull-requests-limit: 100
+  #     cooldown:
+  #       default-days: 4
+  #       exclude: ["common"]
+  #     commit-message:
+  #       prefix: "chore"
+  #       include: "scope"
+
+  #   - package-ecosystem: "terraform"
+  #     directories: ["/terraform"]
+  #     schedule:
+  #       interval: "weekly"
+  #       day: "monday"
+  #       time: "06:00"
+  #       timezone: "Europe/Oslo"
+  #     open-pull-requests-limit: 100
+  #     cooldown:
+  #       default-days: 4
+  #     commit-message:
+  #       prefix: "chore"
+  #       include: "scope"

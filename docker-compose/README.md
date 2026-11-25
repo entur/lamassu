@@ -19,3 +19,9 @@ advanced runs two instances, one which is responsible for fetching data from ups
 caches (leader), and one which responds to API requests. The second instance may be scaled horizontally, but
 the leader can only have one instance, and must be scaled vertically if needed.
 
+## The image
+
+The image runs Java 25 on distroless as user 65532, with no shell or package manager. Pass JVM
+flags and system properties in `JDK_JAVA_OPTIONS`, as the compose files do. Mounted config files
+must be readable by that user. For a shell, build on the `debug-nonroot` tag of the same base
+image (`gcr.io/distroless/java25-debian13:debug-nonroot`).

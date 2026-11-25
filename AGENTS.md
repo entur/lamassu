@@ -14,11 +14,12 @@ Lamassu is a mobility aggregation service based on the General Bikeshare Feed Sp
 The application polls configured GBFS feeds, validates them, caches the data in Redis, and serves aggregated views. It supports both GBFS v2.x and v3.x feeds as input and output.
 
 **Technology Stack**:
-- Backend: Spring Boot 3.x, Java 21, Redisson (Redis client with Kryo serialization)
+- Backend: Spring Boot 4.x, Java 21 (bytecode; built and run on JDK 25), Redisson (Redis client with Kryo serialization)
 - Frontend: React 19, TypeScript, Material-UI (MUI), Vite, MapLibre
 - Build: Maven 3.x with Prettier Java for code formatting
 - Testing: JUnit, WireMock, embedded Redis
-- Containerization: Docker (via Jib Maven plugin, multi-arch: amd64/arm64)
+- Containerization: Docker, multi-arch (amd64/arm64). The `Dockerfile` extracts the Spring Boot layered jar and runs it on `gcr.io/distroless/java25-debian13:nonroot` (pinned by digest): Temurin JRE, no shell or package manager. JVM flags go in `JDK_JAVA_OPTIONS`. To look inside, build on the `debug-nonroot` tag of the same base, or `kubectl debug` with an ephemeral container
+- Dependencies (Maven, npm in `ui/`, GitHub Actions, the Docker base image) are updated by Dependabot (`.github/dependabot.yml`), one PR per dependency
 
 ## Common Development Commands
 
@@ -41,7 +42,7 @@ mvn test -Dtest=ClassName#methodName
 mvn clean install -DskipTests
 
 # Build Docker image locally
-mvn jib:dockerBuild -Dmaven.test.skip -P prettierSkip
+mvn clean package -Dmaven.test.skip -P prettierSkip && docker build -t lamassu .
 ```
 
 ### Code Formatting
@@ -80,18 +81,18 @@ The application will start on port 8081 (configurable in `application.properties
 
 ### Admin UI Development
 
-The admin UI is a React + TypeScript application in the `admin-ui/` directory, based on the [Inanna](https://github.com/entur/inanna) template (React + MUI + MapLibre). It builds into `src/main/resources/static/admin` and is served by Spring Boot.
+The admin and status UIs are a React + TypeScript application in the `ui/` directory, based on the [Inanna](https://github.com/entur/inanna) template (React + MUI + MapLibre). It builds into `src/main/resources/static` and is served by Spring Boot.
 
 ```bash
-cd admin-ui
+cd ui
 
 # Install dependencies
 npm install
 
-# Start development server (proxies /admin/ and /validation/ to localhost:8080)
+# Start development server (proxies /admin/, /validation/ and /status/ to localhost:8080)
 npm run dev
 
-# Build for production (outputs to ../src/main/resources/static/admin)
+# Build for production (outputs to ../src/main/resources/static)
 npm run build
 
 # Lint code
