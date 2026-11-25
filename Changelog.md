@@ -46,6 +46,7 @@ based on merged pull requests. Search GitHub issues and pull requests for smalle
 - Fix startup crash: add Jackson 2 databind for Redisson's JsonJacksonCodec [#924](https://github.com/entur/lamassu/pull/924)
 - Remove vehicles and stations left behind by disabled or removed providers [#925](https://github.com/entur/lamassu/pull/925)
 - Remove a provider's data when it is disabled, and report when that fails [#926](https://github.com/entur/lamassu/pull/926)
+- Run the image on distroless Java 25 and switch to Dependabot [#932](https://github.com/entur/lamassu/pull/932)
 [](AUTOMATIC_CHANGELOG_PLACEHOLDER_DO_NOT_REMOVE)
 
 ## 1.2.0
