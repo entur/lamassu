@@ -22,14 +22,27 @@ on:
         required: true
 
 jobs:
+  # Resolve the ref once, so every job builds the same commit even if the branch moves
+  commit:
+    runs-on: ubuntu-latest
+    outputs:
+      sha: ${{ steps.sha.outputs.sha }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.inputs.ref || github.ref }}
+      - id: sha
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
   tests:
+    needs: commit
     runs-on: ubuntu-latest
     env:
       TZ: Europe/Oslo
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.event.inputs.ref || github.ref }}
+          ref: ${{ needs.commit.outputs.sha }}
 
       # nodejs is needed because the dynamic download of it via the prettier maven plugin often
       # times out
@@ -87,6 +100,7 @@ jobs:
           files: ./target/site/jacoco/jacoco.xml
 
   ui:
+    needs: commit
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -94,7 +108,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.event.inputs.ref || github.ref }}
+          ref: ${{ needs.commit.outputs.sha }}
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 24
@@ -114,7 +128,7 @@ jobs:
     #    and build_image is true or not specified
     if: github.repository_owner == 'entur' && github.event_name != 'pull_request' && ((github.event_name == 'push' && github.ref == 'refs/heads/master') || (github.event_name == 'workflow_dispatch' && (github.event.inputs.build_image == 'true' || github.event.inputs.build_image == '')))
     runs-on: ubuntu-latest
-    needs: [ tests, ui, docker-lint ]
+    needs: [ commit, tests, ui, docker-lint ]
     # One release at a time, so an older build can't overwrite latest or the dev deploy
     concurrency:
       group: ${{ github.workflow }}-image
@@ -124,7 +138,19 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.event.inputs.ref || github.ref }}
+          ref: ${{ needs.commit.outputs.sha }}
+          fetch-depth: 0
+
+      # Runs can finish out of order: don't publish a commit older than the last release
+      - name: Check for a newer release
+        id: release
+        run: |
+          last=$(git tag --list '20*' --sort=-refname | head -1)
+          if [ -n "$last" ] && [ "$(git rev-parse "$last^{commit}")" != "$(git rev-parse HEAD)" ] \
+            && git merge-base --is-ancestor HEAD "$last"; then
+            echo "::notice::$last already released a newer commit, skipping"
+            echo "stale=true" >> "$GITHUB_OUTPUT"
+          fi
 
       # Same JDK as the distroless runtime image (Temurin). check-latest skips the runner's
       # cached JDK, which can lag behind.
@@ -152,6 +178,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       - name: Build container image, push to container repo
+        if: steps.release.outputs.stale != 'true'
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
           context: .
@@ -162,6 +189,7 @@ jobs:
             ${{ env.CONTAINER_REPO }}:${{ env.GHA_DOCKER_PUSH_IMAGE_TAG }}
 
       - name: Tag default branch with the container image tag ${{ env.GHA_DOCKER_PUSH_IMAGE_TAG }}
+        if: steps.release.outputs.stale != 'true'
         id: tag-version
         run: |
           git config user.name github-actions[bot]
@@ -170,6 +198,7 @@ jobs:
           git push origin "$GHA_DOCKER_PUSH_IMAGE_TAG" --force
 
       - name: Trigger downstream CI
+        if: steps.release.outputs.stale != 'true'
         run: |
           repo_owner="entur"
           repo_name="lamassu-deployment-config"
