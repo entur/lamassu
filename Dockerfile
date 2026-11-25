@@ -13,4 +13,5 @@ COPY --from=builder /home/nonroot/extracted/snapshot-dependencies/ ./
 COPY --from=builder /home/nonroot/extracted/application/ ./
 EXPOSE 8080
 # No shell, so JVM flags come from JDK_JAVA_OPTIONS, which the launcher reads itself.
-ENTRYPOINT [ "/usr/bin/java", "-jar", "application.jar" ]
+# Kryo uses sun.misc.Unsafe, which JDK 25 warns about on stderr without the flag.
+ENTRYPOINT [ "/usr/bin/java", "--sun-misc-unsafe-memory-access=allow", "-jar", "application.jar" ]
