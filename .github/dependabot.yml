@@ -82,20 +82,20 @@ updates:
   #       prefix: "chore"
   #       include: "scope"
 
-  # The Jib base image is in pom.xml, which the docker ecosystem does not read.
-  #   - package-ecosystem: "docker"
-  #     directories: ["/", "/[!.]*"]
-  #     schedule:
-  #       interval: "weekly"
-  #       day: "monday"
-  #       time: "06:00"
-  #       timezone: "Europe/Oslo"
-  #     open-pull-requests-limit: 100
-  #     cooldown:
-  #       default-days: 4
-  #     commit-message:
-  #       prefix: "chore"
-  #       include: "scope"
+  - package-ecosystem: "docker"
+    directories: ["/", "/[!.]*"]
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Oslo"
+    open-pull-requests-limit: 100
+    cooldown:
+      default-days: 4
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    labels: ["skip changelog"]
 
   #   - package-ecosystem: "helm"
   #     directories: ["/helm/*"]

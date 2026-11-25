@@ -4,6 +4,8 @@ on:
   push:
     branches-ignore:
       - master
+      # Dependabot PRs get the pull_request run
+      - dependabot/**
   pull_request:
     branches:
       - master
@@ -50,7 +52,26 @@ jobs:
         run: |
           sudo timedatectl set-timezone "Europe/Oslo"
           mvn --batch-mode jacoco:prepare-agent test jacoco:report -Dprettier.nodePath=node -Dprettier.npmPath=npm
-          mvn --batch-mode jib:dockerBuild -Djib.to.image=lamassu:smoke -Dmaven.test.skip -P prettierSkip
+
+      - name: Build jar
+        run: mvn --batch-mode package -Dmaven.test.skip -P prettierSkip
+
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      # The image job's build, minus the push, so a broken Docker action bump fails before merge
+      - name: Build container image
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: false
+
+      - name: Load container image for the smoke test
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          load: true
+          tags: lamassu:smoke
 
       # Nothing else in CI runs the image. Reaching Spring's banner proves the JRE loaded the
       # application bytecode; it then fails without Redis, which is fine. The banner, not the
@@ -83,6 +104,9 @@ jobs:
           npm run check
           npm run build
 
+  docker-lint:
+    uses: entur/gha-docker/.github/workflows/lint.yml@v1
+
   image:
     # Build and push the image when:
     # 1. It's a direct push to the repository (excluding PRs), or
@@ -90,11 +114,13 @@ jobs:
     #    and build_image is true or not specified
     if: github.repository_owner == 'entur' && github.event_name != 'pull_request' && ((github.event_name == 'push' && github.ref == 'refs/heads/master') || (github.event_name == 'workflow_dispatch' && (github.event.inputs.build_image == 'true' || github.event.inputs.build_image == '')))
     runs-on: ubuntu-latest
-    needs: [ tests, ui ]
+    needs: [ tests, ui, docker-lint ]
+    # One release at a time, so an older build can't overwrite latest or the dev deploy
+    concurrency:
+      group: ${{ github.workflow }}-image
+      cancel-in-progress: false
     env:
       CONTAINER_REPO: docker.io/entur/lamassu
-      CONTAINER_REGISTRY_USER: ${{ secrets.DOCKERHUB_LOGIN }}
-      CONTAINER_REGISTRY_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -110,24 +136,30 @@ jobs:
           distribution: temurin
           cache: maven
 
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version: 24
-
       - name: set variables
         run: |
-          echo "GHA_DOCKER_PUSH_IMAGE_TAG=`date +%Y-%m-%dT%H-%M`" >> $GITHUB_ENV
+          echo "GHA_DOCKER_PUSH_IMAGE_TAG=$(date +%Y-%m-%dT%H-%M-%S)" >> "$GITHUB_ENV"
 
-      - name: Build UI
-        run: npm install --prefix ui && npm run build --prefix ui
+      # Also builds the UI (frontend-maven-plugin)
+      - name: Build jar
+        run: mvn --batch-mode package -Dmaven.test.skip -P prettierSkip
 
-      - name: Build container image with Jib, push to container repo
-        run: |
-          mvn --batch-mode compile \
-            com.google.cloud.tools:jib-maven-plugin:build \
-            -Djib.to.tags=latest,${{ env.GHA_DOCKER_PUSH_IMAGE_TAG }} \
-            -Dmaven.test.skip \
-            -P prettierSkip
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      - uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550 # v4.8.0
+        with:
+          username: ${{ secrets.DOCKERHUB_LOGIN }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Build container image, push to container repo
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ${{ env.CONTAINER_REPO }}:latest
+            ${{ env.CONTAINER_REPO }}:${{ env.GHA_DOCKER_PUSH_IMAGE_TAG }}
 
       - name: Tag default branch with the container image tag ${{ env.GHA_DOCKER_PUSH_IMAGE_TAG }}
         id: tag-version
