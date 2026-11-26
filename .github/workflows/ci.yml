@@ -116,6 +116,7 @@ jobs:
         run: |
           npm install
           npm run check
+          npm run typecheck
           npm run build
 
   docker-lint:

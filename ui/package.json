@@ -9,6 +9,7 @@
     "dev-status": "vite --open /status.html",
     "build": "vite build",
     "lint": "eslint .",
+    "typecheck": "tsc -p tsconfig.app.json --noEmit && tsc -p tsconfig.node.json --noEmit",
     "check": "prettier . --check",
     "format": "prettier --write .",
     "prepare": "husky",
