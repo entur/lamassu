@@ -13,9 +13,11 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.entur.gbfs.GbfsSubscriptionManager;
 import org.entur.lamassu.cache.SubscriptionStatusCache;
@@ -351,6 +353,54 @@ class FeedUpdaterSubscriptionTest {
 
     assertTrue(finished.get());
     assertTrue(pool.isTerminated());
+  }
+
+  @Test
+  void stop_interruptsUpdatesStillRunningAfterTimeout() throws Exception {
+    var field = FeedUpdater.class.getDeclaredField("updaterThreadPool");
+    field.setAccessible(true);
+    var pool = (ForkJoinPool) field.get(feedUpdater);
+    feedUpdater.shutdownTimeout = Duration.ofMillis(100);
+    var started = new CountDownLatch(1);
+    var interrupted = new CountDownLatch(1);
+    pool.execute(() -> {
+      started.countDown();
+      try {
+        Thread.sleep(10_000);
+      } catch (InterruptedException e) {
+        interrupted.countDown();
+      }
+    });
+    started.await();
+
+    feedUpdater.stop();
+
+    assertTrue(interrupted.await(5, TimeUnit.SECONDS));
+  }
+
+  @Test
+  void stop_keepsInterruptFlagWhenInterruptedWhileWaiting() throws Exception {
+    var field = FeedUpdater.class.getDeclaredField("updaterThreadPool");
+    field.setAccessible(true);
+    var pool = (ForkJoinPool) field.get(feedUpdater);
+    var started = new CountDownLatch(1);
+    pool.execute(() -> {
+      started.countDown();
+      try {
+        Thread.sleep(10_000);
+      } catch (InterruptedException e) {
+        // interrupted by shutdownNow
+      }
+    });
+    started.await();
+
+    Thread.currentThread().interrupt();
+    var before = System.nanoTime();
+    feedUpdater.stop();
+
+    assertTrue(Thread.interrupted());
+    assertTrue(System.nanoTime() - before < TimeUnit.SECONDS.toNanos(5));
+    assertTrue(pool.awaitTermination(5, TimeUnit.SECONDS));
   }
 
   @Test

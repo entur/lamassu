@@ -19,6 +19,7 @@
 package org.entur.lamassu.leader;
 
 import java.net.URI;
+import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
@@ -55,8 +56,6 @@ public class FeedUpdater {
 
   private static final int NUM_CORES = Runtime.getRuntime().availableProcessors();
   private static final int SUBSCRIPTION_SETUP_RETRY_DELAY_SECONDS = 60;
-  // Leaves room for the rest of shutdown within a 30 second termination grace period
-  private static final int SHUTDOWN_TIMEOUT_SECONDS = 20;
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
   private final FeedProviderConfig feedProviderConfig;
   private final GbfsV2DeliveryMapper gbfsV2DeliveryMapper;
@@ -70,6 +69,9 @@ public class FeedUpdater {
   private ForkJoinPool updaterThreadPool;
   private final RListMultimap<String, ValidationResult> validationResultsCache;
   private final CacheCleanupService cacheCleanupService;
+
+  // Leaves room for the rest of shutdown within a 30 second termination grace period
+  Duration shutdownTimeout = Duration.ofSeconds(20);
 
   @Value("${org.entur.lamassu.enableValidation:false}")
   private boolean enableValidation;
@@ -134,11 +136,14 @@ public class FeedUpdater {
     updaterThreadPool.shutdown();
     try {
       if (
-        !updaterThreadPool.awaitTermination(SHUTDOWN_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+        !updaterThreadPool.awaitTermination(
+          shutdownTimeout.toMillis(),
+          TimeUnit.MILLISECONDS
+        )
       ) {
         logger.warn(
-          "Feed updates still running after {} seconds, interrupting them",
-          SHUTDOWN_TIMEOUT_SECONDS
+          "Feed updates still running after {}, interrupting them",
+          shutdownTimeout
         );
         updaterThreadPool.shutdownNow();
       }
