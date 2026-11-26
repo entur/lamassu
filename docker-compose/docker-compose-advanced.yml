@@ -13,6 +13,8 @@ services:
       - ./application-config:/etc/application-config
   lamassu-leader:
     image: "entur/lamassu:latest"
+    # The leader waits up to 20 seconds for running feed updates when stopped
+    stop_grace_period: 30s
     ports:
       - "8081:8080"
       - "9002:9001"

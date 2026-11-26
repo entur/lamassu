@@ -19,6 +19,7 @@
 package org.entur.lamassu.leader;
 
 import java.net.URI;
+import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
@@ -68,6 +69,10 @@ public class FeedUpdater {
   private ForkJoinPool updaterThreadPool;
   private final RListMultimap<String, ValidationResult> validationResultsCache;
   private final CacheCleanupService cacheCleanupService;
+
+  // Together these leave room for the rest of shutdown within a 30 second grace period
+  Duration shutdownTimeout = Duration.ofSeconds(15);
+  Duration interruptTimeout = Duration.ofSeconds(5);
 
   @Value("${org.entur.lamassu.enableValidation:false}")
   private boolean enableValidation;
@@ -124,9 +129,32 @@ public class FeedUpdater {
     subscriptionManager.update();
   }
 
+  /**
+   * Waits for running feed updates, since Redisson shuts down after this and would fail them.
+   */
   public void stop() {
     subscriptionRegistry.clearInMemory();
     updaterThreadPool.shutdown();
+    try {
+      if (!awaitUpdates(shutdownTimeout)) {
+        logger.warn(
+          "Feed updates still running after {}, interrupting them",
+          shutdownTimeout
+        );
+        updaterThreadPool.shutdownNow();
+        // Interrupted updates fail fast on their remaining cache calls
+        if (!awaitUpdates(interruptTimeout)) {
+          logger.warn("Feed updates still running after interrupting them");
+        }
+      }
+    } catch (InterruptedException e) {
+      updaterThreadPool.shutdownNow();
+      Thread.currentThread().interrupt();
+    }
+  }
+
+  private boolean awaitUpdates(Duration timeout) throws InterruptedException {
+    return updaterThreadPool.awaitTermination(timeout.toMillis(), TimeUnit.MILLISECONDS);
   }
 
   /**

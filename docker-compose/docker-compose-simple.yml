@@ -3,6 +3,8 @@ services:
     image: "redis:alpine"
   lamassu:
     image: "entur/lamassu:latest"
+    # The leader waits up to 20 seconds for running feed updates when stopped
+    stop_grace_period: 30s
     ports:
       - "8080:8080"
       - "9001:9001"
