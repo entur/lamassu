@@ -333,21 +333,53 @@ class FeedUpdaterSubscriptionTest {
 
   @Test
   void stop_waitsForRunningUpdates() throws Exception {
-    var field = FeedUpdater.class.getDeclaredField("updaterThreadPool");
-    field.setAccessible(true);
-    var pool = (ForkJoinPool) field.get(feedUpdater);
+    var pool = updaterThreadPool();
+    var started = new CountDownLatch(1);
+    var release = new CountDownLatch(1);
+    var finished = new AtomicBoolean();
+    pool.execute(() -> {
+      started.countDown();
+      try {
+        release.await();
+        finished.set(true);
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+      }
+    });
+    assertTrue(started.await(5, TimeUnit.SECONDS));
+
+    var stopper = new Thread(feedUpdater::stop);
+    stopper.start();
+    stopper.join(200);
+    assertTrue(stopper.isAlive());
+
+    release.countDown();
+    stopper.join(5_000);
+    assertFalse(stopper.isAlive());
+    assertTrue(finished.get());
+    assertTrue(pool.isTerminated());
+  }
+
+  @Test
+  void stop_interruptsUpdatesStillRunningAfterTimeoutAndWaitsForThem() throws Exception {
+    var pool = updaterThreadPool();
+    feedUpdater.shutdownTimeout = Duration.ofMillis(100);
     var started = new CountDownLatch(1);
     var finished = new AtomicBoolean();
     pool.execute(() -> {
       started.countDown();
       try {
-        Thread.sleep(500);
+        Thread.sleep(10_000);
       } catch (InterruptedException e) {
-        return;
+        // An interrupted update still takes a moment to wind down
+        var deadline = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(200);
+        while (System.nanoTime() < deadline) {
+          Thread.onSpinWait();
+        }
+        finished.set(true);
       }
-      finished.set(true);
     });
-    started.await();
+    assertTrue(started.await(5, TimeUnit.SECONDS));
 
     feedUpdater.stop();
 
@@ -356,33 +388,8 @@ class FeedUpdaterSubscriptionTest {
   }
 
   @Test
-  void stop_interruptsUpdatesStillRunningAfterTimeout() throws Exception {
-    var field = FeedUpdater.class.getDeclaredField("updaterThreadPool");
-    field.setAccessible(true);
-    var pool = (ForkJoinPool) field.get(feedUpdater);
-    feedUpdater.shutdownTimeout = Duration.ofMillis(100);
-    var started = new CountDownLatch(1);
-    var interrupted = new CountDownLatch(1);
-    pool.execute(() -> {
-      started.countDown();
-      try {
-        Thread.sleep(10_000);
-      } catch (InterruptedException e) {
-        interrupted.countDown();
-      }
-    });
-    started.await();
-
-    feedUpdater.stop();
-
-    assertTrue(interrupted.await(5, TimeUnit.SECONDS));
-  }
-
-  @Test
   void stop_keepsInterruptFlagWhenInterruptedWhileWaiting() throws Exception {
-    var field = FeedUpdater.class.getDeclaredField("updaterThreadPool");
-    field.setAccessible(true);
-    var pool = (ForkJoinPool) field.get(feedUpdater);
+    var pool = updaterThreadPool();
     var started = new CountDownLatch(1);
     pool.execute(() -> {
       started.countDown();
@@ -392,7 +399,7 @@ class FeedUpdaterSubscriptionTest {
         // interrupted by shutdownNow
       }
     });
-    started.await();
+    assertTrue(started.await(5, TimeUnit.SECONDS));
 
     Thread.currentThread().interrupt();
     var before = System.nanoTime();
@@ -401,6 +408,12 @@ class FeedUpdaterSubscriptionTest {
     assertTrue(Thread.interrupted());
     assertTrue(System.nanoTime() - before < TimeUnit.SECONDS.toNanos(5));
     assertTrue(pool.awaitTermination(5, TimeUnit.SECONDS));
+  }
+
+  private ForkJoinPool updaterThreadPool() throws Exception {
+    var field = FeedUpdater.class.getDeclaredField("updaterThreadPool");
+    field.setAccessible(true);
+    return (ForkJoinPool) field.get(feedUpdater);
   }
 
   @Test

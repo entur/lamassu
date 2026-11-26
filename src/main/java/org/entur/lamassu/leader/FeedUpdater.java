@@ -70,8 +70,9 @@ public class FeedUpdater {
   private final RListMultimap<String, ValidationResult> validationResultsCache;
   private final CacheCleanupService cacheCleanupService;
 
-  // Leaves room for the rest of shutdown within a 30 second termination grace period
-  Duration shutdownTimeout = Duration.ofSeconds(20);
+  // Together these leave room for the rest of shutdown within a 30 second grace period
+  Duration shutdownTimeout = Duration.ofSeconds(15);
+  Duration interruptTimeout = Duration.ofSeconds(5);
 
   @Value("${org.entur.lamassu.enableValidation:false}")
   private boolean enableValidation;
@@ -135,22 +136,25 @@ public class FeedUpdater {
     subscriptionRegistry.clearInMemory();
     updaterThreadPool.shutdown();
     try {
-      if (
-        !updaterThreadPool.awaitTermination(
-          shutdownTimeout.toMillis(),
-          TimeUnit.MILLISECONDS
-        )
-      ) {
+      if (!awaitUpdates(shutdownTimeout)) {
         logger.warn(
           "Feed updates still running after {}, interrupting them",
           shutdownTimeout
         );
         updaterThreadPool.shutdownNow();
+        // Interrupted updates fail fast on their remaining cache calls
+        if (!awaitUpdates(interruptTimeout)) {
+          logger.warn("Feed updates still running after interrupting them");
+        }
       }
     } catch (InterruptedException e) {
       updaterThreadPool.shutdownNow();
       Thread.currentThread().interrupt();
     }
+  }
+
+  private boolean awaitUpdates(Duration timeout) throws InterruptedException {
+    return updaterThreadPool.awaitTermination(timeout.toMillis(), TimeUnit.MILLISECONDS);
   }
 
   /**
