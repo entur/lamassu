@@ -47,6 +47,7 @@ based on merged pull requests. Search GitHub issues and pull requests for smalle
 - Remove vehicles and stations left behind by disabled or removed providers [#925](https://github.com/entur/lamassu/pull/925)
 - Remove a provider's data when it is disabled, and report when that fails [#926](https://github.com/entur/lamassu/pull/926)
 - Run the image on distroless Java 25 and switch to Dependabot [#932](https://github.com/entur/lamassu/pull/932)
+- Silence the JDK 25 Unsafe warning and type-check the UI [#942](https://github.com/entur/lamassu/pull/942)
 [](AUTOMATIC_CHANGELOG_PLACEHOLDER_DO_NOT_REMOVE)
 
 ## 1.2.0
