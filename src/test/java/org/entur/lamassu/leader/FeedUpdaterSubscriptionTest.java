@@ -14,7 +14,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.entur.gbfs.GbfsSubscriptionManager;
 import org.entur.lamassu.cache.SubscriptionStatusCache;
 import org.entur.lamassu.config.feedprovider.FeedProviderConfig;
@@ -325,6 +327,30 @@ class FeedUpdaterSubscriptionTest {
 
     verify(subscriptionRegistry).clearInMemory();
     verify(subscriptionRegistry, never()).clear();
+  }
+
+  @Test
+  void stop_waitsForRunningUpdates() throws Exception {
+    var field = FeedUpdater.class.getDeclaredField("updaterThreadPool");
+    field.setAccessible(true);
+    var pool = (ForkJoinPool) field.get(feedUpdater);
+    var started = new CountDownLatch(1);
+    var finished = new AtomicBoolean();
+    pool.execute(() -> {
+      started.countDown();
+      try {
+        Thread.sleep(500);
+      } catch (InterruptedException e) {
+        return;
+      }
+      finished.set(true);
+    });
+    started.await();
+
+    feedUpdater.stop();
+
+    assertTrue(finished.get());
+    assertTrue(pool.isTerminated());
   }
 
   @Test
