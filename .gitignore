@@ -35,10 +35,5 @@ build/
 ### terraform ###
 .terraform/
 
-# Ignore build folders for UI
-src/main/resources/static/admin
-src/main/resources/static/status
-src/main/resources/static/common
-src/main/resources/static/assets
-src/main/resources/static/*.css
-src/main/resources/static/*.html
+# UI build output (vite build in ui/)
+src/main/resources/static/
