@@ -1,0 +1,9 @@
+# Read by anchore/scan-action in gha-security's docker-scan. Drops base-image packages that Debian
+# has no fix for; a finding comes back once Debian ships one.
+ignore:
+  - fix-state: not-fixed
+    package:
+      type: deb
+  - fix-state: wont-fix
+    package:
+      type: deb
