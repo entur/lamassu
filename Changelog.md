@@ -49,6 +49,7 @@ based on merged pull requests. Search GitHub issues and pull requests for smalle
 - Run the image on distroless Java 25 and switch to Dependabot [#932](https://github.com/entur/lamassu/pull/932)
 - Silence the JDK 25 Unsafe warning and type-check the UI [#942](https://github.com/entur/lamassu/pull/942)
 - Let running feed updates finish before Redisson shuts down [#943](https://github.com/entur/lamassu/pull/943)
+- Ignore Debian base-image CVEs that have no fix in the image scan [#945](https://github.com/entur/lamassu/pull/945)
 [](AUTOMATIC_CHANGELOG_PLACEHOLDER_DO_NOT_REMOVE)
 
 ## 1.2.0
