@@ -94,10 +94,29 @@ jobs:
           timeout 180 docker run --rm lamassu:smoke 2>&1 | tee smoke.log || true
           grep -q ":: Spring Boot ::" smoke.log
 
+      # docker-scan downloads the artifact and loads <artifact>.tar from it
+      - name: Save the image for docker-scan
+        run: docker save lamassu:smoke -o lamassu-image.tar
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: lamassu-image
+          path: lamassu-image.tar
+          retention-days: 1
+
       - name: codecov
         uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
         with:
           files: ./target/site/jacoco/jacoco.xml
+
+  # Scans the smoke-test image: same Dockerfile and jar as the pushed one, amd64 only.
+  # Not on fork PRs, whose read-only token cannot upload the SARIF.
+  docker-scan:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    needs: [tests]
+    uses: entur/gha-security/.github/workflows/docker-scan.yml@v2
+    with:
+      image_artifact: lamassu-image
 
   ui:
     needs: commit
