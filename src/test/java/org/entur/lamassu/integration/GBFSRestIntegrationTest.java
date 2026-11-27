@@ -1,13 +1,21 @@
 package org.entur.lamassu.integration;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.resttestclient.TestRestTemplate;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MockMvc;
 
 @AutoConfigureMockMvc
@@ -15,6 +23,9 @@ public class GBFSRestIntegrationTest extends AbstractIntegrationTestBase {
 
   @Autowired
   private MockMvc mockMvc;
+
+  @Autowired
+  private TestRestTemplate restTemplate;
 
   @Test
   void testFeedProviderDiscovery() throws Exception {
@@ -180,5 +191,27 @@ public class GBFSRestIntegrationTest extends AbstractIntegrationTestBase {
     mockMvc
       .perform(get("/gbfs/v2/testatlantis/foobar").contentType("application/json"))
       .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  void acceptsRequestsWithManyAcceptLanguageLocales() {
+    // MockMvc bypasses Tomcat, which is where the locale limit applies
+    var headers = new HttpHeaders();
+    headers.set(
+      HttpHeaders.ACCEPT_LANGUAGE,
+      IntStream
+        .range(0, 20)
+        .mapToObj(i -> "x" + (char) ('a' + i) + ";q=0." + (i % 9 + 1))
+        .collect(Collectors.joining(","))
+    );
+
+    var response = restTemplate.exchange(
+      "/gbfs/v2",
+      HttpMethod.GET,
+      new HttpEntity<>(headers),
+      String.class
+    );
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
   }
 }
